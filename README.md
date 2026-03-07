@@ -4,27 +4,27 @@ A collection of skills for AI coding agents, designed for Claude Code.
 
 Skills follow the [Agent Skills](https://agentskills.io/) format.
 
+## Installation
+
+Install all skills at once:
+
+```bash
+npx skills add AsyrafHussin/agent-skills
+```
+
+Or install a specific skill:
+
+```bash
+npx skills add AsyrafHussin/agent-skills --skill laravel-owasp-security
+```
+
 ## Available Skills
 
 ### [laravel-best-practices](skills/laravel-best-practices)
 
-Laravel 12 conventions and best practices. Contains 45+ rules across 7 categories for building scalable, maintainable Laravel applications.
+Laravel 12 conventions and architecture. Contains 45+ rules across 7 categories.
 
-**Use when:**
-- Creating controllers, models, and services
-- Writing migrations and database queries
-- Implementing validation and form requests
-- Building APIs with Laravel
-- Structuring Laravel applications
-
-**Categories covered:**
-- Architecture & Structure (Critical)
-- Eloquent & Database (Critical)
-- Controllers & Routing (High)
-- Validation & Requests (High)
-- Security (High)
-- Performance (Medium)
-- API Design (Medium)
+**Example:** `Review this Laravel controller for best practices`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill laravel-best-practices
@@ -34,19 +34,9 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-best-practices
 
 ### [laravel-inertia-react](skills/laravel-inertia-react)
 
-Laravel + Inertia.js + React patterns for building full-stack applications with a seamless SPA experience.
+Laravel + Inertia.js + React patterns for full-stack applications.
 
-**Use when:**
-- Building Laravel + Inertia.js + React applications
-- Implementing Inertia forms and page components
-- Sharing data between Laravel and React
-- Handling Inertia redirects and flash messages
-
-**Categories covered:**
-- Page Components (Critical)
-- Forms & Validation (High)
-- Shared Data & Props (High)
-- Navigation & Redirects (Medium)
+**Example:** `How do I share data from Laravel to a React component with Inertia?`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill laravel-inertia-react
@@ -56,25 +46,9 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-inertia-react
 
 ### [laravel-owasp-security](skills/laravel-owasp-security)
 
-OWASP Top 10 security audit and secure coding guidelines for Laravel + React/Inertia.js. Dual-purpose — run a full audit or use as a secure coding reference.
+OWASP Top 10 security audit and secure coding guidelines for Laravel + React/Inertia.js.
 
-**Use when:**
-- "Run OWASP audit on my Laravel app"
-- "Security review of my codebase"
-- "Check my app for vulnerabilities"
-- Writing auth, payment, or file upload logic
-- Passing data from Laravel to Inertia props
-- Using `dangerouslySetInnerHTML` in React
-
-**Categories covered:**
-- Broken Access Control (Critical) — A01:2021
-- Cryptographic Failures (Critical) — A02:2021
-- Injection — SQL & Mass Assignment (Critical) — A03:2021
-- XSS & React/Inertia (High) — A03:2021
-- CSRF Protection (High) — A08:2021
-- Security Misconfiguration (High) — A05:2021
-- Authentication & Rate Limiting (High) — A07:2021
-- Inertia Data Exposure (High) — React/Inertia R2
+**Example:** `Run OWASP security audit on my Laravel app`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill laravel-owasp-security
@@ -84,22 +58,9 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-owasp-security
 
 ### [php-best-practices](skills/php-best-practices)
 
-Modern PHP 8.x patterns, PSR standards, and SOLID principles for clean, maintainable code.
+Modern PHP 8.x patterns, PSR standards, and SOLID principles.
 
-**Use when:**
-- Writing PHP classes, interfaces, and traits
-- Applying SOLID principles
-- Following PSR-12 coding standards
-- Using PHP 8.x modern features
-
-**Categories covered:**
-- Type System (Critical)
-- Modern Features (Critical)
-- PSR Standards (High)
-- SOLID Principles (High)
-- Error Handling (High)
-- Performance (Medium)
-- Security (Critical)
+**Example:** `Review my PHP class for SOLID principles`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill php-best-practices
@@ -109,20 +70,9 @@ npx skills add AsyrafHussin/agent-skills --skill php-best-practices
 
 ### [react-vite-best-practices](skills/react-vite-best-practices)
 
-React + Vite performance optimization guidelines. Contains 40+ rules across 8 categories.
+React + Vite performance optimization. Contains 40+ rules across 8 categories.
 
-**Use when:**
-- Writing new React components
-- Optimizing bundle size or load times
-- Implementing data fetching
-- Reviewing code for performance issues
-
-**Categories covered:**
-- Bundle Optimization (Critical)
-- Component Performance (High)
-- Data Fetching (High)
-- Re-render Optimization (Medium)
-- Code Splitting (Medium)
+**Example:** `Review this React component for performance issues`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill react-vite-best-practices
@@ -134,17 +84,7 @@ npx skills add AsyrafHussin/agent-skills --skill react-vite-best-practices
 
 TypeScript best practices and patterns for React applications.
 
-**Use when:**
-- Typing React components and hooks
-- Working with generics in TypeScript
-- Defining prop interfaces and types
-- Reviewing TypeScript for type safety
-
-**Categories covered:**
-- Component Types (Critical)
-- Generics (High)
-- Utility Types (High)
-- Type Narrowing (Medium)
+**Example:** `How do I properly type this React component with TypeScript?`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill typescript-react-patterns
@@ -156,17 +96,7 @@ npx skills add AsyrafHussin/agent-skills --skill typescript-react-patterns
 
 React state management patterns using React Query and Zustand.
 
-**Use when:**
-- Implementing server state with React Query
-- Managing global state with Zustand
-- Handling async data fetching and caching
-- Syncing server and client state
-
-**Categories covered:**
-- React Query (Critical)
-- Zustand (High)
-- Caching Strategies (High)
-- Optimistic Updates (Medium)
+**Example:** `How do I manage server state with React Query?`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill state-management
@@ -176,19 +106,9 @@ npx skills add AsyrafHussin/agent-skills --skill state-management
 
 ### [tailwind-best-practices](skills/tailwind-best-practices)
 
-Tailwind CSS patterns for responsive, dark mode-ready, and maintainable UIs.
+Tailwind CSS patterns for responsive, dark mode-ready UIs.
 
-**Use when:**
-- Writing Tailwind utility classes
-- Building responsive layouts
-- Implementing dark mode
-- Organizing component styles
-
-**Categories covered:**
-- Responsive Design (Critical)
-- Dark Mode (High)
-- Component Patterns (High)
-- Performance (Medium)
+**Example:** `Review my Tailwind classes for best practices`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill tailwind-best-practices
@@ -198,21 +118,9 @@ npx skills add AsyrafHussin/agent-skills --skill tailwind-best-practices
 
 ### [web-design-guidelines](skills/web-design-guidelines)
 
-UI/UX and accessibility guidelines. Audits code for 50+ rules covering accessibility, UX, and responsive design.
+UI/UX and accessibility guidelines. Audits code for 50+ rules.
 
-**Use when:**
-- "Review my UI"
-- "Check accessibility"
-- "Audit design"
-- "Review UX"
-
-**Categories covered:**
-- Accessibility (Critical)
-- Forms & Validation (High)
-- Typography (High)
-- Responsive Design (Medium)
-- Dark Mode & Theming (Medium)
-- Performance (Medium)
+**Example:** `Review my UI for accessibility and UX issues`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill web-design-guidelines
@@ -224,17 +132,7 @@ npx skills add AsyrafHussin/agent-skills --skill web-design-guidelines
 
 SOLID, DRY, and clean code design patterns for maintainable software.
 
-**Use when:**
-- Reviewing code for code smells
-- Applying SOLID principles
-- Refactoring complex classes
-- Designing class interfaces
-
-**Categories covered:**
-- SOLID Principles (Critical)
-- DRY Patterns (High)
-- Design Patterns (High)
-- Naming Conventions (Medium)
+**Example:** `Review this class for code smells and SOLID violations`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill clean-code-principles
@@ -246,17 +144,7 @@ npx skills add AsyrafHussin/agent-skills --skill clean-code-principles
 
 RESTful API design patterns for consistent, scalable APIs.
 
-**Use when:**
-- Designing REST API endpoints
-- Structuring API responses and errors
-- Implementing API versioning
-- Building API resources and transformers
-
-**Categories covered:**
-- REST Conventions (Critical)
-- Error Handling (High)
-- Pagination (High)
-- Versioning (Medium)
+**Example:** `Review my API endpoints for REST best practices`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill api-design-patterns
@@ -268,17 +156,7 @@ npx skills add AsyrafHussin/agent-skills --skill api-design-patterns
 
 Git workflow conventions for commits, branching, and pull requests.
 
-**Use when:**
-- Writing commit messages
-- Creating branches and PRs
-- Reviewing git history
-- Following conventional commits
-
-**Categories covered:**
-- Commit Messages (Critical)
-- Branching Strategy (High)
-- Pull Requests (High)
-- Code Review (Medium)
+**Example:** `Write a commit message for these changes`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill git-workflow
@@ -288,48 +166,15 @@ npx skills add AsyrafHussin/agent-skills --skill git-workflow
 
 ### [testing-best-practices](skills/testing-best-practices)
 
-Unit testing, integration testing, and TDD principles for reliable test suites.
+Unit testing, integration testing, and TDD principles.
 
-**Use when:**
-- Writing unit or feature tests
-- Setting up test factories and mocks
-- Reviewing test coverage
-- Applying TDD principles
-
-**Categories covered:**
-- Test Structure (Critical)
-- Test Isolation (Critical)
-- Mocking (High)
-- Coverage (Medium)
+**Example:** `Write tests for this Laravel service class`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill testing-best-practices
 ```
 
 ---
-
-## Installation
-
-Install all skills at once:
-
-```bash
-npx skills add AsyrafHussin/agent-skills
-```
-
-## Usage
-
-Skills are automatically available once installed. The agent will use them when relevant tasks are detected.
-
-**Examples:**
-```
-Run OWASP security audit on my Laravel app
-```
-```
-Review this Laravel controller for best practices
-```
-```
-Check my React component for performance issues
-```
 
 ## License
 
