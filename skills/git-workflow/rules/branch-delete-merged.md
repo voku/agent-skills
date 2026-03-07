@@ -68,7 +68,8 @@ git remote prune origin
 # Periodic cleanup script
 git checkout main
 git pull --prune
-git branch --merged | grep -v "main\|master\|develop" | xargs -r git branch -d
+git branch --merged | grep -v "main\|master\|develop" | xargs git branch -d
+# Note: xargs -r (skip if empty) is Linux/GNU only — omit on macOS
 ```
 
 ## Why

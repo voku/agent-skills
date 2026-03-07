@@ -57,7 +57,7 @@ git commit -m "security: patch XSS vulnerability in comments
 Apply sanitization to user-generated content before rendering.
 
 Fixes #234
-CVE-2024-12345
+CVE-YYYY-NNNNN
 See: https://owasp.org/xss-prevention"
 
 # Co-author attribution
