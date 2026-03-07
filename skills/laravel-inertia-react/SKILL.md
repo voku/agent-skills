@@ -4,7 +4,7 @@ description: Laravel + Inertia.js + React integration patterns. Use when buildin
 license: MIT
 metadata:
   author: AsyrafHussin
-  version: "1.0.0"
+  version: "1.0.1"
   laravelVersion: "12.x"
   phpVersion: "8.3+"
 ---
@@ -464,7 +464,7 @@ MIT License. This skill is provided as-is for educational and development purpos
 
 ## Metadata
 
-- **Version**: 1.0.0
+- **Version**: 1.0.1
 - **Last Updated**: 2026-01-17
 - **Maintainer**: Asyraf Hussin
 - **Rule Count**: 24 rules across 6 categories

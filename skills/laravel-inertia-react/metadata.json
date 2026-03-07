@@ -1,7 +1,7 @@
 {
   "name": "laravel-inertia-react",
   "displayName": "Laravel + Inertia.js + React",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "phpVersion": "8.3+",
   "laravelVersion": "12.x",
   "description": "Comprehensive patterns for building modern monolithic applications with Laravel, Inertia.js, and React. Covers page components, forms, navigation, shared data, and persistent layouts.",

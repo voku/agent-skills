@@ -1,6 +1,6 @@
 {
   "name": "clean-code-principles",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SOLID principles, design patterns, DRY, KISS, and clean code fundamentals for writing maintainable, scalable software",
   "author": "Agent Skills",
   "license": "MIT",
