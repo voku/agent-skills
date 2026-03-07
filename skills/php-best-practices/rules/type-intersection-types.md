@@ -21,22 +21,22 @@ interface Cacheable
     public function getCacheKey(): string;
 }
 
-interface Serializable
+interface Encodable
 {
-    public function serialize(): string;
+    public function encode(): string;
 }
 
 class CacheService
 {
     /**
-     * @param Cacheable&Serializable $item
+     * @param Cacheable&Encodable $item
      */
     public function store($item): void
     {
         // No type enforcement - relies on docblock
         // Could receive object implementing only one interface
         $key = $item->getCacheKey();
-        $data = $item->serialize();
+        $data = $item->encode();
         $this->cache->set($key, $data);
     }
 }
@@ -55,19 +55,19 @@ interface Cacheable
     public function getCacheTtl(): int;
 }
 
-interface Serializable
+interface Encodable
 {
-    public function serialize(): string;
-    public function unserialize(string $data): void;
+    public function encode(): string;
+    public function decode(string $data): void;
 }
 
 class CacheService
 {
     // Object MUST implement both interfaces
-    public function store(Cacheable&Serializable $item): void
+    public function store(Cacheable&Encodable $item): void
     {
         $key = $item->getCacheKey();
-        $data = $item->serialize();
+        $data = $item->encode();
         $ttl = $item->getCacheTtl();
 
         $this->cache->set($key, $data, $ttl);
@@ -75,16 +75,16 @@ class CacheService
 
     public function retrieve(
         string $key,
-        Cacheable&Serializable $prototype
-    ): Cacheable&Serializable {
+        Cacheable&Encodable $prototype
+    ): Cacheable&Encodable {
         $data = $this->cache->get($key);
-        $prototype->unserialize($data);
+        $prototype->decode($data);
         return $prototype;
     }
 }
 
 // Implementation example
-class User implements Cacheable, Serializable
+class User implements Cacheable, Encodable
 {
     public function __construct(
         private int $id,
@@ -101,12 +101,12 @@ class User implements Cacheable, Serializable
         return 3600;
     }
 
-    public function serialize(): string
+    public function encode(): string
     {
         return json_encode(['id' => $this->id, 'name' => $this->name]);
     }
 
-    public function unserialize(string $data): void
+    public function decode(string $data): void
     {
         $decoded = json_decode($data, true);
         $this->id = $decoded['id'];
@@ -118,7 +118,7 @@ class User implements Cacheable, Serializable
 ## Why
 
 - **Compound Requirements**: Enforces multiple interface implementations
-- **Type Safety**: Compiler enforces all required capabilities
+- **Type Safety**: PHP enforces all required capabilities at class loading
 - **Composition**: Enables type-safe composition over inheritance
 - **Clear Contracts**: Explicitly states all required behaviors
 - **Better Than Base Classes**: More flexible than requiring a specific base class

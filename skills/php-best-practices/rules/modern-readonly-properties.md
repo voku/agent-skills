@@ -115,7 +115,8 @@ class Coordinates
 
     public function distanceTo(Coordinates $other): float
     {
-        // Calculate distance...
+        // Haversine formula
+        return 0.0; // Simplified
     }
 }
 ```

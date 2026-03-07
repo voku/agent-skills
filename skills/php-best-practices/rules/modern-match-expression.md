@@ -112,7 +112,7 @@ function getPaymentFee(PaymentMethod $method): float
         PaymentMethod::BankTransfer => 0.5,
         PaymentMethod::Crypto => 1.0,
         // No default needed - all cases covered
-        // Adding new enum case = compile error here
+        // Adding new enum case = UnhandledMatchError at runtime
     };
 }
 

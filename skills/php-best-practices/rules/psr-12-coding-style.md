@@ -109,7 +109,7 @@ use Psr\Log\LoggerInterface;
 // One blank line after namespace and use blocks
 class ExampleService implements ServiceInterface
 {
-    // Opening brace on same line for classes
+    // Opening brace on its own line for classes
     private const MAX_RETRIES = 3;
 
     public function __construct(
@@ -124,7 +124,7 @@ class ExampleService implements ServiceInterface
         string $input,
         array $options = [],
     ): string {
-        // Opening brace on same line for methods
+        // Multi-line: closing paren, return type, and brace on same line
         $result = '';
 
         // Space after control structure keywords

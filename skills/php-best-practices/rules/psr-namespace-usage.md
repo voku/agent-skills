@@ -219,7 +219,7 @@ class DataProcessor
         $filtered = array_filter($data, fn($v) => $v !== null);
 
         // With namespace prefix (also valid)
-        $sorted = \sort($filtered, SORT_REGULAR);
+        \sort($filtered, SORT_REGULAR); // sort() modifies in place, returns bool
 
         return \implode(PHP_EOL, $filtered);
     }

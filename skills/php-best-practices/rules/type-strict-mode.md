@@ -2,32 +2,30 @@
 title: Strict Types Declaration
 impact: CRITICAL
 impactDescription: Prevents type coercion bugs, enforces type safety
-tags: type-system, strict-types, type-safety, php7
+tags: type-system, strict-types, type-safety, php8
 ---
 
 # Strict Types Declaration
 
-## Why It Matters
-
 `declare(strict_types=1)` enforces strict type checking for function arguments and return values. Without it, PHP silently coerces types, hiding bugs. Strict mode catches type errors early, improving code reliability.
 
-## Incorrect
+## Bad Example
 
 ```php
 <?php
 
-// ❌ No strict types - silent coercion
+// No strict types - silent coercion
 function calculateTotal(int $price, int $quantity): int
 {
     return $price * $quantity;
 }
 
-// These work but hide problems:
-calculateTotal("10", "5");   // Returns 50 - strings coerced to int
-calculateTotal(10.99, 2);    // Returns 20 - float truncated to int
-calculateTotal("abc", 2);    // Returns 0 - "abc" becomes 0
+// These hide problems:
+calculateTotal("10", "5");   // Returns 50 - numeric strings coerced to int
+calculateTotal(10.99, 2);    // Returns 20 - float truncated to int (deprecated in 8.1)
+// calculateTotal("abc", 2); // TypeError in PHP 8.0+ (non-numeric string)
 
-// ❌ Missing from file
+// Missing from file
 namespace App\Services;
 
 class Calculator
@@ -36,22 +34,22 @@ class Calculator
 }
 ```
 
-## Correct
+## Good Example
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-// ✅ Strict types - TypeError on wrong types
+// Strict types - TypeError on wrong types
 function calculateTotal(int $price, int $quantity): int
 {
     return $price * $quantity;
 }
 
-calculateTotal(10, 5);       // ✅ Returns 50
-calculateTotal("10", "5");   // ❌ TypeError
-calculateTotal(10.99, 2);    // ❌ TypeError
+calculateTotal(10, 5);       // Returns 50
+calculateTotal("10", "5");   // TypeError
+calculateTotal(10.99, 2);    // TypeError
 ```
 
 ## Declaration Rules
@@ -59,7 +57,7 @@ calculateTotal(10.99, 2);    // ❌ TypeError
 ```php
 <?php
 
-// ✅ MUST be the first statement in the file
+// MUST be the first statement in the file
 declare(strict_types=1);
 
 namespace App\Services;
@@ -75,7 +73,7 @@ class UserService
 ```php
 <?php
 
-namespace App\Services; // ❌ Wrong - declare must come first
+namespace App\Services; // Wrong - declare must come first
 
 declare(strict_types=1);
 
@@ -99,12 +97,12 @@ function addNumbers(int $a, int $b): int
 }
 
 // This call is in strict mode
-addNumbers(1, 2);     // ✅
-addNumbers("1", "2"); // ❌ TypeError
+addNumbers(1, 2);     //
+addNumbers("1", "2"); // TypeError
 
-// But internal PHP functions follow their own rules
-strlen("hello");      // ✅ Works
-strlen(12345);        // ✅ Still works (internal function)
+// Strict mode also applies to internal PHP function calls
+strlen("hello");      // Works
+// strlen(12345);     // TypeError - int given, string expected
 ```
 
 ## File-by-File Basis
@@ -138,7 +136,7 @@ strictFunction("5"); // Returns 10 - coercion happens at call site
 
 declare(strict_types=1);
 
-// ✅ Return type strictly enforced
+// Return type strictly enforced
 function getPrice(): float
 {
     return 99.99; // Must return float
@@ -149,7 +147,7 @@ function getCount(): int
     return 42; // Must return int
 }
 
-// ❌ This would cause TypeError
+// This would cause TypeError
 function broken(): int
 {
     return "42"; // TypeError - can't return string as int
@@ -174,9 +172,9 @@ function process(?string $data): void
     // $data must be string or null
 }
 
-process("hello"); // ✅
-process(null);    // ✅
-process(123);     // ❌ TypeError
+process("hello"); //
+process(null);    //
+process(123);     // TypeError
 ```
 
 ## With Union Types
@@ -191,9 +189,9 @@ function format(string|int $value): string
     return (string) $value;
 }
 
-format("hello"); // ✅
-format(42);      // ✅
-format(3.14);    // ❌ TypeError - float not in union
+format("hello"); //
+format(42);      //
+format(3.14);    // TypeError - float not in union
 ```
 
 ## Best Practice Template
@@ -259,11 +257,10 @@ $count = getCount();
 $name = getName();
 ```
 
-## Benefits
+## Why
 
-- Catches type bugs at runtime immediately
-- No silent type coercion surprises
-- Works with static analysis tools
-- Self-documenting code intent
-- Matches behavior of other typed languages
-- Required for reliable modern PHP
+- **Type Safety**: Catches type bugs at runtime immediately
+- **No Surprises**: No silent type coercion
+- **Static Analysis**: Works with PHPStan/Psalm for maximum safety
+- **Self-Documenting**: Code intent is explicit and enforced
+- **Industry Standard**: Required for reliable modern PHP

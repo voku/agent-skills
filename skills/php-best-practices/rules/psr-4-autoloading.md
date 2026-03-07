@@ -44,8 +44,10 @@ require_once 'lib/helpers.php';
 ```php
 <?php
 
+declare(strict_types=1);
+
 // File: src/Domain/User/User.php
-// Correct: Namespace matches directory structure
+// Namespace matches directory structure
 
 namespace App\Domain\User;
 

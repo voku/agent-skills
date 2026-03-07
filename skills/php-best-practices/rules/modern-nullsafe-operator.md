@@ -80,8 +80,8 @@ $user?->getProfile()?->updateLastLogin();
 // Works with property access
 $length = $order?->items?->count();
 
-// Works with array access (PHP 8.0+)
-$firstItem = $order?->getItems()[0] ?? null;
+// Combine with null coalescing for array access
+$firstItem = $order?->getItems()[0] ?? null; // ?? handles null from nullsafe
 
 // Practical examples
 class NotificationService

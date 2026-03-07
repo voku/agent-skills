@@ -7,16 +7,14 @@ tags: modern-features, enums, type-safety, php81
 
 # Type-Safe Enums
 
-## Why It Matters
-
 Enums (PHP 8.1+) provide type-safe constants with methods. They prevent invalid values, enable IDE autocompletion, and encapsulate related behavior. Always prefer enums over class constants for finite sets of values.
 
-## Incorrect
+## Bad Example
 
 ```php
 <?php
 
-// ❌ Class constants - no type safety
+// Class constants - no type safety
 class OrderStatus
 {
     public const PENDING = 'pending';
@@ -34,7 +32,7 @@ function updateStatus(string $status): void
 
 updateStatus('typo'); // No error!
 
-// ❌ Constants scattered or duplicated
+// Constants scattered or duplicated
 class Order
 {
     public const STATUS_PENDING = 1;
@@ -48,14 +46,16 @@ class Payment
 }
 ```
 
-## Correct
+## Good Example
 
 ### Basic Enum (Unit Enum)
 
 ```php
 <?php
 
-// ✅ Unit enum - no backing value
+declare(strict_types=1);
+
+// Unit enum - no backing value
 enum Direction
 {
     case North;
@@ -83,7 +83,7 @@ $opposite = $direction->opposite(); // Direction::South
 ```php
 <?php
 
-// ✅ String-backed enum - for database/API values
+// String-backed enum - for database/API values
 enum OrderStatus: string
 {
     case Pending = 'pending';
@@ -141,7 +141,7 @@ $status = OrderStatus::tryFrom('invalid'); // null (no exception)
 ```php
 <?php
 
-// ✅ Int-backed enum - for legacy databases
+// Int-backed enum - for legacy databases
 enum Priority: int
 {
     case Low = 1;
@@ -205,6 +205,7 @@ enum PaymentMethod: string implements Labelable
 
 trait EnumHelpers
 {
+    /** Only works with backed enums (string/int) */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
@@ -261,7 +262,7 @@ Role::options(); // ['admin' => 'Administrator', ...]
 ```php
 <?php
 
-// ✅ Function accepts only valid enum values
+// Function accepts only valid enum values
 function updateOrderStatus(Order $order, OrderStatus $newStatus): void
 {
     if (!$order->status->canTransitionTo($newStatus)) {
@@ -274,9 +275,9 @@ function updateOrderStatus(Order $order, OrderStatus $newStatus): void
     $order->status = $newStatus;
 }
 
-// Compile-time safety
-updateOrderStatus($order, OrderStatus::Shipped); // ✅
-updateOrderStatus($order, 'shipped'); // ❌ TypeError
+// Type safety - invalid values rejected
+updateOrderStatus($order, OrderStatus::Shipped); //
+updateOrderStatus($order, 'shipped'); // TypeError
 ```
 
 ### In Eloquent/Database
@@ -300,12 +301,12 @@ Order::where('status', OrderStatus::Pending)->get();
 'status' => ['required', new Enum(OrderStatus::class)],
 ```
 
-## Benefits
+## Why
 
-- Type safety - invalid values caught at compile time
-- IDE autocompletion and refactoring support
-- Encapsulates related behavior (methods)
-- Self-documenting code
-- Works with match expressions
-- Backed enums integrate with databases
-- from()/tryFrom() for safe conversion
+- **Type Safety**: Invalid values caught immediately (TypeError)
+- **IDE Support**: Autocompletion and refactoring support
+- **Encapsulation**: Related behavior lives with the data (methods)
+- **Self-Documenting**: Code clearly shows all valid values
+- **Match Expressions**: Natural pairing with exhaustive match
+- **Database Integration**: Backed enums map to DB values
+- **Safe Conversion**: `from()`/`tryFrom()` for converting from raw values

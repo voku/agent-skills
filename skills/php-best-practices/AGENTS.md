@@ -1,19 +1,43 @@
 # PHP Best Practices - Complete Guide
 
-**Version:** 2.0.0  
-**Focus:** PHP 8.3+, PSR Standards, Modern Features  
+**Version:** 2.1.0
+**Focus:** PHP 8.0 - 8.5, PSR Standards, Modern PHP Features
+**Rules:** 51 (9 type + 16 modern + 6 PSR + 5 SOLID + 5 error + 5 perf + 5 security)
 **License:** MIT
 
 ---
 
+## Step 1: Detect PHP Version
+
+**Always check the project's PHP version before giving advice.** Features vary across 8.0 - 8.5.
+
+```bash
+# Check composer.json
+grep '"php"' composer.json    # e.g. "^8.2"
+
+# Check runtime
+php -v                        # e.g. PHP 8.3.12
+```
+
+**Only suggest features available in the detected version:**
+
+| Version | Key Features Added |
+|---------|-------------------|
+| 8.0+ | Union types, match, nullsafe, named args, constructor promotion, attributes |
+| 8.1+ | Enums, readonly props, intersection types, first-class callables, never |
+| 8.2+ | Readonly classes, DNF types |
+| 8.3+ | Typed class constants, `#[\Override]`, `json_validate()` |
+| 8.4+ | Property hooks, asymmetric visibility, `#[\Deprecated]`, `new` without parens |
+| 8.5+ | Pipe operator `\|>` |
+
 ## Overview
 
-Comprehensive PHP 8.3+ best practices covering type system, modern features, PSR standards, SOLID principles, error handling, performance, and security. Each rule includes incorrect and correct examples with detailed explanations.
+Comprehensive PHP 8.x best practices covering type system, modern features, PSR standards, SOLID principles, error handling, performance, and security. Each rule includes bad and good examples with detailed explanations.
 
 ## Categories
 
 1. **Type System (CRITICAL)** - Strict types, return types, union types, null handling
-2. **Modern Features (CRITICAL)** - Constructor promotion, enums, readonly, match expressions
+2. **Modern PHP Features (CRITICAL)** - Constructor promotion, enums, readonly, match, property hooks, pipe operator
 3. **PSR Standards (HIGH)** - PSR-4 autoloading, PSR-12 coding style, naming conventions
 4. **SOLID Principles (HIGH)** - SRP, OCP, LSP, ISP, DIP
 5. **Error Handling (HIGH)** - Custom exceptions, proper try-catch, error recovery
@@ -51,8 +75,8 @@ declare(strict_types=1);
 function add(int $a, int $b): int {
     return $a + $b;
 }
-add(5, 10);     // ✓ Returns 15
-add("5", "10"); // ✗ TypeError
+add(5, 10);     // OK: Returns 15
+add("5", "10"); // Error: TypeError
 ```
 
 ---
@@ -68,8 +92,10 @@ Always declare return types for all methods and functions.
 **Bad:**
 ```php
 <?php
-function find($id) {
-    return $this->db->query("SELECT * FROM users WHERE id = ?", [$id]);
+class UserRepository {
+    public function find($id) {
+        return $this->db->query("SELECT * FROM users WHERE id = ?", [$id]);
+    }
 }
 ```
 
@@ -79,9 +105,12 @@ function find($id) {
 
 declare(strict_types=1);
 
-function find(int $id): ?User {
-    $data = $this->db->query("SELECT * FROM users WHERE id = ?", [$id]);
-    return $data ? new User($data) : null;
+class UserRepository {
+    public function find(int $id): ?User
+    {
+        $data = $this->db->query("SELECT * FROM users WHERE id = ?", [$id]);
+        return $data ? new User($data) : null;
+    }
 }
 ```
 
@@ -159,11 +188,13 @@ Use union types when a value can legitimately be one of multiple types (PHP 8.0+
 **Bad:**
 ```php
 <?php
-/**
- * @param string|array $source
- */
-function load($source) {
-    // Relies on docblock, no type enforcement
+class DataLoader {
+    /**
+     * @param string|array $source
+     */
+    public function load($source) {
+        // Relies on docblock, no type enforcement
+    }
 }
 ```
 
@@ -173,11 +204,14 @@ function load($source) {
 
 declare(strict_types=1);
 
-function load(string|array $source): array {
-    if (is_string($source)) {
-        return $this->loadFromFile($source);
+class DataLoader {
+    public function load(string|array $source): array
+    {
+        if (is_string($source)) {
+            return $this->loadFromFile($source);
+        }
+        return $this->loadFromArray($source);
     }
-    return $this->loadFromArray($source);
 }
 ```
 
@@ -192,9 +226,11 @@ Use nullable types explicitly when null is a valid value.
 **Bad:**
 ```php
 <?php
-function findByEmail(string $email) {
-    // Unclear if null is valid return
-    return $this->repository->find($email) ?: null;
+class UserService {
+    public function findByEmail(string $email) {
+        // Unclear if null is valid return
+        return $this->repository->find($email) ?: null;
+    }
 }
 ```
 
@@ -204,14 +240,17 @@ function findByEmail(string $email) {
 
 declare(strict_types=1);
 
-function findByEmail(string $email): ?User {
-    return $this->repository->find($email);
+class UserService {
+    public function findByEmail(string $email): ?User
+    {
+        return $this->repository->find($email);
+    }
 }
 ```
 
 ---
 
-## 2. Modern Features
+## 2. Modern PHP Features
 
 ### 2.1 Constructor Property Promotion
 
@@ -446,6 +485,154 @@ $multiplied = array_map(fn($n) => $n * $multiplier, $numbers);
 
 ---
 
+### 2.7 Typed Class Constants (8.3+)
+
+**Impact:** HIGH
+
+Add type declarations to class constants for type safety.
+
+**Bad:**
+```php
+<?php
+class Config {
+    public const TIMEOUT = 30;       // int? string? no enforcement
+    public const NAME = 'my-app';
+}
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+class Config {
+    public const int TIMEOUT = 30;
+    public const string NAME = 'my-app';
+    public const array ALLOWED = ['read', 'write'];
+}
+```
+
+---
+
+### 2.8 Override Attribute (8.3+)
+
+**Impact:** HIGH
+
+Use `#[\Override]` on methods that override a parent to catch typos and refactoring errors.
+
+**Bad:**
+```php
+<?php
+class UserRepo extends BaseRepo {
+    public function findByld(int $id): ?User { /* typo: 'l' not 'I' */ }
+}
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+class UserRepo extends BaseRepo {
+    #[\Override]
+    public function findById(int $id): ?User { /* typo caught when class is loaded */ }
+}
+```
+
+---
+
+### 2.9 Property Hooks (8.4+)
+
+**Impact:** HIGH
+
+Use property hooks to define get/set logic directly on properties.
+
+**Bad:**
+```php
+<?php
+class User {
+    private string $name;
+    public function getName(): string { return $this->name; }
+    public function setName(string $v): void { $this->name = ucfirst($v); }
+}
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+class User {
+    public string $name { set => ucfirst(strtolower($value)); }
+    public string $fullName { get => $this->firstName . ' ' . $this->lastName; }
+}
+```
+
+---
+
+### 2.10 Asymmetric Visibility (8.4+)
+
+**Impact:** HIGH
+
+Use `public private(set)` for properties that are publicly readable but privately writable.
+
+**Bad:**
+```php
+<?php
+class Order {
+    private string $status;
+    public function getStatus(): string { return $this->status; }
+}
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+class Order {
+    public private(set) string $status = 'pending';
+
+    public function markPaid(): void {
+        $this->status = 'paid'; // OK - internal set
+    }
+}
+echo $order->status;      // OK - public read
+// $order->status = 'x';  // Error - private set
+```
+
+---
+
+### 2.11 Pipe Operator (8.5+)
+
+**Impact:** HIGH
+
+Use the pipe operator for readable left-to-right function chaining.
+
+**Bad:**
+```php
+<?php
+$result = htmlspecialchars(strtolower(trim($input)));
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+$result = $input
+    |> trim(...)
+    |> strtolower(...)
+    |> htmlspecialchars(...);
+```
+
+---
+
 ## 3. PSR Standards
 
 ### 3.1 PSR-4 Autoloading
@@ -486,7 +673,7 @@ src/
 Follow PSR-12 extended coding style for consistent, readable code.
 
 **Key Rules:**
-- Opening braces on same line for methods/functions
+- Opening braces on their own line for classes, methods, and functions
 - One blank line after namespace and use blocks
 - Spaces after control structure keywords
 - One blank line between methods
@@ -672,9 +859,184 @@ class DoctrineOrderRepository implements OrderRepository {
 
 ---
 
-## 5. Security
+## 5. Error Handling
 
-### 5.1 Input Validation
+### 5.1 Custom Exceptions
+
+**Impact:** HIGH
+
+Create specific exception classes instead of using generic `\Exception`.
+
+**Bad:**
+```php
+<?php
+throw new \Exception('Email already exists'); // Caller can't distinguish error types
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+class DuplicateEmailException extends \RuntimeException
+{
+    public function __construct(private readonly string $email)
+    {
+        parent::__construct("Email already registered: {$email}");
+    }
+}
+
+// Caller handles specifically
+try {
+    $service->register($data);
+} catch (DuplicateEmailException $e) {
+    return response()->json(['error' => 'Email taken'], 409);
+} catch (ValidationException $e) {
+    return response()->json(['errors' => $e->getErrors()], 422);
+}
+```
+
+---
+
+### 5.2 Catch Specific Exceptions
+
+**Impact:** HIGH
+
+Never catch generic `\Exception` or `\Throwable` except at top-level error boundaries.
+
+**Bad:**
+```php
+<?php
+try {
+    $user = $repo->find($id);
+    $mailer->send($user);
+} catch (\Exception $e) {
+    return null; // Swallows ALL errors - hides bugs
+}
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+class NotificationService
+{
+    public function notifyUser(int $id): void
+    {
+        try {
+            $user = $this->repo->find($id);
+            $this->mailer->send($user);
+        } catch (UserNotFoundException $e) {
+            return;
+        } catch (MailerException $e) {
+            $this->logger->error('Email failed', ['error' => $e->getMessage()]);
+            // Continue - email is non-critical
+        }
+    }
+}
+```
+
+---
+
+### 5.3 Never Suppress Errors
+
+**Impact:** CRITICAL
+
+Never use the `@` operator. Handle errors explicitly.
+
+**Bad:**
+```php
+<?php
+$data = @file_get_contents($path); // Hides all errors
+$conn = @mysqli_connect('localhost', 'user', 'pass');
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+if (!is_readable($path)) {
+    throw new FileNotFoundException("Not readable: {$path}");
+}
+$data = file_get_contents($path);
+```
+
+---
+
+## 6. Performance
+
+### 6.1 Generators for Large Datasets
+
+**Impact:** MEDIUM
+
+Use generators to process large datasets without loading everything into memory.
+
+**Bad:**
+```php
+<?php
+function getAllUsers(): array {
+    return $stmt->fetchAll(); // 1M users = huge memory spike
+}
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+function getAllUsers(PDO $pdo, int $chunk = 1000): \Generator {
+    $offset = 0;
+    do {
+        $stmt = $pdo->prepare('SELECT * FROM users LIMIT :l OFFSET :o');
+        $stmt->bindValue(':l', $chunk, PDO::PARAM_INT);
+        $stmt->bindValue(':o', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $row) {
+            yield User::fromArray($row);
+        }
+        $offset += $chunk;
+    } while (count($rows) === $chunk);
+}
+```
+
+---
+
+### 6.2 Native String Functions over Regex
+
+**Impact:** MEDIUM
+
+Use PHP 8.0+ string functions instead of regex for simple checks.
+
+**Bad:**
+```php
+<?php
+if (preg_match('/^https/', $url)) { /* starts with */ }
+if (preg_match('/\.pdf$/', $file)) { /* ends with */ }
+```
+
+**Good:**
+```php
+<?php
+
+declare(strict_types=1);
+
+if (str_starts_with($url, 'https')) { /* 2-10x faster */ }
+if (str_ends_with($file, '.pdf')) { /* clearer intent */ }
+if (str_contains($role, 'admin')) { /* no escaping needed */ }
+```
+
+---
+
+## 7. Security
+
+### 7.1 Input Validation
 
 **Impact:** CRITICAL
 
@@ -703,7 +1065,7 @@ function createUser(array $data): User {
 
 ---
 
-### 5.2 Prepared Statements
+### 7.2 Prepared Statements
 
 **Impact:** CRITICAL
 
@@ -729,7 +1091,7 @@ $result = $stmt->fetch();
 
 ---
 
-### 5.3 Password Hashing
+### 7.3 Password Hashing
 
 **Impact:** CRITICAL
 
@@ -774,6 +1136,6 @@ if (password_verify($inputPassword, $storedHash)) {
 
 ---
 
-**Last Updated:** January 2026  
-**Version:** 2.0.0  
+**Last Updated:** March 2026
+**Version:** 2.1.0
 **License:** MIT

@@ -254,6 +254,24 @@ class UserService
 }
 ```
 
+## Identifying Violations
+
+Signs a class has multiple responsibilities:
+
+- Class name contains "And", "Manager", or "Helper"
+- Large number of injected dependencies (5+)
+- Methods that operate on unrelated data
+- Fat controllers with validation, business logic, DB, email, and logging mixed together
+
+### Refactoring Strategy
+
+Extract each responsibility into its own class:
+- **Validation** -> `UserValidator` or Form Request
+- **Persistence** -> `UserRepository`
+- **Notifications** -> `UserEmailNotifier`
+- **Formatting** -> `UserSerializer` or API Resource
+- **Orchestration** -> `UserService` (thin coordinator)
+
 ## Why
 
 - **Focused Classes**: Each class does one thing well

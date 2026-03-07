@@ -105,7 +105,7 @@ class ExceptionHandler
 function processOrFail(mixed $data): array
 {
     if (!is_array($data)) {
-        $this->abort(400, 'Invalid data'); // never returns
+        throw new \InvalidArgumentException('Expected array'); // never returns
     }
 
     // Static analysis knows $data is array here

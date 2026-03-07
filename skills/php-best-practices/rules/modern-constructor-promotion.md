@@ -7,16 +7,14 @@ tags: modern-features, constructor-promotion, php8, boilerplate-reduction
 
 # Constructor Property Promotion
 
-## Why It Matters
-
 Constructor property promotion (PHP 8.0+) reduces boilerplate code significantly. It combines parameter declaration, property declaration, and assignment into a single statement, making classes cleaner and easier to maintain.
 
-## Incorrect
+## Bad Example
 
 ```php
 <?php
 
-// ❌ Verbose - property declared twice, assigned manually
+// Verbose - property declared twice, assigned manually
 class User
 {
     private string $id;
@@ -40,7 +38,7 @@ class User
     }
 }
 
-// ❌ Mixed styles - inconsistent
+// Mixed styles - inconsistent
 class Product
 {
     private string $sku;
@@ -55,12 +53,14 @@ class Product
 }
 ```
 
-## Correct
+## Good Example
 
 ```php
 <?php
 
-// ✅ Constructor property promotion - clean and concise
+declare(strict_types=1);
+
+// Constructor property promotion - clean and concise
 class User
 {
     public function __construct(
@@ -74,8 +74,8 @@ class User
     }
 }
 
-// ✅ With readonly for immutable properties
-class User
+// With readonly for immutable properties (8.1+)
+class ImmutableUser
 {
     public function __construct(
         public readonly string $id,
@@ -135,7 +135,7 @@ class Money
 ```php
 <?php
 
-// ✅ When you need computed properties
+// When you need computed properties
 class Order
 {
     private string $orderNumber;
@@ -176,10 +176,10 @@ class Entity
 }
 ```
 
-## Benefits
+## Why
 
-- Reduces code by ~60% for simple DTOs
-- Single source of truth for properties
-- Easier to read and maintain
-- Trailing comma support for clean diffs
-- Combines well with readonly
+- **Less Boilerplate**: Reduces code by ~60% for simple DTOs
+- **Single Source of Truth**: No separate property declaration and assignment
+- **Readability**: Easier to scan and maintain
+- **Trailing Comma**: Clean diffs when adding/removing parameters
+- **Combines with Readonly**: `public readonly string $id` for immutable promoted properties (8.1+)

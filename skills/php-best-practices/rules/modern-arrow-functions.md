@@ -106,8 +106,8 @@ $products = [/* ... */];
 usort($products, fn($a, $b) => $a->getPrice() <=> $b->getPrice());
 
 // Callbacks and event handlers
-$button->onClick(fn() => $this->handleClick());
-$form->onSubmit(fn($data) => $this->processForm($data));
+$button->onClick(fn() => $controller->handleClick());
+$form->onSubmit(fn($data) => $controller->processForm($data));
 
 // Validation rules
 $rules = [

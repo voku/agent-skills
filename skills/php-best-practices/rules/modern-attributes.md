@@ -170,7 +170,7 @@ function getRoutes(object $controller): array
 
 - **Type Safety**: Attributes are real classes with typed constructors
 - **IDE Support**: Full autocompletion, refactoring, and navigation
-- **Validation**: Invalid attribute usage caught at compile time
+- **Validation**: Invalid attribute usage caught by static analysis tools
 - **Native Feature**: Built into PHP, no external parser needed
 - **Performance**: Faster than parsing docblocks at runtime
 - **Named Arguments**: Clear parameter names in attribute usage

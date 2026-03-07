@@ -10,10 +10,10 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 **Impact:** CRITICAL
 **Description:** Strict type enforcement is the foundation of reliable PHP code. Type declarations prevent bugs, enable static analysis, and provide self-documenting contracts. Essential for modern PHP 8.x development.
 
-## 2. Modern Features (modern)
+## 2. Modern PHP Features (modern)
 
 **Impact:** CRITICAL
-**Description:** PHP 8.x features like constructor promotion, enums, readonly properties, and match expressions drastically reduce boilerplate and improve code clarity. These are not optional—they're the modern PHP standard.
+**Description:** PHP 8.x features that reduce boilerplate and improve code clarity. Each rule is annotated with its minimum PHP version. Always check the project's PHP version before suggesting features. Covers: constructor promotion (8.0), enums (8.1), readonly (8.1/8.2), typed constants and #[\Override] (8.3), property hooks and asymmetric visibility (8.4), and pipe operator (8.5).
 
 ## 3. PSR Standards (psr)
 
@@ -28,14 +28,14 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 ## 5. Error Handling (error)
 
 **Impact:** HIGH
-**Description:** Proper exception handling, custom exceptions, and error recovery strategies prevent silent failures and enable graceful error management.
+**Description:** Proper exception handling, custom exceptions, exception hierarchies, and resource cleanup strategies prevent silent failures and enable graceful error management.
 
 ## 6. Performance (perf)
 
 **Impact:** MEDIUM
-**Description:** Performance optimizations like lazy loading, generators, and avoiding globals improve application scalability and resource usage.
+**Description:** Performance optimizations including lazy loading, generators, native array/string functions, and avoiding globals improve application scalability and resource usage.
 
 ## 7. Security (sec)
 
 **Impact:** CRITICAL
-**Description:** Security practices including input validation, output escaping, password hashing, and prepared statements protect against common vulnerabilities and attacks.
+**Description:** Security practices including input validation, output escaping, password hashing, prepared statements, and file upload validation protect against OWASP Top 10 vulnerabilities.

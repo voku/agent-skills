@@ -11,7 +11,7 @@ tags: category, subtopic, php-version
 
 Brief explanation of the rule and why it matters. This should be clear and concise, explaining the benefits and rationale.
 
-**Incorrect (description of what's wrong):**
+## Bad Example
 
 ```php
 <?php
@@ -26,7 +26,7 @@ class BadExample
 }
 ```
 
-**Correct (description of what's right):**
+## Good Example
 
 ```php
 <?php
