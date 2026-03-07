@@ -1,6 +1,10 @@
 ---
 name: git-workflow
 description: Git best practices, branching strategies, commit conventions, and PR workflows. Use when reviewing git history, writing commits, setting up branching strategy, or improving git practices. Triggers on "git best practices", "commit message", "branching strategy", or "PR workflow".
+license: MIT
+metadata:
+  author: AsyrafHussin
+  version: "1.2.0"
 ---
 
 # Git Workflow
@@ -36,6 +40,7 @@ Reference these guidelines when:
 - `commit-meaningful` - Descriptive, meaningful messages
 - `commit-body` - Add body for complex changes
 - `commit-references` - Reference issues/tickets
+- `commit-git-hooks` - Enforce standards with Husky + commitlint
 
 ### 2. Branching Strategy (HIGH)
 
@@ -45,6 +50,8 @@ Reference these guidelines when:
 - `branch-short-lived` - Keep branches short-lived
 - `branch-delete-merged` - Delete merged branches
 - `branch-release` - Release branch strategy
+- `branch-workflow-strategies` - GitFlow vs GitHub Flow vs Trunk-Based
+- `branch-monorepo` - Monorepo git workflows
 
 ### 3. Pull Requests (HIGH)
 
@@ -61,12 +68,14 @@ Reference these guidelines when:
 - `history-no-force-push` - Avoid force push to shared branches
 - `history-clean` - Keep history clean
 - `history-tags` - Use tags for releases
+- `history-worktree` - Work on multiple branches with git worktree
 
 ### 5. Collaboration (MEDIUM)
 
 - `collab-code-review` - Effective code reviews
 - `collab-conflicts` - Handle merge conflicts
 - `collab-communication` - Communicate changes
+- `collab-gitignore` - .gitignore best practices
 
 ## Essential Guidelines
 
@@ -529,9 +538,9 @@ Closes #issue-number
 
 ## Metadata
 
-**Skill Version:** 1.1.0
-**Last Updated:** 2026-03-07
-**Total Rules:** 26
+**Skill Version:** 1.2.0
+**Last Updated:** 2026-03-08
+**Total Rules:** 31
 **Categories:** 5 (Commit Messages, Branching Strategy, Pull Requests, History Management, Collaboration)
 
 **Compatible With:**
