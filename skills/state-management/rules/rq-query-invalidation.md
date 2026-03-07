@@ -44,12 +44,14 @@ const mutation = useMutation({
   },
 });
 
-// Anti-pattern: Invalidating on error
+// Anti-pattern: Using onSettled for invalidation without optimistic updates
+// (wastes bandwidth on error; use onSuccess instead when not using optimistic updates)
 const mutation = useMutation({
   mutationFn: updateUser,
   onSettled: () => {
-    // Invalidates even on error - wastes bandwidth
     queryClient.invalidateQueries({ queryKey: ['users'] });
+    // ❌ Refetches even when the mutation failed — prefer onSuccess here
+    // ✅ onSettled IS correct when paired with optimistic updates (see rq-optimistic-updates)
   },
 });
 ```

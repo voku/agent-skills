@@ -1,15 +1,37 @@
 # State Management (React Query + Zustand)
 
-Patterns for server state (React Query) and client state (Zustand).
+**Version 1.1.0** | TanStack Query v5 | Zustand v5 | March 2026
+
+Patterns for server state (TanStack Query v5) and client state (Zustand v5).
 
 ## Overview
 
 This skill provides guidance for:
-- Data fetching with React Query
+- Data fetching with TanStack Query v5
 - Caching and invalidation strategies
 - Mutations and optimistic updates
-- Client state with Zustand
+- Client state with Zustand v5
 - Combining both libraries
+
+## v5 Compatibility Notes
+
+### TanStack Query v5
+- All APIs use single object argument: `useQuery({ queryKey, queryFn, ...options })`
+- `cacheTime` renamed to `gcTime`
+- `keepPreviousData` removed → use `placeholderData: keepPreviousData` or identity function
+- `isPreviousData` removed → use `isPlaceholderData`
+- `onSuccess`, `onError`, `onSettled` callbacks removed from `useQuery` (still valid on `useMutation`)
+- `suspense: true` on `useQuery` removed → use `useSuspenseQuery`
+
+### Zustand v5
+- `shallow` as 2nd argument to store hook removed → use `useShallow` from `zustand/shallow`
+- Selectors returning new object/array references may cause infinite loops — wrap with `useShallow`
+
+## Security: Persist Middleware
+
+> **Never persist auth tokens, passwords, or secrets to localStorage/sessionStorage.**
+> These are accessible to any JavaScript on the page — an XSS attack fully exposes them.
+> Use `partialize` to persist only non-sensitive UI state. Manage auth tokens via HttpOnly cookies server-side.
 
 ## Categories
 
@@ -17,7 +39,7 @@ This skill provides guidance for:
 Setup, useQuery, query keys, and error handling.
 
 ### 2. Zustand Store Patterns (Critical)
-Store creation, TypeScript, selectors, and persistence.
+Store creation, TypeScript, selectors, and secure persistence.
 
 ### 3. Caching & Invalidation (High)
 Stale time, gc time, invalidation, and prefetching.
@@ -44,18 +66,22 @@ Development tools for both libraries.
 ## Quick Start
 
 ```tsx
-// React Query: Server state
+// React Query v5: Server state
 const { data, isLoading } = useQuery({
   queryKey: ['posts'],
   queryFn: fetchPosts,
 })
 
-// Zustand: Client state
+// Zustand v5: Client state
 const useUIStore = create((set) => ({
   isModalOpen: false,
   openModal: () => set({ isModalOpen: true }),
   closeModal: () => set({ isModalOpen: false }),
 }))
+
+// Zustand v5: Shallow selector (prevents infinite loops)
+import { useShallow } from 'zustand/shallow'
+const { count, text } = useStore(useShallow((s) => ({ count: s.count, text: s.text })))
 ```
 
 ## Usage
@@ -68,5 +94,8 @@ This skill triggers automatically when:
 
 ## References
 
-- [TanStack Query Documentation](https://tanstack.com/query)
-- [Zustand Documentation](https://zustand-demo.pmnd.rs/)
+- [TanStack Query v5 Docs](https://tanstack.com/query/latest)
+- [TanStack Query v5 Migration Guide](https://tanstack.com/query/latest/docs/react/guides/migrating-to-v5)
+- [Zustand Docs](https://docs.pmnd.rs/zustand/getting-started/introduction)
+- [Zustand v5 Migration Guide](https://github.com/pmndrs/zustand/blob/main/docs/reference/migrations/migrating-to-v5.md)
+- [Zustand Persist Middleware](https://docs.pmnd.rs/zustand/integrations/persisting-store-data)

@@ -1,13 +1,30 @@
 # State Management Patterns
 
-**Version 1.0.0**
-State Management Patterns Collection
-January 2026
+**Version 1.1.0** | TanStack Query v5 | Zustand v5 | March 2026
 
 > **Note:**
 > This document is designed for AI agents and LLMs when implementing, refactoring,
-> or generating state management code using React Query (TanStack Query) and Zustand.
-> Optimized for automated workflows and consistent patterns.
+> or generating state management code using TanStack Query v5 and Zustand v5.
+> All patterns verified against v5 APIs. Optimized for automated workflows and consistent patterns.
+
+## v5 Breaking Changes (Quick Reference)
+
+**TanStack Query v5:**
+- `cacheTime` → `gcTime`
+- `keepPreviousData` option → `placeholderData: keepPreviousData` (imported helper)
+- `isPreviousData` → `isPlaceholderData`
+- `onSuccess`/`onError`/`onSettled` removed from `useQuery` — still valid on `useMutation`
+- `suspense: true` on `useQuery` removed → use `useSuspenseQuery`
+
+**Zustand v5:**
+- `shallow` as 2nd arg removed → `useShallow` from `zustand/shallow`
+- Selectors returning new object/array references need `useShallow` to avoid infinite loops
+
+## Security: Persist Middleware
+
+> **Never persist auth tokens, passwords, or secrets to localStorage/sessionStorage.**
+> These are accessible to any JavaScript — XSS fully exposes them.
+> Use `partialize` to include only non-sensitive state. Manage tokens via HttpOnly cookies server-side.
 
 ---
 

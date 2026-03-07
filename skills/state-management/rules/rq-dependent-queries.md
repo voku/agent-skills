@@ -50,17 +50,15 @@ function ProfileWithPosts({ userId }: { userId: string }) {
 }
 
 // Anti-pattern: Nested queries in callback
+// ❌ onSuccess on useQuery was removed in TanStack Query v5 — do not use
 function BadDependentQueries({ userId }: { userId: string }) {
   const [posts, setPosts] = useState([]);
 
   const { data: user } = useQuery({
     queryKey: ['user', userId],
     queryFn: () => fetchUser(userId),
-    onSuccess: async (user) => {
-      // Fetching in callback - no caching, no proper state
-      const userPosts = await fetchUserPosts(user.id);
-      setPosts(userPosts);
-    },
+    // onSuccess no longer exists in v5 — and even in v4 this was wrong:
+    // fetching inside callbacks has no caching, no loading state, no error handling
   });
 }
 ```

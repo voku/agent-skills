@@ -4,19 +4,35 @@ description: React Query and Zustand patterns for state management. Use when imp
 license: MIT
 metadata:
   author: agent-skills
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # State Management with React Query + Zustand
 
-**Version 1.0.0**
-State Management Patterns
-January 2026
+**Version 1.1.0** | TanStack Query v5 | Zustand v5 | March 2026
 
 > **Note:**
 > This document provides comprehensive patterns for AI agents and LLMs working with
-> React Query (TanStack Query) and Zustand. Optimized for automated refactoring,
-> code generation, and state management best practices.
+> TanStack Query v5 and Zustand v5. All examples are verified against v5 APIs.
+> Optimized for automated refactoring, code generation, and state management best practices.
+
+## v5 Breaking Changes (Quick Reference)
+
+**TanStack Query v5:**
+- `cacheTime` → `gcTime`
+- `keepPreviousData` option → `placeholderData: keepPreviousData` (imported helper)
+- `isPreviousData` → `isPlaceholderData`
+- `onSuccess`/`onError`/`onSettled` removed from `useQuery` — still valid on `useMutation`
+- `suspense: true` on `useQuery` removed → use `useSuspenseQuery`
+
+**Zustand v5:**
+- `shallow` as 2nd arg removed → `useShallow` from `zustand/shallow`
+- Selectors returning new references need `useShallow` to avoid infinite loops
+
+## Security: Persist Middleware
+
+> **Never persist auth tokens, passwords, or secrets to localStorage/sessionStorage.**
+> Use `partialize` to persist only non-sensitive state. Manage tokens via HttpOnly cookies.
 
 ---
 
@@ -332,39 +348,36 @@ interface User {
 
 interface AuthState {
   user: User | null
-  token: string | null
   isAuthenticated: boolean
-  login: (user: User, token: string) => void
+  login: (user: User) => void
   logout: () => void
 }
 
+// ✅ Never persist tokens to localStorage — use HttpOnly cookies server-side
 export const useAuthStore = create<AuthState>()(
   devtools(
     persist(
       (set) => ({
         user: null,
-        token: null,
         isAuthenticated: false,
 
-        login: (user, token) =>
+        login: (user) =>
           set({
             user,
-            token,
             isAuthenticated: true,
           }),
 
         logout: () =>
           set({
             user: null,
-            token: null,
             isAuthenticated: false,
           }),
       }),
       {
         name: 'auth-storage',
+        // Only persist display info and auth flag — tokens must NOT be included
         partialize: (state) => ({
           user: state.user,
-          token: state.token,
           isAuthenticated: state.isAuthenticated,
         }),
       }
@@ -412,8 +425,13 @@ Read individual rule files for detailed explanations and code examples:
 
 ```
 rules/rq-usequery.md
+rules/rq-query-keys.md
+rules/rq-mutation-setup.md
+rules/rq-optimistic-updates.md
 rules/zs-create-store.md
-rules/cache-invalidation.md
+rules/zs-persist.md
+rules/rq-query-invalidation.md
+rules/rq-prefetching.md
 ```
 
 ---

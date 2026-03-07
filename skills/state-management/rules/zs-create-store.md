@@ -219,16 +219,15 @@ function TodoStats() {
   )
 }
 
-// Or use shallow comparison for objects
-import { shallow } from 'zustand/shallow'
+// Or use useShallow for shallow comparison of objects (Zustand v5+)
+import { useShallow } from 'zustand/shallow'
 
 function TodoStats() {
   const { total, completed } = useTodoStore(
-    (state) => ({
+    useShallow((state) => ({
       total: state.todos.length,
       completed: state.todos.filter((t) => t.completed).length,
-    }),
-    shallow  // Shallow compare the returned object
+    }))
   )
 
   return <div>{completed} of {total}</div>

@@ -136,7 +136,7 @@ function PostDetail({ postId }: { postId: string }) {
   );
 }
 
-// Combining with keepPreviousData behavior
+// Conditional placeholder — only use previous data if query is similar
 const { data, isPlaceholderData } = useQuery({
   queryKey: ['search', searchTerm],
   queryFn: () => search(searchTerm),

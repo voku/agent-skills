@@ -15,7 +15,14 @@ tags: zustand, persistence, localstorage
 
 ## Why It Matters
 
-The persist middleware saves Zustand state to storage (localStorage, sessionStorage, etc.), enabling state to survive page refreshes. Essential for auth tokens, user preferences, and cart data.
+The persist middleware saves Zustand state to storage (localStorage, sessionStorage, etc.), enabling state to survive page refreshes. Useful for user preferences, UI settings, and cart data.
+
+## Security Warning
+
+> **Do NOT persist authentication tokens, passwords, or secrets to localStorage or sessionStorage.**
+> These storages are accessible to any JavaScript on the page — an XSS vulnerability fully exposes them.
+> Auth tokens should be stored in **HttpOnly cookies** managed server-side.
+> If you must track auth state client-side, persist only non-sensitive flags (e.g. `isAuthenticated: boolean`) and re-validate server-side on every request.
 
 ## Basic Persistence
 
@@ -53,41 +60,46 @@ import { persist, devtools } from 'zustand/middleware'
 
 interface AuthState {
   user: User | null
-  token: string | null
   isAuthenticated: boolean
-  login: (user: User, token: string) => void
+  login: (user: User) => void
   logout: () => void
 }
 
+// ✅ Only persist non-sensitive flags — never persist tokens or passwords
 export const useAuthStore = create<AuthState>()(
   devtools(
     persist(
       (set) => ({
         user: null,
-        token: null,
         isAuthenticated: false,
 
-        login: (user, token) =>
+        login: (user) =>
           set(
-            { user, token, isAuthenticated: true },
+            { user, isAuthenticated: true },
             false,
-            'auth/login'  // Action name for devtools
+            'auth/login'
           ),
 
         logout: () =>
           set(
-            { user: null, token: null, isAuthenticated: false },
+            { user: null, isAuthenticated: false },
             false,
             'auth/logout'
           ),
       }),
       {
         name: 'auth-storage',
+        // Only persist the user display info and auth flag, NOT tokens
+        partialize: (state) => ({
+          user: state.user,
+          isAuthenticated: state.isAuthenticated,
+        }),
       }
     ),
-    { name: 'AuthStore' }  // DevTools store name
+    { name: 'AuthStore' }
   )
 )
+// ❌ Tokens must NOT be stored here — use HttpOnly cookies managed server-side
 ```
 
 ## Partial Persistence
@@ -274,7 +286,7 @@ function clearAllData() {
   useSettingsStore.persist.clearStorage()
 
   // Optionally reset to initial state
-  useAuthStore.setState({ user: null, token: null, isAuthenticated: false })
+  useAuthStore.setState({ user: null, isAuthenticated: false })
 }
 ```
 

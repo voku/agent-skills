@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "organization": "State Management Patterns",
-  "date": "January 2026",
-  "abstract": "Comprehensive guide for React Query (TanStack Query) and Zustand state management patterns, designed for AI agents and LLMs. Contains 26+ rules across 6 categories, prioritized by impact from critical (query fundamentals, mutations, stores) to medium (advanced patterns, caching strategies). Each rule includes detailed explanations with bad vs. good code examples, TypeScript patterns, and specific use cases. Covers server state with React Query (data fetching, caching, mutations, optimistic updates) and client state with Zustand (stores, persistence, selectors). Optimized for automated refactoring and state management best practices.",
+  "date": "March 2026",
+  "abstract": "Comprehensive guide for TanStack Query v5 and Zustand v5 state management patterns, designed for AI agents and LLMs. Contains 26+ rules across 6 categories, prioritized by impact from critical (query fundamentals, mutations, stores) to medium (advanced patterns, caching strategies). All patterns verified against v5 APIs including gcTime, placeholderData, useSuspenseQuery, and useShallow. Covers server state with TanStack Query (data fetching, caching, mutations, optimistic updates) and client state with Zustand (stores, secure persistence, selectors). Security: never persist auth tokens to localStorage — use HttpOnly cookies. Optimized for automated refactoring and state management best practices.",
   "references": [
     "https://tanstack.com/query/latest",
     "https://tanstack.com/query/latest/docs/react/overview",
@@ -52,6 +52,7 @@
     "Optimistic updates with rollback patterns",
     "Query key factories for consistent cache management",
     "TypeScript patterns for type-safe stores and queries",
-    "Persistence with zustand/middleware"
+    "Secure persistence with zustand/middleware (partialize to exclude sensitive data)",
+    "v5 API compatibility: gcTime, placeholderData, useSuspenseQuery, useShallow"
   ]
 }
