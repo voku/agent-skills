@@ -2,6 +2,7 @@
   "version": "2.0.0",
   "organization": "PHP Community",
   "date": "January 2026",
+  "phpVersion": "8.3+",
   "abstract": "Comprehensive PHP 8.3+ best practices guide designed for AI agents and LLMs. Contains 33+ rules across 7 categories, prioritized by impact from critical (strict types, modern features) to medium (performance optimizations). Each rule includes detailed explanations, real-world examples comparing incorrect vs. correct implementations, and specific rationale to guide automated refactoring and code generation. Covers type system, modern PHP 8.x features, PSR standards, SOLID principles, error handling, performance, and security.",
   "references": [
     "https://www.php.net/manual/en/",
@@ -15,5 +16,39 @@
     "https://github.com/rectorphp/rector",
     "https://cs.symfony.com/",
     "https://phptherightway.com/"
+  ],
+  "categories": [
+    {
+      "name": "Type System",
+      "prefix": "type",
+      "impact": "CRITICAL",
+      "description": "Strict types, property types, return types, union/intersection types, never/void"
+    },
+    {
+      "name": "Modern PHP Features",
+      "prefix": "modern",
+      "impact": "CRITICAL",
+      "description": "Enums, readonly, constructor promotion, match, named arguments, nullsafe operator"
+    },
+    {
+      "name": "PSR Standards",
+      "prefix": "psr",
+      "impact": "HIGH",
+      "description": "PSR-4 autoloading, PSR-12 coding style, file structure, naming conventions"
+    },
+    {
+      "name": "SOLID Principles",
+      "prefix": "solid",
+      "impact": "HIGH",
+      "description": "SRP, OCP, LSP, ISP, DIP — object-oriented design principles"
+    }
+  ],
+  "keyFeatures": [
+    "Strict types declaration on every file",
+    "Modern PHP 8.3+ syntax (enums, readonly, constructor promotion, match)",
+    "PSR-4 autoloading and PSR-12 coding style",
+    "SOLID principles with PHP examples",
+    "Union and intersection types for precise type safety",
+    "Per-rule PHP version annotations (8.0+, 8.1+, 8.2+)"
   ]
 }
