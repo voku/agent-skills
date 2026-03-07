@@ -70,7 +70,9 @@ interface ProductRepositoryInterface
     public function update(Product $product, array $data): Product;
     public function delete(Product $product): bool;
 }
+```
 
+```php
 // Repository implementation
 namespace App\Repositories;
 
@@ -161,7 +163,9 @@ class ProductRepository implements ProductRepositoryInterface
         return $product->delete();
     }
 }
+```
 
+```php
 // Bind in service provider
 namespace App\Providers;
 
@@ -177,7 +181,9 @@ class RepositoryServiceProvider extends ServiceProvider
         );
     }
 }
+```
 
+```php
 // Clean controller
 class ProductController extends Controller
 {

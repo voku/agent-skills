@@ -139,7 +139,9 @@ class StoreArticleRequest extends FormRequest
         // Article::create([...$request->validated(), 'user_id' => $request->user()->id])
     }
 }
+```
 
+```php
 // Update request extending store
 namespace App\Http\Requests;
 
@@ -162,7 +164,9 @@ class UpdateArticleRequest extends StoreArticleRequest
         ];
     }
 }
+```
 
+```php
 // Clean controller
 class ArticleController extends Controller
 {
@@ -182,7 +186,9 @@ class ArticleController extends Controller
             ->with('success', 'Article updated successfully');
     }
 }
+```
 
+```bash
 // Generate form request
 php artisan make:request StoreArticleRequest
 ```

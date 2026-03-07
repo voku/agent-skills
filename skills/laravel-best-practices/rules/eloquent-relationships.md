@@ -93,7 +93,9 @@ class User extends Model
         return $this->hasOne(Order::class)->ofMany('total', 'max');
     }
 }
+```
 
+```php
 class Post extends Model
 {
     // Inverse relationship
@@ -120,7 +122,9 @@ class Post extends Model
         return $this->belongsToMany(Tag::class);
     }
 }
+```
 
+```php
 // Using relationships effectively
 $user = User::with(['posts', 'profile'])->find(1);
 

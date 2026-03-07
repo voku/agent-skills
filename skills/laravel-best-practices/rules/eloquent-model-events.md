@@ -83,7 +83,9 @@ class User extends Model
         });
     }
 }
+```
 
+```php
 // Using an Observer for more complex scenarios
 namespace App\Observers;
 
@@ -137,7 +139,9 @@ class UserObserver
         $user->posts()->forceDelete();
     }
 }
+```
 
+```php
 // Register observer in AppServiceProvider
 class AppServiceProvider extends ServiceProvider
 {
@@ -146,14 +150,18 @@ class AppServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
     }
 }
+```
 
+```php
 // Or use the ObservedBy attribute (Laravel 10+)
 #[ObservedBy(UserObserver::class)]
 class User extends Model
 {
     // ...
 }
+```
 
+```php
 // Clean controller
 class UserController extends Controller
 {
@@ -173,7 +181,9 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 }
+```
 
+```php
 // Available model events
 // creating, created
 // updating, updated

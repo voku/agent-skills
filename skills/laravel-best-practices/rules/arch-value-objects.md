@@ -86,7 +86,9 @@ readonly class Email
         return $this->value();
     }
 }
+```
 
+```php
 // Money value object with proper precision
 namespace App\ValueObjects;
 
@@ -152,7 +154,9 @@ readonly class Money
         }
     }
 }
+```
 
+```php
 // Phone number value object
 namespace App\ValueObjects;
 
@@ -202,7 +206,9 @@ readonly class PhoneNumber
         return $this->countryCode . $this->number;
     }
 }
+```
 
+```php
 // Using value objects with Eloquent casts
 namespace App\Casts;
 
@@ -225,7 +231,9 @@ class EmailCast implements CastsAttributes
         return $value ? (new Email($value))->value() : null;
     }
 }
+```
 
+```php
 // Model using value objects
 class User extends Model
 {

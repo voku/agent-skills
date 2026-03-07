@@ -52,7 +52,9 @@ class User extends Model
     // Optionally customize the column name
     // const DELETED_AT = 'archived_at';
 }
+```
 
+```php
 // Migration with soft deletes
 Schema::create('users', function (Blueprint $table) {
     $table->id();
@@ -61,7 +63,9 @@ Schema::create('users', function (Blueprint $table) {
     $table->timestamps();
     $table->softDeletes(); // Adds deleted_at column
 });
+```
 
+```php
 // Usage
 $user = User::find(1);
 $user->delete(); // Sets deleted_at, doesn't actually delete
@@ -90,7 +94,9 @@ $user->forceDelete();
 User::withTrashed()
     ->where('deleted_at', '>', now()->subMonth())
     ->restore();
+```
 
+```php
 // Soft delete cascading
 class User extends Model
 {
@@ -107,7 +113,9 @@ class User extends Model
         });
     }
 }
+```
 
+```php
 // Controller with soft delete support
 class UserController extends Controller
 {
@@ -151,7 +159,9 @@ class UserController extends Controller
             ->with('success', 'User permanently deleted');
     }
 }
+```
 
+```php
 // Route model binding with trashed
 Route::get('/users/{user}', [UserController::class, 'show'])
     ->withTrashed(); // Will resolve even if soft deleted

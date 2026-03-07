@@ -84,7 +84,9 @@ class ProcessPaymentRequest extends FormRequest
         ];
     }
 }
+```
 
+```php
 // Using Rule::when() for complex conditions
 class StoreOrderRequest extends FormRequest
 {
@@ -121,27 +123,31 @@ class StoreOrderRequest extends FormRequest
         ];
     }
 }
+```
 
+```php
 // Sometimes for dynamic conditions
 class ProfileRequest extends FormRequest
 {
     public function rules(): array
     {
-        $rules = [
+        return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email'],
             'newsletter' => ['boolean'],
         ];
+    }
 
-        // Add rules conditionally
-        $this->sometimes('phone', 'required|string', function ($input) {
+    public function withValidator(Validator $validator): void
+    {
+        $validator->sometimes('phone', 'required|string', function ($input) {
             return $input->newsletter === true;
         });
-
-        return $rules;
     }
 }
+```
 
+```php
 // Conditional rules in controller (when needed)
 class RegistrationController extends Controller
 {
@@ -163,7 +169,9 @@ class RegistrationController extends Controller
         ]);
     }
 }
+```
 
+```php
 // Multiple conditions
 class ComplexFormRequest extends FormRequest
 {

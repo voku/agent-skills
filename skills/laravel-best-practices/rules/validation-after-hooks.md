@@ -148,7 +148,9 @@ class StoreBookingRequest extends FormRequest
         }
     }
 }
+```
 
+```php
 // After hook for cross-field validation
 class UpdatePasswordRequest extends FormRequest
 {
@@ -179,7 +181,9 @@ class UpdatePasswordRequest extends FormRequest
         });
     }
 }
+```
 
+```php
 // After hook with external API validation
 class VerifyAddressRequest extends FormRequest
 {

@@ -55,7 +55,9 @@ class ExportUsersController extends Controller
         );
     }
 }
+```
 
+```php
 // Another single action controller
 namespace App\Http\Controllers\User;
 
@@ -74,7 +76,9 @@ class ImportUsersController extends Controller
         return back()->with('success', "{$result->count} users imported");
     }
 }
+```
 
+```php
 // Newsletter sending as single action
 namespace App\Http\Controllers\User;
 
@@ -87,7 +91,9 @@ class SendUserNewsletterController extends Controller
         return back()->with('success', 'Newsletter queued for sending');
     }
 }
+```
 
+```php
 // Toggle status as single action
 namespace App\Http\Controllers\User;
 
@@ -102,7 +108,9 @@ class ToggleUserStatusController extends Controller
         return back()->with('success', 'User status updated');
     }
 }
+```
 
+```php
 // Clean routes
 Route::resource('users', UserController::class);
 
@@ -118,7 +126,9 @@ Route::post('users/{user}/newsletter', SendUserNewsletterController::class)
 
 Route::patch('users/{user}/toggle-status', ToggleUserStatusController::class)
     ->name('users.toggle-status');
+```
 
+```bash
 // Generate single action controller
 php artisan make:controller ExportUsersController --invokable
 ```

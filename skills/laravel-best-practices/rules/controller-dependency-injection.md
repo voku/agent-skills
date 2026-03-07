@@ -76,7 +76,9 @@ class OrderController extends Controller
         return $exporter->export($orders);
     }
 }
+```
 
+```php
 // Interface binding in service provider
 class AppServiceProvider extends ServiceProvider
 {
@@ -97,7 +99,9 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 }
+```
 
+```php
 // Service class with injected dependencies
 class OrderService
 {
@@ -122,7 +126,9 @@ class OrderService
         });
     }
 }
+```
 
+```php
 // Testing with injected dependencies
 class OrderControllerTest extends TestCase
 {
@@ -144,7 +150,9 @@ class OrderControllerTest extends TestCase
         $response->assertRedirect();
     }
 }
+```
 
+```php
 // Route model binding is also dependency injection
 class PostController extends Controller
 {

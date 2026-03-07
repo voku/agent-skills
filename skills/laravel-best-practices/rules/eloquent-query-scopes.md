@@ -58,6 +58,8 @@ class ApiPostController extends Controller
 
 ```php
 // Model with reusable scopes
+use Illuminate\Database\Eloquent\Builder;
+
 class Post extends Model
 {
     // Local scope - called as scopePublished, used as published()
@@ -100,7 +102,9 @@ class Post extends Model
         return $query->where('views', '>=', $minViews);
     }
 }
+```
 
+```php
 // Clean controller using scopes
 class PostController extends Controller
 {
@@ -131,8 +135,14 @@ class PostController extends Controller
         return view('posts.by-author', compact('posts', 'author'));
     }
 }
+```
 
+```php
 // Global scope - automatically applied to all queries
+use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+
 class PublishedScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
@@ -140,7 +150,9 @@ class PublishedScope implements Scope
         $builder->where('published', true);
     }
 }
+```
 
+```php
 // Apply global scope in model
 class Post extends Model
 {

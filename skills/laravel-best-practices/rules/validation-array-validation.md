@@ -98,7 +98,9 @@ class StoreOrderRequest extends FormRequest
         ];
     }
 }
+```
 
+```php
 // Validating array keys
 class ConfigRequest extends FormRequest
 {
@@ -116,7 +118,9 @@ class ConfigRequest extends FormRequest
         ];
     }
 }
+```
 
+```php
 // Dynamic array keys validation
 class DynamicFormRequest extends FormRequest
 {
@@ -138,7 +142,9 @@ class DynamicFormRequest extends FormRequest
         return $rules;
     }
 }
+```
 
+```php
 // Validating file arrays
 class GalleryUploadRequest extends FormRequest
 {
@@ -159,7 +165,9 @@ class GalleryUploadRequest extends FormRequest
         ];
     }
 }
+```
 
+```php
 // Custom array validation rule
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -182,7 +190,9 @@ class UniqueArrayValues implements ValidationRule
         }
     }
 }
+```
 
+```php
 // Usage
 'items' => ['required', 'array', new UniqueArrayValues('product_id')],
 ```

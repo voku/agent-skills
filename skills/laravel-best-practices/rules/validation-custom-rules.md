@@ -104,7 +104,9 @@ class StrongPassword implements ValidationRule
         }
     }
 }
+```
 
+```php
 // Phone number validation rule
 namespace App\Rules;
 
@@ -131,7 +133,9 @@ class ValidPhoneNumber implements ValidationRule
         }
     }
 }
+```
 
+```php
 // Rule with database check
 namespace App\Rules;
 
@@ -161,7 +165,9 @@ class UniqueForUser implements ValidationRule
         }
     }
 }
+```
 
+```php
 // Invokable rule for simple cases
 namespace App\Rules;
 
@@ -177,7 +183,9 @@ class Uppercase implements ValidationRule
         }
     }
 }
+```
 
+```php
 // Using custom rules in Form Request
 class StoreUserRequest extends FormRequest
 {
@@ -203,7 +211,9 @@ class StoreUserRequest extends FormRequest
         ];
     }
 }
+```
 
+```php
 // Register as a fluent macro (optional)
 // In AppServiceProvider
 // Or use Rule::macro for fluent syntax

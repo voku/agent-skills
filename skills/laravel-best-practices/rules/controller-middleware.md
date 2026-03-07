@@ -87,23 +87,17 @@ class AdminController extends Controller implements HasMiddleware
         return view('admin.users');
     }
 }
+```
 
+```php
 // Using middleware in routes
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
     Route::resource('admin/users', AdminUserController::class);
 });
+```
 
-// Using controller middleware attribute (Laravel 10+)
-#[Middleware(['auth', 'admin'])]
-class AdminController extends Controller
-{
-    public function index()
-    {
-        return view('admin.dashboard');
-    }
-}
-
+```php
 // Custom middleware
 namespace App\Http\Middleware;
 
@@ -118,8 +112,12 @@ class EnsureUserIsAdmin
         return $next($request);
     }
 }
+```
 
+```php
 // Register middleware alias in bootstrap/app.php (Laravel 11+)
+// Note: The $middleware parameter here is Illuminate\Foundation\Configuration\Middleware,
+// not Illuminate\Routing\Controllers\Middleware used above in the controller.
 return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
@@ -128,12 +126,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->create();
+```
 
-// Or in Kernel.php (Laravel 10 and earlier)
-protected $middlewareAliases = [
-    'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
-];
-
+```php
 // Middleware with parameters
 namespace App\Http\Middleware;
 
@@ -148,7 +143,9 @@ class CheckRole
         return $next($request);
     }
 }
+```
 
+```php
 // Usage with parameters
 Route::get('/reports', [ReportController::class, 'index'])
     ->middleware('role:admin,manager');
@@ -157,7 +154,9 @@ Route::get('/reports', [ReportController::class, 'index'])
 Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::apiResource('posts', PostController::class);
 });
+```
 
+```php
 // Conditional middleware using HasMiddleware
 class ApiController extends Controller implements HasMiddleware
 {
@@ -168,7 +167,9 @@ class ApiController extends Controller implements HasMiddleware
         ];
     }
 }
+```
 
+```php
 // Middleware groups for common patterns
 // bootstrap/app.php
 $middleware->group('api', [

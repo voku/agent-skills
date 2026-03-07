@@ -88,7 +88,9 @@ $order->total;          // "99.99" (decimal string)
 $order->metadata;       // array
 $order->paid_at;        // Carbon instance
 $order->status;         // OrderStatus enum
+```
 
+```php
 // Enums
 enum OrderStatus: string
 {
@@ -120,7 +122,9 @@ enum OrderStatus: string
         };
     }
 }
+```
 
+```php
 // Custom cast class
 namespace App\Casts;
 
@@ -155,7 +159,9 @@ class MoneyCast implements CastsAttributes
         return (int) ($value * 100);
     }
 }
+```
 
+```php
 // Use custom cast
 class Product extends Model
 {
@@ -164,7 +170,9 @@ class Product extends Model
         'cost' => MoneyCast::class . ':EUR',
     ];
 }
+```
 
+```php
 // Cast with parameters via method
 protected function casts(): array
 {
@@ -174,8 +182,12 @@ protected function casts(): array
         'address' => AddressCast::class,
     ];
 }
+```
 
+```php
 // Inbound-only casting (only on set)
+use Illuminate\Support\Facades\Hash;
+
 class HashCast implements CastsInboundAttributes
 {
     public function set($model, string $key, $value, array $attributes): string

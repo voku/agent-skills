@@ -70,7 +70,9 @@ class OrderPlaced
         public readonly Order $order
     ) {}
 }
+```
 
+```php
 // Listeners for different concerns
 namespace App\Listeners;
 
@@ -150,7 +152,9 @@ class SyncOrderToExternalSystems implements ShouldQueue
         Http::post('https://shipping.example.com/orders', $order->toArray());
     }
 }
+```
 
+```php
 // Register listeners in AppServiceProvider::boot() (Laravel 11+)
 namespace App\Providers;
 
@@ -178,7 +182,9 @@ class AppServiceProvider extends ServiceProvider
         ]);
     }
 }
+```
 
+```php
 // Clean controller
 class OrderController extends Controller
 {
@@ -191,7 +197,9 @@ class OrderController extends Controller
         return redirect()->route('orders.show', $order);
     }
 }
+```
 
+```php
 // Or dispatch from model using events property
 class Order extends Model
 {
