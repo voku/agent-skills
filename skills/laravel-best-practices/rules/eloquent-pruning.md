@@ -51,7 +51,12 @@ class CleanupOldRecords extends Command
 
 ```php
 // Model with Prunable trait
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Support\Facades\Storage;
 
 class ActivityLog extends Model
 {
@@ -75,9 +80,15 @@ class ActivityLog extends Model
         Storage::delete($this->attachment_path);
     }
 }
+```
 
+```php
 // For soft-deletable models, use MassPrunable for efficiency
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Database\Eloquent\Model;
 
 class PasswordReset extends Model
 {
@@ -89,8 +100,16 @@ class PasswordReset extends Model
         return static::where('created_at', '<', now()->subDay());
     }
 }
+```
 
+```php
 // Complex pruning conditions
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Database\Eloquent\Model;
+
 class Session extends Model
 {
     use MassPrunable;
@@ -104,8 +123,18 @@ class Session extends Model
             });
     }
 }
+```
 
+```php
 // Prunable with related cleanup
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
+
 class Order extends Model
 {
     use SoftDeletes, Prunable;
@@ -127,8 +156,16 @@ class Order extends Model
         Storage::delete($this->invoice_path);
     }
 }
+```
 
+```php
 // Prunable notifications
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Database\Eloquent\Model;
+
 class DatabaseNotification extends Model
 {
     use MassPrunable;
@@ -139,25 +176,28 @@ class DatabaseNotification extends Model
             ->where('read_at', '<', now()->subMonths(3));
     }
 }
+```
 
+```php
 // Schedule pruning in routes/console.php (Laravel 11+)
 use Illuminate\Support\Facades\Schedule;
 
-// Run pruning daily
 Schedule::command('model:prune')->daily();
 
-// Or prune specific models
+// Prune specific models
 Schedule::command('model:prune', [
     '--model' => [ActivityLog::class, Session::class],
 ])->daily();
 
 // With chunk size for large datasets
 Schedule::command('model:prune', ['--chunk' => 1000])->daily();
+```
 
-// Run manually
+```bash
+# Run manually
 php artisan model:prune
 php artisan model:prune --model=App\\Models\\ActivityLog
-php artisan model:prune --pretend // See what would be deleted
+php artisan model:prune --pretend
 ```
 
 ## Why

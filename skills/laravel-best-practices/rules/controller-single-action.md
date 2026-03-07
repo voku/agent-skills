@@ -129,7 +129,7 @@ Route::patch('users/{user}/toggle-status', ToggleUserStatusController::class)
 ```
 
 ```bash
-// Generate single action controller
+# Generate single action controller
 php artisan make:controller ExportUsersController --invokable
 ```
 

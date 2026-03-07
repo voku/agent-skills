@@ -103,6 +103,12 @@ class AppServiceProvider extends ServiceProvider
 
 ```php
 // Service class with injected dependencies
+namespace App\Services;
+
+use App\Models\Order;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 class OrderService
 {
     public function __construct(

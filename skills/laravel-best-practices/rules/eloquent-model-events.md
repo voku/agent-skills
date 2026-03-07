@@ -49,6 +49,12 @@ class UserController extends Controller
 
 ```php
 // Using model events in the model itself
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 class User extends Model
 {
     protected static function booted(): void
@@ -88,6 +94,13 @@ class User extends Model
 ```php
 // Using an Observer for more complex scenarios
 namespace App\Observers;
+
+use App\Events\UserRegistered;
+use App\Models\User;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserObserver
 {
@@ -154,7 +167,13 @@ class AppServiceProvider extends ServiceProvider
 
 ```php
 // Or use the ObservedBy attribute (Laravel 10+)
-#[ObservedBy(UserObserver::class)]
+namespace App\Models;
+
+use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Model;
+
+#[ObservedBy([UserObserver::class])]
 class User extends Model
 {
     // ...

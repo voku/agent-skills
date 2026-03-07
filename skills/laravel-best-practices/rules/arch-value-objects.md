@@ -214,15 +214,16 @@ namespace App\Casts;
 
 use App\ValueObjects\Email;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Model;
 
 class EmailCast implements CastsAttributes
 {
-    public function get($model, string $key, $value, array $attributes): ?Email
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?Email
     {
         return $value ? new Email($value) : null;
     }
 
-    public function set($model, string $key, $value, array $attributes): ?string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
         if ($value instanceof Email) {
             return $value->value();

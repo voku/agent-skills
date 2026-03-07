@@ -147,7 +147,11 @@ app/
 // Domain service provider for registering domain bindings
 namespace App\Infrastructure\Providers;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use App\Domain\Order\Events\OrderPlaced;
+use App\Domain\Order\Listeners\SendOrderConfirmation;
+use App\Domain\Order\Listeners\UpdateInventory;
 use App\Domain\Order\Repositories\OrderRepositoryInterface;
 use App\Domain\Order\Repositories\OrderRepository;
 

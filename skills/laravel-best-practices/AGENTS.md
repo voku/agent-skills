@@ -1,10 +1,10 @@
 # Laravel 12 Best Practices - Complete Guide
 
-**Version:** 1.0.0
+**Version:** 2.0.0
 **Laravel Version:** 12.x
 **PHP Version:** 8.3+
 **Organization:** Laravel Community
-**Date:** January 2026
+**Date:** March 2026
 
 ## Overview
 

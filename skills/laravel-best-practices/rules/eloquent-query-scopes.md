@@ -58,7 +58,10 @@ class ApiPostController extends Controller
 
 ```php
 // Model with reusable scopes
+namespace App\Models;
+
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {

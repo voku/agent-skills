@@ -101,6 +101,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // Custom middleware
 namespace App\Http\Middleware;
 
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 class EnsureUserIsAdmin
 {
     public function handle(Request $request, Closure $next): Response
@@ -131,6 +135,10 @@ return Application::configure(basePath: dirname(__DIR__))
 ```php
 // Middleware with parameters
 namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {

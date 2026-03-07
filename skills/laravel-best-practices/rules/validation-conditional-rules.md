@@ -127,6 +127,11 @@ class StoreOrderRequest extends FormRequest
 
 ```php
 // Sometimes for dynamic conditions
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
+
 class ProfileRequest extends FormRequest
 {
     public function rules(): array

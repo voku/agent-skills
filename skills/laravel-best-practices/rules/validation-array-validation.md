@@ -169,6 +169,9 @@ class GalleryUploadRequest extends FormRequest
 
 ```php
 // Custom array validation rule
+namespace App\Rules;
+
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class UniqueArrayValues implements ValidationRule

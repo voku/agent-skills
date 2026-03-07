@@ -4,7 +4,7 @@ description: Laravel 12 conventions and best practices. Use when creating contro
 license: MIT
 metadata:
   author: Laravel Community
-  version: "1.0.0"
+  version: "2.0.0"
   laravelVersion: "12.x"
   phpVersion: "8.3+"
 ---

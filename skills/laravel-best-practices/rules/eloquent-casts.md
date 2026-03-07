@@ -49,6 +49,13 @@ $createdAt = Carbon::parse($order->created_at);
 
 ```php
 // Built-in casts
+namespace App\Models;
+
+use App\Enums\OrderStatus;
+use App\Enums\PaymentMethod;
+use Illuminate\Database\Eloquent\Casts\AsStringable;
+use Illuminate\Database\Eloquent\Model;
+
 class Order extends Model
 {
     protected $casts = [
@@ -130,6 +137,7 @@ namespace App\Casts;
 
 use App\ValueObjects\Money;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Model;
 
 class MoneyCast implements CastsAttributes
 {
@@ -137,7 +145,7 @@ class MoneyCast implements CastsAttributes
         private string $currency = 'USD'
     ) {}
 
-    public function get($model, string $key, $value, array $attributes): ?Money
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?Money
     {
         if (is_null($value)) {
             return null;
@@ -146,7 +154,7 @@ class MoneyCast implements CastsAttributes
         return new Money((int) $value, $this->currency);
     }
 
-    public function set($model, string $key, $value, array $attributes): ?int
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?int
     {
         if (is_null($value)) {
             return null;
@@ -173,24 +181,38 @@ class Product extends Model
 ```
 
 ```php
-// Cast with parameters via method
-protected function casts(): array
+// Cast with parameters via method (alternative to $casts property)
+namespace App\Models;
+
+use App\Casts\AddressCast;
+use App\Casts\MoneyCast;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
 {
-    return [
-        'price' => MoneyCast::class,
-        'options' => AsCollection::class,
-        'address' => AddressCast::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'price' => MoneyCast::class,
+            'options' => AsCollection::class,
+            'address' => AddressCast::class,
+        ];
+    }
 }
 ```
 
 ```php
 // Inbound-only casting (only on set)
+namespace App\Casts;
+
+use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 class HashCast implements CastsInboundAttributes
 {
-    public function set($model, string $key, $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
         return Hash::make($value);
     }

@@ -61,6 +61,7 @@ namespace App\Http\Requests;
 
 use App\Models\Room;
 use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -152,6 +153,12 @@ class StoreBookingRequest extends FormRequest
 
 ```php
 // After hook for cross-field validation
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Validator;
+
 class UpdatePasswordRequest extends FormRequest
 {
     public function rules(): array

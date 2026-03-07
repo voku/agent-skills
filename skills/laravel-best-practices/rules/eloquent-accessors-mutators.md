@@ -51,6 +51,12 @@ In views, more manual formatting:
 
 ```php
 // Modern accessors and mutators (Laravel 9+)
+namespace App\Models;
+
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
+
 class User extends Model
 {
     // Accessor - computed attribute

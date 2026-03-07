@@ -69,6 +69,7 @@ class ArticleController extends Controller
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StoreArticleRequest extends FormRequest
 {
@@ -189,7 +190,7 @@ class ArticleController extends Controller
 ```
 
 ```bash
-// Generate form request
+# Generate form request
 php artisan make:request StoreArticleRequest
 ```
 
