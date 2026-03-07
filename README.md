@@ -154,9 +154,9 @@ npx skills add AsyrafHussin/agent-skills --skill api-design-patterns
 
 ### [git-workflow](skills/git-workflow)
 
-Git workflow conventions for commits, branching, and pull requests.
+Git workflow conventions for commits, branching, pull requests, and history management. Contains 31 rules covering conventional commits, git hooks, workflow strategies (GitHub Flow, GitFlow, Trunk-Based), monorepo workflows, git worktree, and .gitignore best practices.
 
-**Example:** `Write a commit message for these changes`
+**Example:** `Review my git workflow and suggest improvements`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill git-workflow
