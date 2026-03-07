@@ -61,8 +61,9 @@ Work through every item below. For each, output:
 - [ ] `APP_KEY` is long, random, and unique per environment
 - [ ] Signed URLs (`URL::signedRoute()`) used for sensitive one-time actions (password reset, email verify)
 
-### 3. Injection — SQL & Mass Assignment (A03:2021)
+### 3. Injection (A03:2021)
 
+**SQL & Mass Assignment:**
 - [ ] No string concatenation in `whereRaw()`, `selectRaw()`, `orderByRaw()` — use `?` bindings
 - [ ] Column names never derived from user input without a whitelist
 - [ ] No `$request->all()` passed directly to `create()`, `fill()`, or `update()`
@@ -70,14 +71,21 @@ Work through every item below. For each, output:
 - [ ] Models define `$fillable` explicitly — not `$guarded = []`
 - [ ] Controllers use `$request->validated()` for mass operations
 
-### 4. Cross-Site Scripting / XSS (A03:2021)
-
+**XSS — Blade & React:**
 - [ ] No `{!! $userInput !!}` in Blade templates with untrusted data
 - [ ] `{{ }}` used for all user-supplied Blade output
 - [ ] No `dangerouslySetInnerHTML` in React without `DOMPurify.sanitize()` first
 - [ ] `href` and `src` attributes not set from unvalidated user input
 - [ ] No `eval()`, `new Function()`, or `setTimeout(string)` with user-controlled strings
 - [ ] External CDN scripts use Subresource Integrity (`integrity="sha384-..."`)
+
+### 4. Insecure Design (A04:2021)
+
+- [ ] Business logic enforced server-side — prices, totals, and discounts never trusted from client input
+- [ ] Sensitive operations require secondary confirmation (e.g. password re-entry for account deletion)
+- [ ] No mass action endpoints without per-item authorization check
+- [ ] Admin-only features isolated behind separate middleware — not just hidden in the UI
+- [ ] Payment amounts and enrollment states calculated server-side, not passed as form inputs
 
 ### 5. Security Misconfiguration (A05:2021)
 
@@ -96,6 +104,7 @@ Work through every item below. For each, output:
 
 ### 7. Identification & Authentication Failures (A07:2021)
 
+**Auth:**
 - [ ] Using Laravel Breeze, Fortify, or Jetstream — not custom-rolled auth
 - [ ] Passwords hashed with bcrypt or argon2 (Laravel default)
 - [ ] Login route rate limited — `throttle` middleware or `RateLimiter` in `LoginRequest`
@@ -103,8 +112,7 @@ Work through every item below. For each, output:
 - [ ] Payment and sensitive action routes have appropriate rate limits
 - [ ] `session()->regenerate()` called after successful login
 
-### 8. Cookie & Session Security (A07:2021)
-
+**Cookie & Session:**
 - [ ] `http_only = true` in `config/session.php`
 - [ ] `same_site = lax` or `strict` in `config/session.php`
 - [ ] `secure = true` or `null` (auto for HTTPS) in `config/session.php`
@@ -112,36 +120,45 @@ Work through every item below. For each, output:
 - [ ] `domain = null` unless subdomains are needed
 - [ ] `EncryptCookies` middleware is in the web group
 
-### 9. CSRF Protection (A08:2021)
+### 8. Software & Data Integrity Failures (A08:2021)
 
+**CSRF:**
 - [ ] `VerifyCsrfToken` middleware active in the web group
 - [ ] Only stateless routes (webhooks, external callbacks) are excluded from CSRF
 - [ ] `@csrf` directive used in all non-Inertia POST forms
 - [ ] Excluded routes in `validateCsrfTokens(except: [...])` are justified
 
-### 10. Security Logging & Monitoring (A09:2021)
+**Deserialization:**
+- [ ] No `unserialize($request->input(...))`
+- [ ] No `eval($request->input(...))`
+- [ ] No `extract($request->all())`
+
+### 9. Security Logging & Monitoring Failures (A09:2021)
 
 - [ ] Failed login attempts logged with IP and identifier
 - [ ] Payment failures and exceptions logged
 - [ ] Log entries do not contain raw passwords or secrets
 - [ ] Monitoring in place (Laravel Telescope, Sentry, or similar)
 
-### 11. SSRF (A10:2021)
+### 10. Server-Side Request Forgery — SSRF (A10:2021)
 
 - [ ] No `Http::get($request->input('url'))` with unvalidated URLs
 - [ ] User-supplied URLs validated against an allowlist or scheme check
 - [ ] Internal network addresses blocked from user-supplied URLs
 
-### 12. Other Security Checks
+---
+
+## Additional Checks
+
+> Not part of the OWASP Top 10 but critical for Laravel applications.
+
+### Command Injection & Dangerous Functions
 
 - [ ] No `exec()`, `shell_exec()`, `system()`, `passthru()` with user input
-- [ ] No `unserialize($request->input(...))`
-- [ ] No `eval($request->input(...))`
-- [ ] No `extract($request->all())`
 - [ ] No open redirects — no `redirect($request->input('url'))` with unvalidated URLs
 - [ ] File uploads validate `mimes:`, `max:` — filenames never derived from raw user input
 
-### 13. Security Headers
+### Security Headers
 
 - [ ] `Content-Security-Policy` set — with nonces (`Vite::useCspNonce()`) if possible
 - [ ] `X-Frame-Options` set
@@ -211,7 +228,7 @@ Structure the audit report as:
 - **FAIL** `app/Http/Controllers/PaymentController.php:42` — `Payment::find($id)` fetched without ownership check.
   Fix: `Payment::where('user_id', auth()->id())->findOrFail($id)`
 
-[Continue for all 13 OWASP checks + R1–R6 React/Inertia checks]
+[Continue for all 10 OWASP checks + Additional Checks + R1–R6 React/Inertia checks]
 
 ---
 

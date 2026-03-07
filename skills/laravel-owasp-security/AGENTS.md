@@ -116,18 +116,25 @@ Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke
 
 ---
 
-## Section 3: Injection — SQL & Mass Assignment (A03:2021) — CRITICAL
+## Section 3: Injection (A03:2021) — CRITICAL
 
-SQL injection allows database exfiltration. Mass assignment allows setting fields like `is_admin`.
+SQL injection allows database exfiltration. Mass assignment allows setting fields like `is_admin`. XSS (also A03) allows script execution via user-supplied content.
 
 ### Checklist
 
+**SQL & Mass Assignment:**
 - [ ] No string concatenation in `whereRaw()`, `selectRaw()`, `orderByRaw()`
 - [ ] Column names from user input whitelist-validated
 - [ ] No `$request->all()` in `create()`, `fill()`, `update()`
 - [ ] No `forceFill()` with unvalidated input
 - [ ] Models define `$fillable` explicitly
 - [ ] Controllers use `$request->validated()`
+
+**XSS — Blade & React:**
+- [ ] No `{!! $userInput !!}` in Blade with untrusted data
+- [ ] No `dangerouslySetInnerHTML` without `DOMPurify.sanitize()`
+- [ ] `href`/`src` not set from unvalidated user input
+- [ ] No `eval()` or `new Function()` with user-controlled strings
 
 ### Incorrect
 
@@ -140,6 +147,14 @@ User::create($request->all());
 
 // ❌ $guarded = []
 protected $guarded = [];
+```
+
+```tsx
+// ❌ Raw HTML without sanitization — stored XSS
+<div dangerouslySetInnerHTML={{ __html: sessionNote.notes }} />
+
+// ❌ Unvalidated href — javascript: URLs execute on click
+<a href={user.website}>Link</a>
 ```
 
 ### Correct
@@ -159,35 +174,6 @@ Post::create([...$request->validated(), 'user_id' => auth()->id()]);
 protected $fillable = ['title', 'body', 'category_id'];
 ```
 
----
-
-## Section 4: XSS & React/Inertia (A03:2021) — HIGH
-
-`dangerouslySetInnerHTML` without DOMPurify allows stored XSS via teacher/admin-entered content.
-
-### Checklist
-
-- [ ] No `{!! $userInput !!}` in Blade with untrusted data
-- [ ] No `dangerouslySetInnerHTML` without `DOMPurify.sanitize()`
-- [ ] `href`/`src` not set from unvalidated user input
-- [ ] No `eval()` or `new Function()` with user-controlled strings
-
-### Incorrect
-
-```tsx
-// ❌ Raw HTML without sanitization
-<div dangerouslySetInnerHTML={{ __html: sessionNote.notes }} />
-
-// ❌ Unvalidated href — javascript: URLs execute on click
-<a href={user.website}>Link</a>
-```
-
-### Correct
-
-```bash
-npm install dompurify @types/dompurify
-```
-
 ```tsx
 import DOMPurify from 'dompurify';
 
@@ -197,16 +183,44 @@ import DOMPurify from 'dompurify';
 // ✅ Validate URL scheme
 const safeUrl = url.startsWith('https://') || url.startsWith('http://') ? url : '#';
 <a href={safeUrl}>Link</a>
+```
 
-// ✅ Reusable component
-function SafeHtml({ html, className }: { html: string; className?: string }) {
-    return (
-        <div
-            className={className}
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
-        />
-    );
-}
+---
+
+## Section 4: Insecure Design (A04:2021) — HIGH
+
+Missing server-side business logic controls allow clients to manipulate prices, bypass payments, or perform unauthorized bulk operations.
+
+### Checklist
+
+- [ ] Business logic enforced server-side — prices, totals, and discounts never trusted from client input
+- [ ] Sensitive operations require secondary confirmation (e.g. password re-entry for account deletion)
+- [ ] No mass action endpoints without per-item authorization check
+- [ ] Admin-only features isolated behind separate middleware — not just hidden in the UI
+- [ ] Payment amounts and enrollment states calculated server-side, not passed as form inputs
+
+### Incorrect
+
+```php
+// ❌ Trusting client-supplied price
+$amount = $request->input('amount');
+Payment::create(['amount' => $amount, 'user_id' => auth()->id()]);
+
+// ❌ Admin check only in frontend
+// React: {isAdmin && <DeleteButton />}  — no server-side gate
+Route::delete('/users/{user}', [UserController::class, 'destroy']); // No middleware
+```
+
+### Correct
+
+```php
+// ✅ Always calculate server-side
+$registration = Registration::where('user_id', auth()->id())->findOrFail($id);
+$amount = $registration->remaining_balance; // Derived from DB, never from request
+
+// ✅ Gate on every destructive route
+Route::middleware(['auth', 'role:admin'])
+    ->delete('/users/{user}', [UserController::class, 'destroy']);
 ```
 
 ---
@@ -263,18 +277,26 @@ npm audit
 
 ---
 
-## Section 7: Authentication & Rate Limiting (A07:2021) — HIGH
+## Section 7: Identification & Authentication Failures (A07:2021) — HIGH
 
-Brute force and session fixation are prevented by throttling and session regeneration.
+Brute force and session fixation are prevented by throttling and session regeneration. Cookie misconfiguration allows session theft.
 
 ### Checklist
 
+**Auth:**
 - [ ] Login throttled via `RateLimiter` in `LoginRequest`
 - [ ] Password reset and email verify routes throttled
 - [ ] Payment routes throttled (`throttle:10,1`)
 - [ ] `session()->regenerate()` called after login
 - [ ] `session()->invalidate()` called on logout
 - [ ] `SESSION_LIFETIME` set to 30 minutes or less
+
+**Cookie & Session:**
+- [ ] `http_only = true` in `config/session.php`
+- [ ] `same_site = lax` or `strict`
+- [ ] `secure = null` or `true` (HTTPS only)
+- [ ] `lifetime = 30` (not 120)
+- [ ] `EncryptCookies` middleware active
 
 ### Correct
 
@@ -303,26 +325,22 @@ public function throttleKey(): string
 
 ---
 
-## Section 8: Cookie & Session Security (A07:2021) — HIGH
+## Section 8: Software & Data Integrity Failures (A08:2021) — HIGH
+
+CSRF allows attackers to forge state-changing requests. Unsafe deserialization allows remote code execution.
 
 ### Checklist
 
-- [ ] `http_only = true` in `config/session.php`
-- [ ] `same_site = lax` or `strict`
-- [ ] `secure = null` or `true` (HTTPS only)
-- [ ] `lifetime = 30` (not 120)
-- [ ] `EncryptCookies` middleware active
-
----
-
-## Section 9: CSRF Protection (A08:2021) — HIGH
-
-### Checklist
-
+**CSRF:**
 - [ ] `VerifyCsrfToken` active in web group
 - [ ] Only external webhook routes excluded
 - [ ] `@csrf` in all Blade forms
 - [ ] Inertia `X-XSRF-TOKEN` not disabled
+
+**Deserialization:**
+- [ ] No `unserialize($request->input(...))`
+- [ ] No `eval($request->input(...))`
+- [ ] No `extract($request->all())`
 
 ### Correct
 
@@ -340,7 +358,7 @@ post('/profile');
 
 ---
 
-## Section 10: Security Logging & Monitoring (A09:2021) — MEDIUM
+## Section 9: Security Logging & Monitoring Failures (A09:2021) — MEDIUM
 
 ### Checklist
 
@@ -351,7 +369,7 @@ post('/profile');
 
 ---
 
-## Section 11: SSRF (A10:2021) — HIGH
+## Section 10: Server-Side Request Forgery — SSRF (A10:2021) — HIGH
 
 ### Checklist
 
@@ -371,22 +389,17 @@ Http::get($url);
 
 ---
 
-## Section 12: Other Security Checks — HIGH
+## Additional Checks
 
-### Checklist
+> Not part of the OWASP Top 10 but critical for Laravel applications.
+
+### Command Injection & Dangerous Functions
 
 - [ ] No `exec()`, `shell_exec()`, `system()` with user input
-- [ ] No `unserialize($request->input(...))`
-- [ ] No `eval($request->input(...))`
-- [ ] No `extract($request->all())`
 - [ ] No open redirects via user-supplied URLs
 - [ ] File uploads validate `mimes:` and `max:` — filenames not from raw user input
 
----
-
-## Section 13: Security Headers — HIGH
-
-### Checklist
+### Security Headers
 
 - [ ] `Content-Security-Policy` with nonces
 - [ ] `X-Frame-Options` set
