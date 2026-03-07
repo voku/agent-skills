@@ -6,7 +6,7 @@ Skills follow the [Agent Skills](https://agentskills.io/) format.
 
 ## Available Skills
 
-### laravel-best-practices
+### [laravel-best-practices](skills/laravel-best-practices)
 
 Laravel 12 conventions and best practices. Contains 45+ rules across 7 categories for building scalable, maintainable Laravel applications.
 
@@ -32,7 +32,7 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-best-practices
 
 ---
 
-### laravel-inertia-react
+### [laravel-inertia-react](skills/laravel-inertia-react)
 
 Laravel + Inertia.js + React patterns for building full-stack applications with a seamless SPA experience.
 
@@ -54,7 +54,7 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-inertia-react
 
 ---
 
-### laravel-owasp-security
+### [laravel-owasp-security](skills/laravel-owasp-security)
 
 OWASP Top 10 security audit and secure coding guidelines for Laravel + React/Inertia.js. Dual-purpose — run a full audit or use as a secure coding reference.
 
@@ -82,7 +82,7 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-owasp-security
 
 ---
 
-### php-best-practices
+### [php-best-practices](skills/php-best-practices)
 
 Modern PHP 8.x patterns, PSR standards, and SOLID principles for clean, maintainable code.
 
@@ -107,7 +107,7 @@ npx skills add AsyrafHussin/agent-skills --skill php-best-practices
 
 ---
 
-### react-vite-best-practices
+### [react-vite-best-practices](skills/react-vite-best-practices)
 
 React + Vite performance optimization guidelines. Contains 40+ rules across 8 categories.
 
@@ -130,7 +130,7 @@ npx skills add AsyrafHussin/agent-skills --skill react-vite-best-practices
 
 ---
 
-### typescript-react-patterns
+### [typescript-react-patterns](skills/typescript-react-patterns)
 
 TypeScript best practices and patterns for React applications.
 
@@ -152,7 +152,7 @@ npx skills add AsyrafHussin/agent-skills --skill typescript-react-patterns
 
 ---
 
-### state-management
+### [state-management](skills/state-management)
 
 React state management patterns using React Query and Zustand.
 
@@ -174,7 +174,7 @@ npx skills add AsyrafHussin/agent-skills --skill state-management
 
 ---
 
-### tailwind-best-practices
+### [tailwind-best-practices](skills/tailwind-best-practices)
 
 Tailwind CSS patterns for responsive, dark mode-ready, and maintainable UIs.
 
@@ -196,7 +196,7 @@ npx skills add AsyrafHussin/agent-skills --skill tailwind-best-practices
 
 ---
 
-### web-design-guidelines
+### [web-design-guidelines](skills/web-design-guidelines)
 
 UI/UX and accessibility guidelines. Audits code for 50+ rules covering accessibility, UX, and responsive design.
 
@@ -220,7 +220,7 @@ npx skills add AsyrafHussin/agent-skills --skill web-design-guidelines
 
 ---
 
-### clean-code-principles
+### [clean-code-principles](skills/clean-code-principles)
 
 SOLID, DRY, and clean code design patterns for maintainable software.
 
@@ -242,7 +242,7 @@ npx skills add AsyrafHussin/agent-skills --skill clean-code-principles
 
 ---
 
-### api-design-patterns
+### [api-design-patterns](skills/api-design-patterns)
 
 RESTful API design patterns for consistent, scalable APIs.
 
@@ -264,7 +264,7 @@ npx skills add AsyrafHussin/agent-skills --skill api-design-patterns
 
 ---
 
-### git-workflow
+### [git-workflow](skills/git-workflow)
 
 Git workflow conventions for commits, branching, and pull requests.
 
@@ -286,7 +286,7 @@ npx skills add AsyrafHussin/agent-skills --skill git-workflow
 
 ---
 
-### testing-best-practices
+### [testing-best-practices](skills/testing-best-practices)
 
 Unit testing, integration testing, and TDD principles for reliable test suites.
 
