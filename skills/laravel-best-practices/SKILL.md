@@ -60,7 +60,7 @@ Reference these guidelines when:
 
 ### 3. Controllers & Routing (HIGH)
 
-- `ctrl-resource-controllers` - Use resource controllers
+- `controller-resource-controllers` - Use resource controllers
 - `controller-single-action` - Single action invokable controllers
 - `controller-resource-methods` - RESTful resource methods
 - `controller-form-requests` - Use form requests
@@ -79,15 +79,14 @@ Reference these guidelines when:
 ### 5. Security (HIGH)
 
 - `sec-mass-assignment` - Protect against mass assignment
-- Additional security rules can be added as needed
 
 ### 6. Performance (MEDIUM)
 
-- Performance rules can be added for caching, queues, and optimization
+No rule files exist yet for this category.
 
 ### 7. API Design (MEDIUM)
 
-- API design rules can be added for versioning and response formatting
+No rule files exist yet for this category.
 
 ## Essential Patterns
 
