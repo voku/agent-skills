@@ -70,7 +70,7 @@ npx skills add AsyrafHussin/agent-skills --skill php-best-practices
 
 ### [react-vite-best-practices](skills/react-vite-best-practices)
 
-React + Vite performance optimization. Contains 40+ rules across 8 categories.
+React + Vite performance optimization. Contains 27 rules across 8 categories.
 
 **Example:** `Review this React component for performance issues`
 
@@ -118,7 +118,7 @@ npx skills add AsyrafHussin/agent-skills --skill tailwind-best-practices
 
 ### [web-design-guidelines](skills/web-design-guidelines)
 
-UI/UX and accessibility guidelines. Audits code for 50+ rules.
+UI/UX and accessibility guidelines. Contains 21 rules across 8 categories.
 
 **Example:** `Review my UI for accessibility and UX issues`
 
