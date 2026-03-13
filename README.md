@@ -106,7 +106,7 @@ npx skills add AsyrafHussin/agent-skills --skill state-management
 
 ### [tailwind-best-practices](skills/tailwind-best-practices)
 
-Tailwind CSS patterns for responsive, dark mode-ready UIs.
+Tailwind CSS v3.4+ and v4 best practices. Contains 29 rules across 8 categories covering responsive design, dark mode, component patterns, configuration, and v3-to-v4 migration.
 
 **Example:** `Review my Tailwind classes for best practices`
 
