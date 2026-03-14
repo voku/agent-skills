@@ -4,18 +4,18 @@ description: SEO patterns and conventions for web applications. Use when impleme
 license: MIT
 metadata:
   author: agent-skills
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # SEO Best Practices
 
-Comprehensive SEO patterns for web applications built with React and Laravel. Contains 28 rules across 8 categories covering Core Web Vitals, technical SEO, structured data, performance, social sharing, and mobile-first indexing.
+Comprehensive SEO patterns for web applications built with React and Laravel. Contains 31 rules across 8 categories covering Core Web Vitals, technical SEO, structured data, performance, social sharing, and mobile-first indexing.
 
 ## Metadata
 
-- **Version:** 1.0.0
-- **Scope:** Framework-agnostic with React and Laravel examples
-- **Rule Count:** 28 rules across 8 categories
+- **Version:** 1.1.0
+- **Scope:** Laravel Blade and Laravel + Inertia.js + React
+- **Rule Count:** 31 rules across 8 categories
 - **License:** MIT
 
 ## When to Apply
@@ -87,6 +87,9 @@ Check `package.json` and project structure:
 - `schema-article` - Article and BlogPosting markup
 - `schema-product` - Product schema for e-commerce
 - `schema-breadcrumb` - BreadcrumbList navigation markup
+- `schema-graph` - Combining multiple schema types with @graph
+- `schema-faq` - FAQ page schema markup
+- `schema-validation` - Structured data validation and monitoring
 
 ### 5. Performance SEO (HIGH)
 

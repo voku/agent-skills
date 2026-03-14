@@ -1,6 +1,6 @@
 {
   "name": "SEO Best Practices",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Comprehensive SEO patterns for web applications built with React and Laravel. Covers Core Web Vitals, technical SEO, structured data, performance, social sharing, and mobile-first indexing.",
   "framework": "Framework-agnostic (React, Laravel examples)",
   "license": "MIT",
@@ -55,7 +55,7 @@
       "name": "Structured Data",
       "priority": "HIGH",
       "description": "JSON-LD Schema.org markup for rich results",
-      "ruleCount": 4
+      "ruleCount": 7
     },
     {
       "id": "performance-seo",
@@ -140,5 +140,5 @@
     "accessibility"
   ],
   "lastUpdated": "2026-03-14",
-  "rulesTotal": 28
+  "rulesTotal": 31
 }

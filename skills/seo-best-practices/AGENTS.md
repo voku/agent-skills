@@ -1,13 +1,13 @@
 # SEO Best Practices - Complete Reference
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Organization:** Agent Skills Contributors
 **Date:** March 2026
 **License:** MIT
 
 ## Abstract
 
-Comprehensive SEO patterns for web applications built with React and Laravel. Contains 28 rules across 8 categories covering Core Web Vitals, technical SEO, on-page optimization, structured data, performance, social sharing, React/SPA SEO, and mobile-first indexing. Each rule includes incorrect and correct code examples with practical HTML, React (Inertia.js), and Laravel implementations.
+Comprehensive SEO patterns for web applications built with React and Laravel. Contains 31 rules across 8 categories covering Core Web Vitals, technical SEO, on-page optimization, structured data, performance, social sharing, React/SPA SEO, and mobile-first indexing. Each rule includes incorrect and correct code examples with practical HTML, React (Inertia.js), and Laravel implementations.
 
 ## References
 
@@ -2330,6 +2330,724 @@ $breadcrumbSchema = [
 - Schema matches visible breadcrumbs, satisfying Google's consistency requirements
 
 Reference: [Google Search Central - Breadcrumb Structured Data](https://developers.google.com/search/docs/appearance/structured-data/breadcrumb)
+
+
+---
+
+## Combining Multiple Schema Types with @graph
+
+**Impact: HIGH (Pages need multiple schema types — @graph combines them cleanly)**
+
+Most pages need more than one schema type — a blog post page typically needs Organization, WebSite, BreadcrumbList, and Article. Using `@graph` combines them into a single structured block that search engines parse as a connected entity graph, improving how Google understands relationships between entities on your page.
+
+## Incorrect
+
+```html
+<!-- ❌ Multiple separate script blocks for each schema type -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Acme Corp",
+  "url": "https://acme.com",
+  "logo": "https://acme.com/images/logo.png"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://acme.com" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://acme.com/blog" }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Getting Started with Laravel",
+  "author": "Jane Smith",
+  "datePublished": "2026-03-10"
+}
+</script>
+```
+
+**Problems:**
+- Multiple `<script>` blocks repeat `@context` and fragment the entity graph
+- Google cannot infer relationships between separate schema blocks (e.g., the Article's publisher is the Organization)
+- The `author` field is a plain string instead of a `Person` object — no entity linking
+- Harder to maintain and debug across templates when schema is scattered
+
+## Correct
+
+```html
+<!-- ✅ Single @graph combining Organization, WebSite, BreadcrumbList, and Article -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://acme.com/#organization",
+      "name": "Acme Corp",
+      "url": "https://acme.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://acme.com/images/logo.png"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://acme.com/#website",
+      "name": "Acme Corp",
+      "url": "https://acme.com",
+      "publisher": { "@id": "https://acme.com/#organization" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://acme.com/blog/getting-started-with-laravel#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://acme.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://acme.com/blog"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Getting Started with Laravel"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "@id": "https://acme.com/blog/getting-started-with-laravel#article",
+      "headline": "Getting Started with Laravel",
+      "description": "A beginner-friendly guide to building your first Laravel application.",
+      "image": [
+        "https://acme.com/images/laravel-guide-16x9.webp",
+        "https://acme.com/images/laravel-guide-4x3.webp"
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Jane Smith",
+        "url": "https://acme.com/authors/jane-smith"
+      },
+      "publisher": { "@id": "https://acme.com/#organization" },
+      "datePublished": "2026-03-10T08:00:00+00:00",
+      "dateModified": "2026-03-12T14:30:00+00:00",
+      "isPartOf": { "@id": "https://acme.com/#website" },
+      "breadcrumb": { "@id": "https://acme.com/blog/getting-started-with-laravel#breadcrumb" },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://acme.com/blog/getting-started-with-laravel"
+      }
+    }
+  ]
+}
+</script>
+```
+
+```php
+{{-- ✅ Laravel Blade component that builds @graph from a $schemas array --}}
+{{-- Usage: <x-schema-graph :schemas="[$orgSchema, $websiteSchema, $breadcrumbSchema, $articleSchema]" /> --}}
+
+@props(['schemas' => []])
+
+@php
+$graph = [
+    '@context' => 'https://schema.org',
+    '@graph' => $schemas,
+];
+@endphp
+
+<script type="application/ld+json">
+    {!! json_encode($graph, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+</script>
+```
+
+```php
+{{-- ✅ Using the component in a blog post Blade view --}}
+@php
+$orgSchema = [
+    '@type' => 'Organization',
+    '@id' => url('/') . '/#organization',
+    'name' => config('app.name'),
+    'url' => url('/'),
+    'logo' => [
+        '@type' => 'ImageObject',
+        'url' => asset('images/logo.png'),
+    ],
+];
+
+$websiteSchema = [
+    '@type' => 'WebSite',
+    '@id' => url('/') . '/#website',
+    'name' => config('app.name'),
+    'url' => url('/'),
+    'publisher' => ['@id' => url('/') . '/#organization'],
+];
+
+$breadcrumbSchema = [
+    '@type' => 'BreadcrumbList',
+    '@id' => route('posts.show', $post->slug) . '#breadcrumb',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => url('/')],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Blog', 'item' => route('posts.index')],
+        ['@type' => 'ListItem', 'position' => 3, 'name' => $post->title],
+    ],
+];
+
+$articleSchema = [
+    '@type' => 'Article',
+    '@id' => route('posts.show', $post->slug) . '#article',
+    'headline' => $post->title,
+    'description' => $post->excerpt,
+    'image' => [asset("storage/{$post->featured_image}")],
+    'author' => [
+        '@type' => 'Person',
+        'name' => $post->author->name,
+        'url' => route('authors.show', $post->author->slug),
+    ],
+    'publisher' => ['@id' => url('/') . '/#organization'],
+    'datePublished' => $post->published_at->toIso8601String(),
+    'dateModified' => $post->updated_at->toIso8601String(),
+    'isPartOf' => ['@id' => url('/') . '/#website'],
+    'breadcrumb' => ['@id' => route('posts.show', $post->slug) . '#breadcrumb'],
+    'mainEntityOfPage' => [
+        '@type' => 'WebPage',
+        '@id' => route('posts.show', $post->slug),
+    ],
+];
+@endphp
+
+<x-schema-graph :schemas="[$orgSchema, $websiteSchema, $breadcrumbSchema, $articleSchema]" />
+```
+
+```tsx
+// ✅ React component that builds @graph dynamically
+import { Head } from '@inertiajs/react';
+
+type SchemaEntity = Record<string, unknown>;
+
+interface SchemaGraphProps {
+  schemas: SchemaEntity[];
+}
+
+function SchemaGraph({ schemas }: SchemaGraphProps) {
+  const graph = {
+    '@context': 'https://schema.org',
+    '@graph': schemas,
+  };
+
+  return (
+    <Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
+      />
+    </Head>
+  );
+}
+
+// ✅ Using SchemaGraph in a blog post page
+interface Post {
+  title: string;
+  slug: string;
+  excerpt: string;
+  featured_image: string;
+  published_at: string;
+  updated_at: string;
+  author: { name: string; slug: string };
+}
+
+function BlogPostPage({ post }: { post: Post }) {
+  const baseUrl = 'https://acme.com';
+  const postUrl = `${baseUrl}/blog/${post.slug}`;
+
+  const schemas: SchemaEntity[] = [
+    {
+      '@type': 'Organization',
+      '@id': `${baseUrl}/#organization`,
+      name: 'Acme Corp',
+      url: baseUrl,
+      logo: { '@type': 'ImageObject', url: `${baseUrl}/images/logo.png` },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${baseUrl}/#website`,
+      name: 'Acme Corp',
+      url: baseUrl,
+      publisher: { '@id': `${baseUrl}/#organization` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${postUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: `${baseUrl}/blog` },
+        { '@type': 'ListItem', position: 3, name: post.title },
+      ],
+    },
+    {
+      '@type': 'Article',
+      '@id': `${postUrl}#article`,
+      headline: post.title,
+      description: post.excerpt,
+      image: [`${baseUrl}/storage/${post.featured_image}`],
+      author: {
+        '@type': 'Person',
+        name: post.author.name,
+        url: `${baseUrl}/authors/${post.author.slug}`,
+      },
+      publisher: { '@id': `${baseUrl}/#organization` },
+      datePublished: post.published_at,
+      dateModified: post.updated_at,
+      isPartOf: { '@id': `${baseUrl}/#website` },
+      breadcrumb: { '@id': `${postUrl}#breadcrumb` },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+    },
+  ];
+
+  return (
+    <>
+      <SchemaGraph schemas={schemas} />
+      <Head>
+        <title>{post.title}</title>
+        <meta head-key="description" name="description" content={post.excerpt} />
+      </Head>
+      {/* Page content */}
+    </>
+  );
+}
+```
+
+**Benefits:**
+- Single `@graph` array keeps all schema entities in one block with one `@context` declaration
+- `@id` references link entities together — Google understands the Article's publisher is the Organization
+- Easier to maintain with a reusable Blade component or React component
+- Entity linking via `@id` strengthens the knowledge graph and improves rich result eligibility
+
+Reference: [Google Search Central - Structured Data General Guidelines](https://developers.google.com/search/docs/appearance/structured-data/sd-policies)
+
+
+---
+
+## FAQ Page Schema Markup
+
+**Impact: HIGH (Enables expandable FAQ accordion in Google search results)**
+
+FAQPage structured data tells Google your page contains a list of questions and answers, enabling expandable FAQ rich results directly in search. While Google restricted FAQ rich results to well-known authoritative sites in August 2023, the markup still helps search engines understand your content structure and can improve visibility for eligible domains.
+
+## Incorrect
+
+```html
+<!-- ❌ FAQ content with no structured data — Google shows a plain snippet -->
+<div class="faq-section">
+  <h2>Frequently Asked Questions</h2>
+
+  <div class="faq-item">
+    <h3>What is Laravel?</h3>
+    <p>Laravel is a PHP web application framework with expressive, elegant syntax.</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>Is Laravel free?</h3>
+    <p>Yes, Laravel is open-source and free to use under the MIT license.</p>
+  </div>
+
+  <div class="faq-item">
+    <h3>What PHP version does Laravel 12 require?</h3>
+    <p>Laravel 12 requires PHP 8.3 or higher.</p>
+  </div>
+</div>
+```
+
+**Problems:**
+- No structured data means Google cannot generate FAQ rich results for this page
+- Search engines must guess which content is a question and which is an answer
+- The page misses the opportunity for expanded SERP real estate with accordion dropdowns
+- Competitors with FAQ schema will occupy more visual space in the same search results
+
+## Correct
+
+```html
+<!-- ✅ FAQPage schema with mainEntity array of Question/acceptedAnswer pairs -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is Laravel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Laravel is a PHP web application framework with expressive, elegant syntax. It provides tools for routing, authentication, database management, and more, making it one of the most popular frameworks for building modern web applications."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Laravel free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, Laravel is open-source and free to use under the MIT license. You can use it for personal and commercial projects without any licensing fees."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What PHP version does Laravel 12 require?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Laravel 12 requires PHP 8.3 or higher. It is recommended to use the latest stable PHP release for optimal performance and security."
+      }
+    }
+  ]
+}
+</script>
+```
+
+```php
+{{-- ✅ Laravel Blade generating FAQ schema from a $faqs collection --}}
+{{-- $faqs is a collection of objects with ->question and ->answer properties --}}
+
+@php
+$faqSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'FAQPage',
+    'mainEntity' => $faqs->map(fn ($faq) => [
+        '@type' => 'Question',
+        'name' => $faq->question,
+        'acceptedAnswer' => [
+            '@type' => 'Answer',
+            'text' => strip_tags($faq->answer),
+        ],
+    ])->values()->all(),
+];
+@endphp
+
+<script type="application/ld+json">
+    {!! json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+</script>
+
+{{-- Visible FAQ content must match the schema --}}
+<section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    @foreach ($faqs as $faq)
+        <details>
+            <summary>{{ $faq->question }}</summary>
+            <div>{!! $faq->answer !!}</div>
+        </details>
+    @endforeach
+</section>
+```
+
+```tsx
+// ✅ Inertia/React FAQ page with schema markup
+import { Head } from '@inertiajs/react';
+
+interface Faq {
+  id: number;
+  question: string;
+  answer: string;
+}
+
+interface FaqPageProps {
+  faqs: Faq[];
+  title: string;
+  description: string;
+}
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '');
+}
+
+export default function FaqPage({ faqs, title, description }: FaqPageProps) {
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: stripHtml(faq.answer),
+      },
+    })),
+  };
+
+  return (
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta head-key="description" name="description" content={description} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      </Head>
+
+      <section className="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        {faqs.map((faq) => (
+          <details key={faq.id}>
+            <summary>{faq.question}</summary>
+            <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
+          </details>
+        ))}
+      </section>
+    </>
+  );
+}
+```
+
+**Benefits:**
+- FAQPage schema makes the page eligible for expandable FAQ rich results on eligible sites
+- Structured Q&A pairs help Google understand content even when rich results are not displayed
+- The `acceptedAnswer.text` uses `strip_tags` to provide clean plaintext for the schema while the visible HTML can use rich formatting
+- Visible FAQ content uses `<details>`/`<summary>` elements for native accordion behavior, matching the schema content
+
+> **Note:** Since the August 2023 update, Google only shows FAQ rich results for well-known, authoritative government and health websites. However, FAQPage markup still helps Google understand your content structure and may influence how snippets are generated. The markup remains valid and recommended by Google's documentation.
+
+Reference: [Google Search Central - FAQ Structured Data](https://developers.google.com/search/docs/appearance/structured-data/faqpage)
+
+
+---
+
+## Structured Data Validation and Monitoring
+
+**Impact: HIGH (Invalid schema silently fails — broken markup gets zero rich results)**
+
+Structured data errors are completely silent — there is no browser console warning when your JSON-LD has a missing required field or a trailing comma. The only way to catch issues is through proactive validation and monitoring. Without a validation workflow, broken schema can go undetected for months while competitors capture your rich result slots.
+
+## Incorrect
+
+```php
+// ❌ Deploying schema without any validation or monitoring
+class BlogPostController extends Controller
+{
+    public function show(Post $post)
+    {
+        // Schema built inline, never tested, never validated
+        return Inertia::render('Blog/Show', [
+            'post' => $post,
+            // No one checks if this produces valid JSON-LD
+            // No tests verify schema presence
+            // Search Console errors go unchecked for months
+        ]);
+    }
+}
+```
+
+**Problems:**
+- No automated tests verify that JSON-LD is present and parseable on rendered pages
+- No pre-deployment validation catches missing required fields or syntax errors
+- Search Console enhancement reports are never reviewed — errors accumulate silently
+- A template change can break schema across hundreds of pages with no alert
+
+## Correct
+
+### 1. Validate Before Deploying
+
+Always test structured data with Google's Rich Results Test before deploying changes. Paste the rendered HTML or a live URL to verify all schema types are detected and have no errors or warnings.
+
+### 2. Write Automated Tests
+
+```php
+// ✅ Laravel feature test verifying Article schema is present and valid
+namespace Tests\Feature;
+
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class BlogPostSchemaTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_blog_post_has_valid_article_schema(): void
+    {
+        $post = Post::factory()->create();
+
+        $response = $this->get(route('posts.show', $post));
+
+        $response->assertStatus(200);
+        $response->assertSee('"@type":"Article"', false);
+        $response->assertSee('"headline"', false);
+    }
+
+    public function test_blog_post_schema_contains_required_fields(): void
+    {
+        $author = User::factory()->create(['name' => 'Jane Smith']);
+        $post = Post::factory()->create([
+            'title' => 'Test Post Title',
+            'user_id' => $author->id,
+        ]);
+
+        $response = $this->get(route('posts.show', $post));
+        $content = $response->getContent();
+
+        // Extract JSON-LD blocks from rendered HTML
+        preg_match_all(
+            '/<script type="application\/ld\+json">(.*?)<\/script>/s',
+            $content,
+            $matches
+        );
+
+        $this->assertNotEmpty($matches[1], 'No JSON-LD blocks found on page');
+
+        $hasArticle = false;
+        foreach ($matches[1] as $jsonLd) {
+            $data = json_decode($jsonLd, true);
+            $this->assertNotNull($data, 'JSON-LD block is not valid JSON');
+
+            // Check @graph array or single type
+            $entities = isset($data['@graph']) ? $data['@graph'] : [$data];
+
+            foreach ($entities as $entity) {
+                if (($entity['@type'] ?? '') === 'Article') {
+                    $hasArticle = true;
+                    $this->assertArrayHasKey('headline', $entity);
+                    $this->assertArrayHasKey('datePublished', $entity);
+                    $this->assertArrayHasKey('author', $entity);
+                    $this->assertArrayHasKey('image', $entity);
+                    $this->assertEquals('Test Post Title', $entity['headline']);
+                }
+            }
+        }
+
+        $this->assertTrue($hasArticle, 'No Article schema found in JSON-LD');
+    }
+
+    public function test_faq_page_has_valid_faq_schema(): void
+    {
+        $response = $this->get(route('faq.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('"@type":"FAQPage"', false);
+        $response->assertSee('"mainEntity"', false);
+        $response->assertSee('"acceptedAnswer"', false);
+    }
+}
+```
+
+### 3. Monitor Search Console Weekly
+
+Check Google Search Console **Enhancements** reports at least weekly for schema errors:
+
+- Navigate to **Search Console > Enhancements** and review each structured data type
+- Look for **Error** and **Warning** counts — both prevent rich results
+- Click into specific issues to see affected URLs
+- After fixing, use **Validate Fix** to request re-crawling
+
+### 4. Common Validation Errors
+
+| Error | Cause | Fix |
+|---|---|---|
+| Missing required field `image` | Article schema without image property | Add at least one image URL to the `image` array |
+| Invalid date format | Using `"March 10, 2026"` instead of ISO 8601 | Use `"2026-03-10T08:00:00+00:00"` or `->toIso8601String()` |
+| URL is not absolute | Using `/blog/my-post` instead of full URL | Use `url()` or `route()` helpers to generate absolute URLs |
+| Content mismatch | Schema `headline` differs from visible `<h1>` | Ensure schema values match on-page content exactly |
+| Trailing comma in JSON | `{"name": "Acme",}` — invalid JSON syntax | Use `json_encode()` in PHP or `JSON.stringify()` in JS instead of manual strings |
+| `author` is a string | `"author": "Jane"` instead of a Person object | Use `{"@type": "Person", "name": "Jane"}` |
+| Missing `@context` | JSON-LD without `"@context": "https://schema.org"` | Always include `@context` at the top level or in `@graph` wrapper |
+
+### 5. CI Pipeline Validation
+
+```php
+// ✅ Base test helper for reusable JSON-LD validation
+namespace Tests;
+
+use Illuminate\Testing\TestResponse;
+
+trait ValidatesJsonLd
+{
+    /**
+     * Assert that a response contains valid JSON-LD with the given @type.
+     */
+    protected function assertHasJsonLdType(TestResponse $response, string $type): array
+    {
+        $content = $response->getContent();
+
+        preg_match_all(
+            '/<script type="application\/ld\+json">(.*?)<\/script>/s',
+            $content,
+            $matches
+        );
+
+        $this->assertNotEmpty($matches[1], 'No JSON-LD blocks found');
+
+        foreach ($matches[1] as $jsonLd) {
+            $data = json_decode($jsonLd, true);
+            $this->assertNotNull($data, "Invalid JSON in JSON-LD block: {$jsonLd}");
+
+            $entities = isset($data['@graph']) ? $data['@graph'] : [$data];
+
+            foreach ($entities as $entity) {
+                if (($entity['@type'] ?? '') === $type) {
+                    return $entity;
+                }
+            }
+        }
+
+        $this->fail("No JSON-LD entity with @type \"{$type}\" found");
+    }
+}
+```
+
+```tsx
+// ✅ React: verify schema is rendered correctly in development
+import { Head } from '@inertiajs/react';
+
+interface SchemaScriptProps {
+  schema: Record<string, unknown>;
+}
+
+export function SchemaScript({ schema }: SchemaScriptProps) {
+  const jsonString = JSON.stringify(schema);
+
+  // Validate in development — catch issues before they reach production
+  if (import.meta.env.DEV) {
+    try {
+      const parsed = JSON.parse(jsonString);
+      if (!parsed['@context'] && !parsed['@graph']) {
+        console.warn('[Schema] Missing @context in JSON-LD:', parsed);
+      }
+    } catch {
+      console.error('[Schema] Invalid JSON-LD:', jsonString);
+    }
+  }
+
+  return (
+    <Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonString }}
+      />
+    </Head>
+  );
+}
+```
+
+**Benefits:**
+- Automated tests catch schema regressions on every pull request before they reach production
+- The `ValidatesJsonLd` trait makes it easy to add schema assertions to any feature test
+- Weekly Search Console monitoring catches issues that automated tests cannot (e.g., crawl-time rendering differences)
+- Development-mode validation in React gives immediate console feedback during local development
+
+Reference: [Google Rich Results Test](https://search.google.com/test/rich-results)
 
 
 ---
