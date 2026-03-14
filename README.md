@@ -120,7 +120,7 @@ npx skills add AsyrafHussin/agent-skills --skill react-vite-best-practices
 
 ### [typescript-react-patterns](skills/typescript-react-patterns)
 
-Type-safe React with TypeScript 5+. Covers component props, hooks, event handling, refs, generics, and context patterns.
+Type-safe React with TypeScript. Contains 33 rules across 7 categories covering component typing, hooks, event handling, refs, generics, context, and utility types.
 
 **Example:** `How do I properly type this React component with TypeScript?`
 

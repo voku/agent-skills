@@ -1,15 +1,20 @@
 ---
 title: useMemo Typing
-category: Hook Typing
-priority: MEDIUM
+impact: CRITICAL
+impactDescription: "ensures memoized values have correct types and proper dependencies"
+tags: hook, useMemo, memoization, performance
 ---
 
+## useMemo Typing
 
-Properly typing useMemo for memoized computed values.
+**Impact: CRITICAL (ensures memoized values have correct types and proper dependencies)**
 
-## Bad Example
+Properly typing useMemo for memoized computed values. Explicit type annotations make code more readable, catch errors, and ensure correct dependency arrays.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Missing type annotation - relies entirely on inference
 const expensiveResult = useMemo(() => {
   return someExpensiveCalculation(data);
@@ -28,18 +33,19 @@ const double = useMemo(() => count * 2, [count]); // Simple math doesn't need me
 const filteredItems = useMemo(() => {
   return items.filter(item => item.category === selectedCategory);
 }, []); // Missing items and selectedCategory
-
-// Returning different types based on condition
-const value = useMemo(() => {
-  if (isLoading) return null;
-  return data.map(transform);
-}, [isLoading, data]); // Return type is unclear
 ```
 
-## Good Example
+**Problems:**
+- Using `any` removes type safety on the memoized value
+- Missing dependencies cause stale cached values
+- Simple calculations do not benefit from memoization overhead
+- Unclear return types when conditionally returning different shapes
+
+## Correct
 
 ```tsx
-import { useMemo, useState } from 'react';
+// ✅ Good
+import { useMemo, useState, createContext } from 'react';
 
 // Basic useMemo with explicit type
 interface ProcessedData {
@@ -58,37 +64,6 @@ const statistics = useMemo<ProcessedData>(() => {
     min: Math.min(...numbers),
   };
 }, [numbers]);
-
-// Complex object memoization
-interface ChartConfig {
-  type: 'line' | 'bar' | 'pie';
-  data: number[];
-  labels: string[];
-  options: {
-    responsive: boolean;
-    animations: boolean;
-    legend: {
-      position: 'top' | 'bottom' | 'left' | 'right';
-    };
-  };
-}
-
-function Chart({ data, labels, type }: { data: number[]; labels: string[]; type: ChartConfig['type'] }) {
-  const chartConfig = useMemo<ChartConfig>(() => ({
-    type,
-    data,
-    labels,
-    options: {
-      responsive: true,
-      animations: true,
-      legend: {
-        position: 'top',
-      },
-    },
-  }), [type, data, labels]);
-
-  return <RenderChart config={chartConfig} />;
-}
 
 // Filtering and sorting with proper typing
 interface Product {
@@ -111,7 +86,6 @@ function ProductList({ products }: { products: Product[] }) {
   const filteredAndSortedProducts = useMemo<Product[]>(() => {
     let result = products;
 
-    // Filter by search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter((p) =>
@@ -119,12 +93,10 @@ function ProductList({ products }: { products: Product[] }) {
       );
     }
 
-    // Filter by category
     if (category) {
       result = result.filter((p) => p.category === category);
     }
 
-    // Sort
     result = [...result].sort((a, b) => {
       const aVal = a[sortField];
       const bVal = b[sortField];
@@ -157,6 +129,8 @@ interface ThemeContextValue {
   theme: 'light' | 'dark';
   colors: ThemeColors;
 }
+
+const ThemeContext = createContext<ThemeContextValue>(null!);
 
 function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -233,55 +207,8 @@ function DataVisualization({ rawData }: { rawData: RawDataPoint[] }) {
   return <Chart data={chartData} aggregated={aggregatedData} />;
 }
 
-// Memoizing regex and other reusable objects
-function SearchHighlighter({ text, searchTerm }: { text: string; searchTerm: string }) {
-  const searchRegex = useMemo<RegExp | null>(() => {
-    if (!searchTerm) return null;
-    try {
-      return new RegExp(`(${searchTerm})`, 'gi');
-    } catch {
-      return null;
-    }
-  }, [searchTerm]);
-
-  const highlightedParts = useMemo<Array<{ text: string; highlighted: boolean }>>(() => {
-    if (!searchRegex) {
-      return [{ text, highlighted: false }];
-    }
-
-    const parts: Array<{ text: string; highlighted: boolean }> = [];
-    let lastIndex = 0;
-    let match: RegExpExecArray | null;
-
-    while ((match = searchRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push({ text: text.slice(lastIndex, match.index), highlighted: false });
-      }
-      parts.push({ text: match[0], highlighted: true });
-      lastIndex = match.index + match[0].length;
-    }
-
-    if (lastIndex < text.length) {
-      parts.push({ text: text.slice(lastIndex), highlighted: false });
-    }
-
-    return parts;
-  }, [text, searchRegex]);
-
-  return (
-    <span>
-      {highlightedParts.map((part, i) =>
-        part.highlighted ? (
-          <mark key={i}>{part.text}</mark>
-        ) : (
-          <span key={i}>{part.text}</span>
-        )
-      )}
-    </span>
-  );
-}
-
 // Generic memoized selector pattern
+interface Order { id: string; total: number }
 function useMemoizedSelector<TState, TSelected>(
   state: TState,
   selector: (state: TState) => TSelected
@@ -290,6 +217,13 @@ function useMemoizedSelector<TState, TSelected>(
 }
 
 // Usage
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  isActive: boolean;
+}
+
 interface AppState {
   users: User[];
   products: Product[];
@@ -306,11 +240,12 @@ function UserList({ state }: { state: AppState }) {
 }
 ```
 
-## Why
+**Benefits:**
+- Explicit types make code more readable and catch type mismatches
+- Correct dependencies ensure memoized values stay up to date
+- Only expensive calculations benefit from memoization
+- Reference stability prevents unnecessary child re-renders
+- Derived state avoids storing redundant data
+- Memoized context values prevent provider-triggered re-renders
 
-1. **Explicit types**: Clear return types make code more readable and catch errors
-2. **Correct dependencies**: All values used inside must be in the dependency array
-3. **Performance**: Only memoize expensive calculations, not simple operations
-4. **Reference stability**: Memoized objects maintain reference equality
-5. **Derived state**: Compute derived values from state without storing redundant data
-6. **Context optimization**: Memoize context values to prevent unnecessary re-renders
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

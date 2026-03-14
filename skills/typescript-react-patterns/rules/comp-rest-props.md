@@ -1,15 +1,20 @@
 ---
 title: Rest Props Typing
-category: Component Typing
-priority: MEDIUM
+impact: CRITICAL
+impactDescription: "ensures type-safe prop spreading to HTML elements"
+tags: component, rest-props, spread, Omit
 ---
 
+## Rest Props Typing
 
-Typing rest/spread props for components that pass through HTML attributes.
+**Impact: CRITICAL (ensures type-safe prop spreading to HTML elements)**
 
-## Bad Example
+Typing rest/spread props for components that pass through HTML attributes. Proper Omit patterns prevent prop conflicts and maintain full type safety.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Using 'any' for rest props
 interface ButtonProps {
   variant: 'primary' | 'secondary';
@@ -38,9 +43,15 @@ const Input = ({ label, error, ...rest }: InputProps) => {
 };
 ```
 
-## Good Example
+**Problems:**
+- Index signatures like `[key: string]: any` remove all type checking on spread props
+- Not omitting custom prop names that collide with HTML attributes causes conflicts
+- Missing `ComponentPropsWithoutRef` can lead to ref handling issues
+
+## Correct
 
 ```tsx
+// ✅ Good
 // Properly extending and omitting HTML attributes
 interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
   variant: 'primary' | 'secondary';
@@ -169,11 +180,11 @@ function Card({
 }
 ```
 
-## Why
+**Benefits:**
+- Proper typing catches invalid props at compile time
+- IDE shows valid HTML attributes when using the component
+- Omit removes props that conflict with custom props
+- `ComponentPropsWithoutRef` properly excludes ref from spread
+- Types clearly show which props are custom vs passed through
 
-1. **Type safety**: Proper typing catches invalid props at compile time
-2. **Autocomplete**: IDE shows valid HTML attributes when using the component
-3. **Conflict prevention**: Omit removes props that conflict with custom props
-4. **Ref handling**: `ComponentPropsWithoutRef` properly excludes ref from spread
-5. **Polymorphism**: Generic patterns enable type-safe component composition
-6. **Documentation**: Types clearly show which props are custom vs passed through
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

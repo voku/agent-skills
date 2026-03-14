@@ -1,15 +1,20 @@
 ---
 title: Polymorphic Component Typing
-category: Generic Components
-priority: MEDIUM
+impact: CRITICAL
+impactDescription: "enables type-safe rendering as different HTML elements"
+tags: component, polymorphic, as-prop, generic
 ---
 
+## Polymorphic Component Typing
 
-Creating type-safe polymorphic components that can render as different HTML elements.
+**Impact: CRITICAL (enables type-safe rendering as different HTML elements)**
 
-## Bad Example
+Creating type-safe polymorphic components that can render as different HTML elements using the `as` prop pattern.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Using 'any' loses all type safety
 interface BoxProps {
   as?: any;
@@ -35,9 +40,15 @@ const Text = ({ as: Component = 'p', children }: TextProps) => {
 // Can't pass element-specific props like htmlFor to label
 ```
 
-## Good Example
+**Problems:**
+- Using `any` for the `as` prop removes all type safety and autocomplete
+- No validation that passed props match the rendered element type
+- String unions cannot infer element-specific props
+
+## Correct
 
 ```tsx
+// ✅ Good
 import React from 'react';
 
 // Core polymorphic types
@@ -47,7 +58,6 @@ type AsProp<C extends React.ElementType> = {
 
 type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P);
 
-// Props without ref
 type PolymorphicComponentProps<
   C extends React.ElementType,
   Props = object
@@ -55,7 +65,6 @@ type PolymorphicComponentProps<
   AsProp<C> &
   Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>;
 
-// Props with ref
 type PolymorphicComponentPropsWithRef<
   C extends React.ElementType,
   Props = object
@@ -101,68 +110,6 @@ function Box<C extends React.ElementType = 'div'>({
 <Box as="section" padding="lg">Section element</Box>
 <Box as="a" href="/home">Link with href autocomplete</Box>
 <Box as="button" onClick={() => {}}>Button with onClick</Box>
-
-// Polymorphic component with forwardRef
-interface TextOwnProps {
-  variant?: 'heading' | 'body' | 'caption';
-  weight?: 'normal' | 'medium' | 'bold';
-  color?: 'primary' | 'secondary' | 'muted';
-}
-
-type TextProps<C extends React.ElementType = 'span'> =
-  PolymorphicComponentPropsWithRef<C, TextOwnProps>;
-
-type TextComponent = <C extends React.ElementType = 'span'>(
-  props: TextProps<C>
-) => React.ReactElement | null;
-
-const Text: TextComponent = React.forwardRef(
-  <C extends React.ElementType = 'span'>(
-    {
-      as,
-      variant = 'body',
-      weight = 'normal',
-      color = 'primary',
-      className,
-      ...rest
-    }: TextProps<C>,
-    ref?: PolymorphicRef<C>
-  ) => {
-    const Component = as ?? 'span';
-
-    const classes = [
-      className,
-      `text-${variant}`,
-      `font-${weight}`,
-      `color-${color}`,
-    ].filter(Boolean).join(' ');
-
-    return <Component ref={ref} className={classes} {...rest} />;
-  }
-);
-
-// Usage with refs
-const headingRef = React.useRef<HTMLHeadingElement>(null);
-<Text as="h1" ref={headingRef} variant="heading">Heading</Text>
-
-// Constrained polymorphic component (only certain elements allowed)
-type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-
-interface HeadingOwnProps {
-  level?: HeadingLevel;
-}
-
-type HeadingProps = HeadingOwnProps &
-  Omit<React.HTMLAttributes<HTMLHeadingElement>, keyof HeadingOwnProps>;
-
-function Heading({
-  level = 'h2',
-  className,
-  ...rest
-}: HeadingProps): React.ReactElement {
-  const Component = level;
-  return <Component className={`heading heading-${level} ${className ?? ''}`} {...rest} />;
-}
 
 // Polymorphic with discriminated unions
 type ButtonVariant = 'solid' | 'outline' | 'ghost';
@@ -222,11 +169,11 @@ function Button(props: ButtonProps): React.ReactElement {
 <Button as="a" href="/home">Go home</Button>
 ```
 
-## Why
+**Benefits:**
+- Full type safety: props are validated based on the rendered element
+- IDE autocomplete suggests valid props for each element type
+- Single component can render as any HTML element or custom component
+- Properly typed refs match the rendered element
+- Reduces need for wrapper components like LinkButton, SubmitButton, etc.
 
-1. **Full type safety**: Props are validated based on the rendered element
-2. **Autocomplete**: IDE suggests valid props for each element type
-3. **Flexibility**: Single component can render as any HTML element or custom component
-4. **Ref support**: Properly typed refs match the rendered element
-5. **Constraint options**: Can limit to specific elements when needed
-6. **Component reuse**: Reduces need for wrapper components like LinkButton, SubmitButton, etc.
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

@@ -1,15 +1,20 @@
 ---
 title: Generic Hooks Typing
-category: Hook Typing
-priority: MEDIUM
+impact: CRITICAL
+impactDescription: "enables flexible, reusable hooks without losing type safety"
+tags: hook, generic, type-parameter, constraint
 ---
 
+## Generic Hooks Typing
 
-Creating flexible, reusable hooks with TypeScript generics.
+**Impact: CRITICAL (enables flexible, reusable hooks without losing type safety)**
 
-## Bad Example
+Creating flexible, reusable hooks with TypeScript generics. Well-designed generics preserve type information throughout the hook without requiring explicit type arguments.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Using 'any' instead of generics
 function useFetch(url: string): { data: any; loading: boolean } {
   const [data, setData] = useState<any>(null);
@@ -38,9 +43,15 @@ function useStore<
 }
 ```
 
-## Good Example
+**Problems:**
+- Using `any` removes all type information from hook return values
+- Unconstrained generics allow operations that require specific shapes (like `id`)
+- Too many type parameters make hooks difficult to use and understand
+
+## Correct
 
 ```tsx
+// ✅ Good
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 
 // Basic generic hook for data fetching
@@ -293,23 +304,6 @@ function useForm<T extends Record<string, unknown>>({
   };
 }
 
-// Usage
-interface LoginFormValues {
-  email: string;
-  password: string;
-}
-
-const form = useForm<LoginFormValues>({
-  initialValues: { email: '', password: '' },
-  validationRules: {
-    email: (value) => (!value.includes('@') ? 'Invalid email' : null),
-    password: (value) => (value.length < 8 ? 'Password too short' : null),
-  },
-  onSubmit: async (values) => {
-    await api.login(values.email, values.password);
-  },
-});
-
 // Generic selection hook
 function useSelection<T extends Identifiable>() {
   const [selectedIds, setSelectedIds] = useState<Set<T['id']>>(new Set());
@@ -338,14 +332,6 @@ function useSelection<T extends Identifiable>() {
     });
   }, []);
 
-  const selectAll = useCallback((items: T[]) => {
-    setSelectedIds(new Set(items.map((item) => item.id)));
-  }, []);
-
-  const deselectAll = useCallback(() => {
-    setSelectedIds(new Set());
-  }, []);
-
   const isSelected = useCallback(
     (id: T['id']) => selectedIds.has(id),
     [selectedIds]
@@ -356,78 +342,17 @@ function useSelection<T extends Identifiable>() {
     select,
     deselect,
     toggle,
-    selectAll,
-    deselectAll,
     isSelected,
     selectedCount: selectedIds.size,
   };
 }
-
-// Generic async state machine hook
-type AsyncStatus = 'idle' | 'pending' | 'resolved' | 'rejected';
-
-interface UseAsyncMachineResult<TData, TError = Error> {
-  status: AsyncStatus;
-  data: TData | null;
-  error: TError | null;
-  isIdle: boolean;
-  isPending: boolean;
-  isResolved: boolean;
-  isRejected: boolean;
-  resolve: (data: TData) => void;
-  reject: (error: TError) => void;
-  reset: () => void;
-  start: () => void;
-}
-
-function useAsyncMachine<TData, TError = Error>(): UseAsyncMachineResult<TData, TError> {
-  const [status, setStatus] = useState<AsyncStatus>('idle');
-  const [data, setData] = useState<TData | null>(null);
-  const [error, setError] = useState<TError | null>(null);
-
-  const resolve = useCallback((newData: TData) => {
-    setData(newData);
-    setError(null);
-    setStatus('resolved');
-  }, []);
-
-  const reject = useCallback((newError: TError) => {
-    setError(newError);
-    setData(null);
-    setStatus('rejected');
-  }, []);
-
-  const reset = useCallback(() => {
-    setData(null);
-    setError(null);
-    setStatus('idle');
-  }, []);
-
-  const start = useCallback(() => {
-    setStatus('pending');
-  }, []);
-
-  return {
-    status,
-    data,
-    error,
-    isIdle: status === 'idle',
-    isPending: status === 'pending',
-    isResolved: status === 'resolved',
-    isRejected: status === 'rejected',
-    resolve,
-    reject,
-    reset,
-    start,
-  };
-}
 ```
 
-## Why
+**Benefits:**
+- Type safety without `any`: generics preserve type information throughout the hook
+- Constraints using `extends` limit generic types to specific shapes
+- Well-designed generics often do not need explicit type arguments
+- Generic hooks work with any compatible type for maximum reusability
+- Clear contracts: generic return types communicate what hooks provide
 
-1. **Type safety without 'any'**: Generics preserve type information throughout the hook
-2. **Constraints**: Use `extends` to limit generic types to specific shapes
-3. **Inference**: Well-designed generics often don't need explicit type arguments
-4. **Reusability**: Generic hooks work with any compatible type
-5. **Conditional types**: Enable different behavior based on type structure
-6. **Clear contracts**: Generic return types clearly communicate what hooks provide
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

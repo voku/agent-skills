@@ -1,68 +1,52 @@
-# TypeScript React Patterns
+# TypeScript React Patterns v2.0.0
 
-Type-safe patterns for React development with TypeScript.
+Type-safe React with TypeScript.
 
 ## Overview
 
-This skill provides comprehensive guidance for:
-- Component props typing
-- Custom hook typing
-- Event handler types
-- Ref typing patterns
-- Generic components
-- Context with TypeScript
+- Component typing (props interface, children, forwardRef, polymorphic, rest props)
+- Hook typing (useState, useRef, useReducer, useCallback, useMemo, custom hooks)
+- Event handling (form, click, keyboard events)
+- Ref typing (DOM elements, callback refs, useImperativeHandle)
+- Generic components (list, select, table, constraints)
+- Context & state (typed provider, useReducer with discriminated unions)
+- Utility types (ComponentProps, Pick/Omit, discriminated unions)
+- 33 rules across 7 categories
 
 ## Categories
 
 ### 1. Component Typing (Critical)
-Proper typing for component props, children, and default values.
+Props interface, children types, default props, forwardRef, polymorphic, FC vs function, display name, rest props.
 
 ### 2. Hook Typing (Critical)
-useState, useRef, useReducer, and custom hooks with TypeScript.
+useState, useRef, useReducer, useCallback, useMemo, useContext, custom hooks, generic hooks.
 
 ### 3. Event Handling (High)
-Form events, keyboard events, mouse events, and custom events.
+Handler types, click events, form events, keyboard events.
 
 ### 4. Ref Typing (High)
-DOM refs, mutable refs, callback refs, and forwarded refs.
+DOM element refs, callback refs, useImperativeHandle.
 
 ### 5. Generic Components (Medium)
-Building reusable components with TypeScript generics.
+Generic list, select, table, constraints with extends/keyof.
 
 ### 6. Context & State (Medium)
-Typed context, providers, and state management.
+Typed context creation, provider pattern, context with useReducer.
 
 ### 7. Utility Types (Low)
-React utility types and TypeScript helpers.
-
-## Quick Start
-
-```typescript
-// Typed component with props
-interface ButtonProps {
-  variant: 'primary' | 'secondary'
-  onClick?: () => void
-  children: React.ReactNode
-}
-
-function Button({ variant, onClick, children }: ButtonProps) {
-  return (
-    <button className={`btn-${variant}`} onClick={onClick}>
-      {children}
-    </button>
-  )
-}
-```
+ComponentPropsWithoutRef, Pick/Omit/Partial, discriminated unions.
 
 ## Usage
 
-This skill triggers automatically when:
-- Writing TypeScript React components
-- Fixing type errors
-- Creating custom hooks
-- Building generic components
+```
+Type this React component properly
+Fix TypeScript errors in my React code
+Create a generic table component
+Set up typed Context with useReducer
+```
 
 ## References
 
-- [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
+- [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)
+- [React + TypeScript Guide](https://react.dev/learn/typescript)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/)

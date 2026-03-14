@@ -1,112 +1,41 @@
-# Rule Sections
+# Sections
 
-## Priority Levels
+This file defines all sections, their ordering, impact levels, and descriptions.
+The section ID (in parentheses) is the filename prefix used to group rules.
 
-| Level | Description | When to Apply |
-|-------|-------------|---------------|
-| CRITICAL | Essential for type-safe React code | Always |
-| HIGH | Common patterns for most projects | Most components |
-| MEDIUM | Advanced patterns for reusable code | When building component libraries |
-| LOW | Specialized utilities and edge cases | Specific scenarios |
+---
 
-## Section Overview
+## 1. Component Typing (comp)
 
-### 1. Component Typing (CRITICAL)
+**Impact:** CRITICAL
+**Description:** Foundational patterns for typing React component props. Interface vs type for props, children typing with ReactNode, default props with destructuring, forwardRef, polymorphic "as" prop, FC vs function declaration, and rest props spreading.
 
-Fundamental patterns for typing React component props, children, and HTML element extensions. These are the building blocks of every typed component.
+## 2. Hook Typing (hook)
 
-**Key patterns:**
-- Interface vs type for props
-- Children typing (ReactNode, ReactElement, render props)
-- Extending HTML element props
-- Default props patterns
-- Rest/spread props
+**Impact:** CRITICAL
+**Description:** Type-safe React hooks. useState with generic types, useRef for DOM elements and mutable values, useReducer with discriminated union actions, useCallback/useMemo with typed parameters, useContext with null checking, and custom hooks with proper return types.
 
-### 2. Hook Typing (CRITICAL)
+## 3. Event Handling (event)
 
-Essential patterns for typing React hooks. Every React application uses these hooks, making proper typing crucial for safety and maintainability.
+**Impact:** HIGH
+**Description:** Typing React event handlers correctly. FormEvent, ChangeEvent, MouseEvent, KeyboardEvent with proper HTML element generics, and event handler prop types.
 
-**Key patterns:**
-- useState with nullable and union types
-- useRef for DOM elements and mutable values
-- useEffect cleanup typing
-- useReducer with discriminated unions
-- Custom hook return types
-- Generic hooks
+## 4. Ref Typing (ref)
 
-### 3. Event Handling (HIGH)
+**Impact:** HIGH
+**Description:** TypeScript patterns for React refs. useRef with specific HTMLElement types, callback refs for DOM measurement, and useImperativeHandle for exposing component methods to parents.
 
-Correct event types for form inputs, buttons, and interactive elements. Proper event typing provides autocomplete and catches property access errors.
+## 5. Generic Components (generic)
 
-**Key patterns:**
-- MouseEvent types (click, double-click, context menu)
-- FormEvent types (submit, change)
-- KeyboardEvent types
-- FocusEvent types
-- Event handler type aliases
-- Synthetic event vs native events
+**Impact:** MEDIUM
+**Description:** Building reusable, type-safe generic components. Generic list, select, and table components with type inference, and generic constraints using extends and keyof.
 
-### 4. Ref Typing (HIGH)
+## 6. Context & State (ctx)
 
-Patterns for useRef, forwardRef, and ref callbacks. Critical for DOM manipulation and accessing child component instances.
+**Impact:** MEDIUM
+**Description:** Typed React Context patterns. Creating context with null default and custom hook that throws on missing provider, and combining Context with useReducer using discriminated union actions.
 
-**Key patterns:**
-- DOM element refs (nullable)
-- Mutable value refs (non-nullable)
-- Callback refs
-- forwardRef with generic types
-- useImperativeHandle typing
-- Multiple refs pattern
+## 7. Utility Types (util)
 
-### 5. Generic Components (MEDIUM)
-
-Building type-safe, reusable components with TypeScript generics. Essential for component libraries and data-agnostic components.
-
-**Key patterns:**
-- Generic list/grid components
-- Generic form components
-- Generic select/dropdown
-- Generic table components
-- Constrained generics (extends)
-- Arrow function generic syntax
-
-### 6. Context & State (MEDIUM)
-
-Creating and consuming typed React context. Important for global state management and theme providers.
-
-**Key patterns:**
-- Typed context with null default
-- Custom hooks with runtime checks
-- Context with useReducer
-- Multiple context composition
-- Provider component patterns
-
-### 7. Utility Types (LOW)
-
-React and TypeScript utility types for advanced patterns. Used for specific scenarios requiring type manipulation.
-
-**Key patterns:**
-- Built-in React types (ComponentProps, ElementType)
-- Pick/Omit for props
-- Discriminated unions for state machines
-- Type assertions and guards
-- Polymorphic "as" prop pattern
-
-## Rule Organization
-
-Rules follow the naming convention: `{category-prefix}-{rule-name}.md`
-
-**Category prefixes:**
-- `comp-` - Component Typing
-- `hook-` - Hook Typing
-- `event-` - Event Handling
-- `ref-` - Ref Typing (includes forwardRef)
-- `generic-` - Generic Components
-- `ctx-` - Context & State
-- `util-` - Utility Types
-
-**Priority distribution:**
-- CRITICAL: 8 rules (Component & Hook fundamentals)
-- HIGH: 6 rules (Events, Refs, useReducer)
-- MEDIUM: 8 rules (Generics, Context, advanced patterns)
-- LOW: 3 rules (Display name, specialized utilities)
+**Impact:** LOW
+**Description:** TypeScript utility types for React. ComponentPropsWithoutRef for inheriting HTML attributes, Pick/Omit/Partial for deriving prop types, and discriminated unions for modeling state machines with exhaustive checking.

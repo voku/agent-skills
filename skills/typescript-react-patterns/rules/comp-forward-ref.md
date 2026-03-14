@@ -1,15 +1,20 @@
 ---
 title: ForwardRef Typing
-category: Ref Typing
-priority: HIGH
+impact: CRITICAL
+impactDescription: "ensures ref types match actual DOM elements"
+tags: component, forwardRef, ref, useImperativeHandle
 ---
 
+## ForwardRef Typing
 
-Properly typing components that forward refs to child elements.
+**Impact: CRITICAL (ensures ref types match actual DOM elements)**
 
-## Bad Example
+Properly typing components that forward refs to child elements. Mismatched ref types cause runtime errors or require unsafe type assertions.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Missing ref type annotation
 const Input = React.forwardRef((props, ref) => {
   return <input ref={ref} {...props} />;
@@ -34,9 +39,15 @@ const ComplexInput = React.forwardRef((props: InputProps, ref) => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Missing type annotations result in `any` types for ref and props
+- Mismatched ref element types require unsafe `as any` casts
+- Ignoring the forwarded ref makes the component unusable by parent components
+
+## Correct
 
 ```tsx
+// ✅ Good
 import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 
 // Basic forwardRef with proper typing
@@ -64,22 +75,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 );
 
 Input.displayName = 'Input';
-
-// Usage
-const MyForm = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const focusInput = () => {
-    inputRef.current?.focus();
-  };
-
-  return (
-    <form>
-      <Input ref={inputRef} label="Email" type="email" />
-      <button type="button" onClick={focusInput}>Focus Input</button>
-    </form>
-  );
-};
 
 // ForwardRef with useImperativeHandle for custom methods
 interface FormInputHandle {
@@ -144,49 +139,6 @@ const FormInput = forwardRef<FormInputHandle, FormInputProps>(
 
 FormInput.displayName = 'FormInput';
 
-// Usage with imperative handle
-const RegistrationForm = () => {
-  const emailRef = useRef<FormInputHandle>(null);
-  const passwordRef = useRef<FormInputHandle>(null);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const isEmailValid = emailRef.current?.validate() ?? false;
-    const isPasswordValid = passwordRef.current?.validate() ?? false;
-
-    if (isEmailValid && isPasswordValid) {
-      console.log('Email:', emailRef.current?.getValue());
-      // Submit form
-    }
-  };
-
-  const handleReset = () => {
-    emailRef.current?.clear();
-    passwordRef.current?.clear();
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <FormInput
-        ref={emailRef}
-        name="email"
-        label="Email"
-        required
-        pattern={/^[^\s@]+@[^\s@]+\.[^\s@]+$/}
-      />
-      <FormInput
-        ref={passwordRef}
-        name="password"
-        label="Password"
-        required
-      />
-      <button type="submit">Register</button>
-      <button type="button" onClick={handleReset}>Reset</button>
-    </form>
-  );
-};
-
 // Generic forwardRef component
 interface SelectOption<T> {
   value: T;
@@ -200,7 +152,6 @@ interface SelectProps<T> {
   placeholder?: string;
 }
 
-// Helper type for generic forwardRef
 type GenericForwardRefComponent = <T>(
   props: SelectProps<T> & { ref?: React.ForwardedRef<HTMLSelectElement> }
 ) => React.ReactElement;
@@ -229,36 +180,13 @@ const Select: GenericForwardRefComponent = forwardRef(
     );
   }
 ) as GenericForwardRefComponent;
-
-// ForwardRef with polymorphic component
-type PolymorphicRef<C extends React.ElementType> = React.ComponentPropsWithRef<C>['ref'];
-
-interface BoxProps<C extends React.ElementType = 'div'> {
-  as?: C;
-  padding?: 'sm' | 'md' | 'lg';
-}
-
-type BoxComponent = <C extends React.ElementType = 'div'>(
-  props: BoxProps<C> &
-    Omit<React.ComponentPropsWithRef<C>, keyof BoxProps<C>>
-) => React.ReactElement | null;
-
-const Box: BoxComponent = forwardRef(
-  <C extends React.ElementType = 'div'>(
-    { as, padding, ...rest }: BoxProps<C>,
-    ref: PolymorphicRef<C>
-  ) => {
-    const Component = as ?? 'div';
-    return <Component ref={ref} data-padding={padding} {...rest} />;
-  }
-) as BoxComponent;
 ```
 
-## Why
+**Benefits:**
+- Proper typing ensures ref type matches the actual DOM element
+- `useImperativeHandle` enables custom methods with full type safety
+- Setting displayName improves React DevTools debugging
+- Special patterns enable generic forwardRef components
+- Parent components can imperatively control children safely
 
-1. **Type safety**: Proper typing ensures ref type matches the actual DOM element
-2. **Imperative API**: `useImperativeHandle` enables custom methods with type safety
-3. **Display name**: Setting displayName improves React DevTools debugging
-4. **Generic support**: Special patterns enable generic forwardRef components
-5. **Flexibility**: Can expose native element ref or custom imperative handle
-6. **Parent control**: Enables parent components to imperatively control children
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

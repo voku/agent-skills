@@ -1,19 +1,21 @@
 ---
 title: Generic List Component
-category: Generic Components
-priority: MEDIUM
+impact: MEDIUM
+impactDescription: "enables reusable, type-safe list rendering for any data type"
+tags: generic, list, component, type-inference
 ---
 
-# generic-list
+## Generic List Component
 
-## Why It Matters
+**Impact: MEDIUM (enables reusable, type-safe list rendering for any data type)**
 
 Generic components allow building reusable, type-safe components that work with any data type. The type flows through from the data to the render function, providing full type safety.
 
 ## Incorrect
 
-```typescript
-// ❌ Using any - no type safety
+```tsx
+// ❌ Bad
+// Using any - no type safety
 interface ListProps {
   items: any[]
   renderItem: (item: any) => React.ReactNode
@@ -30,12 +32,16 @@ function List({ items, renderItem }: ListProps) {
 />
 ```
 
+**Problems:**
+- Using `any` removes all type checking on list items
+- Typos in property names are not caught at compile time
+- No autocomplete for item properties in the render callback
+
 ## Correct
 
-### Basic Generic List
-
-```typescript
-// ✅ Generic list component
+```tsx
+// ✅ Good
+// Basic Generic List
 interface ListProps<T> {
   items: T[]
   renderItem: (item: T, index: number) => React.ReactNode
@@ -73,22 +79,18 @@ const users: User[] = [
   )}
   keyExtractor={(user) => user.id}
 />
-```
 
-### With Constraints
-
-```typescript
-// ✅ Constrain generic to have id property
+// With Constraints
 interface HasId {
   id: string | number
 }
 
-interface ListProps<T extends HasId> {
+interface ConstrainedListProps<T extends HasId> {
   items: T[]
   renderItem: (item: T) => React.ReactNode
 }
 
-function List<T extends HasId>({ items, renderItem }: ListProps<T>) {
+function ConstrainedList<T extends HasId>({ items, renderItem }: ConstrainedListProps<T>) {
   return (
     <ul>
       {items.map((item) => (
@@ -100,16 +102,7 @@ function List<T extends HasId>({ items, renderItem }: ListProps<T>) {
   )
 }
 
-// keyExtractor no longer needed - uses item.id
-<List
-  items={users}
-  renderItem={(user) => <UserCard user={user} />}
-/>
-```
-
-### Generic Grid Component
-
-```typescript
+// Generic Grid Component
 interface GridProps<T> {
   items: T[]
   columns: number
@@ -143,19 +136,7 @@ function Grid<T>({
   )
 }
 
-// Usage
-<Grid
-  items={products}
-  columns={3}
-  renderItem={(product) => <ProductCard product={product} />}
-  keyExtractor={(product) => product.id}
-  emptyState={<EmptyProducts />}
-/>
-```
-
-### Generic Table Component
-
-```typescript
+// Generic Table Component
 interface Column<T> {
   key: keyof T | string
   header: string
@@ -195,33 +176,23 @@ function Table<T>({ data, columns, keyExtractor }: TableProps<T>) {
   )
 }
 
-// Usage
-<Table
-  data={users}
-  columns={[
-    { key: 'name', header: 'Name' },
-    { key: 'email', header: 'Email' },
-    {
-      key: 'actions',
-      header: 'Actions',
-      render: (user) => <EditButton userId={user.id} />,
-    },
-  ]}
-  keyExtractor={(user) => user.id}
-/>
+// Alternative syntax: arrow function generic
+// const ListArrow = <T,>({ items, renderItem }: ListProps<T>) => (
+//   // Note the comma after T - needed in TSX files
+//   <ul>{items.map(renderItem)}</ul>
+// )
+
+// Alternative syntax: with constraint
+// const ListConstrained = <T extends HasId>({ items }: { items: T[] }) => (
+//   <ul>{items.map(item => <li key={item.id} />)}</ul>
+// )
 ```
 
-## Arrow Function Generic Syntax
+**Benefits:**
+- Full type inference from items to render callbacks
+- Typos in property names are caught at compile time
+- IDE autocomplete works for item properties
+- Generic constraints can enforce minimum type requirements
+- Reusable across any data type without losing type safety
 
-```typescript
-// ✅ Arrow function with generic
-const List = <T,>({ items, renderItem }: ListProps<T>) => {
-  // Note the comma after T - needed in TSX files
-  return <ul>{items.map(renderItem)}</ul>
-}
-
-// Or with extends
-const List = <T extends HasId>({ items }: { items: T[] }) => {
-  return <ul>{items.map(item => <li key={item.id} />)}</ul>
-}
-```
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

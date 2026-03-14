@@ -1,15 +1,20 @@
 ---
 title: Default Props Typing
-category: Component Typing
-priority: MEDIUM
+impact: CRITICAL
+impactDescription: "avoids deprecated patterns and ensures type-aware defaults"
+tags: component, defaultProps, defaults, destructuring
 ---
 
+## Default Props Typing
 
-Modern approaches to typing default props in React with TypeScript.
+**Impact: CRITICAL (avoids deprecated patterns and ensures type-aware defaults)**
 
-## Bad Example
+Modern approaches to typing default props in React with TypeScript use destructuring defaults instead of the deprecated `defaultProps` static property.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Using deprecated defaultProps static property
 interface ButtonProps {
   variant?: 'primary' | 'secondary';
@@ -39,7 +44,6 @@ interface CardProps {
 }
 
 function Card({ elevation, rounded }: CardProps) {
-  // TypeScript doesn't know about defaults, may cause issues
   return <div style={{ boxShadow: `0 ${elevation}px ${elevation * 2}px rgba(0,0,0,0.1)` }} />;
 }
 
@@ -49,9 +53,15 @@ Card.defaultProps = {
 };
 ```
 
-## Good Example
+**Problems:**
+- `defaultProps` is deprecated for function components and will be removed
+- TypeScript does not reflect `defaultProps` values in the type system
+- Bundlers cannot tree-shake `defaultProps` effectively
+
+## Correct
 
 ```tsx
+// ✅ Good
 // Using default parameters in destructuring (preferred modern approach)
 interface ButtonProps {
   variant?: 'primary' | 'secondary';
@@ -184,6 +194,15 @@ const themeDefaults = {
   spacing: Required<NonNullable<ThemeProps['spacing']>>;
 }>;
 
+type Theme = {
+  colors: Required<NonNullable<ThemeProps['colors']>>;
+  spacing: Required<NonNullable<ThemeProps['spacing']>>;
+};
+
+// import { createContext } from 'react'
+const defaultTheme: Theme = themeDefaults;
+const ThemeContext = createContext<Theme>(defaultTheme);
+
 function ThemeProvider({
   colors = themeDefaults.colors,
   spacing = themeDefaults.spacing,
@@ -202,11 +221,11 @@ function ThemeProvider({
 }
 ```
 
-## Why
+**Benefits:**
+- Default parameters are type-aware and TypeScript understands the values inside the function
+- No deprecation concerns since `defaultProps` is deprecated for function components
+- Better tree-shaking by bundlers
+- Explicit defaults make component behavior clear when reading the code
+- Extracted default objects can be imported in tests
 
-1. **Default parameters are type-aware**: TypeScript understands the values inside the function
-2. **No deprecation concerns**: `defaultProps` is deprecated for function components
-3. **Better tree-shaking**: Default parameters can be optimized by bundlers
-4. **Explicit defaults**: Makes component behavior clear when reading the code
-5. **Testable defaults**: Extracted default objects can be imported in tests
-6. **Merged defaults**: Complex objects can use spread for partial overrides
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

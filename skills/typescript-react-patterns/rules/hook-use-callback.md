@@ -1,15 +1,20 @@
 ---
 title: useCallback Typing
-category: Hook Typing
-priority: MEDIUM
+impact: CRITICAL
+impactDescription: "ensures memoized callbacks have correct parameter and return types"
+tags: hook, useCallback, memoization, performance
 ---
 
+## useCallback Typing
 
-Properly typing useCallback for memoized function references.
+**Impact: CRITICAL (ensures memoized callbacks have correct parameter and return types)**
 
-## Bad Example
+Properly typing useCallback for memoized function references. Explicit parameter types enable autocomplete and catch errors, while proper dependencies prevent stale closures.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Missing dependency array type inference
 const handleClick = useCallback((id) => {
   console.log(id); // id is implicitly 'any'
@@ -33,9 +38,16 @@ const handleChange = useCallback((e: any) => {
 }, []);
 ```
 
-## Good Example
+**Problems:**
+- Missing parameter types result in implicit `any` with no autocomplete
+- Missing or incorrect dependencies cause stale closure bugs
+- Using `any` for event parameters removes all type checking
+- Return types are not enforced without explicit annotation
+
+## Correct
 
 ```tsx
+// ✅ Good
 import { useCallback, useState } from 'react';
 
 // Basic callback with explicit parameter types
@@ -53,6 +65,8 @@ const handleInputChange = useCallback(
 );
 
 // Callback with return type
+interface CartItem { id: string; name: string; price: number; quantity: number }
+
 const calculateTotal = useCallback(
   (items: CartItem[]): number => {
     return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -102,12 +116,9 @@ function Counter() {
   );
 }
 
-// Generic callback type
-type AsyncCallback<TArgs extends unknown[], TReturn> = (
-  ...args: TArgs
-) => Promise<TReturn>;
-
 // Callback passed to child with proper typing
+interface Item { id: string; name: string }
+
 interface ItemListProps {
   items: Item[];
   onItemSelect: (item: Item) => void;
@@ -122,6 +133,7 @@ function ItemContainer() {
   }, []);
 
   const handleDelete = useCallback(async (id: string): Promise<void> => {
+    // assume api is injected or imported
     await api.deleteItem(id);
     setItems((prev) => prev.filter((item) => item.id !== id));
   }, []);
@@ -144,91 +156,15 @@ interface FormData {
 
 type FormField = keyof FormData;
 
-const handleFieldChange = useCallback(
-  (field: FormField, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  },
-  []
-);
+function FormComponent() {
+  const [formData, setFormData] = useState<Record<string, string>>({});
 
-// Callback returning cleanup function
-const subscribeToUpdates = useCallback(
-  (channel: string, onMessage: (msg: Message) => void): (() => void) => {
-    const subscription = socket.subscribe(channel, onMessage);
-    return () => subscription.unsubscribe();
-  },
-  []
-);
-
-// Callback with conditional logic and proper typing
-type SortDirection = 'asc' | 'desc';
-type SortField = 'name' | 'date' | 'price';
-
-const handleSort = useCallback(
-  (field: SortField, direction: SortDirection) => {
-    setItems((prev) => {
-      const sorted = [...prev].sort((a, b) => {
-        const aVal = a[field];
-        const bVal = b[field];
-        const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-        return direction === 'asc' ? comparison : -comparison;
-      });
-      return sorted;
-    });
-  },
-  []
-);
-
-// Debounced callback with types
-function useDebouncedCallback<T extends (...args: Parameters<T>) => ReturnType<T>>(
-  callback: T,
-  delay: number
-): T {
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
-
-  return useCallback(
-    ((...args: Parameters<T>) => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => {
-        callback(...args);
-      }, delay);
-    }) as T,
-    [callback, delay]
-  );
-}
-
-// Usage
-const debouncedSearch = useDebouncedCallback(
-  (query: string) => {
-    fetchSearchResults(query);
-  },
-  300
-);
-
-// Callback with external dependencies explicitly typed
-interface ApiClient {
-  get: <T>(url: string) => Promise<T>;
-  post: <T>(url: string, data: unknown) => Promise<T>;
-}
-
-function useDataFetcher(apiClient: ApiClient) {
-  const fetchData = useCallback(
-    async <T>(endpoint: string): Promise<T> => {
-      return apiClient.get<T>(endpoint);
+  const handleFieldChange = useCallback(
+    (field: FormField, value: string) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
     },
-    [apiClient]
+    []
   );
-
-  const postData = useCallback(
-    async <T>(endpoint: string, data: unknown): Promise<T> => {
-      return apiClient.post<T>(endpoint, data);
-    },
-    [apiClient]
-  );
-
-  return { fetchData, postData };
 }
 
 // Memoized callback for optimized child renders
@@ -254,11 +190,11 @@ function Parent() {
 }
 ```
 
-## Why
+**Benefits:**
+- Explicit parameter types enable autocomplete and catch errors
+- Declared return types ensure callbacks return expected values
+- Functional updates avoid stale closures without adding state to deps
+- Proper React event types for form and DOM events
+- Stable references prevent unnecessary child re-renders with React.memo
 
-1. **Type inference**: Explicit parameter types enable autocomplete and catch errors
-2. **Return type safety**: Declaring return types ensures callbacks return expected values
-3. **Proper dependencies**: Functional updates avoid stale closures without adding state to deps
-4. **Event typing**: Proper React event types for form and DOM events
-5. **Memoization stability**: Stable references prevent unnecessary child re-renders
-6. **Generic callbacks**: Support for reusable typed callback patterns
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

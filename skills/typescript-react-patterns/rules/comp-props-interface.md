@@ -1,39 +1,47 @@
 ---
 title: Component Props Interface
-category: Component Typing
-priority: CRITICAL
+impact: CRITICAL
+impactDescription: "ensures consistent and extensible component APIs"
+tags: component, interface, props, typing
 ---
 
-# comp-props-interface
+## Component Props Interface
 
-## Why It Matters
+**Impact: CRITICAL (ensures consistent and extensible component APIs)**
 
-Consistent typing strategy makes code predictable and maintainable. Interfaces are preferred for props because they're extendable, provide better error messages, and align with React's composition model.
+Consistent typing strategy makes code predictable and maintainable. Interfaces are preferred for props because they are extendable, provide better error messages, and align with React's composition model.
 
 ## Incorrect
 
-```typescript
-// ❌ Using type when interface is better
+```tsx
+// ❌ Bad
+// Using type when interface is better
 type ButtonProps = {
   label: string
   onClick: () => void
 }
 
-// ❌ Inline types - not reusable
+// Inline types - not reusable
 function Button({ label, onClick }: { label: string; onClick: () => void }) {
   return <button onClick={onClick}>{label}</button>
 }
 
-// ❌ No typing
+// No typing
 function Card(props) {
   return <div>{props.title}</div>
 }
 ```
 
+**Problems:**
+- Type aliases cannot be extended with `extends` for composition
+- Inline types are not reusable across components
+- Missing type annotations result in implicit `any` types
+
 ## Correct
 
-```typescript
-// ✅ Interface for component props
+```tsx
+// ✅ Good
+// Interface for component props
 interface ButtonProps {
   label: string
   onClick: () => void
@@ -48,7 +56,7 @@ function Button({ label, onClick, disabled = false }: ButtonProps) {
   )
 }
 
-// ✅ Extending interfaces
+// Extending interfaces
 interface IconButtonProps extends ButtonProps {
   icon: React.ReactNode
   iconPosition?: 'left' | 'right'
@@ -69,45 +77,20 @@ function IconButton({
     </button>
   )
 }
-```
 
-## When to Use `type`
-
-```typescript
-// ✅ Use type for unions
-type ButtonVariant = 'primary' | 'secondary' | 'danger'
-type Size = 'sm' | 'md' | 'lg'
-
-// ✅ Use type for computed/mapped types
-type ButtonState = 'idle' | 'loading' | 'success' | 'error'
-
-// ✅ Use type for props that can't be interface
-type PropsWithRequiredChildren = {
-  children: React.ReactNode
-} & React.HTMLAttributes<HTMLDivElement>
-
-interface ButtonProps {
-  variant: ButtonVariant
-  size: Size
-}
-```
-
-## Extending HTML Element Props
-
-```typescript
-// ✅ Extend native button props
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+// Extend native button props (separate component example)
+interface NativeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant: 'primary' | 'secondary'
   isLoading?: boolean
 }
 
-function Button({
+function NativeButton({
   variant,
   isLoading,
   children,
   disabled,
   ...props
-}: ButtonProps) {
+}: NativeButtonProps) {
   return (
     <button
       className={`btn-${variant}`}
@@ -119,16 +102,7 @@ function Button({
   )
 }
 
-// Now supports all native button attributes
-<Button variant="primary" type="submit" aria-label="Submit form">
-  Submit
-</Button>
-```
-
-## Props with Generics
-
-```typescript
-// ✅ Generic interface
+// Generic interface
 interface SelectProps<T> {
   options: T[]
   value: T
@@ -155,12 +129,10 @@ function Select<T>({ options, value, onChange, getLabel }: SelectProps<T>) {
 }
 ```
 
-## Pattern Summary
+**Benefits:**
+- Interfaces are extendable with `extends` for composable component APIs
+- Better TypeScript error messages compared to type aliases
+- Extending HTML element attributes gives components native prop support
+- Generic interfaces enable type-safe reusable components
 
-| Use Case | Recommendation |
-|----------|----------------|
-| Component props | `interface` |
-| Union types | `type` |
-| Extending HTML elements | `interface extends` |
-| Mapped/computed types | `type` |
-| Generic props | `interface<T>` |
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

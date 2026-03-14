@@ -1,29 +1,21 @@
 ---
 title: Component Children Types
-category: Component Typing
-priority: CRITICAL
+impact: CRITICAL
+impactDescription: "prevents runtime errors from invalid children"
+tags: component, children, ReactNode, typing
 ---
 
-# comp-children-types
+## Component Children Types
 
-## Why It Matters
+**Impact: CRITICAL (prevents runtime errors from invalid children)**
 
 `children` is one of the most commonly used props. Using the wrong type causes type errors or allows invalid usage. Choose the right type based on what your component accepts.
 
-## Children Type Options
-
-| Type | Accepts | Use Case |
-|------|---------|----------|
-| `React.ReactNode` | Anything renderable | Most components |
-| `React.ReactElement` | JSX elements only | When you need element props |
-| `React.ReactElement[]` | Array of elements | Tabs, lists |
-| `string` | Text only | Text-only components |
-| `(data: T) => ReactNode` | Render prop | Data fetching, renderless |
-
 ## Incorrect
 
-```typescript
-// ❌ Too restrictive - won't accept strings or numbers
+```tsx
+// ❌ Bad
+// Too restrictive - won't accept strings or numbers
 interface CardProps {
   children: React.ReactElement
 }
@@ -32,23 +24,27 @@ interface CardProps {
 <Card>Hello</Card>  // Error: string is not ReactElement
 <Card>{42}</Card>   // Error: number is not ReactElement
 
-// ❌ No type - any is implied
+// No type - any is implied
 interface CardProps {
   children: any
 }
 
-// ❌ JSX.Element - React Native incompatible
+// JSX.Element - React Native incompatible
 interface CardProps {
   children: JSX.Element
 }
 ```
 
+**Problems:**
+- `React.ReactElement` rejects valid renderable values like strings, numbers, and fragments
+- Using `any` removes all type checking and allows invalid children
+- `JSX.Element` is not cross-platform compatible
+
 ## Correct
 
-### ReactNode (Most Common)
-
-```typescript
-// ✅ Accepts anything React can render
+```tsx
+// ✅ Good
+// ReactNode (Most Common) - Accepts anything React can render
 interface CardProps {
   title: string
   children: React.ReactNode
@@ -70,12 +66,8 @@ function Card({ title, children }: CardProps) {
 <Card title="List">{items.map(i => <Item key={i.id} />)}</Card>
 <Card title="Maybe">{showContent && <Content />}</Card>
 <Card title="Empty">{null}</Card>
-```
 
-### ReactElement (JSX Only)
-
-```typescript
-// ✅ When you need to access element props
+// ReactElement (JSX Only) - When you need to access element props
 interface TabsProps {
   children: React.ReactElement<TabProps> | React.ReactElement<TabProps>[]
 }
@@ -102,17 +94,7 @@ function Tabs({ children }: TabsProps) {
   )
 }
 
-// Usage
-<Tabs>
-  <Tab label="Profile">Profile content</Tab>
-  <Tab label="Settings">Settings content</Tab>
-</Tabs>
-```
-
-### Render Props
-
-```typescript
-// ✅ Function as children (render prop)
+// Render Props - Function as children
 interface DataFetcherProps<T> {
   url: string
   children: (data: T, loading: boolean, error: Error | null) => React.ReactNode
@@ -128,27 +110,14 @@ function DataFetcher<T>({ url, children }: DataFetcherProps<T>) {
   return <>{children(data as T, loading, error)}</>
 }
 
-// Usage
-<DataFetcher<User[]> url="/api/users">
-  {(users, loading, error) => {
-    if (loading) return <Spinner />
-    if (error) return <Error message={error.message} />
-    return <UserList users={users} />
-  }}
-</DataFetcher>
-```
-
-### PropsWithChildren Utility
-
-```typescript
+// PropsWithChildren Utility
 import { PropsWithChildren } from 'react'
 
-// ✅ Shorthand for adding children
-interface CardProps {
+interface CardBaseProps {
   title: string
 }
 
-function Card({ title, children }: PropsWithChildren<CardProps>) {
+function Card({ title, children }: PropsWithChildren<CardBaseProps>) {
   return (
     <div>
       <h2>{title}</h2>
@@ -157,34 +126,20 @@ function Card({ title, children }: PropsWithChildren<CardProps>) {
   )
 }
 
-// Equivalent to:
-interface CardProps {
-  title: string
-  children?: React.ReactNode
-}
+// Required vs Optional Children (pick one per component)
+// Option A: Required children
+// interface ContainerProps { children: React.ReactNode }
+
+// Option B: Truly required (must provide content)
+// interface ContainerProps { children: NonNullable<React.ReactNode> }
+
+// Option C: Optional children
+// interface ContainerProps { children?: React.ReactNode }
 ```
 
-### Required vs Optional Children
-
-```typescript
-// ✅ Required children
-interface ContainerProps {
-  children: React.ReactNode  // Required, but can be null/undefined at runtime
-}
-
-// ✅ Truly required (must provide content)
-interface ContainerProps {
-  children: NonNullable<React.ReactNode>
-}
-
-// ✅ Optional children (explicit)
-interface ContainerProps {
-  children?: React.ReactNode
-}
-```
-
-## Impact
-
+**Benefits:**
 - Correct types prevent runtime errors
 - Better autocomplete and documentation
 - Catches invalid children at compile time
+
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

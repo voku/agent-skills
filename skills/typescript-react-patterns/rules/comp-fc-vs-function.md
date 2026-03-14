@@ -1,16 +1,20 @@
 ---
 title: FC vs Function Declaration
-category: Component Typing
-priority: MEDIUM
+impact: CRITICAL
+impactDescription: "ensures consistent and future-proof component typing"
+tags: component, FC, function, declaration
 ---
 
+## FC vs Function Declaration
 
-Choosing between `React.FC` and regular function declarations for component typing.
+**Impact: CRITICAL (ensures consistent and future-proof component typing)**
 
-## Bad Example
+Choosing between `React.FC` and regular function declarations for component typing. Regular function declarations are preferred over `React.FC` for clarity and generic support.
+
+## Incorrect
 
 ```tsx
-// Using React.FC with implicit children (outdated pattern)
+// ❌ Bad
 import React, { FC } from 'react';
 
 interface ButtonProps {
@@ -34,9 +38,16 @@ const List: FC<{ items: string[] }> = ({ items }) => (
 );
 ```
 
-## Good Example
+**Problems:**
+- `React.FC` had implicit children in React 17, causing confusion across versions
+- `React.FC` makes generic components awkward to type
+- `React.FC` had issues with `defaultProps` typing
+- Inconsistent community conventions between React 17 and 18
+
+## Correct
 
 ```tsx
+// ✅ Good
 // Using regular function declarations with explicit return types
 interface ButtonProps {
   label: string;
@@ -71,16 +82,18 @@ function List<T>({ items, renderItem }: ListProps<T>): React.ReactElement {
 }
 
 // Named function export for better debugging
+interface User { id: string; name: string; email: string }
+
 export function UserProfile({ user }: { user: User }): React.ReactElement {
   return <div>{user.name}</div>;
 }
 ```
 
-## Why
+**Benefits:**
+- Explicit over implicit: regular functions require explicit children prop declaration
+- Generic support: regular functions work better with TypeScript generics
+- Consistency: avoids confusion about React 17 vs 18 FC behavior
+- Better debugging: named function declarations appear with their names in DevTools
+- Industry trend: the React and TypeScript communities have moved away from FC
 
-1. **Explicit over implicit**: Regular functions require explicit children prop declaration, making the component API clearer
-2. **Generic support**: Regular functions work better with TypeScript generics
-3. **Consistency**: Avoids confusion about React 17 vs 18 FC behavior regarding children
-4. **Better debugging**: Named function declarations appear with their names in React DevTools and stack traces
-5. **No defaultProps issues**: FC had issues with defaultProps typing that regular functions don't have
-6. **Industry trend**: The React and TypeScript communities have moved away from FC
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

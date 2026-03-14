@@ -1,15 +1,20 @@
 ---
 title: Custom Hooks Typing
-category: Hook Typing
-priority: CRITICAL
+impact: CRITICAL
+impactDescription: "ensures clear hook contracts with proper return types and parameters"
+tags: hook, custom, return-type, generic
 ---
 
+## Custom Hooks Typing
 
-Creating properly typed custom hooks with clear return types and parameters.
+**Impact: CRITICAL (ensures clear hook contracts with proper return types and parameters)**
 
-## Bad Example
+Creating properly typed custom hooks with clear return types and parameters. Explicit typing makes hook contracts clear to consumers and catches errors early.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // No return type - callers don't know what to expect
 function useUser(id) {
   const [user, setUser] = useState(null);
@@ -33,7 +38,7 @@ function useLocalStorage(key: string, initialValue: any) {
 function useToggle(initial: boolean) {
   const [value, setValue] = useState(initial);
   const toggle = () => setValue(v => !v);
-  return { value, toggle, setValue }; // Sometimes object, sometimes tuple
+  return { value, toggle, setValue };
 }
 
 // Missing cleanup and error handling
@@ -44,9 +49,17 @@ function useEventListener(event: string, handler: any) {
 }
 ```
 
-## Good Example
+**Problems:**
+- Missing parameter types result in implicit `any`
+- No return type annotation makes the hook contract unclear
+- Using `any` for state removes all type safety
+- Missing effect cleanup causes memory leaks
+- Missing error handling in async hooks leads to uncaught errors
+
+## Correct
 
 ```tsx
+// ✅ Good
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 
 // Hook with clear parameter and return types
@@ -180,34 +193,6 @@ function useEventListener<K extends keyof WindowEventMap>(
   }, [eventName, element, options]);
 }
 
-// Overloaded hook for different element types
-function useElementEventListener<K extends keyof HTMLElementEventMap>(
-  eventName: K,
-  handler: (event: HTMLElementEventMap[K]) => void,
-  element: HTMLElement | null,
-  options?: AddEventListenerOptions
-): void {
-  const savedHandler = useRef(handler);
-
-  useEffect(() => {
-    savedHandler.current = handler;
-  }, [handler]);
-
-  useEffect(() => {
-    if (!element) return;
-
-    const eventListener = (event: HTMLElementEventMap[K]) => {
-      savedHandler.current(event);
-    };
-
-    element.addEventListener(eventName, eventListener, options);
-
-    return () => {
-      element.removeEventListener(eventName, eventListener, options);
-    };
-  }, [eventName, element, options]);
-}
-
 // Async hook with proper state machine
 type AsyncState<T> =
   | { status: 'idle'; data: null; error: null }
@@ -258,79 +243,6 @@ function useAsync<T>(
   return { state, execute, reset };
 }
 
-// Hook with config object parameter
-interface UseDebounceOptions {
-  delay?: number;
-  leading?: boolean;
-  trailing?: boolean;
-}
-
-function useDebounce<T>(
-  value: T,
-  options: UseDebounceOptions | number = {}
-): T {
-  const { delay = 500, leading = false, trailing = true } =
-    typeof options === 'number' ? { delay: options } : options;
-
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-  const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    if (leading && isFirstRender.current) {
-      setDebouncedValue(value);
-      isFirstRender.current = false;
-      return;
-    }
-
-    if (!trailing) return;
-
-    const timer = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay, leading, trailing]);
-
-  return debouncedValue;
-}
-
-// Composable hooks
-function usePagination<T>(items: T[], itemsPerPage: number = 10) {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-
-  const paginatedItems = useMemo<T[]>(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return items.slice(start, start + itemsPerPage);
-  }, [items, currentPage, itemsPerPage]);
-
-  const goToPage = useCallback((page: number) => {
-    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
-  }, [totalPages]);
-
-  const nextPage = useCallback(() => {
-    goToPage(currentPage + 1);
-  }, [currentPage, goToPage]);
-
-  const prevPage = useCallback(() => {
-    goToPage(currentPage - 1);
-  }, [currentPage, goToPage]);
-
-  return {
-    items: paginatedItems,
-    currentPage,
-    totalPages,
-    goToPage,
-    nextPage,
-    prevPage,
-    hasNextPage: currentPage < totalPages,
-    hasPrevPage: currentPage > 1,
-  };
-}
-
 // Hook returning readonly tuple (const assertion)
 function useCounter(initialValue: number = 0) {
   const [count, setCount] = useState(initialValue);
@@ -346,11 +258,12 @@ function useCounter(initialValue: number = 0) {
 const [count, { increment, decrement, reset }] = useCounter(0);
 ```
 
-## Why
+**Benefits:**
+- Explicit return types make hook contracts clear to consumers
+- Generic parameters enable type-safe reuse across different data types
+- Tuple returns for simple hooks, objects for complex ones
+- Proper cleanup in effects prevents memory leaks
+- Error states in async hooks prevent uncaught runtime errors
+- Ref patterns store values that should not trigger re-renders
 
-1. **Explicit return types**: Makes hook contract clear to consumers
-2. **Generic parameters**: Enable type-safe reuse across different data types
-3. **Tuple vs object returns**: Use tuples for simple hooks, objects for complex ones
-4. **Proper cleanup**: Always return cleanup functions from effects
-5. **Error handling**: Include error states in async hooks
-6. **Ref patterns**: Use refs for values that shouldn't trigger re-renders
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

@@ -1,15 +1,20 @@
 ---
 title: useReducer Typing
-category: Hook Typing
-priority: HIGH
+impact: CRITICAL
+impactDescription: "enables exhaustive action handling and type-safe state transitions"
+tags: hook, useReducer, discriminated-union, action
 ---
 
+## useReducer Typing
 
-Properly typing the useReducer hook with actions, state, and discriminated unions.
+**Impact: CRITICAL (enables exhaustive action handling and type-safe state transitions)**
 
-## Bad Example
+Properly typing the useReducer hook with actions, state, and discriminated unions. Discriminated union action types enable exhaustive switch statements and catch missing cases at compile time.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Untyped reducer - no type safety
 const reducer = (state, action) => {
   switch (action.type) {
@@ -37,9 +42,16 @@ function badReducer(state: State, action: Action): State {
 }
 ```
 
-## Good Example
+**Problems:**
+- Untyped reducers have implicit `any` for state and action
+- String-typed action types provide no autocomplete or validation
+- Without exhaustiveness checking, missing action cases are silently ignored
+- `any` payload types allow invalid data to pass through
+
+## Correct
 
 ```tsx
+// ✅ Good
 import { useReducer, Reducer } from 'react';
 
 // Define state interface
@@ -56,7 +68,6 @@ type CounterAction =
   | { type: 'setStep'; payload: number }
   | { type: 'incrementBy'; payload: number };
 
-// Initial state
 const initialState: CounterState = {
   count: 0,
   step: 1,
@@ -120,13 +131,6 @@ type TodoAction =
   | { type: 'FETCH_SUCCESS'; payload: Todo[] }
   | { type: 'FETCH_ERROR'; payload: string };
 
-const todoInitialState: TodoState = {
-  todos: [],
-  filter: 'all',
-  isLoading: false,
-  error: null,
-};
-
 function todoReducer(state: TodoState, action: TodoAction): TodoState {
   switch (action.type) {
     case 'ADD_TODO':
@@ -175,12 +179,6 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
       return state;
   }
 }
-
-// Using Reducer type for explicit typing
-const typedReducer: Reducer<TodoState, TodoAction> = (state, action) => {
-  // Implementation
-  return state;
-};
 
 // Lazy initialization with typed init function
 interface FormState {
@@ -251,11 +249,12 @@ dispatch(todoActions.addTodo('Buy groceries'));
 dispatch(todoActions.toggleTodo('123'));
 ```
 
-## Why
+**Benefits:**
+- Discriminated unions enable exhaustive switch statements
+- Compile-time errors when action cases are missing
+- Each action has its own strongly-typed payload
+- Type system helps ensure proper immutable state updates
+- Lazy initialization third argument properly types the init function
+- Action creator factory functions provide better developer experience
 
-1. **Discriminated unions**: Action types enable exhaustive switch statements
-2. **Exhaustiveness checking**: Compile-time errors when cases are missing
-3. **Payload typing**: Each action has its own strongly-typed payload
-4. **State immutability**: Type system helps ensure proper state updates
-5. **Lazy initialization**: Third argument properly types the init function
-6. **Action creators**: Factory functions provide better developer experience
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

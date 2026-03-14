@@ -1,16 +1,20 @@
 ---
 title: Click Event Handler Typing
-category: Event Handling
-priority: HIGH
+impact: HIGH
+impactDescription: "catches wrong element types and event property access at compile time"
+tags: event, click, MouseEvent, handler
 ---
 
-# Click Event Handler Typing
+## Click Event Handler Typing
 
-Properly typing click event handlers for various React elements.
+**Impact: HIGH (catches wrong element types and event property access at compile time)**
 
-## Bad Example
+Properly typing click event handlers for various React elements. Using the correct event and element types provides autocomplete for event properties and catches errors.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Using 'any' for event parameter
 const handleClick = (e: any) => {
   console.log(e.target.value);
@@ -33,9 +37,16 @@ const handleLinkClick = (e: MouseEvent) => {
 };
 ```
 
-## Good Example
+**Problems:**
+- Using `any` removes all type checking on event properties
+- Missing type annotations result in implicit `any`
+- Wrong element type generic means `currentTarget` has wrong properties
+- Native `MouseEvent` lacks React synthetic event methods
+
+## Correct
 
 ```tsx
+// ✅ Good
 import React, { useCallback } from 'react';
 
 // Button click with proper typing
@@ -46,7 +57,6 @@ const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 
 // Div/container click
 const handleContainerClick = (event: React.MouseEvent<HTMLDivElement>) => {
-  // Stop propagation to parent handlers
   event.stopPropagation();
   console.log('Container clicked at:', event.clientX, event.clientY);
 };
@@ -56,7 +66,6 @@ const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
   event.preventDefault();
   const href = event.currentTarget.href;
   console.log('Navigating to:', href);
-  // Custom navigation logic
 };
 
 // Generic click handler for reusable components
@@ -83,47 +92,6 @@ function Item({ id, name, onClick }: ItemProps): React.ReactElement {
   return <li onClick={handleClick}>{name}</li>;
 }
 
-// Click handler with multiple possible elements
-const handleAnyClick = (
-  event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
-) => {
-  // Works for both button and anchor elements
-  event.preventDefault();
-  console.log('Element clicked:', event.currentTarget.tagName);
-};
-
-// Using event properties safely
-const handleClickWithCoordinates = (event: React.MouseEvent<HTMLDivElement>) => {
-  const { clientX, clientY, pageX, pageY, screenX, screenY } = event;
-
-  console.log('Client coordinates:', clientX, clientY);
-  console.log('Page coordinates:', pageX, pageY);
-  console.log('Screen coordinates:', screenX, screenY);
-
-  // Check for modifier keys
-  if (event.ctrlKey || event.metaKey) {
-    console.log('Ctrl/Cmd + Click');
-  }
-  if (event.shiftKey) {
-    console.log('Shift + Click');
-  }
-  if (event.altKey) {
-    console.log('Alt + Click');
-  }
-};
-
-// Double click handler
-const handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-  console.log('Double clicked!');
-};
-
-// Right click (context menu) handler
-const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
-  event.preventDefault(); // Prevent default context menu
-  console.log('Right click at:', event.clientX, event.clientY);
-  // Show custom context menu
-};
-
 // Click handler factory for list items
 function createClickHandler<T extends { id: string }>(
   item: T,
@@ -133,31 +101,6 @@ function createClickHandler<T extends { id: string }>(
     event.stopPropagation();
     callback(item);
   };
-}
-
-// Usage in component
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-}
-
-function ProductList({
-  products,
-  onSelect,
-}: {
-  products: Product[];
-  onSelect: (product: Product) => void;
-}): React.ReactElement {
-  return (
-    <ul>
-      {products.map((product) => (
-        <li key={product.id} onClick={createClickHandler(product, onSelect)}>
-          {product.name} - ${product.price}
-        </li>
-      ))}
-    </ul>
-  );
 }
 
 // Component with optional click handler
@@ -224,37 +167,13 @@ type ButtonClickHandler = React.MouseEventHandler<HTMLButtonElement>;
 const myButtonHandler: ButtonClickHandler = (event) => {
   console.log('Button:', event.currentTarget.name);
 };
-
-// Forwarding click events
-interface WrapperProps {
-  children: React.ReactElement;
-  onBeforeClick?: () => boolean; // Return false to prevent click
-}
-
-function ClickWrapper({ children, onBeforeClick }: WrapperProps): React.ReactElement {
-  const handleClick = (event: React.MouseEvent) => {
-    if (onBeforeClick && !onBeforeClick()) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
-    }
-
-    // Forward to child's onClick if it exists
-    const childOnClick = children.props.onClick;
-    if (childOnClick) {
-      childOnClick(event);
-    }
-  };
-
-  return React.cloneElement(children, { onClick: handleClick });
-}
 ```
 
-## Why
+**Benefits:**
+- Proper event types catch errors like accessing wrong properties
+- Event type should match the actual HTML element
+- `React.MouseEvent` provides synthetic event methods unlike native `MouseEvent`
+- `currentTarget` is typed while `target` needs assertion
+- `React.MouseEventHandler<T>` simplifies function signatures
 
-1. **Type safety**: Proper event types catch errors like accessing wrong properties
-2. **Element matching**: Event type should match the actual HTML element
-3. **React vs DOM events**: Use `React.MouseEvent`, not native `MouseEvent`
-4. **currentTarget vs target**: `currentTarget` is typed, `target` needs assertion
-5. **Handler type aliases**: `React.MouseEventHandler<T>` simplifies function signatures
-6. **Accessibility**: Click handlers on non-button elements need keyboard support
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

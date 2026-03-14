@@ -1,27 +1,29 @@
 ---
 title: Create Typed Context
-category: Context & State
-priority: MEDIUM
+impact: MEDIUM
+impactDescription: "prevents undefined context access and runtime crashes"
+tags: context, createContext, provider, hook
 ---
 
-# ctx-create
+## Create Typed Context
 
-## Why It Matters
+**Impact: MEDIUM (prevents undefined context access and runtime crashes)**
 
 Context requires proper typing for both the value and the default. A common pattern is using `null` as default with a custom hook that throws if used outside the provider.
 
 ## Incorrect
 
-```typescript
-// ❌ No typing - any is inferred
+```tsx
+// ❌ Bad
+// No typing - any is inferred
 const AuthContext = createContext(undefined)
 
-// ❌ Unsafe access - might be undefined
+// Unsafe access - might be undefined
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 const auth = useContext(AuthContext)
 auth.user  // Error: possibly undefined
 
-// ❌ Fake default value - misleading
+// Fake default value - misleading
 const AuthContext = createContext<AuthContextType>({
   user: null,
   login: () => {},  // Fake implementation
@@ -29,12 +31,16 @@ const AuthContext = createContext<AuthContextType>({
 })
 ```
 
+**Problems:**
+- Untyped context loses all type safety and defaults to `any`
+- Using `undefined` as default without a guard hook leads to unchecked access
+- Fake default values mask provider absence and create misleading behavior
+
 ## Correct
 
-### Null Default with Custom Hook
-
-```typescript
-// ✅ Proper pattern: null default + custom hook
+```tsx
+// ✅ Good
+// Null Default with Custom Hook
 interface User {
   id: number
   name: string
@@ -67,6 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  // assume: const authApi = createAuthApi()
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
@@ -87,12 +94,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     </AuthContext.Provider>
   )
 }
-```
 
-### Usage
-
-```typescript
-// ✅ Safe usage in components
+// Safe usage in components
+// import { Navigate } from 'react-router-dom'
 function UserProfile() {
   const { user, logout } = useAuth()  // Typed, never null
 
@@ -108,24 +112,7 @@ function UserProfile() {
   )
 }
 
-// ✅ App setup
-function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/profile" element={<UserProfile />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  )
-}
-```
-
-### Multiple Contexts Pattern
-
-```typescript
-// theme-context.tsx
+// Multiple Contexts Pattern
 interface ThemeContextType {
   theme: 'light' | 'dark'
   toggleTheme: () => void
@@ -154,11 +141,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     </ThemeContext.Provider>
   )
 }
-```
 
-### Context with Reducer
-
-```typescript
+// Context with Reducer
 interface State {
   count: number
   step: number
@@ -211,9 +195,10 @@ export function CounterProvider({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## Pattern Benefits
+**Benefits:**
+- Type safety: context value is properly typed throughout the application
+- Runtime safety: custom hook throws a clear error if used outside the provider
+- No fake defaults: null indicates "not provided" clearly
+- Clean API: custom hook provides a nice consumer interface
 
-- **Type safety**: Context value is properly typed
-- **Runtime safety**: Hook throws clear error if used incorrectly
-- **No fake defaults**: Null indicates "not provided" clearly
-- **Clean API**: Custom hook provides nice interface
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)

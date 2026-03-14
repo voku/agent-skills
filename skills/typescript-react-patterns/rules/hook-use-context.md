@@ -1,15 +1,20 @@
 ---
 title: useContext Typing
-category: Hook Typing
-priority: MEDIUM
+impact: CRITICAL
+impactDescription: "prevents silent failures from undefined context access"
+tags: hook, useContext, context, provider
 ---
 
+## useContext Typing
 
-Properly typing Context and useContext for type-safe global state.
+**Impact: CRITICAL (prevents silent failures from undefined context access)**
 
-## Bad Example
+Properly typing Context and useContext for type-safe global state. Using null defaults with custom guard hooks prevents silent failures when context is used outside its provider.
+
+## Incorrect
 
 ```tsx
+// ❌ Bad
 // Untyped context - no type safety
 const AppContext = React.createContext(undefined);
 
@@ -36,9 +41,16 @@ function useAuth() {
 }
 ```
 
-## Good Example
+**Problems:**
+- Untyped context defaults to `any` with no type checking
+- Using `any` removes autocomplete and error detection
+- Fake default values mask missing providers and create misleading behavior
+- Returning potentially undefined context without a guard leaves callers unprotected
+
+## Correct
 
 ```tsx
+// ✅ Good
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 
 // Pattern 1: Context with null default and custom hook
@@ -58,7 +70,6 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 AuthContext.displayName = 'AuthContext';
 
-// Custom hook with error handling
 function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
 
@@ -69,7 +80,7 @@ function useAuth(): AuthContextValue {
   return context;
 }
 
-// Provider component
+// assume: const api = createApiClient()
 function AuthProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const [user, setUser] = useState<User | null>(null);
 
@@ -146,37 +157,6 @@ function useThemeActions(): ThemeActionsContextValue {
   return context;
 }
 
-function ThemeProvider({ children }: { children: React.ReactNode }): React.ReactElement {
-  const [theme, setThemeState] = useState<'light' | 'dark'>('light');
-
-  const colors = useMemo(() => ({
-    primary: theme === 'light' ? '#007bff' : '#6ea8fe',
-    background: theme === 'light' ? '#ffffff' : '#212529',
-    text: theme === 'light' ? '#212529' : '#ffffff',
-  }), [theme]);
-
-  const themeValue = useMemo<ThemeContextValue>(
-    () => ({ theme, colors }),
-    [theme, colors]
-  );
-
-  const actionsValue = useMemo<ThemeActionsContextValue>(
-    () => ({
-      setTheme: setThemeState,
-      toggleTheme: () => setThemeState((t) => (t === 'light' ? 'dark' : 'light')),
-    }),
-    []
-  );
-
-  return (
-    <ThemeContext.Provider value={themeValue}>
-      <ThemeActionsContext.Provider value={actionsValue}>
-        {children}
-      </ThemeActionsContext.Provider>
-    </ThemeContext.Provider>
-  );
-}
-
 // Pattern 3: Generic context factory
 function createSafeContext<T>(displayName: string) {
   const Context = createContext<T | null>(null);
@@ -194,20 +174,17 @@ function createSafeContext<T>(displayName: string) {
 }
 
 // Usage of factory
+interface AppNotification { id: string; message: string; type: 'info' | 'error' | 'success' }
+
 interface NotificationContextValue {
-  notifications: Notification[];
-  addNotification: (notification: Omit<Notification, 'id'>) => void;
+  notifications: AppNotification[];
+  addNotification: (notification: Omit<AppNotification, 'id'>) => void;
   removeNotification: (id: string) => void;
 }
 
 const [NotificationProvider, useNotifications] = createSafeContext<NotificationContextValue>('Notification');
 
 // Pattern 4: Context with reducer
-interface CartState {
-  items: CartItem[];
-  total: number;
-}
-
 interface CartItem {
   id: string;
   name: string;
@@ -221,80 +198,20 @@ type CartAction =
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'CLEAR' };
 
+interface CartState {
+  items: CartItem[];
+  total: number;
+}
+
 interface CartContextValue {
   state: CartState;
   dispatch: React.Dispatch<CartAction>;
-  // Computed values and convenience methods
   itemCount: number;
   addItem: (item: Omit<CartItem, 'quantity'>) => void;
   removeItem: (id: string) => void;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
-
-function cartReducer(state: CartState, action: CartAction): CartState {
-  switch (action.type) {
-    case 'ADD_ITEM': {
-      const existing = state.items.find((i) => i.id === action.payload.id);
-      if (existing) {
-        return {
-          ...state,
-          items: state.items.map((i) =>
-            i.id === action.payload.id ? { ...i, quantity: i.quantity + 1 } : i
-          ),
-          total: state.total + action.payload.price,
-        };
-      }
-      return {
-        ...state,
-        items: [...state.items, { ...action.payload, quantity: 1 }],
-        total: state.total + action.payload.price,
-      };
-    }
-    case 'REMOVE_ITEM': {
-      const item = state.items.find((i) => i.id === action.payload);
-      if (!item) return state;
-      return {
-        ...state,
-        items: state.items.filter((i) => i.id !== action.payload),
-        total: state.total - item.price * item.quantity,
-      };
-    }
-    case 'UPDATE_QUANTITY': {
-      const item = state.items.find((i) => i.id === action.payload.id);
-      if (!item) return state;
-      const diff = action.payload.quantity - item.quantity;
-      return {
-        ...state,
-        items: state.items.map((i) =>
-          i.id === action.payload.id ? { ...i, quantity: action.payload.quantity } : i
-        ),
-        total: state.total + item.price * diff,
-      };
-    }
-    case 'CLEAR':
-      return { items: [], total: 0 };
-    default:
-      return state;
-  }
-}
-
-function CartProvider({ children }: { children: React.ReactNode }): React.ReactElement {
-  const [state, dispatch] = React.useReducer(cartReducer, { items: [], total: 0 });
-
-  const value = useMemo<CartContextValue>(
-    () => ({
-      state,
-      dispatch,
-      itemCount: state.items.reduce((sum, item) => sum + item.quantity, 0),
-      addItem: (item) => dispatch({ type: 'ADD_ITEM', payload: item }),
-      removeItem: (id) => dispatch({ type: 'REMOVE_ITEM', payload: id }),
-    }),
-    [state]
-  );
-
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
-}
 
 function useCart(): CartContextValue {
   const context = useContext(CartContext);
@@ -305,11 +222,12 @@ function useCart(): CartContextValue {
 }
 ```
 
-## Why
+**Benefits:**
+- Null default with error boundary prevents silent failures
+- Custom hooks encapsulate context access and error handling
+- Separated contexts split state and actions to prevent unnecessary re-renders
+- Factory pattern reduces boilerplate for creating typed contexts
+- Memoized provider values prevent unnecessary re-renders
+- DisplayName improves debugging in React DevTools
 
-1. **Null default with error boundary**: Using `null` and throwing errors prevents silent failures
-2. **Custom hooks**: Encapsulate context access and error handling
-3. **Separated contexts**: Split state and actions to prevent unnecessary re-renders
-4. **Factory pattern**: Reduces boilerplate for creating typed contexts
-5. **Memoization**: Provider values should be memoized to prevent unnecessary re-renders
-6. **DisplayName**: Improves debugging in React DevTools
+Reference: [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)
