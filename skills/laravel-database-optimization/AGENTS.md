@@ -2172,7 +2172,7 @@ public function handle(Request $request, Closure $next): Response
         Log::warning('Request exceeded query time budget', [
             'url' => $request->fullUrl(),
             'total_query_time_ms' => $totalTime,
-            'query_count' => count(DB::getQueryLog()) - count($startQueries),
+            'query_count' => count(DB::getQueryLog()),
         ]);
     }
 
