@@ -1,7 +1,7 @@
 ---
 title: Provide Clear Form Submission Feedback
 impact: HIGH
-impactDescription: Prevents user confusion and double submissions
+impactDescription: "Prevents user confusion and double submissions"
 tags: forms, feedback, ux, loading-states
 ---
 
@@ -11,10 +11,10 @@ tags: forms, feedback, ux, loading-states
 
 Provide clear, immediate feedback when users submit forms. Users should always know the current state: submitting, success, or failure.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: No submission feedback -->
+<!-- ❌ Bad: No submission feedback -->
 <form onsubmit="submitForm()">
   <input type="email" name="email" required>
   <button type="submit">Subscribe</button>
@@ -42,7 +42,7 @@ async function submitForm() {
 ```
 
 ```html
-<!-- Anti-pattern: Confusing states -->
+<!-- ❌ Bad: Confusing states -->
 <form>
   <input type="email" name="email">
   <!-- Button changes but no visual feedback -->
@@ -57,10 +57,17 @@ btn.textContent = 'Sending...';
 </script>
 ```
 
-## Good Example
+**Problems:**
+- No loading indicator leaves users wondering if the form submitted
+- Silent success provides no confirmation that the action worked
+- Generic `alert('Error')` gives no actionable guidance
+- Button is not disabled during submission, allowing double-clicks
+- Page reload on error loses all entered data
+
+## Correct
 
 ```html
-<!-- Correct approach: Comprehensive submission feedback -->
+<!-- ✅ Good: Comprehensive submission feedback -->
 <form id="newsletter-form" novalidate>
   <div class="form-group">
     <label for="email">Email Address</label>
@@ -95,7 +102,7 @@ btn.textContent = 'Sending...';
 </form>
 
 <!-- Success state (shown after successful submission) -->
-<div id="success-message" class="success-panel" hidden>
+<div id="success-message" class="success-panel" tabindex="-1" hidden>
   <svg class="success-icon" aria-hidden="true" viewBox="0 0 24 24">
     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/>
   </svg>
@@ -245,37 +252,11 @@ button[type="submit"]:disabled {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Loading state with disabled button prevents double submissions
+- Screen reader users are notified of state changes via ARIA live regions
+- Clear success confirmation builds user confidence
+- Specific error messages with recovery guidance help users fix issues
+- Form data is preserved on error so users do not need to retype
 
-Submission feedback is critical for user confidence:
-
-1. **Acknowledgment**: Users need to know their action was received.
-
-2. **Prevent Duplicates**: Loading states prevent multiple submissions.
-
-3. **Error Recovery**: Clear error messages help users fix issues.
-
-4. **Accessibility**: Screen reader users need announcements for state changes.
-
-5. **Trust**: Professional feedback builds confidence in your application.
-
-Submission state best practices:
-
-| State | Visual | Accessible | Technical |
-|-------|--------|------------|-----------|
-| Idle | Normal button | Standard label | Enabled |
-| Loading | Spinner, disabled | aria-busy, announce | Prevent double-submit |
-| Success | Confirmation UI | Announce, focus | Clear form or redirect |
-| Error | Error message | Announce, focus | Keep form data |
-
-Key implementation details:
-
-1. **Disable during submission**: Prevent double-clicks
-2. **Show loading indicator**: Spinner or progress bar
-3. **Announce state changes**: Use aria-live regions
-4. **Focus management**: Move focus to success/error message
-5. **Preserve input**: Never clear form data on error
-6. **Specific error messages**: Explain what went wrong
-7. **Recovery path**: Provide clear next steps
-8. **Timeout handling**: Handle slow or failed network requests
-9. **Optimistic UI**: Consider showing success immediately for fast operations
+Reference: [web.dev - Form Submission](https://web.dev/learn/forms/auto)

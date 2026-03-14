@@ -1,7 +1,7 @@
 ---
 title: Associate Labels with Form Inputs
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Info and Relationships
+impactDescription: "WCAG 2.1 Level A - Info and Relationships"
 tags: accessibility, forms, labels, inputs
 ---
 
@@ -11,10 +11,10 @@ tags: accessibility, forms, labels, inputs
 
 Every form input must have an associated label that clearly identifies its purpose. Labels are essential for screen reader users and improve usability for all users.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Missing or improper labels -->
+<!-- ❌ Bad: Missing or improper labels -->
 <form>
   <!-- No label at all -->
   <input type="text" placeholder="Enter your name">
@@ -44,10 +44,17 @@ Every form input must have an associated label that clearly identifies its purpo
 </form>
 ```
 
-## Good Example
+**Problems:**
+- Screen readers announce nothing when inputs lack associated labels
+- Placeholders vanish on focus, leaving users with no context
+- Mismatched `for`/`id` breaks the programmatic association
+- Non-`<label>` elements do not provide click-to-focus behavior
+- Voice control users cannot target inputs without proper labels
+
+## Correct
 
 ```html
-<!-- Correct approach: Properly associated labels -->
+<!-- ✅ Good: Properly associated labels -->
 <form>
   <!-- Explicit label association with for/id -->
   <div class="form-group">
@@ -166,28 +173,11 @@ Every form input must have an associated label that clearly identifies its purpo
 </style>
 ```
 
-## Why
+**Benefits:**
+- Screen readers announce the label when an input receives focus
+- Clicking a label focuses its associated input, increasing the click target
+- Voice control users can identify and interact with inputs by label text
+- Grouped inputs with `<fieldset>`/`<legend>` provide clear context for related fields
+- Meets WCAG requirements for programmatically associated labels
 
-Form labels are essential for multiple reasons:
-
-1. **Screen Readers**: Labels are read aloud when inputs receive focus, telling users what information is expected.
-
-2. **Click Target**: Clicking a label focuses/activates its associated input, improving usability for all users.
-
-3. **Voice Control**: Users of voice recognition software use labels to identify and interact with inputs.
-
-4. **Cognitive Accessibility**: Clear labels help users understand what information is needed.
-
-5. **Legal Compliance**: WCAG requires programmatically associated labels.
-
-Label best practices:
-
-1. **Always Associate Labels**: Use `for`/`id` or wrap inputs in labels
-2. **Position Consistently**: Labels above or to the left of inputs
-3. **Use Placeholder Appropriately**: As hints, not replacements for labels
-4. **Group Related Inputs**: Use `<fieldset>` and `<legend>`
-5. **Indicate Required Fields**: Use both visual and programmatic indicators
-6. **Add Helper Text**: Use `aria-describedby` for additional instructions
-7. **Keep Labels Visible**: Hidden labels should be last resort
-8. **Be Descriptive**: "Email Address" not just "Email"
-9. **Avoid Instructions in Labels**: "Enter your email" should be "Email Address"
+Reference: [WCAG 1.3.1 Info and Relationships](https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html)

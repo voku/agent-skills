@@ -1,7 +1,7 @@
 ---
 title: Provide Meaningful Alt Text for Images
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Required for non-text content
+impactDescription: "WCAG 2.1 Level A - Required for non-text content"
 tags: accessibility, images, alt-text, screen-readers
 ---
 
@@ -11,10 +11,10 @@ tags: accessibility, images, alt-text, screen-readers
 
 Provide meaningful alternative text for images that conveys the purpose and content of the image to users who cannot see it.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Missing or poor alt text -->
+<!-- ❌ Bad: Missing or poor alt text -->
 <img src="hero.jpg">
 
 <img src="logo.png" alt="logo">
@@ -38,10 +38,17 @@ Provide meaningful alternative text for images that conveys the purpose and cont
 </a>
 ```
 
-## Good Example
+**Problems:**
+- Missing alt text makes images invisible to screen reader users
+- Generic alt text ("logo", "image") provides no meaningful context
+- File names as alt text are meaningless
+- Decorative images with alt text create noise for screen readers
+- Redundant alt text on icons alongside visible text causes double announcements
+
+## Correct
 
 ```html
-<!-- Correct approach: Meaningful, contextual alt text -->
+<!-- ✅ Good: Meaningful, contextual alt text -->
 
 <!-- Informative image: describe content and purpose -->
 <img src="hero.jpg" alt="Team of developers collaborating around a whiteboard filled with code diagrams">
@@ -101,47 +108,11 @@ Provide meaningful alternative text for images that conveys the purpose and cont
 </div>
 ```
 
-## Why
+**Benefits:**
+- Screen reader users understand the purpose and content of every image
+- Images degrade gracefully when they fail to load
+- Search engines can index image content for better SEO
+- Users with cognitive disabilities gain additional context
+- Legal compliance with WCAG non-text content requirements
 
-Alt text is critical for accessibility and SEO:
-
-1. **Screen Reader Users**: Alt text is read aloud by screen readers, providing context for visual content.
-
-2. **Image Load Failures**: Alt text displays when images fail to load.
-
-3. **Search Engines**: Alt text helps search engines understand image content.
-
-4. **Cognitive Disabilities**: Alt text can help users understand the purpose of images.
-
-5. **Legal Compliance**: WCAG requires text alternatives for non-text content.
-
-Alt text guidelines:
-
-**Informative Images:**
-- Describe the content and function
-- Be concise but complete (usually under 125 characters)
-- Don't start with "Image of" or "Picture of"
-- Include relevant details based on context
-
-**Decorative Images:**
-- Use empty alt (`alt=""`)
-- Add `role="presentation"` for clarity
-- CSS background images are inherently decorative
-
-**Functional Images (buttons/links):**
-- Describe the action, not the appearance
-- "Submit form" not "Green button"
-
-**Complex Images (charts, diagrams):**
-- Provide brief alt text
-- Offer detailed description via `<figcaption>`, link, or `aria-describedby`
-
-**Images of Text:**
-- Include all the text in the alt
-- Better: use actual text instead of images
-
-**Image Links:**
-- Describe the destination
-- "View product details" not "thumbnail image"
-
-Testing tip: Ask yourself: "If I couldn't see this image, what information would I need?"
+Reference: [WCAG 1.1.1 Non-text Content](https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html)

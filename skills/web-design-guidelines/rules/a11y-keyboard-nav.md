@@ -1,7 +1,7 @@
 ---
 title: Ensure Full Keyboard Navigation
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Required for keyboard-only users
+impactDescription: "WCAG 2.1 Level A - Required for keyboard-only users"
 tags: accessibility, keyboard, focus, navigation
 ---
 
@@ -11,10 +11,10 @@ tags: accessibility, keyboard, focus, navigation
 
 Ensure all interactive elements and functionality are fully accessible via keyboard. Users should be able to navigate, activate, and interact with all features without requiring a mouse.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Click-only interactions -->
+<!-- ❌ Bad: Click-only interactions -->
 <div class="card" onclick="showDetails()">
   <img src="product.jpg">
   <span class="title">Product Name</span>
@@ -36,10 +36,16 @@ Ensure all interactive elements and functionality are fully accessible via keybo
 </div>
 ```
 
-## Good Example
+**Problems:**
+- `<div>` and `<span>` elements are not focusable or activatable by keyboard
+- Click-only handlers exclude all keyboard and switch-device users
+- No ARIA roles or states to communicate component behavior to assistive technology
+- Custom slider has no keyboard interaction pattern
+
+## Correct
 
 ```html
-<!-- Correct approach: Full keyboard support -->
+<!-- ✅ Good: Full keyboard support -->
 <article class="card"
          tabindex="0"
          role="button"
@@ -162,34 +168,10 @@ function handleSliderKey(event) {
 </script>
 ```
 
-## Why
+**Benefits:**
+- All interactive elements are reachable and operable via keyboard
+- Standard keyboard patterns (Enter, Space, Arrow keys, Escape) are implemented
+- ARIA roles and states communicate component behavior to screen readers
+- Native HTML elements (`<a>`, `<button>`) provide built-in keyboard support
 
-Keyboard accessibility is essential because:
-
-1. **Motor Disabilities**: Many users cannot use a mouse due to motor impairments and rely on keyboard or switch devices.
-
-2. **Screen Reader Users**: Screen reader users primarily navigate using keyboard commands.
-
-3. **Power Users**: Many users prefer keyboard navigation for efficiency.
-
-4. **Temporary Situations**: Broken mouse, using a laptop trackpad, or repetitive strain injury.
-
-5. **Legal Requirements**: WCAG and accessibility laws require keyboard accessibility.
-
-Standard keyboard patterns:
-
-- **Tab/Shift+Tab**: Move between focusable elements
-- **Enter/Space**: Activate buttons and links
-- **Arrow keys**: Navigate within components (menus, tabs, sliders)
-- **Escape**: Close modals, menus, or cancel operations
-- **Home/End**: Jump to first/last item in a list
-- **Page Up/Down**: Scroll or move by larger increments
-
-Best practices:
-
-- Use native HTML elements when possible (they have built-in keyboard support)
-- Implement standard keyboard patterns for custom components
-- Test your entire application using only the keyboard
-- Provide visible focus indicators
-- Avoid keyboard traps (except in modals)
-- Document any non-standard keyboard shortcuts
+Reference: [WCAG 2.1.1 Keyboard](https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html)

@@ -1,7 +1,7 @@
 ---
 title: Use Correct Input Types
 impact: HIGH
-impactDescription: Improves mobile UX and reduces errors
+impactDescription: "Improves mobile UX and reduces errors"
 tags: forms, input-types, mobile, ux
 ---
 
@@ -11,10 +11,10 @@ tags: forms, input-types, mobile, ux
 
 Use the correct HTML input types to provide appropriate virtual keyboards, validation, and user experience across devices.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Using generic text inputs for everything -->
+<!-- ❌ Bad: Using generic text inputs for everything -->
 <form>
   <label for="email">Email</label>
   <input type="text" id="email" name="email">
@@ -39,10 +39,17 @@ Use the correct HTML input types to provide appropriate virtual keyboards, valid
 </form>
 ```
 
-## Good Example
+**Problems:**
+- Generic `type="text"` shows a standard keyboard on mobile instead of optimized layouts
+- No built-in browser validation for email, URL, or number formats
+- No native date, time, or color pickers
+- Password fields are not masked, exposing sensitive input
+- Screen readers cannot announce the expected input type
+
+## Correct
 
 ```html
-<!-- Correct approach: Semantic input types -->
+<!-- ✅ Good: Semantic input types -->
 <form>
   <!-- Email: brings up @ keyboard on mobile -->
   <label for="email">Email</label>
@@ -143,46 +150,11 @@ Use the correct HTML input types to provide appropriate virtual keyboards, valid
 </form>
 ```
 
-## Why
+**Benefits:**
+- Mobile users get optimized virtual keyboards (email with @, numeric for phone)
+- Browsers provide built-in validation for email, URL, and number formats
+- Native date, time, and color pickers reduce implementation effort
+- Password fields mask input and trigger password manager integration
+- Screen readers announce the expected input type and constraints
 
-Correct input types provide significant benefits:
-
-1. **Mobile Keyboards**: Different input types trigger appropriate virtual keyboards (numeric, email with @, URL with .com).
-
-2. **Built-in Validation**: Browsers validate email, URL, number formats automatically.
-
-3. **Native UI**: Date, time, color, and range inputs provide native pickers.
-
-4. **Autofill**: Combined with autocomplete attributes, browsers can autofill forms accurately.
-
-5. **Accessibility**: Screen readers announce the input type and constraints.
-
-6. **Security**: Password fields mask input and may trigger password managers.
-
-Available input types:
-
-| Type | Use Case | Mobile Keyboard |
-|------|----------|-----------------|
-| `text` | Generic text | Standard |
-| `email` | Email addresses | Email (@, .com) |
-| `tel` | Phone numbers | Numeric |
-| `url` | Web addresses | URL (/, .com) |
-| `number` | Numeric values | Numeric |
-| `password` | Sensitive data | Standard (masked) |
-| `search` | Search queries | Search |
-| `date` | Calendar dates | Date picker |
-| `time` | Time values | Time picker |
-| `datetime-local` | Date + time | DateTime picker |
-| `month` | Month/year | Month picker |
-| `week` | Week/year | Week picker |
-| `color` | Color values | Color picker |
-| `range` | Slider values | Slider |
-| `file` | File uploads | File picker |
-| `hidden` | Hidden data | None |
-
-Best practices:
-- Always pair with appropriate `autocomplete` attribute
-- Use `inputmode` for fine-grained keyboard control
-- Set `min`, `max`, `step` for numeric inputs
-- Use `pattern` for custom validation regex
-- Test on mobile devices to verify keyboard behavior
+Reference: [MDN Input Types](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types)

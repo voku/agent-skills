@@ -1,7 +1,7 @@
 ---
 title: Ensure Sufficient Color Contrast
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level AA - 4.5:1 for text, 3:1 for large text
+impactDescription: "WCAG 2.1 Level AA - 4.5:1 for text, 3:1 for large text"
 tags: accessibility, color, contrast, visual
 ---
 
@@ -11,10 +11,10 @@ tags: accessibility, color, contrast, visual
 
 Ensure sufficient color contrast between text and backgrounds to make content readable for users with low vision or color blindness.
 
-## Bad Example
+## Incorrect
 
 ```css
-/* Anti-pattern: Insufficient contrast ratios */
+/* ❌ Bad: Insufficient contrast ratios */
 .hero-text {
   color: #999999; /* Gray text */
   background-color: #ffffff; /* White background */
@@ -45,15 +45,21 @@ Ensure sufficient color contrast between text and backgrounds to make content re
 ```
 
 ```html
-<!-- Anti-pattern: Relying only on color -->
+<!-- ❌ Bad: Relying only on color -->
 <p>Required fields are marked in <span style="color: red;">red</span>.</p>
 <input type="text" style="border-color: red;">
 ```
 
-## Good Example
+**Problems:**
+- Low contrast text is unreadable for users with low vision
+- Color-only indicators are invisible to color-blind users
+- Light placeholders fail WCAG minimum contrast requirements
+- Users in bright environments or on low-quality screens cannot read the text
+
+## Correct
 
 ```css
-/* Correct approach: WCAG compliant contrast ratios */
+/* ✅ Good: WCAG compliant contrast ratios */
 .hero-text {
   color: #595959; /* Darker gray */
   background-color: #ffffff;
@@ -102,7 +108,7 @@ Ensure sufficient color contrast between text and backgrounds to make content re
 ```
 
 ```html
-<!-- Correct approach: Color plus additional indicators -->
+<!-- ✅ Good: Color plus additional indicators -->
 <p>Required fields are marked with an asterisk (*).</p>
 <label for="email">
   Email <span aria-hidden="true">*</span>
@@ -117,35 +123,10 @@ Ensure sufficient color contrast between text and backgrounds to make content re
 </div>
 ```
 
-## Why
+**Benefits:**
+- Text is readable by users with low vision and color deficiencies
+- Content remains accessible in bright sunlight or on low-quality screens
+- Non-color indicators ensure information reaches all users
+- Meets WCAG AA and AAA contrast requirements
 
-Adequate color contrast is crucial because:
-
-1. **Low Vision**: Approximately 1 in 12 men and 1 in 200 women have some form of color vision deficiency.
-
-2. **Aging Eyes**: Contrast sensitivity decreases with age. The elderly population often needs higher contrast.
-
-3. **Environmental Factors**: Bright sunlight, glare, or low-quality screens can reduce perceived contrast.
-
-4. **Legal Compliance**: WCAG guidelines require specific contrast ratios, and many laws reference WCAG.
-
-WCAG contrast requirements:
-
-- **Normal text (under 18pt or 14pt bold)**: 4.5:1 minimum (AA), 7:1 enhanced (AAA)
-- **Large text (18pt+ or 14pt+ bold)**: 3:1 minimum (AA), 4.5:1 enhanced (AAA)
-- **UI components and graphics**: 3:1 minimum against adjacent colors
-
-Best practices:
-
-- Use contrast checking tools during design and development
-- Test with different types of color blindness simulators
-- Never rely on color alone to convey information
-- Provide alternative indicators (icons, patterns, text labels)
-- Consider providing a high-contrast mode
-- Test on different devices and in various lighting conditions
-
-Recommended tools:
-- WebAIM Contrast Checker
-- Chrome DevTools Accessibility panel
-- Stark (Figma/Sketch plugin)
-- Color Oracle (color blindness simulator)
+Reference: [WCAG 1.4.3 Contrast (Minimum)](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)

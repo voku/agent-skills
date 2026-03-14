@@ -5,42 +5,22 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 
 ---
 
-## 1. Accessibility - Semantic Structure (a11y)
+## 1. Accessibility (a11y)
 
 **Impact:** CRITICAL
-**Description:** Semantic HTML and ARIA provide the foundation for accessible interfaces. Proper structure enables assistive technologies to understand and navigate content, directly impacting users with disabilities.
+**Description:** WCAG 2.2 compliance patterns for inclusive web interfaces. Semantic HTML structure, heading hierarchy, keyboard navigation, focus management, ARIA labels, color contrast ratios, meaningful alt text, accessible error messages, form label associations, live regions for dynamic content, skip links, and screen reader optimization.
 
-## 2. Accessibility - Keyboard & Focus (a11y)
-
-**Impact:** CRITICAL
-**Description:** Keyboard navigation and focus management are essential for users who cannot use a mouse. Missing or broken keyboard support excludes a significant portion of users.
-
-## 3. Accessibility - Visual & Color (a11y)
-
-**Impact:** CRITICAL
-**Description:** Color contrast, text sizing, and visual indicators ensure content is perceivable by users with visual impairments or color blindness.
-
-## 4. Forms - Input & Validation (form)
-
-**Impact:** CRITICAL
-**Description:** Proper form implementation with clear labels, autocomplete, and validation reduces errors and improves completion rates. Poor forms are the #1 cause of user frustration.
-
-## 5. Forms - Error Handling (form)
+## 2. Forms (form)
 
 **Impact:** HIGH
-**Description:** Clear, accessible error messages help users recover from mistakes quickly. Poor error handling leads to form abandonment.
+**Description:** Accessible and user-friendly form patterns. Autocomplete attributes for autofill, correct input types for mobile keyboards, clear error display with ARIA associations, user-friendly validation timing, inline validation with debounce, multi-step form progression, appropriate placeholder usage, and clear submission feedback.
 
-## 6. Forms - User Experience (form)
+## 3. Animation & Motion (motion)
 
-**Impact:** MEDIUM
-**Description:** Advanced form patterns like multi-step flows and inline validation improve the user experience and increase conversion rates.
+**Impact:** CRITICAL
+**Description:** Respecting user motion preferences. The prefers-reduced-motion media query detects users with vestibular disorders who need reduced or eliminated animations. WCAG 2.1 SC 2.3.3 (Level AAA) requires providing controls to disable non-essential animations.
 
-## 7. Animation & Motion (motion)
-
-**Impact:** HIGH
-**Description:** Respecting prefers-reduced-motion is critical for users with vestibular disorders. Improper animations can cause nausea, dizziness, or seizures.
-
-## 8. Performance & UX (perf)
+## 4. Performance & UX (perf)
 
 **Impact:** MEDIUM
-**Description:** Performance directly impacts user experience. Images without dimensions cause layout shifts, lazy loading improves initial load time.
+**Description:** Image loading optimization and layout stability. Preventing Cumulative Layout Shift (CLS) with explicit dimensions, lazy loading below-fold images, responsive images with modern formats, skeleton placeholders, and font loading strategies that minimize visual disruption.

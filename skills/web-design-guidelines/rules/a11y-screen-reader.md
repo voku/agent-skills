@@ -1,7 +1,7 @@
 ---
 title: Optimize for Screen Reader Compatibility
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Perceivable and operable
+impactDescription: "WCAG 2.1 Level A - Perceivable and operable"
 tags: accessibility, screen-readers, semantic-html, aria
 ---
 
@@ -11,10 +11,10 @@ tags: accessibility, screen-readers, semantic-html, aria
 
 Design and code with screen reader users in mind. Screen readers convert visual content to audio output, requiring careful attention to how information is structured and announced.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Poor screen reader experience -->
+<!-- ❌ Bad: Poor screen reader experience -->
 <div class="breadcrumb">
   Home > Products > Electronics > Phones
 </div>
@@ -28,15 +28,15 @@ Design and code with screen reader users in mind. Screen readers convert visual 
   <tr>
     <td>Widget</td>
     <td>$9.99</td>
-    <td>✓</td>
+    <td>&#10003;</td>
   </tr>
 </table>
 
 <div class="rating">
-  ★★★★☆
+  &#9733;&#9733;&#9733;&#9733;&#9734;
 </div>
 
-<button class="close-btn">×</button>
+<button class="close-btn">&times;</button>
 
 <div class="price">
   <span class="currency">$</span>
@@ -47,10 +47,17 @@ Design and code with screen reader users in mind. Screen readers convert visual 
 <img src="chart.png">
 ```
 
-## Good Example
+**Problems:**
+- Breadcrumbs as plain text lose navigation structure and meaning
+- Tables without `<th>`, `scope`, or `<caption>` are unnavigable by screen readers
+- Star ratings, symbols, and split price text are announced as gibberish
+- Close button with only a symbol has no accessible name
+- Images without alt text are invisible to screen reader users
+
+## Correct
 
 ```html
-<!-- Correct approach: Screen reader optimized -->
+<!-- ✅ Good: Screen reader optimized -->
 <nav aria-label="Breadcrumb">
   <ol class="breadcrumb">
     <li><a href="/">Home</a></li>
@@ -74,18 +81,18 @@ Design and code with screen reader users in mind. Screen readers convert visual 
       <th scope="row">Widget</th>
       <td>$9.99</td>
       <td>
-        <span aria-label="Yes, in stock">✓</span>
+        <span aria-label="Yes, in stock">&#10003;</span>
       </td>
     </tr>
   </tbody>
 </table>
 
 <div class="rating" role="img" aria-label="4 out of 5 stars">
-  <span aria-hidden="true">★★★★☆</span>
+  <span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
 </div>
 
 <button class="close-btn" aria-label="Close dialog">
-  <span aria-hidden="true">×</span>
+  <span aria-hidden="true">&times;</span>
 </button>
 
 <div class="price">
@@ -120,37 +127,10 @@ Design and code with screen reader users in mind. Screen readers convert visual 
 </style>
 ```
 
-## Why
+**Benefits:**
+- Semantic breadcrumbs, tables, and landmarks provide clear navigation structure
+- Symbols and visual-only content are replaced with meaningful ARIA labels
+- Split text (prices, ratings) is announced as a single coherent value
+- Screen reader users get the same information as sighted users
 
-Screen reader compatibility is essential because:
-
-1. **Blind Users**: Screen readers are the primary way blind users access web content. Poor implementation creates an unusable experience.
-
-2. **Information Loss**: Visual-only information (icons, symbols, colors) is completely lost without proper alternatives.
-
-3. **Context**: Screen reader users hear content linearly and need proper structure to understand relationships.
-
-4. **Navigation**: Users rely on headings, landmarks, and links to navigate efficiently.
-
-Screen reader best practices:
-
-1. **Use Semantic HTML**: Native elements have built-in accessibility
-2. **Proper Heading Structure**: Use h1-h6 in logical order
-3. **Meaningful Link Text**: "Read more about pricing" not "Click here"
-4. **Table Structure**: Use `<th>`, `scope`, and `<caption>`
-5. **Alternative Text**: Describe images meaningfully
-6. **Form Labels**: Every input needs an associated label
-7. **Live Regions**: Announce dynamic content changes
-8. **Hide Decorative Content**: Use `aria-hidden="true"`
-9. **Provide Context**: Use `aria-label` and `aria-describedby`
-10. **Test with Screen Readers**: NVDA, JAWS, VoiceOver, TalkBack
-
-Common screen reader commands users rely on:
-
-- Navigate by headings (H key)
-- Navigate by landmarks (D key)
-- List all links (Insert+F7 in JAWS)
-- Navigate tables (Ctrl+Alt+Arrow keys)
-- Read from current position (Insert+Down Arrow)
-
-Testing tip: Try using your site with your monitor turned off using only a screen reader to understand the experience.
+Reference: [WCAG 1.3.1 Info and Relationships](https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html)

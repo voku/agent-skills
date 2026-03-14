@@ -1,7 +1,7 @@
 ---
 title: Provide Accessible Error Messages
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Error identification and suggestions
+impactDescription: "WCAG 2.1 Level A - Error identification and suggestions"
 tags: accessibility, forms, errors, aria, validation
 ---
 
@@ -11,10 +11,10 @@ tags: accessibility, forms, errors, aria, validation
 
 Error messages must be perceivable, understandable, and programmatically associated with their related form fields. Users should be able to identify and correct errors easily.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Poor error handling -->
+<!-- ❌ Bad: Poor error handling -->
 <form>
   <!-- Error only shown visually with color -->
   <div class="form-group error">
@@ -52,16 +52,23 @@ function validateForm() {
 </script>
 ```
 
-## Good Example
+**Problems:**
+- Color-only error indicators are invisible to color-blind users
+- Error messages not linked to inputs via `aria-describedby`
+- Generic messages do not help users identify or fix specific errors
+- Screen readers cannot discover errors that lack ARIA roles or live regions
+- JavaScript `alert()` interrupts the user and provides no field context
+
+## Correct
 
 ```html
-<!-- Correct approach: Accessible error handling -->
+<!-- ✅ Good: Accessible error handling -->
 <form novalidate aria-describedby="form-error-summary">
   <!-- Error summary at top of form -->
   <div id="form-error-summary"
        class="error-summary"
        role="alert"
-       aria-live="polite"
+       tabindex="-1"
        hidden>
     <h2>There were 2 errors with your submission</h2>
     <ul>
@@ -213,29 +220,11 @@ function showErrorSummary(errors) {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Errors are announced to screen readers via `role="alert"` live regions
+- Each error is programmatically linked to its field with `aria-describedby`
+- Error summary with links lets users jump directly to problem fields
+- Visual indicators (icons, borders, text) work alongside color for all users
+- Specific, actionable messages guide users to correct their input
 
-Accessible error messages are crucial because:
-
-1. **Screen Reader Announcement**: Errors must be announced to screen reader users through ARIA live regions or focus management.
-
-2. **Color Independence**: Color alone cannot indicate errors; icons and text are needed.
-
-3. **Error Identification**: Users must understand which field has an error and what's wrong.
-
-4. **Error Recovery**: Clear instructions help users fix mistakes.
-
-5. **WCAG Compliance**: Multiple success criteria address error handling.
-
-Error message best practices:
-
-1. **Use `aria-invalid`**: Mark erroneous inputs programmatically
-2. **Associate with Input**: Use `aria-describedby` to link error text
-3. **Use Live Regions**: `role="alert"` or `aria-live` for dynamic errors
-4. **Error Summary**: List all errors at form top with links to fields
-5. **Move Focus**: Focus error summary or first error field on submission
-6. **Be Specific**: "Email format is invalid" not "Invalid input"
-7. **Provide Solutions**: Tell users how to fix the error
-8. **Visual + Programmatic**: Combine icons, borders, and text
-9. **Persist Until Fixed**: Keep errors visible until corrected
-10. **Test with Screen Readers**: Verify errors are announced properly
+Reference: [WCAG 3.3.1 Error Identification](https://www.w3.org/WAI/WCAG21/Understanding/error-identification.html)

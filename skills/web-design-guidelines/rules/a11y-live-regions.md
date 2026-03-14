@@ -1,20 +1,20 @@
 ---
 title: Use ARIA Live Regions for Dynamic Content
 impact: HIGH
-impactDescription: WCAG 2.1 Level A - Status messages
+impactDescription: "WCAG 2.1 Level AA - Status messages"
 tags: accessibility, aria, live-regions, dynamic-content
 ---
 
 ## Use ARIA Live Regions for Dynamic Content
 
-**Impact: HIGH (WCAG 2.1 Level A - Status messages)**
+**Impact: HIGH (WCAG 2.1 Level AA - Status messages)**
 
 Use ARIA live regions to announce dynamic content changes to screen reader users. Live regions ensure that updates happening outside the user's current focus are communicated appropriately.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Dynamic updates not announced -->
+<!-- ❌ Bad: Dynamic updates not announced -->
 
 <!-- Cart count updates silently -->
 <div class="cart-count">3</div>
@@ -47,10 +47,16 @@ function submitForm() {
 </div>
 ```
 
-## Good Example
+**Problems:**
+- Screen reader users have no way of knowing content changed elsewhere on the page
+- Cart count updates, toast notifications, and search results are invisible to non-sighted users
+- Loading and submission states are not communicated
+- Dynamic content appears visually but is never announced
+
+## Correct
 
 ```html
-<!-- Correct approach: Dynamic updates properly announced -->
+<!-- ✅ Good: Dynamic updates properly announced -->
 
 <!-- Cart count with live region -->
 <div class="cart">
@@ -179,33 +185,10 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
 </script>
 ```
 
-## Why
+**Benefits:**
+- Screen reader users are notified of dynamic content changes without losing their place
+- Polite announcements wait for idle moments; assertive announcements interrupt for critical updates
+- Loading states, search results, and form feedback reach all users
+- Pre-existing live regions in the DOM ensure reliable announcement across screen readers
 
-Live regions are essential for dynamic web applications:
-
-1. **Screen Reader Awareness**: Without live regions, screen reader users have no way of knowing when content changes elsewhere on the page.
-
-2. **Async Operations**: Modern applications frequently update content via AJAX. These updates need to be communicated.
-
-3. **User Feedback**: Loading states, form submissions, and notifications must reach all users.
-
-4. **Focus Independence**: Users shouldn't need to manually check for updates.
-
-Live region attributes:
-
-- **`aria-live="polite"`**: Announces when user is idle (most common)
-- **`aria-live="assertive"`**: Interrupts immediately (use sparingly)
-- **`role="status"`**: Equivalent to `aria-live="polite"` with `aria-atomic="true"`
-- **`role="alert"`**: Equivalent to `aria-live="assertive"`
-- **`aria-atomic="true"`**: Announces entire region on change
-- **`aria-relevant`**: What types of changes to announce (additions, removals, text)
-
-Best practices:
-
-1. **Prefer Polite**: Use assertive only for critical, time-sensitive information
-2. **Pre-existing Regions**: Create live regions in initial HTML, not dynamically
-3. **Keep Concise**: Brief, meaningful announcements
-4. **Avoid Overuse**: Too many announcements overwhelm users
-5. **Update Content, Not Container**: Change the text inside the live region
-6. **Test with Screen Readers**: Behavior varies across screen readers
-7. **Combine with Visual**: Live regions supplement visual feedback
+Reference: [WCAG 4.1.3 Status Messages](https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html)

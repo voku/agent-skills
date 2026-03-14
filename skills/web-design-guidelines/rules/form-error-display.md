@@ -1,7 +1,7 @@
 ---
 title: Display Form Errors Clearly
 impact: HIGH
-impactDescription: WCAG 2.1 Level A - Error identification
+impactDescription: "WCAG 2.1 Level A - Error identification"
 tags: forms, errors, validation, accessibility, ux
 ---
 
@@ -11,10 +11,10 @@ tags: forms, errors, validation, accessibility, ux
 
 Display form errors clearly and consistently to help users identify and correct mistakes. Error messages should be visible, associated with their fields, and provide actionable guidance.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Poor error display -->
+<!-- ❌ Bad: Poor error display -->
 <form>
   <!-- Error message far from input -->
   <div class="errors">
@@ -43,15 +43,21 @@ Display form errors clearly and consistently to help users identify and correct 
 </form>
 ```
 
-## Good Example
+**Problems:**
+- Error messages far from their fields make it hard to identify which input has the problem
+- JavaScript `alert()` provides no context about specific fields
+- Color-only error indicators are invisible to color-blind users
+- Tooltip-only errors are not persistent and may not be perceived
+- Clearing valid input on error forces users to retype everything
+
+## Correct
 
 ```html
-<!-- Correct approach: Clear, accessible error display -->
+<!-- ✅ Good: Clear, accessible error display -->
 <form id="contact-form" novalidate>
   <!-- Error summary at top of form -->
   <div id="error-summary"
        role="alert"
-       aria-live="polite"
        class="error-summary"
        hidden>
     <h2>Please correct the following errors:</h2>
@@ -145,7 +151,7 @@ form.addEventListener('submit', function(e) {
   if (errors.length > 0) {
     displayErrors(errors);
   } else {
-    submitForm();
+    // submit form logic here
   }
 });
 
@@ -269,29 +275,11 @@ function clearAllErrors() {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Error summary at the top provides an overview with links to each problem field
+- Inline errors next to each field make identification immediate
+- Icons and text alongside color ensure errors are perceivable by all users
+- ARIA attributes link errors programmatically for screen readers
+- User input is preserved on error so nothing needs to be retyped
 
-Proper error display is crucial for usability and accessibility:
-
-1. **Discoverability**: Users must be able to find and understand errors quickly.
-
-2. **Association**: Errors must be clearly linked to their corresponding fields.
-
-3. **Screen Readers**: Programmatic association ensures errors are announced.
-
-4. **Persistence**: Errors should remain visible until corrected.
-
-5. **Guidance**: Messages should explain how to fix the problem.
-
-Error display best practices:
-
-1. **Inline errors**: Place error messages directly below or beside their fields
-2. **Error summary**: For forms with multiple errors, list all errors at the top
-3. **Visual indicators**: Use icons, borders, and background colors (not just color)
-4. **Persistent display**: Keep errors visible until the user corrects them
-5. **Clear language**: Tell users what went wrong and how to fix it
-6. **Focus management**: Move focus to error summary or first error field
-7. **ARIA attributes**: Use `aria-invalid`, `aria-describedby`, and live regions
-8. **Don't clear valid data**: Preserve correctly entered information
-9. **Real-time feedback**: Clear errors as soon as user corrects them
-10. **Consistent positioning**: Always show errors in the same location relative to inputs
+Reference: [WCAG 3.3.1 Error Identification](https://www.w3.org/WAI/WCAG21/Understanding/error-identification.html)

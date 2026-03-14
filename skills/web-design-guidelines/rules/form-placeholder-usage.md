@@ -1,7 +1,7 @@
 ---
 title: Use Placeholders Appropriately
 impact: MEDIUM
-impactDescription: Prevents accessibility and usability issues
+impactDescription: "Prevents accessibility and usability issues"
 tags: forms, placeholders, labels, accessibility
 ---
 
@@ -11,10 +11,10 @@ tags: forms, placeholders, labels, accessibility
 
 Use placeholders appropriately as supplementary hints, never as replacements for labels. Placeholders have significant accessibility and usability limitations.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Placeholders as labels -->
+<!-- ❌ Bad: Placeholders as labels -->
 <form>
   <!-- No visible labels - only placeholders -->
   <input type="text" placeholder="First Name">
@@ -44,10 +44,18 @@ label { display: none; }
 </style>
 ```
 
-## Good Example
+**Problems:**
+- Placeholders vanish when users start typing, removing all context
+- Users must remember what each field requires while entering data
+- Default placeholder contrast often fails WCAG minimum requirements
+- Some screen readers do not announce placeholder text
+- Browser autofill may not identify fields without proper labels
+- Users with cognitive disabilities struggle when instructions disappear
+
+## Correct
 
 ```html
-<!-- Correct approach: Labels with optional placeholder hints -->
+<!-- ✅ Good: Labels with optional placeholder hints -->
 <form>
   <div class="form-group">
     <label for="first-name">First Name</label>
@@ -160,39 +168,11 @@ label {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Visible labels persist regardless of input state, providing constant context
+- Persistent hint text via `aria-describedby` keeps format instructions available
+- Placeholders serve as supplementary examples, not primary labels
+- Screen readers announce both the label and the described-by hint text
+- Browser autofill correctly identifies fields by their labels
 
-Placeholder-only patterns have serious problems:
-
-1. **Disappearing Labels**: When users click into a field, the placeholder vanishes, leaving no context for what data is expected.
-
-2. **Memory Burden**: Users must remember what each field requires while typing.
-
-3. **Low Contrast**: Default placeholder text often has insufficient contrast (accessibility violation).
-
-4. **Translation Issues**: Placeholders may not translate well or may truncate in other languages.
-
-5. **Screen Reader Support**: Some screen readers don't announce placeholders, or announce them only once.
-
-6. **Validation Confusion**: Users may think the placeholder text is pre-filled content.
-
-7. **Autofill Issues**: Browser autofill may not correctly identify fields without labels.
-
-8. **Cognitive Load**: Users with cognitive disabilities may struggle to remember disappeared instructions.
-
-When placeholders are appropriate:
-
-- **Format examples**: `(555) 123-4567` for phone
-- **Short hints**: `e.g., blue widget` for search
-- **Optional context**: `@username` for social handles
-
-Placeholder best practices:
-
-1. Always use visible labels
-2. Keep placeholders short and supplementary
-3. Don't put critical information in placeholders
-4. Don't put required field indicators in placeholders
-5. Use `aria-describedby` for persistent hints
-6. Style placeholders distinctly from entered text
-7. Ensure placeholder contrast meets WCAG guidelines
-8. Test with the placeholder hidden to verify usability
+Reference: [MDN Placeholder Attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/placeholder)

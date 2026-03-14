@@ -1,7 +1,7 @@
 ---
 title: Design Effective Multi-Step Forms
 impact: MEDIUM
-impactDescription: Increases completion rates by 15-30%
+impactDescription: "Increases completion rates by 15-30%"
 tags: forms, multi-step, ux, progress-indication
 ---
 
@@ -11,10 +11,10 @@ tags: forms, multi-step, ux, progress-indication
 
 Design multi-step forms that are easy to navigate, maintain context, and don't overwhelm users. Break complex forms into logical, manageable steps.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Poor multi-step form -->
+<!-- ❌ Bad: Poor multi-step form -->
 <form>
   <!-- No progress indication -->
   <!-- No step numbers or titles -->
@@ -50,10 +50,18 @@ function nextStep() {
 </script>
 ```
 
-## Good Example
+**Problems:**
+- No progress indicator, so users do not know how many steps remain
+- No back navigation to return to previous steps
+- No validation before advancing, allowing incomplete data
+- No screen reader announcements for step changes
+- No data persistence if the user navigates away
+- No review step before final submission
+
+## Correct
 
 ```html
-<!-- Correct approach: Accessible multi-step form -->
+<!-- ✅ Good: Accessible multi-step form -->
 <div class="multi-step-form">
   <!-- Progress indicator -->
   <nav aria-label="Form progress">
@@ -92,7 +100,7 @@ function nextStep() {
   <form id="registration-form" novalidate>
     <!-- Step 1: Personal Information -->
     <fieldset id="step-1" class="form-step">
-      <legend>
+      <legend tabindex="-1">
         <span class="step-title">Step 1 of 3: Personal Information</span>
       </legend>
 
@@ -138,7 +146,7 @@ function nextStep() {
 
     <!-- Step 2: Address -->
     <fieldset id="step-2" class="form-step" hidden>
-      <legend>
+      <legend tabindex="-1">
         <span class="step-title">Step 2 of 3: Address</span>
       </legend>
 
@@ -209,7 +217,7 @@ function nextStep() {
 
     <!-- Step 3: Review -->
     <fieldset id="step-3" class="form-step" hidden>
-      <legend>
+      <legend tabindex="-1">
         <span class="step-title">Step 3 of 3: Review & Submit</span>
       </legend>
 
@@ -385,29 +393,12 @@ window.addEventListener('load', () => {
 </script>
 ```
 
-## Why
+**Benefits:**
+- Progress indicator shows users where they are and how much is left
+- Back navigation and edit buttons let users revisit and correct previous steps
+- Per-step validation catches errors early before advancing
+- Screen reader announcements communicate step changes
+- Data persistence via localStorage preserves progress across page reloads
+- Review step lets users verify all information before final submission
 
-Multi-step forms improve complex form UX:
-
-1. **Reduced Cognitive Load**: Breaking forms into steps prevents overwhelming users.
-
-2. **Progress Visibility**: Users know how much they've done and what's left.
-
-3. **Data Preservation**: Users can go back without losing progress.
-
-4. **Error Isolation**: Validation per step catches errors early.
-
-5. **Completion Rates**: Shorter perceived forms have higher completion rates.
-
-Multi-step form best practices:
-
-1. **Clear progress**: Show current step and total steps
-2. **Logical grouping**: Related fields together
-3. **Back navigation**: Always allow returning to previous steps
-4. **Data persistence**: Save progress (localStorage, server-side)
-5. **Step validation**: Validate before advancing
-6. **Review step**: Let users verify before submitting
-7. **Edit capability**: Allow editing previous steps from review
-8. **Focus management**: Focus first element of each step
-9. **Screen reader announcements**: Announce step changes
-10. **Save & continue later**: For long forms
+Reference: [web.dev - Multi-step Forms](https://web.dev/learn/forms/auto)

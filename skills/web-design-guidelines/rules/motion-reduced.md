@@ -1,38 +1,42 @@
 ---
 title: Respect Prefers-Reduced-Motion
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level AA - Animation from interactions
+impactDescription: "WCAG 2.1 Level AAA - Animation from interactions"
 tags: accessibility, animation, motion, vestibular
 ---
 
 ## Respect Prefers-Reduced-Motion
 
-**Impact: CRITICAL (WCAG 2.1 Level AA - Animation from interactions)**
-
-## Why It Matters
+**Impact: CRITICAL (WCAG 2.1 Level AAA - Animation from interactions)**
 
 Some users experience motion sickness, vestibular disorders, or distraction from animations. The `prefers-reduced-motion` media query lets users opt out of non-essential motion. Respecting this preference is crucial for accessibility.
 
 ## Incorrect
 
 ```tsx
-// ❌ No reduced motion consideration
+// ❌ Bad: No reduced motion consideration
 <div className="animate-bounce">
   Bouncing element
 </div>
 
-// ❌ JavaScript animations without check
+// ❌ Bad: JavaScript animations without check
 useEffect(() => {
   animate(element, { x: 100 }, { duration: 1000 })
 }, [])
 ```
+
+**Problems:**
+- Animations play regardless of user preference, triggering vestibular disorders
+- No CSS or JavaScript checks for the `prefers-reduced-motion` media query
+- Continuous animations (bounce, pulse) are especially problematic
+- Users have no way to opt out of motion on the page
 
 ## Correct
 
 ### CSS Approach
 
 ```css
-/* Base: no animation for reduced motion preference */
+/* ✅ Good: Base - no animation for reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -59,7 +63,7 @@ useEffect(() => {
 ### Tailwind CSS
 
 ```tsx
-// ✅ Use motion-reduce variant
+// ✅ Good: Use motion-reduce variant
 <div className="
   transition-transform duration-300
   hover:scale-105
@@ -69,7 +73,7 @@ useEffect(() => {
   Hover me
 </div>
 
-// ✅ Disable animation for reduced motion
+// ✅ Good: Disable animation for reduced motion
 <div className="
   animate-pulse
   motion-reduce:animate-none
@@ -77,7 +81,7 @@ useEffect(() => {
   Loading...
 </div>
 
-// ✅ Simplify rather than remove
+// ✅ Good: Simplify rather than remove
 <div className="
   transition-all duration-300 ease-out
   motion-reduce:transition-opacity motion-reduce:duration-150
@@ -89,7 +93,7 @@ useEffect(() => {
 ### JavaScript Check
 
 ```tsx
-// Hook for checking preference
+// ✅ Good: Hook for checking preference
 function usePrefersReducedMotion(): boolean {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
@@ -128,6 +132,7 @@ function AnimatedComponent() {
 ### Framer Motion Integration
 
 ```tsx
+// ✅ Good: Framer Motion reduced motion support
 import { motion, useReducedMotion } from 'framer-motion'
 
 function Card() {
@@ -151,7 +156,7 @@ function Card() {
 ### Animation with Fallback
 
 ```tsx
-// Show static alternative for reduced motion
+// ✅ Good: Show static alternative for reduced motion
 function LoadingIndicator() {
   const prefersReducedMotion = usePrefersReducedMotion()
 
@@ -164,6 +169,13 @@ function LoadingIndicator() {
   )
 }
 ```
+
+**Benefits:**
+- Users with vestibular disorders can browse without triggering motion sickness
+- Respects user OS-level preference for reduced motion
+- Reduces CPU and battery usage when animations are disabled
+- WCAG 2.3.3 Animation from Interactions compliance
+- Provides static alternatives that preserve the information conveyed by animation
 
 ## What to Keep vs Remove
 
@@ -183,7 +195,7 @@ function LoadingIndicator() {
 - State change indicators
 
 ```tsx
-// ✅ Essential feedback - keep but simplify
+// ✅ Good: Essential feedback - keep but simplify
 <button
   className={cn(
     'transition-colors',  // Color change is usually OK
@@ -212,10 +224,4 @@ function LoadingIndicator() {
 }
 ```
 
-## Benefits
-
-- Accessibility for vestibular disorders
-- Better experience for motion-sensitive users
-- Respects user preferences
-- WCAG 2.3.3 compliance
-- Reduces CPU/battery usage
+Reference: [WCAG 2.3.3 Animation from Interactions](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html)

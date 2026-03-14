@@ -1,7 +1,7 @@
 ---
 title: Maintain Proper Heading Hierarchy
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Info and Relationships
+impactDescription: "WCAG 2.1 Level A - Info and Relationships"
 tags: accessibility, headings, structure, navigation
 ---
 
@@ -11,10 +11,10 @@ tags: accessibility, headings, structure, navigation
 
 Use heading elements (h1-h6) in a logical, hierarchical order to create a clear document outline. Proper heading structure is essential for screen reader navigation and SEO.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Broken heading hierarchy -->
+<!-- ❌ Bad: Broken heading hierarchy -->
 <body>
   <!-- Skipping h1 -->
   <h2>Welcome to Our Store</h2>
@@ -41,14 +41,20 @@ Use heading elements (h1-h6) in a logical, hierarchical order to create a clear 
   </aside>
 
   <!-- Using heading for non-heading content -->
-  <h3>© 2024 Our Company</h3>
+  <h3>&copy; 2024 Our Company</h3>
 </body>
 ```
 
-## Good Example
+**Problems:**
+- Skipped heading levels break the document outline for screen reader navigation
+- Multiple `<h1>` elements confuse the page hierarchy
+- Choosing heading levels for visual styling instead of structure
+- Non-heading content (copyright) marked up as a heading misleads assistive technology
+
+## Correct
 
 ```html
-<!-- Correct approach: Logical heading hierarchy -->
+<!-- ✅ Good: Logical heading hierarchy -->
 <body>
   <header>
     <a href="/" aria-label="Home">
@@ -153,39 +159,10 @@ Use heading elements (h1-h6) in a logical, hierarchical order to create a clear 
 </style>
 ```
 
-## Why
+**Benefits:**
+- Screen reader users navigate by headings (H key) with a clear, logical outline
+- Search engines understand page structure and content importance
+- Users with cognitive disabilities can scan the document outline easily
+- CSS controls visual appearance independently of semantic heading level
 
-Proper heading hierarchy is fundamental for accessibility:
-
-1. **Screen Reader Navigation**: Users navigate by headings (H key). They rely on the hierarchy to understand document structure and jump to sections.
-
-2. **Document Outline**: Headings create an outline that helps all users understand content organization.
-
-3. **SEO**: Search engines use heading hierarchy to understand page structure and importance.
-
-4. **Cognitive Accessibility**: Clear structure helps users with cognitive disabilities process information.
-
-5. **WCAG Compliance**: Success Criterion 1.3.1 requires proper heading structure.
-
-Heading hierarchy rules:
-
-1. **One h1 per Page**: Use h1 for the main page title or topic
-2. **Don't Skip Levels**: Go h1 → h2 → h3 (not h1 → h3)
-3. **Nest Properly**: h3 should be inside h2 section, etc.
-4. **Semantic, Not Visual**: Choose heading level based on structure, not appearance
-5. **Style with CSS**: Use CSS to control visual appearance of any heading level
-6. **Headings for Structure**: Don't use headings just for bold text
-
-Screen reader heading navigation:
-- **H key**: Next heading
-- **Shift+H**: Previous heading
-- **1-6 keys**: Jump to specific heading level
-- **Insert+F6** (JAWS): Heading list
-
-Testing your heading structure:
-- Use browser extensions like HeadingsMap
-- Use screen reader heading navigation
-- Review the document outline
-- Check WAVE accessibility tool
-
-Remember: The visual size and style of headings should be controlled by CSS, not by choosing inappropriate heading levels.
+Reference: [WCAG 1.3.1 Info and Relationships](https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html)

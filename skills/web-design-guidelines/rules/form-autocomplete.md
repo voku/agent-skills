@@ -1,7 +1,7 @@
 ---
 title: Use Autocomplete Attributes for Forms
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level AA - Identify input purpose
+impactDescription: "WCAG 2.1 Level AA - Identify input purpose"
 tags: forms, autocomplete, accessibility, ux
 ---
 
@@ -9,28 +9,32 @@ tags: forms, autocomplete, accessibility, ux
 
 **Impact: CRITICAL (WCAG 2.1 Level AA - Identify input purpose)**
 
-## Why It Matters
-
 The `autocomplete` attribute enables browsers and password managers to autofill forms correctly. Proper autocomplete improves user experience, reduces errors, and is required for WCAG 1.3.5 compliance.
 
 ## Incorrect
 
 ```tsx
-// ❌ No autocomplete attributes
+// ❌ Bad: No autocomplete attributes
 <form>
   <input type="text" name="name" />
   <input type="text" name="email" />
   <input type="password" name="password" />
 </form>
 
-// ❌ Autocomplete disabled (frustrating for users)
+// ❌ Bad: Autocomplete disabled (frustrating for users)
 <input type="email" autoComplete="off" />
 ```
+
+**Problems:**
+- Browsers and password managers cannot autofill fields without autocomplete hints
+- Users must manually type every field, increasing friction and errors
+- Disabling autocomplete on login/address fields is user-hostile
+- Fails WCAG 1.3.5 Identify Input Purpose compliance
 
 ## Correct
 
 ```tsx
-// ✅ Proper autocomplete attributes
+// ✅ Good: Proper autocomplete attributes
 <form>
   {/* Name fields */}
   <input type="text" name="name" autoComplete="name" />
@@ -56,10 +60,17 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 </form>
 ```
 
+**Benefits:**
+- Faster form completion via browser and password manager autofill
+- Fewer input errors from manual typing
+- Better mobile experience with native keyboard hints
+- Password manager integration for secure credential handling
+- WCAG 1.3.5 compliance
+
 ## Login Form
 
 ```tsx
-// ✅ Login form with proper autocomplete
+// ✅ Good: Login form with proper autocomplete
 <form>
   <div>
     <label htmlFor="username">Username or Email</label>
@@ -88,7 +99,7 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 ## Registration Form
 
 ```tsx
-// ✅ Registration form
+// ✅ Good: Registration form
 <form>
   <div>
     <label htmlFor="email">Email</label>
@@ -127,7 +138,7 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 ## One-Time Codes (OTP)
 
 ```tsx
-// ✅ OTP input
+// ✅ Good: OTP input
 <div>
   <label htmlFor="otp">Verification Code</label>
   <input
@@ -169,7 +180,7 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 ## Shipping vs Billing
 
 ```tsx
-// ✅ Distinguish shipping and billing addresses
+// ✅ Good: Distinguish shipping and billing addresses
 <fieldset>
   <legend>Shipping Address</legend>
   <input
@@ -202,7 +213,7 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 ## When to Disable Autocomplete
 
 ```tsx
-// ✅ Legitimate cases to disable autocomplete
+// ✅ Good: Legitimate cases to disable autocomplete
 <input
   type="text"
   name="search"
@@ -215,16 +226,10 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
   autoComplete="off"  // CAPTCHA responses
 />
 
-// ❌ Don't disable for these (user hostile)
+// ❌ Bad: Don't disable for these (user hostile)
 <input type="email" autoComplete="off" />    // Email
 <input type="password" autoComplete="off" /> // Password
 <input type="text" name="address" autoComplete="off" /> // Address
 ```
 
-## Benefits
-
-- Faster form completion
-- Fewer input errors
-- Better mobile experience (native keyboards)
-- Password manager integration
-- WCAG 1.3.5 compliance
+Reference: [WCAG 1.3.5 Identify Input Purpose](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html)

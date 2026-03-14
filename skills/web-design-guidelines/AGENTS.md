@@ -1,39 +1,20 @@
 # Web Design Guidelines - Complete Reference
 
-**Version:** 1.0.0
-**Organization:** Web Accessibility Initiative (WAI)
-**Date:** January 2026
+**Version:** 2.0.0
+**Date:** March 2026
 **License:** MIT
 
 ## Abstract
 
-Comprehensive UI/UX and accessibility guidelines for building inclusive, performant web interfaces. Contains 21+ rules across 8 categories focused on accessibility, forms, animations, and performance. Each rule includes detailed explanations, real-world examples comparing incorrect vs. correct implementations, and specific WCAG compliance information to guide accessible web development and code review.
+WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance patterns for inclusive web interfaces. Contains 23 rules across 4 categories.
 
 ## References
 
-- [WCAG 2.2 Guidelines](https://www.w3.org/WAI/WCAG22/)
 - [WCAG 2.2 Quick Reference](https://www.w3.org/WAI/WCAG22/quickref/)
-- [ARIA Authoring Practices Guide](https://www.w3.org/WAI/ARIA/apg/)
-- [Web.dev Accessibility](https://web.dev/accessibility/)
-- [Learn Accessibility](https://web.dev/learn/accessibility/)
-- [Prefers Reduced Motion](https://web.dev/articles/prefers-reduced-motion)
-- [Cumulative Layout Shift](https://web.dev/articles/cls)
-- [Optimize CLS](https://web.dev/articles/optimize-cls)
+- [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
+- [web.dev Accessibility](https://web.dev/accessibility/)
 - [MDN Accessibility](https://developer.mozilla.org/en-US/docs/Web/Accessibility)
-- [A11y Project](https://a11yproject.com/)
-
-## Overview
-
-This guide is organized into 8 categories, prioritized by WCAG compliance levels and real-world impact on users:
-
-1. **Accessibility - Semantic Structure** (CRITICAL) - Foundation for assistive technology
-2. **Accessibility - Keyboard & Focus** (CRITICAL) - Essential for keyboard-only users
-3. **Accessibility - Visual & Color** (CRITICAL) - Perceivable content for all users
-4. **Forms - Input & Validation** (CRITICAL) - Proper form implementation
-5. **Forms - Error Handling** (HIGH) - Clear error recovery
-6. **Forms - User Experience** (MEDIUM) - Advanced form patterns
-7. **Animation & Motion** (CRITICAL) - Vestibular disorder considerations
-8. **Performance & UX** (MEDIUM) - Load time and layout stability
+- [The A11Y Project](https://a11yproject.com/)
 
 ---
 
@@ -44,53 +25,1231 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 
 ---
 
-## 1. Accessibility - Semantic Structure (a11y)
+## 1. Accessibility (a11y)
 
 **Impact:** CRITICAL
-**Description:** Semantic HTML and ARIA provide the foundation for accessible interfaces. Proper structure enables assistive technologies to understand and navigate content, directly impacting users with disabilities.
+**Description:** WCAG 2.2 compliance patterns for inclusive web interfaces. Semantic HTML structure, heading hierarchy, keyboard navigation, focus management, ARIA labels, color contrast ratios, meaningful alt text, accessible error messages, form label associations, live regions for dynamic content, skip links, and screen reader optimization.
 
-## 2. Accessibility - Keyboard & Focus (a11y)
-
-**Impact:** CRITICAL
-**Description:** Keyboard navigation and focus management are essential for users who cannot use a mouse. Missing or broken keyboard support excludes a significant portion of users.
-
-## 3. Accessibility - Visual & Color (a11y)
-
-**Impact:** CRITICAL
-**Description:** Color contrast, text sizing, and visual indicators ensure content is perceivable by users with visual impairments or color blindness.
-
-## 4. Forms - Input & Validation (form)
-
-**Impact:** CRITICAL
-**Description:** Proper form implementation with clear labels, autocomplete, and validation reduces errors and improves completion rates. Poor forms are the #1 cause of user frustration.
-
-## 5. Forms - Error Handling (form)
+## 2. Forms (form)
 
 **Impact:** HIGH
-**Description:** Clear, accessible error messages help users recover from mistakes quickly. Poor error handling leads to form abandonment.
+**Description:** Accessible and user-friendly form patterns. Autocomplete attributes for autofill, correct input types for mobile keyboards, clear error display with ARIA associations, user-friendly validation timing, inline validation with debounce, multi-step form progression, appropriate placeholder usage, and clear submission feedback.
 
-## 6. Forms - User Experience (form)
+## 3. Animation & Motion (motion)
 
-**Impact:** MEDIUM
-**Description:** Advanced form patterns like multi-step flows and inline validation improve the user experience and increase conversion rates.
+**Impact:** CRITICAL
+**Description:** Respecting user motion preferences. The prefers-reduced-motion media query detects users with vestibular disorders who need reduced or eliminated animations. WCAG 2.1 SC 2.3.3 (Level AAA) requires providing controls to disable non-essential animations.
 
-## 7. Animation & Motion (motion)
-
-**Impact:** HIGH
-**Description:** Respecting prefers-reduced-motion is critical for users with vestibular disorders. Improper animations can cause nausea, dizziness, or seizures.
-
-## 8. Performance & UX (perf)
+## 4. Performance & UX (perf)
 
 **Impact:** MEDIUM
-**Description:** Performance directly impacts user experience. Images without dimensions cause layout shifts, lazy loading improves initial load time.
+**Description:** Image loading optimization and layout stability. Preventing Cumulative Layout Shift (CLS) with explicit dimensions, lazy loading below-fold images, responsive images with modern formats, skeleton placeholders, and font loading strategies that minimize visual disruption.
+
 
 ---
 
+## Use Semantic HTML Elements
+
+**Impact: CRITICAL (WCAG 2.1 Level A - Foundation for accessibility)**
+
+Semantic HTML provides meaning to content, enabling screen readers and assistive technologies to understand page structure. It improves SEO, maintainability, and accessibility without extra effort.
+
+## Incorrect
+
+```tsx
+// ❌ Bad: Div soup - no semantic meaning
+<div className="header">
+  <div className="logo">Logo</div>
+  <div className="nav">
+    <div onClick={handleHome}>Home</div>
+    <div onClick={handleAbout}>About</div>
+  </div>
+</div>
+
+<div className="main">
+  <div className="article">
+    <div className="title">Article Title</div>
+    <div className="content">Article content...</div>
+  </div>
+  <div className="sidebar">Related links</div>
+</div>
+
+<div className="footer">
+  Copyright 2024
+</div>
+```
+
+**Problems:**
+- Screen readers cannot identify page structure
+- No keyboard navigation for "clickable" divs
+- Search engines cannot understand content hierarchy
+- Assistive technology cannot navigate sections
+
+## Correct
+
+```tsx
+// ✅ Good: Semantic HTML - meaningful structure
+<header>
+  <a href="/" aria-label="Home">Logo</a>
+  <nav aria-label="Main navigation">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <article>
+    <h1>Article Title</h1>
+    <p>Article content...</p>
+  </article>
+  <aside aria-label="Related content">
+    <h2>Related Links</h2>
+    <ul>
+      <li><a href="/related-1">Related Article 1</a></li>
+    </ul>
+  </aside>
+</main>
+
+<footer>
+  <p>Copyright 2024</p>
+</footer>
+```
+
+**Benefits:**
+- Screen readers announce page structure
+- Keyboard users can navigate by landmarks
+- Better SEO indexing
+- Easier to style with CSS
+- Future-proof and maintainable
+
+## Semantic Elements Reference
+
+| Element | Purpose | Use For |
+|---------|---------|---------|
+| `<header>` | Introductory content | Page/section headers |
+| `<nav>` | Navigation links | Main nav, breadcrumbs |
+| `<main>` | Main content | Primary page content (one per page) |
+| `<article>` | Self-contained content | Blog posts, news articles |
+| `<section>` | Thematic grouping | Chapters, tabs, grouped content |
+| `<aside>` | Tangentially related | Sidebars, pull quotes |
+| `<footer>` | Footer content | Copyright, links, contact |
+| `<figure>` | Self-contained media | Images with captions |
+| `<figcaption>` | Caption for figure | Image/chart descriptions |
+| `<time>` | Date/time | Dates, times, durations |
+| `<address>` | Contact information | Author/organization contact |
+| `<mark>` | Highlighted text | Search results highlighting |
+
+## Interactive Elements
+
+```tsx
+// ❌ Bad: Div with click handler - not accessible
+<div onClick={handleClick} className="button">
+  Click me
+</div>
+
+// ✅ Good: Button element - accessible by default
+<button onClick={handleClick}>
+  Click me
+</button>
+
+// ❌ Bad: Span as link
+<span onClick={() => navigate('/about')} className="link">
+  About
+</span>
+
+// ✅ Good: Anchor element
+<a href="/about">About</a>
+
+// ✅ Good: Link component (React Router/Next.js)
+<Link href="/about">About</Link>
+```
+
+## Headings Hierarchy
+
+```tsx
+// ❌ Bad: Skipping heading levels
+<h1>Page Title</h1>
+<h3>Section Title</h3>  {/* Skipped h2 */}
+<h5>Subsection</h5>     {/* Skipped h4 */}
+
+// ✅ Good: Proper heading hierarchy
+<h1>Page Title</h1>
+<h2>Section Title</h2>
+<h3>Subsection Title</h3>
+<h2>Another Section</h2>
+<h3>Its Subsection</h3>
+```
+
+## Lists
+
+```tsx
+// ❌ Bad: Not using lists for list content
+<div className="menu">
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+</div>
+
+// ✅ Good: Use appropriate list elements
+<ul>  {/* Unordered list */}
+  <li>Item 1</li>
+  <li>Item 2</li>
+</ul>
+
+<ol>  {/* Ordered list */}
+  <li>Step 1</li>
+  <li>Step 2</li>
+</ol>
+
+<dl>  {/* Description list */}
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+```
+
+## Tables
+
+```tsx
+// ✅ Good: Accessible table
+<table>
+  <caption>Monthly Sales Data</caption>
+  <thead>
+    <tr>
+      <th scope="col">Month</th>
+      <th scope="col">Sales</th>
+      <th scope="col">Revenue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">January</th>
+      <td>100</td>
+      <td>$10,000</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+## Common Patterns
+
+```tsx
+// Card component
+<article className="card">
+  <header>
+    <h3>Card Title</h3>
+  </header>
+  <p>Card content...</p>
+  <footer>
+    <a href="/read-more">Read more</a>
+  </footer>
+</article>
+
+// Search form
+<search>  {/* HTML5.2 element, or use role="search" */}
+  <form role="search">
+    <label htmlFor="search">Search</label>
+    <input type="search" id="search" name="q" />
+    <button type="submit">Search</button>
+  </form>
+</search>
+```
+
+Reference: [MDN Semantics](https://developer.mozilla.org/en-US/docs/Glossary/Semantics)
+
+
 ---
-title: Provide Meaningful Alt Text for Images
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Required for non-text content
-tags: accessibility, images, alt-text, screen-readers
+
+## Maintain Proper Heading Hierarchy
+
+**Impact: CRITICAL (WCAG 2.1 Level A - Info and Relationships)**
+
+Use heading elements (h1-h6) in a logical, hierarchical order to create a clear document outline. Proper heading structure is essential for screen reader navigation and SEO.
+
+## Incorrect
+
+```html
+<!-- ❌ Bad: Broken heading hierarchy -->
+<body>
+  <!-- Skipping h1 -->
+  <h2>Welcome to Our Store</h2>
+
+  <div class="hero">
+    <!-- Skipping levels (h2 to h4) -->
+    <h4>Shop the Latest Collection</h4>
+  </div>
+
+  <section>
+    <!-- Using h1 for styling purposes -->
+    <h1 class="small-heading">Featured Products</h1>
+
+    <div class="product">
+      <!-- Heading levels chosen for styling, not structure -->
+      <h5>Product Name</h5>
+      <h6>$29.99</h6>
+    </div>
+  </section>
+
+  <aside>
+    <!-- Multiple h1s on the page -->
+    <h1>Special Offers</h1>
+  </aside>
+
+  <!-- Using heading for non-heading content -->
+  <h3>&copy; 2024 Our Company</h3>
+</body>
+```
+
+**Problems:**
+- Skipped heading levels break the document outline for screen reader navigation
+- Multiple `<h1>` elements confuse the page hierarchy
+- Choosing heading levels for visual styling instead of structure
+- Non-heading content (copyright) marked up as a heading misleads assistive technology
+
+## Correct
+
+```html
+<!-- ✅ Good: Logical heading hierarchy -->
+<body>
+  <header>
+    <a href="/" aria-label="Home">
+      <img src="logo.svg" alt="Acme Store">
+    </a>
+  </header>
+
+  <!-- Single h1 for main page title -->
+  <main>
+    <h1>Welcome to Acme Store</h1>
+
+    <section aria-labelledby="hero-heading">
+      <h2 id="hero-heading">Shop the Latest Collection</h2>
+      <p>Discover our new arrivals for the season.</p>
+    </section>
+
+    <section aria-labelledby="featured-heading">
+      <h2 id="featured-heading">Featured Products</h2>
+
+      <article class="product">
+        <h3>Wireless Headphones</h3>
+        <p class="price">$29.99</p>
+        <p>High-quality audio with 20-hour battery life.</p>
+      </article>
+
+      <article class="product">
+        <h3>Smart Watch</h3>
+        <p class="price">$199.99</p>
+        <p>Track your fitness and stay connected.</p>
+
+        <!-- Sub-sections within product -->
+        <section>
+          <h4>Key Features</h4>
+          <ul>
+            <li>Heart rate monitor</li>
+            <li>GPS tracking</li>
+            <li>Water resistant</li>
+          </ul>
+        </section>
+
+        <section>
+          <h4>Customer Reviews</h4>
+          <div class="review">
+            <h5>Great product!</h5>
+            <p>Exceeded my expectations...</p>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section aria-labelledby="categories-heading">
+      <h2 id="categories-heading">Shop by Category</h2>
+
+      <div class="category">
+        <h3>Electronics</h3>
+        <ul>
+          <li><a href="/electronics/phones">Phones</a></li>
+          <li><a href="/electronics/tablets">Tablets</a></li>
+        </ul>
+      </div>
+
+      <div class="category">
+        <h3>Clothing</h3>
+        <ul>
+          <li><a href="/clothing/mens">Men's</a></li>
+          <li><a href="/clothing/womens">Women's</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <aside aria-labelledby="offers-heading">
+    <h2 id="offers-heading">Special Offers</h2>
+    <p>Get 20% off your first order!</p>
+  </aside>
+
+  <footer>
+    <!-- Non-heading content styled differently -->
+    <p><small>&copy; 2024 Acme Store. All rights reserved.</small></p>
+  </footer>
+</body>
+
+<style>
+/* Style headings independently of their level */
+.product h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.product h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+}
+
+/* Utility for visually styling any element as a heading */
+.looks-like-h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+</style>
+```
+
+**Benefits:**
+- Screen reader users navigate by headings (H key) with a clear, logical outline
+- Search engines understand page structure and content importance
+- Users with cognitive disabilities can scan the document outline easily
+- CSS controls visual appearance independently of semantic heading level
+
+Reference: [WCAG 1.3.1 Info and Relationships](https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html)
+
+
+---
+
+## Optimize for Screen Reader Compatibility
+
+**Impact: CRITICAL (WCAG 2.1 Level A - Perceivable and operable)**
+
+Design and code with screen reader users in mind. Screen readers convert visual content to audio output, requiring careful attention to how information is structured and announced.
+
+## Incorrect
+
+```html
+<!-- ❌ Bad: Poor screen reader experience -->
+<div class="breadcrumb">
+  Home > Products > Electronics > Phones
+</div>
+
+<table>
+  <tr>
+    <td>Name</td>
+    <td>Price</td>
+    <td>Stock</td>
+  </tr>
+  <tr>
+    <td>Widget</td>
+    <td>$9.99</td>
+    <td>&#10003;</td>
+  </tr>
+</table>
+
+<div class="rating">
+  &#9733;&#9733;&#9733;&#9733;&#9734;
+</div>
+
+<button class="close-btn">&times;</button>
+
+<div class="price">
+  <span class="currency">$</span>
+  <span class="dollars">29</span>
+  <span class="cents">99</span>
+</div>
+
+<img src="chart.png">
+```
+
+**Problems:**
+- Breadcrumbs as plain text lose navigation structure and meaning
+- Tables without `<th>`, `scope`, or `<caption>` are unnavigable by screen readers
+- Star ratings, symbols, and split price text are announced as gibberish
+- Close button with only a symbol has no accessible name
+- Images without alt text are invisible to screen reader users
+
+## Correct
+
+```html
+<!-- ✅ Good: Screen reader optimized -->
+<nav aria-label="Breadcrumb">
+  <ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li><a href="/products">Products</a></li>
+    <li><a href="/products/electronics">Electronics</a></li>
+    <li aria-current="page">Phones</li>
+  </ol>
+</nav>
+
+<table>
+  <caption>Product Inventory</caption>
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">In Stock</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Widget</th>
+      <td>$9.99</td>
+      <td>
+        <span aria-label="Yes, in stock">&#10003;</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="rating" role="img" aria-label="4 out of 5 stars">
+  <span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+</div>
+
+<button class="close-btn" aria-label="Close dialog">
+  <span aria-hidden="true">&times;</span>
+</button>
+
+<div class="price">
+  <span class="visually-hidden">Price: $29.99</span>
+  <span aria-hidden="true">
+    <span class="currency">$</span>
+    <span class="dollars">29</span>
+    <span class="cents">99</span>
+  </span>
+</div>
+
+<figure>
+  <img src="chart.png" alt="Sales chart showing 25% growth in Q4">
+  <figcaption>
+    Quarterly sales data for 2024. Q4 shows the highest growth at 25%.
+  </figcaption>
+</figure>
+
+<!-- Visually hidden utility class -->
+<style>
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+</style>
+```
+
+**Benefits:**
+- Semantic breadcrumbs, tables, and landmarks provide clear navigation structure
+- Symbols and visual-only content are replaced with meaningful ARIA labels
+- Split text (prices, ratings) is announced as a single coherent value
+- Screen reader users get the same information as sighted users
+
+Reference: [WCAG 1.3.1 Info and Relationships](https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html)
+
+
+---
+
+## Provide Skip Links for Navigation
+
+**Impact: HIGH (WCAG 2.1 Level A - Bypass blocks)**
+
+Provide skip links to allow keyboard and screen reader users to bypass repetitive content and navigate directly to main content areas.
+
+## Incorrect
+
+```html
+<!-- ❌ Bad: No skip links -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Website</title>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/services">Services</a>
+      <a href="/products">Products</a>
+      <a href="/portfolio">Portfolio</a>
+      <a href="/blog">Blog</a>
+      <a href="/contact">Contact</a>
+      <!-- 20+ more links in mega menu -->
+    </nav>
+  </header>
+  <main>
+    <h1>Welcome</h1>
+    <!-- User must tab through ALL nav links to reach this content -->
+  </main>
+</body>
+</html>
+```
+
+**Problems:**
+- Keyboard users must tab through every navigation link on every page to reach main content
+- Screen reader users have no shortcut to bypass repetitive header content
+- Users with motor disabilities waste effort on repeated key presses
+- No mechanism to jump between major page sections
+
+## Correct
+
+```html
+<!-- ✅ Good: Comprehensive skip links -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Website</title>
+  <style>
+    .skip-links {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -10000px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      padding: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .skip-link:focus {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      outline: 3px solid #005fcc;
+      outline-offset: 2px;
+    }
+
+    /* Smooth scroll for skip link targets */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Ensure skip link targets are focusable */
+    [id]:target {
+      scroll-margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="skip-links">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <a href="#main-nav" class="skip-link">Skip to navigation</a>
+    <a href="#search" class="skip-link">Skip to search</a>
+    <a href="#footer" class="skip-link">Skip to footer</a>
+  </div>
+
+  <header>
+    <form id="search" role="search" tabindex="-1">
+      <label for="search-input" class="visually-hidden">Search</label>
+      <input type="search" id="search-input" placeholder="Search...">
+      <button type="submit">Search</button>
+    </form>
+
+    <nav id="main-nav" aria-label="Main navigation" tabindex="-1">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/services">Services</a>
+      <a href="/products">Products</a>
+      <a href="/portfolio">Portfolio</a>
+      <a href="/blog">Blog</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <h1>Welcome to Our Website</h1>
+    <p>Main content starts here...</p>
+
+    <!-- For long pages, provide in-page skip links -->
+    <nav aria-label="Page sections">
+      <h2>On this page</h2>
+      <ul>
+        <li><a href="#section-1">Introduction</a></li>
+        <li><a href="#section-2">Features</a></li>
+        <li><a href="#section-3">Pricing</a></li>
+      </ul>
+    </nav>
+
+    <section id="section-1" tabindex="-1">
+      <h2>Introduction</h2>
+      <!-- Content -->
+    </section>
+
+    <section id="section-2" tabindex="-1">
+      <h2>Features</h2>
+      <!-- Content -->
+    </section>
+
+    <section id="section-3" tabindex="-1">
+      <h2>Pricing</h2>
+      <!-- Content -->
+    </section>
+  </main>
+
+  <footer id="footer" tabindex="-1">
+    <p>&copy; 2024 My Website</p>
+  </footer>
+</body>
+</html>
+```
+
+**Benefits:**
+- Keyboard users can bypass navigation and jump directly to main content
+- Screen reader users get a consistent, fast way to reach key page sections
+- Motor-impaired users reduce the number of key presses needed
+- In-page navigation helps users of long pages find content quickly
+
+Reference: [WCAG 2.4.1 Bypass Blocks](https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html)
+
+
+---
+
+## Ensure Full Keyboard Navigation
+
+**Impact: CRITICAL (WCAG 2.1 Level A - Required for keyboard-only users)**
+
+Ensure all interactive elements and functionality are fully accessible via keyboard. Users should be able to navigate, activate, and interact with all features without requiring a mouse.
+
+## Incorrect
+
+```html
+<!-- ❌ Bad: Click-only interactions -->
+<div class="card" onclick="showDetails()">
+  <img src="product.jpg">
+  <span class="title">Product Name</span>
+</div>
+
+<span class="link" onclick="navigate('/page')">Go to page</span>
+
+<div class="dropdown">
+  <div class="trigger" onclick="toggleMenu()">Menu</div>
+  <div class="menu">
+    <div class="item" onclick="selectItem(1)">Option 1</div>
+    <div class="item" onclick="selectItem(2)">Option 2</div>
+    <div class="item" onclick="selectItem(3)">Option 3</div>
+  </div>
+</div>
+
+<div class="slider" onmousedown="startDrag()">
+  <div class="handle"></div>
+</div>
+```
+
+**Problems:**
+- `<div>` and `<span>` elements are not focusable or activatable by keyboard
+- Click-only handlers exclude all keyboard and switch-device users
+- No ARIA roles or states to communicate component behavior to assistive technology
+- Custom slider has no keyboard interaction pattern
+
+## Correct
+
+```html
+<!-- ✅ Good: Full keyboard support -->
+<article class="card"
+         tabindex="0"
+         role="button"
+         onclick="showDetails()"
+         onkeydown="handleCardKey(event)">
+  <img src="product.jpg" alt="Product Name - Blue Widget">
+  <h3 class="title">Product Name</h3>
+</article>
+
+<a href="/page" class="link">Go to page</a>
+
+<div class="dropdown">
+  <button class="trigger"
+          aria-expanded="false"
+          aria-haspopup="menu"
+          onclick="toggleMenu()"
+          onkeydown="handleTriggerKey(event)">
+    Menu
+  </button>
+  <ul class="menu" role="menu" hidden>
+    <li role="menuitem" tabindex="-1" onkeydown="handleMenuKey(event, 0)">Option 1</li>
+    <li role="menuitem" tabindex="-1" onkeydown="handleMenuKey(event, 1)">Option 2</li>
+    <li role="menuitem" tabindex="-1" onkeydown="handleMenuKey(event, 2)">Option 3</li>
+  </ul>
+</div>
+
+<div class="slider"
+     role="slider"
+     tabindex="0"
+     aria-valuemin="0"
+     aria-valuemax="100"
+     aria-valuenow="50"
+     aria-label="Volume"
+     onkeydown="handleSliderKey(event)">
+  <div class="handle"></div>
+</div>
+
+<script>
+function handleCardKey(event) {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    showDetails();
+  }
+}
+
+function handleTriggerKey(event) {
+  switch (event.key) {
+    case 'ArrowDown':
+    case 'Enter':
+    case ' ':
+      event.preventDefault();
+      openMenu();
+      focusFirstItem();
+      break;
+    case 'Escape':
+      closeMenu();
+      break;
+  }
+}
+
+function handleMenuKey(event, index) {
+  switch (event.key) {
+    case 'ArrowDown':
+      event.preventDefault();
+      focusNextItem(index);
+      break;
+    case 'ArrowUp':
+      event.preventDefault();
+      focusPrevItem(index);
+      break;
+    case 'Enter':
+    case ' ':
+      event.preventDefault();
+      selectItem(index);
+      closeMenu();
+      break;
+    case 'Escape':
+      closeMenu();
+      focusTrigger();
+      break;
+  }
+}
+
+function handleSliderKey(event) {
+  const slider = event.target;
+  let value = parseInt(slider.getAttribute('aria-valuenow'));
+
+  switch (event.key) {
+    case 'ArrowRight':
+    case 'ArrowUp':
+      event.preventDefault();
+      value = Math.min(100, value + 1);
+      break;
+    case 'ArrowLeft':
+    case 'ArrowDown':
+      event.preventDefault();
+      value = Math.max(0, value - 1);
+      break;
+    case 'PageUp':
+      event.preventDefault();
+      value = Math.min(100, value + 10);
+      break;
+    case 'PageDown':
+      event.preventDefault();
+      value = Math.max(0, value - 10);
+      break;
+    case 'Home':
+      event.preventDefault();
+      value = 0;
+      break;
+    case 'End':
+      event.preventDefault();
+      value = 100;
+      break;
+  }
+
+  slider.setAttribute('aria-valuenow', value);
+  updateSliderPosition(value);
+}
+</script>
+```
+
+**Benefits:**
+- All interactive elements are reachable and operable via keyboard
+- Standard keyboard patterns (Enter, Space, Arrow keys, Escape) are implemented
+- ARIA roles and states communicate component behavior to screen readers
+- Native HTML elements (`<a>`, `<button>`) provide built-in keyboard support
+
+Reference: [WCAG 2.1.1 Keyboard](https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html)
+
+
+---
+
+## Manage Keyboard Focus Properly
+
+**Impact: CRITICAL (WCAG 2.1 Level A - Focus order and visibility)**
+
+Manage keyboard focus intentionally to create a logical, predictable navigation experience. Focus should follow the user's expectations and never get lost or trapped.
+
+## Incorrect
+
+```html
+<!-- ❌ Bad: Poor focus management -->
+<div class="modal" style="display: block;">
+  <div class="modal-content">
+    <h2>Delete Item?</h2>
+    <p>This action cannot be undone.</p>
+    <button onclick="closeModal()">Cancel</button>
+    <button onclick="deleteItem()">Delete</button>
+  </div>
+</div>
+<!-- Focus stays on the trigger button behind the modal -->
+
+<script>
+function openModal() {
+  document.querySelector('.modal').style.display = 'block';
+  // No focus management - user is lost
+}
+
+function closeModal() {
+  document.querySelector('.modal').style.display = 'none';
+  // Focus doesn't return to trigger
+}
+</script>
+```
+
+```css
+/* ❌ Bad: Removing focus indicator entirely */
+*:focus {
+  outline: none;
+}
+```
+
+**Problems:**
+- Modal opens without moving focus, leaving keyboard users stranded behind the overlay
+- Focus is not trapped inside the modal, so users can tab to hidden content
+- Closing the modal does not return focus to the trigger element
+- Removing all focus outlines makes keyboard navigation impossible
+
+## Correct
+
+```html
+<!-- ✅ Good: Proper focus management -->
+<button id="delete-trigger" onclick="openModal()">Delete Item</button>
+
+<div class="modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="modal-title"
+     hidden>
+  <div class="modal-content">
+    <h2 id="modal-title">Delete Item?</h2>
+    <p>This action cannot be undone.</p>
+    <button id="cancel-btn" onclick="closeModal()">Cancel</button>
+    <button onclick="deleteItem()">Delete</button>
+  </div>
+</div>
+
+<script>
+let lastFocusedElement;
+
+function openModal() {
+  lastFocusedElement = document.activeElement;
+  const modal = document.querySelector('.modal');
+  modal.hidden = false;
+
+  // Move focus to first focusable element
+  document.getElementById('cancel-btn').focus();
+
+  // Trap focus within modal
+  modal.addEventListener('keydown', trapFocus);
+}
+
+function closeModal() {
+  const modal = document.querySelector('.modal');
+  modal.hidden = true;
+  modal.removeEventListener('keydown', trapFocus);
+
+  // Return focus to trigger element
+  lastFocusedElement.focus();
+}
+
+function trapFocus(e) {
+  if (e.key !== 'Tab') return;
+
+  const focusableElements = e.currentTarget.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  );
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
+
+  if (e.shiftKey && document.activeElement === firstElement) {
+    lastElement.focus();
+    e.preventDefault();
+  } else if (!e.shiftKey && document.activeElement === lastElement) {
+    firstElement.focus();
+    e.preventDefault();
+  }
+}
+</script>
+```
+
+```css
+/* ✅ Good: Custom focus indicator */
+*:focus {
+  outline: 2px solid #005fcc;
+  outline-offset: 2px;
+}
+
+/* Enhanced focus for better visibility */
+*:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.3);
+}
+```
+
+**Benefits:**
+- Focus moves into the modal on open, so keyboard users interact with the correct content
+- Focus trap prevents users from accidentally leaving the modal
+- Focus returns to the trigger element on close, preserving navigation context
+- Custom focus indicators ensure keyboard navigation is always visible
+
+Reference: [WCAG 2.4.3 Focus Order](https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html)
+
+
+---
+
+## Add ARIA Labels to Interactive Elements
+
+**Impact: CRITICAL (WCAG 2.1 Level A - Provides accessible names)**
+
+Use ARIA (Accessible Rich Internet Applications) labels to provide accessible names and descriptions for elements that lack visible text or need additional context for assistive technologies.
+
+## Incorrect
+
+```html
+<!-- ❌ Bad: Missing accessible names -->
+<button>
+  <svg viewBox="0 0 24 24">
+    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+  </svg>
+</button>
+
+<div class="search-box">
+  <input type="text">
+  <button>
+    <img src="search-icon.png">
+  </button>
+</div>
+
+<nav>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+</nav>
+<nav>
+  <ul>
+    <li><a href="/docs">Documentation</a></li>
+    <li><a href="/api">API Reference</a></li>
+  </ul>
+</nav>
+```
+
+**Problems:**
+- Icon-only buttons have no accessible name for screen readers
+- Search input has no label, so users do not know its purpose
+- Multiple `<nav>` elements are indistinguishable without ARIA labels
+- Decorative SVGs are announced unnecessarily by assistive technology
+
+## Correct
+
+```html
+<!-- ✅ Good: Using ARIA labels appropriately -->
+<button aria-label="Add new item">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+  </svg>
+</button>
+
+<div class="search-box" role="search">
+  <label for="site-search" class="visually-hidden">Search the site</label>
+  <input type="text" id="site-search" aria-describedby="search-hint">
+  <span id="search-hint" class="visually-hidden">Press Enter to search</span>
+  <button aria-label="Submit search">
+    <img src="search-icon.png" alt="" aria-hidden="true">
+  </button>
+</div>
+
+<nav aria-label="Main navigation">
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+</nav>
+<nav aria-label="Documentation navigation">
+  <ul>
+    <li><a href="/docs">Documentation</a></li>
+    <li><a href="/api">API Reference</a></li>
+  </ul>
+</nav>
+```
+
+**Benefits:**
+- Screen reader users can identify and activate icon-only buttons
+- Multiple navigation regions are distinguishable
+- Decorative elements are hidden from assistive technology with `aria-hidden="true"`
+- Supplementary context is provided via `aria-describedby`
+
+Reference: [WCAG 4.1.2 Name, Role, Value](https://www.w3.org/WAI/WCAG21/Understanding/name-role-value.html)
+
+
+---
+
+## Ensure Sufficient Color Contrast
+
+**Impact: CRITICAL (WCAG 2.1 Level AA - 4.5:1 for text, 3:1 for large text)**
+
+Ensure sufficient color contrast between text and backgrounds to make content readable for users with low vision or color blindness.
+
+## Incorrect
+
+```css
+/* ❌ Bad: Insufficient contrast ratios */
+.hero-text {
+  color: #999999; /* Gray text */
+  background-color: #ffffff; /* White background */
+  /* Contrast ratio: 2.85:1 - FAILS */
+}
+
+.subtle-text {
+  color: #b3b3b3;
+  background-color: #f5f5f5;
+  /* Contrast ratio: 1.63:1 - FAILS */
+}
+
+.button-primary {
+  color: #ffffff;
+  background-color: #66b3ff; /* Light blue */
+  /* Contrast ratio: 2.48:1 - FAILS */
+}
+
+.link {
+  color: #6699ff; /* Light blue link on white */
+  /* Contrast ratio: 3.03:1 - FAILS for normal text */
+}
+
+.placeholder {
+  color: #cccccc; /* Placeholder text */
+  /* Too light to read */
+}
+```
+
+```html
+<!-- ❌ Bad: Relying only on color -->
+<p>Required fields are marked in <span style="color: red;">red</span>.</p>
+<input type="text" style="border-color: red;">
+```
+
+**Problems:**
+- Low contrast text is unreadable for users with low vision
+- Color-only indicators are invisible to color-blind users
+- Light placeholders fail WCAG minimum contrast requirements
+- Users in bright environments or on low-quality screens cannot read the text
+
+## Correct
+
+```css
+/* ✅ Good: WCAG compliant contrast ratios */
+.hero-text {
+  color: #595959; /* Darker gray */
+  background-color: #ffffff;
+  /* Contrast ratio: 7:1 - PASSES AAA */
+}
+
+.body-text {
+  color: #333333;
+  background-color: #ffffff;
+  /* Contrast ratio: 12.63:1 - PASSES AAA */
+}
+
+.button-primary {
+  color: #ffffff;
+  background-color: #0066cc; /* Darker blue */
+  /* Contrast ratio: 7.05:1 - PASSES AAA */
+}
+
+.link {
+  color: #0055aa; /* Darker blue link */
+  text-decoration: underline;
+  /* Contrast ratio: 7.28:1 - PASSES AAA */
+}
+
+.link:hover,
+.link:focus {
+  color: #003366;
+  text-decoration: none;
+  background-color: #e6f0ff;
+}
+
+/* Large text can have lower contrast (3:1 minimum) */
+.large-heading {
+  font-size: 24px;
+  font-weight: bold;
+  color: #666666;
+  background-color: #ffffff;
+  /* Contrast ratio: 5.74:1 - PASSES AA for large text */
+}
+
+/* Input placeholder with sufficient contrast */
+.input::placeholder {
+  color: #757575;
+  /* Contrast ratio: 4.6:1 - PASSES AA */
+}
+```
+
+```html
+<!-- ✅ Good: Color plus additional indicators -->
+<p>Required fields are marked with an asterisk (*).</p>
+<label for="email">
+  Email <span aria-hidden="true">*</span>
+  <span class="visually-hidden">required</span>
+</label>
+<input type="email" id="email" required aria-required="true">
+
+<!-- Error state with icon and text, not just color -->
+<div class="error-message" role="alert">
+  <svg aria-hidden="true" class="error-icon"><!-- X icon --></svg>
+  <span>Please enter a valid email address</span>
+</div>
+```
+
+**Benefits:**
+- Text is readable by users with low vision and color deficiencies
+- Content remains accessible in bright sunlight or on low-quality screens
+- Non-color indicators ensure information reaches all users
+- Meets WCAG AA and AAA contrast requirements
+
+Reference: [WCAG 1.4.3 Contrast (Minimum)](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)
+
+
 ---
 
 ## Provide Meaningful Alt Text for Images
@@ -99,10 +1258,10 @@ tags: accessibility, images, alt-text, screen-readers
 
 Provide meaningful alternative text for images that conveys the purpose and content of the image to users who cannot see it.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Missing or poor alt text -->
+<!-- ❌ Bad: Missing or poor alt text -->
 <img src="hero.jpg">
 
 <img src="logo.png" alt="logo">
@@ -126,10 +1285,17 @@ Provide meaningful alternative text for images that conveys the purpose and cont
 </a>
 ```
 
-## Good Example
+**Problems:**
+- Missing alt text makes images invisible to screen reader users
+- Generic alt text ("logo", "image") provides no meaningful context
+- File names as alt text are meaningless
+- Decorative images with alt text create noise for screen readers
+- Redundant alt text on icons alongside visible text causes double announcements
+
+## Correct
 
 ```html
-<!-- Correct approach: Meaningful, contextual alt text -->
+<!-- ✅ Good: Meaningful, contextual alt text -->
 
 <!-- Informative image: describe content and purpose -->
 <img src="hero.jpg" alt="Team of developers collaborating around a whiteboard filled with code diagrams">
@@ -189,318 +1355,16 @@ Provide meaningful alternative text for images that conveys the purpose and cont
 </div>
 ```
 
-## Why
+**Benefits:**
+- Screen reader users understand the purpose and content of every image
+- Images degrade gracefully when they fail to load
+- Search engines can index image content for better SEO
+- Users with cognitive disabilities gain additional context
+- Legal compliance with WCAG non-text content requirements
 
-Alt text is critical for accessibility and SEO:
+Reference: [WCAG 1.1.1 Non-text Content](https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html)
 
-1. **Screen Reader Users**: Alt text is read aloud by screen readers, providing context for visual content.
 
-2. **Image Load Failures**: Alt text displays when images fail to load.
-
-3. **Search Engines**: Alt text helps search engines understand image content.
-
-4. **Cognitive Disabilities**: Alt text can help users understand the purpose of images.
-
-5. **Legal Compliance**: WCAG requires text alternatives for non-text content.
-
-Alt text guidelines:
-
-**Informative Images:**
-- Describe the content and function
-- Be concise but complete (usually under 125 characters)
-- Don't start with "Image of" or "Picture of"
-- Include relevant details based on context
-
-**Decorative Images:**
-- Use empty alt (`alt=""`)
-- Add `role="presentation"` for clarity
-- CSS background images are inherently decorative
-
-**Functional Images (buttons/links):**
-- Describe the action, not the appearance
-- "Submit form" not "Green button"
-
-**Complex Images (charts, diagrams):**
-- Provide brief alt text
-- Offer detailed description via `<figcaption>`, link, or `aria-describedby`
-
-**Images of Text:**
-- Include all the text in the alt
-- Better: use actual text instead of images
-
-**Image Links:**
-- Describe the destination
-- "View product details" not "thumbnail image"
-
-Testing tip: Ask yourself: "If I couldn't see this image, what information would I need?"
-
----
-
----
-title: Add ARIA Labels to Interactive Elements
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Provides accessible names
-tags: accessibility, aria, labels, screen-readers
----
-
-## Add ARIA Labels to Interactive Elements
-
-**Impact: CRITICAL (WCAG 2.1 Level A - Provides accessible names)**
-
-Use ARIA (Accessible Rich Internet Applications) labels to provide accessible names and descriptions for elements that lack visible text or need additional context for assistive technologies.
-
-## Bad Example
-
-```html
-<!-- Anti-pattern: Missing accessible names -->
-<button>
-  <svg viewBox="0 0 24 24">
-    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-  </svg>
-</button>
-
-<div class="search-box">
-  <input type="text">
-  <button>
-    <img src="search-icon.png">
-  </button>
-</div>
-
-<nav>
-  <ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/about">About</a></li>
-  </ul>
-</nav>
-<nav>
-  <ul>
-    <li><a href="/docs">Documentation</a></li>
-    <li><a href="/api">API Reference</a></li>
-  </ul>
-</nav>
-```
-
-## Good Example
-
-```html
-<!-- Correct approach: Using ARIA labels appropriately -->
-<button aria-label="Add new item">
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-  </svg>
-</button>
-
-<div class="search-box" role="search">
-  <label for="site-search" class="visually-hidden">Search the site</label>
-  <input type="text" id="site-search" aria-describedby="search-hint">
-  <span id="search-hint" class="visually-hidden">Press Enter to search</span>
-  <button aria-label="Submit search">
-    <img src="search-icon.png" alt="" aria-hidden="true">
-  </button>
-</div>
-
-<nav aria-label="Main navigation">
-  <ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/about">About</a></li>
-  </ul>
-</nav>
-<nav aria-label="Documentation navigation">
-  <ul>
-    <li><a href="/docs">Documentation</a></li>
-    <li><a href="/api">API Reference</a></li>
-  </ul>
-</nav>
-```
-
-## Why
-
-ARIA labels are essential for accessibility because:
-
-1. **Icon-only Buttons**: Buttons with only icons have no accessible name without ARIA labels. Screen reader users won't know what the button does.
-
-2. **Distinguishing Repeated Elements**: When a page has multiple navigation regions, ARIA labels help users distinguish between them.
-
-3. **Custom Components**: Interactive elements built with non-semantic HTML require ARIA to communicate their purpose and state.
-
-4. **Additional Context**: `aria-describedby` provides supplementary information that helps users understand how to interact with an element.
-
-Key ARIA label attributes:
-
-- **`aria-label`**: Provides an accessible name directly on the element
-- **`aria-labelledby`**: References another element's ID to use its text as the accessible name
-- **`aria-describedby`**: References another element for additional descriptive text
-- **`aria-hidden="true"`**: Hides decorative elements from assistive technologies
-
-Best practices:
-
-1. Prefer visible text over ARIA labels when possible
-2. Don't duplicate visible text with aria-label
-3. Keep labels concise but descriptive
-4. Test with screen readers to verify the experience
-5. Use `aria-hidden="true"` for decorative icons to prevent redundant announcements
-
----
-
----
-title: Ensure Sufficient Color Contrast
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level AA - 4.5:1 for text, 3:1 for large text
-tags: accessibility, color, contrast, visual
----
-
-## Ensure Sufficient Color Contrast
-
-**Impact: CRITICAL (WCAG 2.1 Level AA - 4.5:1 for text, 3:1 for large text)**
-
-Ensure sufficient color contrast between text and backgrounds to make content readable for users with low vision or color blindness.
-
-## Bad Example
-
-```css
-/* Anti-pattern: Insufficient contrast ratios */
-.hero-text {
-  color: #999999; /* Gray text */
-  background-color: #ffffff; /* White background */
-  /* Contrast ratio: 2.85:1 - FAILS */
-}
-
-.subtle-text {
-  color: #b3b3b3;
-  background-color: #f5f5f5;
-  /* Contrast ratio: 1.63:1 - FAILS */
-}
-
-.button-primary {
-  color: #ffffff;
-  background-color: #66b3ff; /* Light blue */
-  /* Contrast ratio: 2.48:1 - FAILS */
-}
-
-.link {
-  color: #6699ff; /* Light blue link on white */
-  /* Contrast ratio: 3.03:1 - FAILS for normal text */
-}
-
-.placeholder {
-  color: #cccccc; /* Placeholder text */
-  /* Too light to read */
-}
-```
-
-```html
-<!-- Anti-pattern: Relying only on color -->
-<p>Required fields are marked in <span style="color: red;">red</span>.</p>
-<input type="text" style="border-color: red;">
-```
-
-## Good Example
-
-```css
-/* Correct approach: WCAG compliant contrast ratios */
-.hero-text {
-  color: #595959; /* Darker gray */
-  background-color: #ffffff;
-  /* Contrast ratio: 7:1 - PASSES AAA */
-}
-
-.body-text {
-  color: #333333;
-  background-color: #ffffff;
-  /* Contrast ratio: 12.63:1 - PASSES AAA */
-}
-
-.button-primary {
-  color: #ffffff;
-  background-color: #0066cc; /* Darker blue */
-  /* Contrast ratio: 7.05:1 - PASSES AAA */
-}
-
-.link {
-  color: #0055aa; /* Darker blue link */
-  text-decoration: underline;
-  /* Contrast ratio: 7.28:1 - PASSES AAA */
-}
-
-.link:hover,
-.link:focus {
-  color: #003366;
-  text-decoration: none;
-  background-color: #e6f0ff;
-}
-
-/* Large text can have lower contrast (3:1 minimum) */
-.large-heading {
-  font-size: 24px;
-  font-weight: bold;
-  color: #666666;
-  background-color: #ffffff;
-  /* Contrast ratio: 5.74:1 - PASSES AA for large text */
-}
-
-/* Input placeholder with sufficient contrast */
-.input::placeholder {
-  color: #757575;
-  /* Contrast ratio: 4.6:1 - PASSES AA */
-}
-```
-
-```html
-<!-- Correct approach: Color plus additional indicators -->
-<p>Required fields are marked with an asterisk (*).</p>
-<label for="email">
-  Email <span aria-hidden="true">*</span>
-  <span class="visually-hidden">required</span>
-</label>
-<input type="email" id="email" required aria-required="true">
-
-<!-- Error state with icon and text, not just color -->
-<div class="error-message" role="alert">
-  <svg aria-hidden="true" class="error-icon"><!-- X icon --></svg>
-  <span>Please enter a valid email address</span>
-</div>
-```
-
-## Why
-
-Adequate color contrast is crucial because:
-
-1. **Low Vision**: Approximately 1 in 12 men and 1 in 200 women have some form of color vision deficiency.
-
-2. **Aging Eyes**: Contrast sensitivity decreases with age. The elderly population often needs higher contrast.
-
-3. **Environmental Factors**: Bright sunlight, glare, or low-quality screens can reduce perceived contrast.
-
-4. **Legal Compliance**: WCAG guidelines require specific contrast ratios, and many laws reference WCAG.
-
-WCAG contrast requirements:
-
-- **Normal text (under 18pt or 14pt bold)**: 4.5:1 minimum (AA), 7:1 enhanced (AAA)
-- **Large text (18pt+ or 14pt+ bold)**: 3:1 minimum (AA), 4.5:1 enhanced (AAA)
-- **UI components and graphics**: 3:1 minimum against adjacent colors
-
-Best practices:
-
-- Use contrast checking tools during design and development
-- Test with different types of color blindness simulators
-- Never rely on color alone to convey information
-- Provide alternative indicators (icons, patterns, text labels)
-- Consider providing a high-contrast mode
-- Test on different devices and in various lighting conditions
-
-Recommended tools:
-- WebAIM Contrast Checker
-- Chrome DevTools Accessibility panel
-- Stark (Figma/Sketch plugin)
-- Color Oracle (color blindness simulator)
-
----
-
----
-title: Provide Accessible Error Messages
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Error identification and suggestions
-tags: accessibility, forms, errors, aria, validation
 ---
 
 ## Provide Accessible Error Messages
@@ -509,10 +1373,10 @@ tags: accessibility, forms, errors, aria, validation
 
 Error messages must be perceivable, understandable, and programmatically associated with their related form fields. Users should be able to identify and correct errors easily.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Poor error handling -->
+<!-- ❌ Bad: Poor error handling -->
 <form>
   <!-- Error only shown visually with color -->
   <div class="form-group error">
@@ -550,16 +1414,23 @@ function validateForm() {
 </script>
 ```
 
-## Good Example
+**Problems:**
+- Color-only error indicators are invisible to color-blind users
+- Error messages not linked to inputs via `aria-describedby`
+- Generic messages do not help users identify or fix specific errors
+- Screen readers cannot discover errors that lack ARIA roles or live regions
+- JavaScript `alert()` interrupts the user and provides no field context
+
+## Correct
 
 ```html
-<!-- Correct approach: Accessible error handling -->
+<!-- ✅ Good: Accessible error handling -->
 <form novalidate aria-describedby="form-error-summary">
   <!-- Error summary at top of form -->
   <div id="form-error-summary"
        class="error-summary"
        role="alert"
-       aria-live="polite"
+       tabindex="-1"
        hidden>
     <h2>There were 2 errors with your submission</h2>
     <ul>
@@ -711,190 +1582,16 @@ function showErrorSummary(errors) {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Errors are announced to screen readers via `role="alert"` live regions
+- Each error is programmatically linked to its field with `aria-describedby`
+- Error summary with links lets users jump directly to problem fields
+- Visual indicators (icons, borders, text) work alongside color for all users
+- Specific, actionable messages guide users to correct their input
 
-Accessible error messages are crucial because:
+Reference: [WCAG 3.3.1 Error Identification](https://www.w3.org/WAI/WCAG21/Understanding/error-identification.html)
 
-1. **Screen Reader Announcement**: Errors must be announced to screen reader users through ARIA live regions or focus management.
 
-2. **Color Independence**: Color alone cannot indicate errors; icons and text are needed.
-
-3. **Error Identification**: Users must understand which field has an error and what's wrong.
-
-4. **Error Recovery**: Clear instructions help users fix mistakes.
-
-5. **WCAG Compliance**: Multiple success criteria address error handling.
-
-Error message best practices:
-
-1. **Use `aria-invalid`**: Mark erroneous inputs programmatically
-2. **Associate with Input**: Use `aria-describedby` to link error text
-3. **Use Live Regions**: `role="alert"` or `aria-live` for dynamic errors
-4. **Error Summary**: List all errors at form top with links to fields
-5. **Move Focus**: Focus error summary or first error field on submission
-6. **Be Specific**: "Email format is invalid" not "Invalid input"
-7. **Provide Solutions**: Tell users how to fix the error
-8. **Visual + Programmatic**: Combine icons, borders, and text
-9. **Persist Until Fixed**: Keep errors visible until corrected
-10. **Test with Screen Readers**: Verify errors are announced properly
-
----
-
----
-title: Manage Keyboard Focus Properly
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Focus order and visibility
-tags: accessibility, keyboard, focus, navigation, modals
----
-
-## Manage Keyboard Focus Properly
-
-**Impact: CRITICAL (WCAG 2.1 Level A - Focus order and visibility)**
-
-Manage keyboard focus intentionally to create a logical, predictable navigation experience. Focus should follow the user's expectations and never get lost or trapped.
-
-## Bad Example
-
-```html
-<!-- Anti-pattern: Poor focus management -->
-<div class="modal" style="display: block;">
-  <div class="modal-content">
-    <h2>Delete Item?</h2>
-    <p>This action cannot be undone.</p>
-    <button onclick="closeModal()">Cancel</button>
-    <button onclick="deleteItem()">Delete</button>
-  </div>
-</div>
-<!-- Focus stays on the trigger button behind the modal -->
-
-<script>
-function openModal() {
-  document.querySelector('.modal').style.display = 'block';
-  // No focus management - user is lost
-}
-
-function closeModal() {
-  document.querySelector('.modal').style.display = 'none';
-  // Focus doesn't return to trigger
-}
-</script>
-```
-
-```css
-/* Anti-pattern: Removing focus indicator entirely */
-*:focus {
-  outline: none;
-}
-```
-
-## Good Example
-
-```html
-<!-- Correct approach: Proper focus management -->
-<button id="delete-trigger" onclick="openModal()">Delete Item</button>
-
-<div class="modal"
-     role="dialog"
-     aria-modal="true"
-     aria-labelledby="modal-title"
-     hidden>
-  <div class="modal-content">
-    <h2 id="modal-title">Delete Item?</h2>
-    <p>This action cannot be undone.</p>
-    <button id="cancel-btn" onclick="closeModal()">Cancel</button>
-    <button onclick="deleteItem()">Delete</button>
-  </div>
-</div>
-
-<script>
-let lastFocusedElement;
-
-function openModal() {
-  lastFocusedElement = document.activeElement;
-  const modal = document.querySelector('.modal');
-  modal.hidden = false;
-
-  // Move focus to first focusable element
-  document.getElementById('cancel-btn').focus();
-
-  // Trap focus within modal
-  modal.addEventListener('keydown', trapFocus);
-}
-
-function closeModal() {
-  const modal = document.querySelector('.modal');
-  modal.hidden = true;
-  modal.removeEventListener('keydown', trapFocus);
-
-  // Return focus to trigger element
-  lastFocusedElement.focus();
-}
-
-function trapFocus(e) {
-  if (e.key !== 'Tab') return;
-
-  const focusableElements = modal.querySelectorAll(
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-  );
-  const firstElement = focusableElements[0];
-  const lastElement = focusableElements[focusableElements.length - 1];
-
-  if (e.shiftKey && document.activeElement === firstElement) {
-    lastElement.focus();
-    e.preventDefault();
-  } else if (!e.shiftKey && document.activeElement === lastElement) {
-    firstElement.focus();
-    e.preventDefault();
-  }
-}
-</script>
-```
-
-```css
-/* Correct approach: Custom focus indicator */
-*:focus {
-  outline: 2px solid #005fcc;
-  outline-offset: 2px;
-}
-
-/* Enhanced focus for better visibility */
-*:focus-visible {
-  outline: 3px solid #005fcc;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.3);
-}
-```
-
-## Why
-
-Proper focus management is critical for keyboard and screen reader users:
-
-1. **Keyboard Navigation**: Users who can't use a mouse rely entirely on keyboard navigation. Focus must be visible and logical.
-
-2. **Modal Dialogs**: Focus must be trapped within modals to prevent users from accidentally interacting with content behind the modal.
-
-3. **Focus Restoration**: When closing modals or completing actions, focus should return to a logical position, usually the trigger element.
-
-4. **Page Transitions**: After dynamic content loads or pages change in SPAs, focus should move to the new content or a logical starting point.
-
-5. **Skip to Content**: Allow users to bypass repetitive navigation and jump to main content.
-
-Focus management principles:
-
-- Never remove focus indicators entirely
-- Customize focus styles to match your design while maintaining visibility
-- Use `tabindex="0"` to make custom elements focusable
-- Use `tabindex="-1"` to make elements programmatically focusable but not in tab order
-- Never use positive tabindex values as they disrupt natural document order
-- Test focus flow by navigating your entire page using only the keyboard
-
----
-
----
-title: Associate Labels with Form Inputs
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Info and Relationships
-tags: accessibility, forms, labels, inputs
 ---
 
 ## Associate Labels with Form Inputs
@@ -903,10 +1600,10 @@ tags: accessibility, forms, labels, inputs
 
 Every form input must have an associated label that clearly identifies its purpose. Labels are essential for screen reader users and improve usability for all users.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Missing or improper labels -->
+<!-- ❌ Bad: Missing or improper labels -->
 <form>
   <!-- No label at all -->
   <input type="text" placeholder="Enter your name">
@@ -936,10 +1633,17 @@ Every form input must have an associated label that clearly identifies its purpo
 </form>
 ```
 
-## Good Example
+**Problems:**
+- Screen readers announce nothing when inputs lack associated labels
+- Placeholders vanish on focus, leaving users with no context
+- Mismatched `for`/`id` breaks the programmatic association
+- Non-`<label>` elements do not provide click-to-focus behavior
+- Voice control users cannot target inputs without proper labels
+
+## Correct
 
 ```html
-<!-- Correct approach: Properly associated labels -->
+<!-- ✅ Good: Properly associated labels -->
 <form>
   <!-- Explicit label association with for/id -->
   <div class="form-group">
@@ -1058,443 +1762,28 @@ Every form input must have an associated label that clearly identifies its purpo
 </style>
 ```
 
-## Why
+**Benefits:**
+- Screen readers announce the label when an input receives focus
+- Clicking a label focuses its associated input, increasing the click target
+- Voice control users can identify and interact with inputs by label text
+- Grouped inputs with `<fieldset>`/`<legend>` provide clear context for related fields
+- Meets WCAG requirements for programmatically associated labels
 
-Form labels are essential for multiple reasons:
+Reference: [WCAG 1.3.1 Info and Relationships](https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html)
 
-1. **Screen Readers**: Labels are read aloud when inputs receive focus, telling users what information is expected.
 
-2. **Click Target**: Clicking a label focuses/activates its associated input, improving usability for all users.
-
-3. **Voice Control**: Users of voice recognition software use labels to identify and interact with inputs.
-
-4. **Cognitive Accessibility**: Clear labels help users understand what information is needed.
-
-5. **Legal Compliance**: WCAG requires programmatically associated labels.
-
-Label best practices:
-
-1. **Always Associate Labels**: Use `for`/`id` or wrap inputs in labels
-2. **Position Consistently**: Labels above or to the left of inputs
-3. **Use Placeholder Appropriately**: As hints, not replacements for labels
-4. **Group Related Inputs**: Use `<fieldset>` and `<legend>`
-5. **Indicate Required Fields**: Use both visual and programmatic indicators
-6. **Add Helper Text**: Use `aria-describedby` for additional instructions
-7. **Keep Labels Visible**: Hidden labels should be last resort
-8. **Be Descriptive**: "Email Address" not just "Email"
-9. **Avoid Instructions in Labels**: "Enter your email" should be "Email Address"
-
----
-
----
-title: Maintain Proper Heading Hierarchy
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Info and Relationships
-tags: accessibility, headings, structure, navigation
----
-
-## Maintain Proper Heading Hierarchy
-
-**Impact: CRITICAL (WCAG 2.1 Level A - Info and Relationships)**
-
-Use heading elements (h1-h6) in a logical, hierarchical order to create a clear document outline. Proper heading structure is essential for screen reader navigation and SEO.
-
-## Bad Example
-
-```html
-<!-- Anti-pattern: Broken heading hierarchy -->
-<body>
-  <!-- Skipping h1 -->
-  <h2>Welcome to Our Store</h2>
-
-  <div class="hero">
-    <!-- Skipping levels (h2 to h4) -->
-    <h4>Shop the Latest Collection</h4>
-  </div>
-
-  <section>
-    <!-- Using h1 for styling purposes -->
-    <h1 class="small-heading">Featured Products</h1>
-
-    <div class="product">
-      <!-- Heading levels chosen for styling, not structure -->
-      <h5>Product Name</h5>
-      <h6>$29.99</h6>
-    </div>
-  </section>
-
-  <aside>
-    <!-- Multiple h1s on the page -->
-    <h1>Special Offers</h1>
-  </aside>
-
-  <!-- Using heading for non-heading content -->
-  <h3>© 2024 Our Company</h3>
-</body>
-```
-
-## Good Example
-
-```html
-<!-- Correct approach: Logical heading hierarchy -->
-<body>
-  <header>
-    <a href="/" aria-label="Home">
-      <img src="logo.svg" alt="Acme Store">
-    </a>
-  </header>
-
-  <!-- Single h1 for main page title -->
-  <main>
-    <h1>Welcome to Acme Store</h1>
-
-    <section aria-labelledby="hero-heading">
-      <h2 id="hero-heading">Shop the Latest Collection</h2>
-      <p>Discover our new arrivals for the season.</p>
-    </section>
-
-    <section aria-labelledby="featured-heading">
-      <h2 id="featured-heading">Featured Products</h2>
-
-      <article class="product">
-        <h3>Wireless Headphones</h3>
-        <p class="price">$29.99</p>
-        <p>High-quality audio with 20-hour battery life.</p>
-      </article>
-
-      <article class="product">
-        <h3>Smart Watch</h3>
-        <p class="price">$199.99</p>
-        <p>Track your fitness and stay connected.</p>
-
-        <!-- Sub-sections within product -->
-        <section>
-          <h4>Key Features</h4>
-          <ul>
-            <li>Heart rate monitor</li>
-            <li>GPS tracking</li>
-            <li>Water resistant</li>
-          </ul>
-        </section>
-
-        <section>
-          <h4>Customer Reviews</h4>
-          <div class="review">
-            <h5>Great product!</h5>
-            <p>Exceeded my expectations...</p>
-          </div>
-        </section>
-      </article>
-    </section>
-
-    <section aria-labelledby="categories-heading">
-      <h2 id="categories-heading">Shop by Category</h2>
-
-      <div class="category">
-        <h3>Electronics</h3>
-        <ul>
-          <li><a href="/electronics/phones">Phones</a></li>
-          <li><a href="/electronics/tablets">Tablets</a></li>
-        </ul>
-      </div>
-
-      <div class="category">
-        <h3>Clothing</h3>
-        <ul>
-          <li><a href="/clothing/mens">Men's</a></li>
-          <li><a href="/clothing/womens">Women's</a></li>
-        </ul>
-      </div>
-    </section>
-  </main>
-
-  <aside aria-labelledby="offers-heading">
-    <h2 id="offers-heading">Special Offers</h2>
-    <p>Get 20% off your first order!</p>
-  </aside>
-
-  <footer>
-    <!-- Non-heading content styled differently -->
-    <p><small>&copy; 2024 Acme Store. All rights reserved.</small></p>
-  </footer>
-</body>
-
-<style>
-/* Style headings independently of their level */
-.product h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.product h4 {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #666;
-}
-
-/* Utility for visually styling any element as a heading */
-.looks-like-h2 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-</style>
-```
-
-## Why
-
-Proper heading hierarchy is fundamental for accessibility:
-
-1. **Screen Reader Navigation**: Users navigate by headings (H key). They rely on the hierarchy to understand document structure and jump to sections.
-
-2. **Document Outline**: Headings create an outline that helps all users understand content organization.
-
-3. **SEO**: Search engines use heading hierarchy to understand page structure and importance.
-
-4. **Cognitive Accessibility**: Clear structure helps users with cognitive disabilities process information.
-
-5. **WCAG Compliance**: Success Criterion 1.3.1 requires proper heading structure.
-
-Heading hierarchy rules:
-
-1. **One h1 per Page**: Use h1 for the main page title or topic
-2. **Don't Skip Levels**: Go h1 → h2 → h3 (not h1 → h3)
-3. **Nest Properly**: h3 should be inside h2 section, etc.
-4. **Semantic, Not Visual**: Choose heading level based on structure, not appearance
-5. **Style with CSS**: Use CSS to control visual appearance of any heading level
-6. **Headings for Structure**: Don't use headings just for bold text
-
-Screen reader heading navigation:
-- **H key**: Next heading
-- **Shift+H**: Previous heading
-- **1-6 keys**: Jump to specific heading level
-- **Insert+F6** (JAWS): Heading list
-
-Testing your heading structure:
-- Use browser extensions like HeadingsMap
-- Use screen reader heading navigation
-- Review the document outline
-- Check WAVE accessibility tool
-
-Remember: The visual size and style of headings should be controlled by CSS, not by choosing inappropriate heading levels.
-
----
-
----
-title: Ensure Full Keyboard Navigation
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Required for keyboard-only users
-tags: accessibility, keyboard, focus, navigation
----
-
-## Ensure Full Keyboard Navigation
-
-**Impact: CRITICAL (WCAG 2.1 Level A - Required for keyboard-only users)**
-
-Ensure all interactive elements and functionality are fully accessible via keyboard. Users should be able to navigate, activate, and interact with all features without requiring a mouse.
-
-## Bad Example
-
-```html
-<!-- Anti-pattern: Click-only interactions -->
-<div class="card" onclick="showDetails()">
-  <img src="product.jpg">
-  <span class="title">Product Name</span>
-</div>
-
-<span class="link" onclick="navigate('/page')">Go to page</span>
-
-<div class="dropdown">
-  <div class="trigger" onclick="toggleMenu()">Menu</div>
-  <div class="menu">
-    <div class="item" onclick="selectItem(1)">Option 1</div>
-    <div class="item" onclick="selectItem(2)">Option 2</div>
-    <div class="item" onclick="selectItem(3)">Option 3</div>
-  </div>
-</div>
-
-<div class="slider" onmousedown="startDrag()">
-  <div class="handle"></div>
-</div>
-```
-
-## Good Example
-
-```html
-<!-- Correct approach: Full keyboard support -->
-<article class="card"
-         tabindex="0"
-         role="button"
-         onclick="showDetails()"
-         onkeydown="handleCardKey(event)">
-  <img src="product.jpg" alt="Product Name - Blue Widget">
-  <h3 class="title">Product Name</h3>
-</article>
-
-<a href="/page" class="link">Go to page</a>
-
-<div class="dropdown">
-  <button class="trigger"
-          aria-expanded="false"
-          aria-haspopup="menu"
-          onclick="toggleMenu()"
-          onkeydown="handleTriggerKey(event)">
-    Menu
-  </button>
-  <ul class="menu" role="menu" hidden>
-    <li role="menuitem" tabindex="-1" onkeydown="handleMenuKey(event, 0)">Option 1</li>
-    <li role="menuitem" tabindex="-1" onkeydown="handleMenuKey(event, 1)">Option 2</li>
-    <li role="menuitem" tabindex="-1" onkeydown="handleMenuKey(event, 2)">Option 3</li>
-  </ul>
-</div>
-
-<div class="slider"
-     role="slider"
-     tabindex="0"
-     aria-valuemin="0"
-     aria-valuemax="100"
-     aria-valuenow="50"
-     aria-label="Volume"
-     onkeydown="handleSliderKey(event)">
-  <div class="handle"></div>
-</div>
-
-<script>
-function handleCardKey(event) {
-  if (event.key === 'Enter' || event.key === ' ') {
-    event.preventDefault();
-    showDetails();
-  }
-}
-
-function handleTriggerKey(event) {
-  switch (event.key) {
-    case 'ArrowDown':
-    case 'Enter':
-    case ' ':
-      event.preventDefault();
-      openMenu();
-      focusFirstItem();
-      break;
-    case 'Escape':
-      closeMenu();
-      break;
-  }
-}
-
-function handleMenuKey(event, index) {
-  switch (event.key) {
-    case 'ArrowDown':
-      event.preventDefault();
-      focusNextItem(index);
-      break;
-    case 'ArrowUp':
-      event.preventDefault();
-      focusPrevItem(index);
-      break;
-    case 'Enter':
-    case ' ':
-      event.preventDefault();
-      selectItem(index);
-      closeMenu();
-      break;
-    case 'Escape':
-      closeMenu();
-      focusTrigger();
-      break;
-  }
-}
-
-function handleSliderKey(event) {
-  const slider = event.target;
-  let value = parseInt(slider.getAttribute('aria-valuenow'));
-
-  switch (event.key) {
-    case 'ArrowRight':
-    case 'ArrowUp':
-      event.preventDefault();
-      value = Math.min(100, value + 1);
-      break;
-    case 'ArrowLeft':
-    case 'ArrowDown':
-      event.preventDefault();
-      value = Math.max(0, value - 1);
-      break;
-    case 'PageUp':
-      event.preventDefault();
-      value = Math.min(100, value + 10);
-      break;
-    case 'PageDown':
-      event.preventDefault();
-      value = Math.max(0, value - 10);
-      break;
-    case 'Home':
-      event.preventDefault();
-      value = 0;
-      break;
-    case 'End':
-      event.preventDefault();
-      value = 100;
-      break;
-  }
-
-  slider.setAttribute('aria-valuenow', value);
-  updateSliderPosition(value);
-}
-</script>
-```
-
-## Why
-
-Keyboard accessibility is essential because:
-
-1. **Motor Disabilities**: Many users cannot use a mouse due to motor impairments and rely on keyboard or switch devices.
-
-2. **Screen Reader Users**: Screen reader users primarily navigate using keyboard commands.
-
-3. **Power Users**: Many users prefer keyboard navigation for efficiency.
-
-4. **Temporary Situations**: Broken mouse, using a laptop trackpad, or repetitive strain injury.
-
-5. **Legal Requirements**: WCAG and accessibility laws require keyboard accessibility.
-
-Standard keyboard patterns:
-
-- **Tab/Shift+Tab**: Move between focusable elements
-- **Enter/Space**: Activate buttons and links
-- **Arrow keys**: Navigate within components (menus, tabs, sliders)
-- **Escape**: Close modals, menus, or cancel operations
-- **Home/End**: Jump to first/last item in a list
-- **Page Up/Down**: Scroll or move by larger increments
-
-Best practices:
-
-- Use native HTML elements when possible (they have built-in keyboard support)
-- Implement standard keyboard patterns for custom components
-- Test your entire application using only the keyboard
-- Provide visible focus indicators
-- Avoid keyboard traps (except in modals)
-- Document any non-standard keyboard shortcuts
-
----
-
----
-title: Use ARIA Live Regions for Dynamic Content
-impact: HIGH
-impactDescription: WCAG 2.1 Level A - Status messages
-tags: accessibility, aria, live-regions, dynamic-content
 ---
 
 ## Use ARIA Live Regions for Dynamic Content
 
-**Impact: HIGH (WCAG 2.1 Level A - Status messages)**
+**Impact: HIGH (WCAG 2.1 Level AA - Status messages)**
 
 Use ARIA live regions to announce dynamic content changes to screen reader users. Live regions ensure that updates happening outside the user's current focus are communicated appropriately.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Dynamic updates not announced -->
+<!-- ❌ Bad: Dynamic updates not announced -->
 
 <!-- Cart count updates silently -->
 <div class="cart-count">3</div>
@@ -1527,10 +1816,16 @@ function submitForm() {
 </div>
 ```
 
-## Good Example
+**Problems:**
+- Screen reader users have no way of knowing content changed elsewhere on the page
+- Cart count updates, toast notifications, and search results are invisible to non-sighted users
+- Loading and submission states are not communicated
+- Dynamic content appears visually but is never announced
+
+## Correct
 
 ```html
-<!-- Correct approach: Dynamic updates properly announced -->
+<!-- ✅ Good: Dynamic updates properly announced -->
 
 <!-- Cart count with live region -->
 <div class="cart">
@@ -1659,638 +1954,47 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
 </script>
 ```
 
-## Why
+**Benefits:**
+- Screen reader users are notified of dynamic content changes without losing their place
+- Polite announcements wait for idle moments; assertive announcements interrupt for critical updates
+- Loading states, search results, and form feedback reach all users
+- Pre-existing live regions in the DOM ensure reliable announcement across screen readers
 
-Live regions are essential for dynamic web applications:
+Reference: [WCAG 4.1.3 Status Messages](https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html)
 
-1. **Screen Reader Awareness**: Without live regions, screen reader users have no way of knowing when content changes elsewhere on the page.
 
-2. **Async Operations**: Modern applications frequently update content via AJAX. These updates need to be communicated.
-
-3. **User Feedback**: Loading states, form submissions, and notifications must reach all users.
-
-4. **Focus Independence**: Users shouldn't need to manually check for updates.
-
-Live region attributes:
-
-- **`aria-live="polite"`**: Announces when user is idle (most common)
-- **`aria-live="assertive"`**: Interrupts immediately (use sparingly)
-- **`role="status"`**: Equivalent to `aria-live="polite"` with `aria-atomic="true"`
-- **`role="alert"`**: Equivalent to `aria-live="assertive"`
-- **`aria-atomic="true"`**: Announces entire region on change
-- **`aria-relevant`**: What types of changes to announce (additions, removals, text)
-
-Best practices:
-
-1. **Prefer Polite**: Use assertive only for critical, time-sensitive information
-2. **Pre-existing Regions**: Create live regions in initial HTML, not dynamically
-3. **Keep Concise**: Brief, meaningful announcements
-4. **Avoid Overuse**: Too many announcements overwhelm users
-5. **Update Content, Not Container**: Change the text inside the live region
-6. **Test with Screen Readers**: Behavior varies across screen readers
-7. **Combine with Visual**: Live regions supplement visual feedback
-
----
-
----
-title: Optimize for Screen Reader Compatibility
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Perceivable and operable
-tags: accessibility, screen-readers, semantic-html, aria
----
-
-## Optimize for Screen Reader Compatibility
-
-**Impact: CRITICAL (WCAG 2.1 Level A - Perceivable and operable)**
-
-Design and code with screen reader users in mind. Screen readers convert visual content to audio output, requiring careful attention to how information is structured and announced.
-
-## Bad Example
-
-```html
-<!-- Anti-pattern: Poor screen reader experience -->
-<div class="breadcrumb">
-  Home > Products > Electronics > Phones
-</div>
-
-<table>
-  <tr>
-    <td>Name</td>
-    <td>Price</td>
-    <td>Stock</td>
-  </tr>
-  <tr>
-    <td>Widget</td>
-    <td>$9.99</td>
-    <td>✓</td>
-  </tr>
-</table>
-
-<div class="rating">
-  ★★★★☆
-</div>
-
-<button class="close-btn">×</button>
-
-<div class="price">
-  <span class="currency">$</span>
-  <span class="dollars">29</span>
-  <span class="cents">99</span>
-</div>
-
-<img src="chart.png">
-```
-
-## Good Example
-
-```html
-<!-- Correct approach: Screen reader optimized -->
-<nav aria-label="Breadcrumb">
-  <ol class="breadcrumb">
-    <li><a href="/">Home</a></li>
-    <li><a href="/products">Products</a></li>
-    <li><a href="/products/electronics">Electronics</a></li>
-    <li aria-current="page">Phones</li>
-  </ol>
-</nav>
-
-<table>
-  <caption>Product Inventory</caption>
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Price</th>
-      <th scope="col">In Stock</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">Widget</th>
-      <td>$9.99</td>
-      <td>
-        <span aria-label="Yes, in stock">✓</span>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<div class="rating" role="img" aria-label="4 out of 5 stars">
-  <span aria-hidden="true">★★★★☆</span>
-</div>
-
-<button class="close-btn" aria-label="Close dialog">
-  <span aria-hidden="true">×</span>
-</button>
-
-<div class="price">
-  <span class="visually-hidden">Price: $29.99</span>
-  <span aria-hidden="true">
-    <span class="currency">$</span>
-    <span class="dollars">29</span>
-    <span class="cents">99</span>
-  </span>
-</div>
-
-<figure>
-  <img src="chart.png" alt="Sales chart showing 25% growth in Q4">
-  <figcaption>
-    Quarterly sales data for 2024. Q4 shows the highest growth at 25%.
-  </figcaption>
-</figure>
-
-<!-- Visually hidden utility class -->
-<style>
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-</style>
-```
-
-## Why
-
-Screen reader compatibility is essential because:
-
-1. **Blind Users**: Screen readers are the primary way blind users access web content. Poor implementation creates an unusable experience.
-
-2. **Information Loss**: Visual-only information (icons, symbols, colors) is completely lost without proper alternatives.
-
-3. **Context**: Screen reader users hear content linearly and need proper structure to understand relationships.
-
-4. **Navigation**: Users rely on headings, landmarks, and links to navigate efficiently.
-
-Screen reader best practices:
-
-1. **Use Semantic HTML**: Native elements have built-in accessibility
-2. **Proper Heading Structure**: Use h1-h6 in logical order
-3. **Meaningful Link Text**: "Read more about pricing" not "Click here"
-4. **Table Structure**: Use `<th>`, `scope`, and `<caption>`
-5. **Alternative Text**: Describe images meaningfully
-6. **Form Labels**: Every input needs an associated label
-7. **Live Regions**: Announce dynamic content changes
-8. **Hide Decorative Content**: Use `aria-hidden="true"`
-9. **Provide Context**: Use `aria-label` and `aria-describedby`
-10. **Test with Screen Readers**: NVDA, JAWS, VoiceOver, TalkBack
-
-Common screen reader commands users rely on:
-
-- Navigate by headings (H key)
-- Navigate by landmarks (D key)
-- List all links (Insert+F7 in JAWS)
-- Navigate tables (Ctrl+Alt+Arrow keys)
-- Read from current position (Insert+Down Arrow)
-
-Testing tip: Try using your site with your monitor turned off using only a screen reader to understand the experience.
-
----
-
----
-title: Use Semantic HTML Elements
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Foundation for accessibility
-tags: accessibility, semantic-html, screen-readers, seo
----
-
-## Use Semantic HTML Elements
-
-**Impact: CRITICAL (WCAG 2.1 Level A - Foundation for accessibility)**
-
-## Why It Matters
-
-Semantic HTML provides meaning to content, enabling screen readers and assistive technologies to understand page structure. It improves SEO, maintainability, and accessibility without extra effort.
-
-## Incorrect
-
-```tsx
-// ❌ Div soup - no semantic meaning
-<div className="header">
-  <div className="logo">Logo</div>
-  <div className="nav">
-    <div onClick={handleHome}>Home</div>
-    <div onClick={handleAbout}>About</div>
-  </div>
-</div>
-
-<div className="main">
-  <div className="article">
-    <div className="title">Article Title</div>
-    <div className="content">Article content...</div>
-  </div>
-  <div className="sidebar">Related links</div>
-</div>
-
-<div className="footer">
-  Copyright 2024
-</div>
-```
-
-**Problems:**
-- Screen readers can't identify page structure
-- No keyboard navigation for "clickable" divs
-- Search engines can't understand content hierarchy
-- Assistive technology can't navigate sections
-
-## Correct
-
-```tsx
-// ✅ Semantic HTML - meaningful structure
-<header>
-  <a href="/" aria-label="Home">Logo</a>
-  <nav aria-label="Main navigation">
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/about">About</a></li>
-    </ul>
-  </nav>
-</header>
-
-<main>
-  <article>
-    <h1>Article Title</h1>
-    <p>Article content...</p>
-  </article>
-  <aside aria-label="Related content">
-    <h2>Related Links</h2>
-    <ul>
-      <li><a href="/related-1">Related Article 1</a></li>
-    </ul>
-  </aside>
-</main>
-
-<footer>
-  <p>Copyright 2024</p>
-</footer>
-```
-
-## Semantic Elements Reference
-
-| Element | Purpose | Use For |
-|---------|---------|---------|
-| `<header>` | Introductory content | Page/section headers |
-| `<nav>` | Navigation links | Main nav, breadcrumbs |
-| `<main>` | Main content | Primary page content (one per page) |
-| `<article>` | Self-contained content | Blog posts, news articles |
-| `<section>` | Thematic grouping | Chapters, tabs, grouped content |
-| `<aside>` | Tangentially related | Sidebars, pull quotes |
-| `<footer>` | Footer content | Copyright, links, contact |
-| `<figure>` | Self-contained media | Images with captions |
-| `<figcaption>` | Caption for figure | Image/chart descriptions |
-| `<time>` | Date/time | Dates, times, durations |
-| `<address>` | Contact information | Author/organization contact |
-| `<mark>` | Highlighted text | Search results highlighting |
-
-## Interactive Elements
-
-```tsx
-// ❌ Div with click handler - not accessible
-<div onClick={handleClick} className="button">
-  Click me
-</div>
-
-// ✅ Button element - accessible by default
-<button onClick={handleClick}>
-  Click me
-</button>
-
-// ❌ Span as link
-<span onClick={() => navigate('/about')} className="link">
-  About
-</span>
-
-// ✅ Anchor element
-<a href="/about">About</a>
-
-// ✅ Link component (React Router/Next.js)
-<Link href="/about">About</Link>
-```
-
-## Headings Hierarchy
-
-```tsx
-// ❌ Skipping heading levels
-<h1>Page Title</h1>
-<h3>Section Title</h3>  {/* Skipped h2 */}
-<h5>Subsection</h5>     {/* Skipped h4 */}
-
-// ✅ Proper heading hierarchy
-<h1>Page Title</h1>
-<h2>Section Title</h2>
-<h3>Subsection Title</h3>
-<h2>Another Section</h2>
-<h3>Its Subsection</h3>
-```
-
-## Lists
-
-```tsx
-// ❌ Not using lists for list content
-<div className="menu">
-  <div>Item 1</div>
-  <div>Item 2</div>
-  <div>Item 3</div>
-</div>
-
-// ✅ Use appropriate list elements
-<ul>  {/* Unordered list */}
-  <li>Item 1</li>
-  <li>Item 2</li>
-</ul>
-
-<ol>  {/* Ordered list */}
-  <li>Step 1</li>
-  <li>Step 2</li>
-</ol>
-
-<dl>  {/* Description list */}
-  <dt>Term</dt>
-  <dd>Definition</dd>
-</dl>
-```
-
-## Tables
-
-```tsx
-// ✅ Accessible table
-<table>
-  <caption>Monthly Sales Data</caption>
-  <thead>
-    <tr>
-      <th scope="col">Month</th>
-      <th scope="col">Sales</th>
-      <th scope="col">Revenue</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">January</th>
-      <td>100</td>
-      <td>$10,000</td>
-    </tr>
-  </tbody>
-</table>
-```
-
-## Common Patterns
-
-```tsx
-// Card component
-<article className="card">
-  <header>
-    <h3>Card Title</h3>
-  </header>
-  <p>Card content...</p>
-  <footer>
-    <a href="/read-more">Read more</a>
-  </footer>
-</article>
-
-// Search form
-<search>  {/* HTML5.2 element, or use role="search" */}
-  <form role="search">
-    <label htmlFor="search">Search</label>
-    <input type="search" id="search" name="q" />
-    <button type="submit">Search</button>
-  </form>
-</search>
-```
-
-## Benefits
-
-- Screen readers announce page structure
-- Keyboard users can navigate by landmarks
-- Better SEO indexing
-- Easier to style with CSS
-- Future-proof and maintainable
-
----
-
----
-title: Provide Skip Links for Navigation
-impact: HIGH
-impactDescription: WCAG 2.1 Level A - Bypass blocks
-tags: accessibility, navigation, keyboard, skip-links
----
-
-## Provide Skip Links for Navigation
-
-**Impact: HIGH (WCAG 2.1 Level A - Bypass blocks)**
-
-Provide skip links to allow keyboard and screen reader users to bypass repetitive content and navigate directly to main content areas.
-
-## Bad Example
-
-```html
-<!-- Anti-pattern: No skip links -->
-<!DOCTYPE html>
-<html>
-<head>
-  <title>My Website</title>
-</head>
-<body>
-  <header>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/services">Services</a>
-      <a href="/products">Products</a>
-      <a href="/portfolio">Portfolio</a>
-      <a href="/blog">Blog</a>
-      <a href="/contact">Contact</a>
-      <!-- 20+ more links in mega menu -->
-    </nav>
-  </header>
-  <main>
-    <h1>Welcome</h1>
-    <!-- User must tab through ALL nav links to reach this content -->
-  </main>
-</body>
-</html>
-```
-
-## Good Example
-
-```html
-<!-- Correct approach: Comprehensive skip links -->
-<!DOCTYPE html>
-<html>
-<head>
-  <title>My Website</title>
-  <style>
-    .skip-links {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 9999;
-    }
-
-    .skip-link {
-      position: absolute;
-      left: -10000px;
-      top: auto;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      background: #000;
-      color: #fff;
-      padding: 1rem;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .skip-link:focus {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: auto;
-      height: auto;
-      overflow: visible;
-      outline: 3px solid #005fcc;
-      outline-offset: 2px;
-    }
-
-    /* Smooth scroll for skip link targets */
-    html {
-      scroll-behavior: smooth;
-    }
-
-    /* Ensure skip link targets are focusable */
-    [id]:target {
-      scroll-margin-top: 1rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="skip-links">
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-    <a href="#main-nav" class="skip-link">Skip to navigation</a>
-    <a href="#search" class="skip-link">Skip to search</a>
-    <a href="#footer" class="skip-link">Skip to footer</a>
-  </div>
-
-  <header>
-    <form id="search" role="search" tabindex="-1">
-      <label for="search-input" class="visually-hidden">Search</label>
-      <input type="search" id="search-input" placeholder="Search...">
-      <button type="submit">Search</button>
-    </form>
-
-    <nav id="main-nav" aria-label="Main navigation" tabindex="-1">
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/services">Services</a>
-      <a href="/products">Products</a>
-      <a href="/portfolio">Portfolio</a>
-      <a href="/blog">Blog</a>
-      <a href="/contact">Contact</a>
-    </nav>
-  </header>
-
-  <main id="main-content" tabindex="-1">
-    <h1>Welcome to Our Website</h1>
-    <p>Main content starts here...</p>
-
-    <!-- For long pages, provide in-page skip links -->
-    <nav aria-label="Page sections">
-      <h2>On this page</h2>
-      <ul>
-        <li><a href="#section-1">Introduction</a></li>
-        <li><a href="#section-2">Features</a></li>
-        <li><a href="#section-3">Pricing</a></li>
-      </ul>
-    </nav>
-
-    <section id="section-1" tabindex="-1">
-      <h2>Introduction</h2>
-      <!-- Content -->
-    </section>
-
-    <section id="section-2" tabindex="-1">
-      <h2>Features</h2>
-      <!-- Content -->
-    </section>
-
-    <section id="section-3" tabindex="-1">
-      <h2>Pricing</h2>
-      <!-- Content -->
-    </section>
-  </main>
-
-  <footer id="footer" tabindex="-1">
-    <p>&copy; 2024 My Website</p>
-  </footer>
-</body>
-</html>
-```
-
-## Why
-
-Skip links are a WCAG requirement and essential for usability:
-
-1. **Keyboard Efficiency**: Without skip links, keyboard users must tab through every navigation link on every page load to reach main content.
-
-2. **Screen Reader Navigation**: While screen reader users can navigate by headings, skip links provide a direct, consistent mechanism.
-
-3. **Repetitive Content**: Headers, navigation, sidebars appear on every page. Users shouldn't have to traverse them repeatedly.
-
-4. **Motor Disabilities**: Reducing the number of key presses helps users with motor impairments.
-
-5. **WCAG Requirement**: WCAG 2.1 Success Criterion 2.4.1 requires a mechanism to bypass repeated content.
-
-Skip link best practices:
-
-1. **First Focusable Element**: Skip link should be the very first focusable element
-2. **Visible on Focus**: Hidden until focused, then prominently displayed
-3. **Multiple Skip Links**: Consider links to main content, navigation, search, footer
-4. **Target Focusable**: Add `tabindex="-1"` to skip link targets for browser compatibility
-5. **Clear Labels**: "Skip to main content" is clearer than "Skip navigation"
-6. **Consistent Placement**: Same location on every page
-7. **High Contrast**: Ensure skip link is visible when focused
-8. **Table of Contents**: For long pages, provide in-page navigation
-
-Note: Some browsers don't move focus correctly to skip link targets without `tabindex="-1"` on the target element.
-
----
-
----
-title: Use Autocomplete Attributes for Forms
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level AA - Identify input purpose
-tags: forms, autocomplete, accessibility, ux
 ---
 
 ## Use Autocomplete Attributes for Forms
 
 **Impact: CRITICAL (WCAG 2.1 Level AA - Identify input purpose)**
 
-## Why It Matters
-
 The `autocomplete` attribute enables browsers and password managers to autofill forms correctly. Proper autocomplete improves user experience, reduces errors, and is required for WCAG 1.3.5 compliance.
 
 ## Incorrect
 
 ```tsx
-// ❌ No autocomplete attributes
+// ❌ Bad: No autocomplete attributes
 <form>
   <input type="text" name="name" />
   <input type="text" name="email" />
   <input type="password" name="password" />
 </form>
 
-// ❌ Autocomplete disabled (frustrating for users)
+// ❌ Bad: Autocomplete disabled (frustrating for users)
 <input type="email" autoComplete="off" />
 ```
+
+**Problems:**
+- Browsers and password managers cannot autofill fields without autocomplete hints
+- Users must manually type every field, increasing friction and errors
+- Disabling autocomplete on login/address fields is user-hostile
+- Fails WCAG 1.3.5 Identify Input Purpose compliance
 
 ## Correct
 
 ```tsx
-// ✅ Proper autocomplete attributes
+// ✅ Good: Proper autocomplete attributes
 <form>
   {/* Name fields */}
   <input type="text" name="name" autoComplete="name" />
@@ -2316,10 +2020,17 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 </form>
 ```
 
+**Benefits:**
+- Faster form completion via browser and password manager autofill
+- Fewer input errors from manual typing
+- Better mobile experience with native keyboard hints
+- Password manager integration for secure credential handling
+- WCAG 1.3.5 compliance
+
 ## Login Form
 
 ```tsx
-// ✅ Login form with proper autocomplete
+// ✅ Good: Login form with proper autocomplete
 <form>
   <div>
     <label htmlFor="username">Username or Email</label>
@@ -2348,7 +2059,7 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 ## Registration Form
 
 ```tsx
-// ✅ Registration form
+// ✅ Good: Registration form
 <form>
   <div>
     <label htmlFor="email">Email</label>
@@ -2387,7 +2098,7 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 ## One-Time Codes (OTP)
 
 ```tsx
-// ✅ OTP input
+// ✅ Good: OTP input
 <div>
   <label htmlFor="otp">Verification Code</label>
   <input
@@ -2429,7 +2140,7 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 ## Shipping vs Billing
 
 ```tsx
-// ✅ Distinguish shipping and billing addresses
+// ✅ Good: Distinguish shipping and billing addresses
 <fieldset>
   <legend>Shipping Address</legend>
   <input
@@ -2462,7 +2173,7 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
 ## When to Disable Autocomplete
 
 ```tsx
-// ✅ Legitimate cases to disable autocomplete
+// ✅ Good: Legitimate cases to disable autocomplete
 <input
   type="text"
   name="search"
@@ -2475,27 +2186,172 @@ The `autocomplete` attribute enables browsers and password managers to autofill 
   autoComplete="off"  // CAPTCHA responses
 />
 
-// ❌ Don't disable for these (user hostile)
+// ❌ Bad: Don't disable for these (user hostile)
 <input type="email" autoComplete="off" />    // Email
 <input type="password" autoComplete="off" /> // Password
 <input type="text" name="address" autoComplete="off" /> // Address
 ```
 
-## Benefits
+Reference: [WCAG 1.3.5 Identify Input Purpose](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html)
 
-- Faster form completion
-- Fewer input errors
-- Better mobile experience (native keyboards)
-- Password manager integration
-- WCAG 1.3.5 compliance
 
 ---
 
----
-title: Display Form Errors Clearly
-impact: HIGH
-impactDescription: WCAG 2.1 Level A - Error identification
-tags: forms, errors, validation, accessibility, ux
+## Use Correct Input Types
+
+**Impact: HIGH (Improves mobile UX and reduces errors)**
+
+Use the correct HTML input types to provide appropriate virtual keyboards, validation, and user experience across devices.
+
+## Incorrect
+
+```html
+<!-- ❌ Bad: Using generic text inputs for everything -->
+<form>
+  <label for="email">Email</label>
+  <input type="text" id="email" name="email">
+
+  <label for="phone">Phone</label>
+  <input type="text" id="phone" name="phone">
+
+  <label for="age">Age</label>
+  <input type="text" id="age" name="age">
+
+  <label for="website">Website</label>
+  <input type="text" id="website" name="website">
+
+  <label for="dob">Date of Birth</label>
+  <input type="text" id="dob" name="dob" placeholder="MM/DD/YYYY">
+
+  <label for="password">Password</label>
+  <input type="text" id="password" name="password">
+
+  <label for="color-choice">Favorite Color</label>
+  <input type="text" id="color-choice" name="color">
+</form>
+```
+
+**Problems:**
+- Generic `type="text"` shows a standard keyboard on mobile instead of optimized layouts
+- No built-in browser validation for email, URL, or number formats
+- No native date, time, or color pickers
+- Password fields are not masked, exposing sensitive input
+- Screen readers cannot announce the expected input type
+
+## Correct
+
+```html
+<!-- ✅ Good: Semantic input types -->
+<form>
+  <!-- Email: brings up @ keyboard on mobile -->
+  <label for="email">Email</label>
+  <input type="email"
+         id="email"
+         name="email"
+         autocomplete="email"
+         inputmode="email"
+         placeholder="name@example.com">
+
+  <!-- Phone: numeric keypad on mobile -->
+  <label for="phone">Phone</label>
+  <input type="tel"
+         id="phone"
+         name="phone"
+         autocomplete="tel"
+         inputmode="tel"
+         placeholder="+1 (555) 123-4567">
+
+  <!-- Number: numeric input with spinners -->
+  <label for="age">Age</label>
+  <input type="number"
+         id="age"
+         name="age"
+         min="0"
+         max="150"
+         inputmode="numeric">
+
+  <!-- URL: optimized keyboard for URLs -->
+  <label for="website">Website</label>
+  <input type="url"
+         id="website"
+         name="website"
+         autocomplete="url"
+         inputmode="url"
+         placeholder="https://example.com">
+
+  <!-- Date: native date picker -->
+  <label for="dob">Date of Birth</label>
+  <input type="date"
+         id="dob"
+         name="dob"
+         min="1900-01-01"
+         max="2024-12-31"
+         autocomplete="bday">
+
+  <!-- Password: masked input with browser features -->
+  <label for="password">Password</label>
+  <input type="password"
+         id="password"
+         name="password"
+         autocomplete="new-password"
+         minlength="8">
+
+  <!-- Color picker -->
+  <label for="color-choice">Favorite Color</label>
+  <input type="color"
+         id="color-choice"
+         name="color"
+         value="#3b82f6">
+
+  <!-- Search: may show clear button and search styling -->
+  <label for="search">Search</label>
+  <input type="search"
+         id="search"
+         name="search"
+         autocomplete="off"
+         inputmode="search">
+
+  <!-- Range slider -->
+  <label for="volume">Volume: <output id="volume-output">50</output>%</label>
+  <input type="range"
+         id="volume"
+         name="volume"
+         min="0"
+         max="100"
+         value="50"
+         oninput="document.getElementById('volume-output').textContent = this.value">
+
+  <!-- Time input -->
+  <label for="meeting-time">Meeting Time</label>
+  <input type="time"
+         id="meeting-time"
+         name="meeting-time"
+         min="09:00"
+         max="18:00">
+
+  <!-- File upload -->
+  <label for="document">Upload Document</label>
+  <input type="file"
+         id="document"
+         name="document"
+         accept=".pdf,.doc,.docx"
+         multiple>
+
+  <!-- Hidden field for form data -->
+  <input type="hidden" name="csrf_token" value="abc123">
+</form>
+```
+
+**Benefits:**
+- Mobile users get optimized virtual keyboards (email with @, numeric for phone)
+- Browsers provide built-in validation for email, URL, and number formats
+- Native date, time, and color pickers reduce implementation effort
+- Password fields mask input and trigger password manager integration
+- Screen readers announce the expected input type and constraints
+
+Reference: [MDN Input Types](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types)
+
+
 ---
 
 ## Display Form Errors Clearly
@@ -2504,10 +2360,10 @@ tags: forms, errors, validation, accessibility, ux
 
 Display form errors clearly and consistently to help users identify and correct mistakes. Error messages should be visible, associated with their fields, and provide actionable guidance.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Poor error display -->
+<!-- ❌ Bad: Poor error display -->
 <form>
   <!-- Error message far from input -->
   <div class="errors">
@@ -2536,15 +2392,21 @@ Display form errors clearly and consistently to help users identify and correct 
 </form>
 ```
 
-## Good Example
+**Problems:**
+- Error messages far from their fields make it hard to identify which input has the problem
+- JavaScript `alert()` provides no context about specific fields
+- Color-only error indicators are invisible to color-blind users
+- Tooltip-only errors are not persistent and may not be perceived
+- Clearing valid input on error forces users to retype everything
+
+## Correct
 
 ```html
-<!-- Correct approach: Clear, accessible error display -->
+<!-- ✅ Good: Clear, accessible error display -->
 <form id="contact-form" novalidate>
   <!-- Error summary at top of form -->
   <div id="error-summary"
        role="alert"
-       aria-live="polite"
        class="error-summary"
        hidden>
     <h2>Please correct the following errors:</h2>
@@ -2638,7 +2500,7 @@ form.addEventListener('submit', function(e) {
   if (errors.length > 0) {
     displayErrors(errors);
   } else {
-    submitForm();
+    // submit form logic here
   }
 });
 
@@ -2762,40 +2624,277 @@ function clearAllErrors() {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Error summary at the top provides an overview with links to each problem field
+- Inline errors next to each field make identification immediate
+- Icons and text alongside color ensure errors are perceivable by all users
+- ARIA attributes link errors programmatically for screen readers
+- User input is preserved on error so nothing needs to be retyped
 
-Proper error display is crucial for usability and accessibility:
+Reference: [WCAG 3.3.1 Error Identification](https://www.w3.org/WAI/WCAG21/Understanding/error-identification.html)
 
-1. **Discoverability**: Users must be able to find and understand errors quickly.
-
-2. **Association**: Errors must be clearly linked to their corresponding fields.
-
-3. **Screen Readers**: Programmatic association ensures errors are announced.
-
-4. **Persistence**: Errors should remain visible until corrected.
-
-5. **Guidance**: Messages should explain how to fix the problem.
-
-Error display best practices:
-
-1. **Inline errors**: Place error messages directly below or beside their fields
-2. **Error summary**: For forms with multiple errors, list all errors at the top
-3. **Visual indicators**: Use icons, borders, and background colors (not just color)
-4. **Persistent display**: Keep errors visible until the user corrects them
-5. **Clear language**: Tell users what went wrong and how to fix it
-6. **Focus management**: Move focus to error summary or first error field
-7. **ARIA attributes**: Use `aria-invalid`, `aria-describedby`, and live regions
-8. **Don't clear valid data**: Preserve correctly entered information
-9. **Real-time feedback**: Clear errors as soon as user corrects them
-10. **Consistent positioning**: Always show errors in the same location relative to inputs
 
 ---
 
----
-title: Implement Smart Inline Validation
-impact: MEDIUM
-impactDescription: Reduces errors by 20-40%
-tags: forms, validation, ux, inline-validation
+## Design User-Friendly Form Validation
+
+**Impact: HIGH (Reduces form abandonment by 20-30%)**
+
+Design form validation that helps users succeed. Good validation provides clear feedback, prevents frustration, and guides users to correct errors efficiently.
+
+## Incorrect
+
+```html
+<!-- ❌ Bad: Poor validation UX -->
+<form onsubmit="return validateForm()">
+  <input type="text" id="email" placeholder="Email">
+  <input type="text" id="password" placeholder="Password">
+  <button type="submit">Sign Up</button>
+</form>
+
+<script>
+function validateForm() {
+  // Only validates on submit
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  // Generic, unhelpful error message
+  if (!email || !password) {
+    alert('Please fill in all fields');
+    return false;
+  }
+
+  // Regex-only validation with no feedback
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert('Invalid email');
+    return false;
+  }
+
+  // Unclear requirements
+  if (password.length < 8) {
+    alert('Password too short');
+    return false;
+  }
+
+  return true;
+}
+</script>
+
+<style>
+/* Error state with no guidance */
+.error { border-color: red; }
+</style>
+```
+
+**Problems:**
+- Submit-only validation delays all feedback until the end
+- JavaScript `alert()` provides no field-level context and interrupts the user
+- Generic messages ("Invalid email") do not explain how to fix the error
+- Password requirements are hidden until the user fails
+- No ARIA attributes to communicate errors to screen readers
+
+## Correct
+
+```html
+<!-- ✅ Good: User-friendly validation -->
+<form id="signup-form" novalidate>
+  <div class="form-group">
+    <label for="email">
+      Email Address
+      <span class="required" aria-hidden="true">*</span>
+    </label>
+    <input type="email"
+           id="email"
+           name="email"
+           required
+           aria-required="true"
+           aria-describedby="email-hint email-error"
+           autocomplete="email">
+    <p id="email-hint" class="hint">We'll send your confirmation here</p>
+    <p id="email-error" class="error-message" role="alert" hidden></p>
+  </div>
+
+  <div class="form-group">
+    <label for="password">
+      Password
+      <span class="required" aria-hidden="true">*</span>
+    </label>
+    <input type="password"
+           id="password"
+           name="password"
+           required
+           aria-required="true"
+           aria-describedby="password-requirements password-error"
+           minlength="8"
+           autocomplete="new-password">
+
+    <!-- Show requirements upfront, not just on error -->
+    <div id="password-requirements" class="requirements">
+      <p>Password must contain:</p>
+      <ul>
+        <li id="req-length" class="requirement">
+          <span class="icon" aria-hidden="true"></span>
+          At least 8 characters
+        </li>
+        <li id="req-uppercase" class="requirement">
+          <span class="icon" aria-hidden="true"></span>
+          One uppercase letter
+        </li>
+        <li id="req-number" class="requirement">
+          <span class="icon" aria-hidden="true"></span>
+          One number
+        </li>
+      </ul>
+    </div>
+    <p id="password-error" class="error-message" role="alert" hidden></p>
+  </div>
+
+  <div class="form-group">
+    <label for="confirm-password">
+      Confirm Password
+      <span class="required" aria-hidden="true">*</span>
+    </label>
+    <input type="password"
+           id="confirm-password"
+           name="confirmPassword"
+           required
+           aria-required="true"
+           aria-describedby="confirm-error"
+           autocomplete="new-password">
+    <p id="confirm-error" class="error-message" role="alert" hidden></p>
+  </div>
+
+  <button type="submit" id="submit-btn">Create Account</button>
+</form>
+
+<script>
+const form = document.getElementById('signup-form');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const confirmInput = document.getElementById('confirm-password');
+
+// Validate on blur (when leaving field)
+emailInput.addEventListener('blur', validateEmail);
+passwordInput.addEventListener('input', validatePassword);
+confirmInput.addEventListener('blur', validateConfirmPassword);
+
+// Also validate on submit
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const isEmailValid = validateEmail();
+  const isPasswordValid = validatePassword();
+  const isConfirmValid = validateConfirmPassword();
+
+  if (isEmailValid && isPasswordValid && isConfirmValid) {
+    // submit form logic here
+  } else {
+    // Focus first invalid field
+    const firstError = form.querySelector('[aria-invalid="true"]');
+    if (firstError) firstError.focus();
+  }
+});
+
+function validateEmail() {
+  const email = emailInput.value.trim();
+  const errorEl = document.getElementById('email-error');
+
+  if (!email) {
+    showError(emailInput, errorEl, 'Email address is required');
+    return false;
+  }
+
+  if (!isValidEmail(email)) {
+    showError(emailInput, errorEl, 'Please enter a valid email address (e.g., name@example.com)');
+    return false;
+  }
+
+  clearError(emailInput, errorEl);
+  return true;
+}
+
+function validatePassword() {
+  const password = passwordInput.value;
+  const requirements = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    number: /[0-9]/.test(password)
+  };
+
+  // Update requirement indicators in real-time
+  updateRequirement('req-length', requirements.length);
+  updateRequirement('req-uppercase', requirements.uppercase);
+  updateRequirement('req-number', requirements.number);
+
+  const allMet = Object.values(requirements).every(Boolean);
+
+  if (allMet) {
+    passwordInput.setAttribute('aria-invalid', 'false');
+    return true;
+  }
+
+  passwordInput.setAttribute('aria-invalid', 'true');
+  return false;
+}
+
+function validateConfirmPassword() {
+  const password = passwordInput.value;
+  const confirm = confirmInput.value;
+  const errorEl = document.getElementById('confirm-error');
+
+  if (!confirm) {
+    showError(confirmInput, errorEl, 'Please confirm your password');
+    return false;
+  }
+
+  if (confirm !== password) {
+    showError(confirmInput, errorEl, 'Passwords do not match');
+    return false;
+  }
+
+  clearError(confirmInput, errorEl);
+  return true;
+}
+
+function updateRequirement(id, met) {
+  const el = document.getElementById(id);
+  el.classList.toggle('met', met);
+  el.classList.toggle('unmet', !met);
+}
+
+function showError(input, errorEl, message) {
+  input.setAttribute('aria-invalid', 'true');
+  errorEl.textContent = message;
+  errorEl.hidden = false;
+}
+
+function clearError(input, errorEl) {
+  input.setAttribute('aria-invalid', 'false');
+  errorEl.hidden = true;
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+</script>
+
+<style>
+.requirement.met .icon::before { content: '✓'; color: green; }
+.requirement.unmet .icon::before { content: '○'; color: #666; }
+.error-message { color: #dc2626; }
+</style>
+```
+
+**Benefits:**
+- Blur validation provides feedback at the right moment without interrupting typing
+- Password requirements are shown upfront so users know what is expected
+- Real-time requirement indicators give positive feedback as criteria are met
+- Specific, actionable error messages guide users to correct input
+- Focus moves to the first invalid field on submit for efficient error correction
+
+Reference: [web.dev - Best Practices for Form Validation](https://web.dev/learn/forms/validation)
+
+
 ---
 
 ## Implement Smart Inline Validation
@@ -2804,10 +2903,10 @@ tags: forms, validation, ux, inline-validation
 
 Implement inline validation that provides immediate, contextual feedback as users complete form fields. Validate at the right moment to help without interrupting.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Aggressive inline validation -->
+<!-- ❌ Bad: Aggressive inline validation -->
 <form>
   <input type="email"
          id="email"
@@ -2832,7 +2931,7 @@ function validateEmail() {
 }
 </script>
 
-<!-- Anti-pattern: No inline validation (only on submit) -->
+<!-- ❌ Bad: No inline validation (only on submit) -->
 <form onsubmit="return validate()">
   <input type="text" name="username">
   <input type="password" name="password">
@@ -2841,10 +2940,16 @@ function validateEmail() {
 </form>
 ```
 
-## Good Example
+**Problems:**
+- Validating on every keystroke shows errors before the user has finished typing
+- Submit-only validation delays feedback until the very end, causing frustration
+- No ARIA attributes to communicate validation state to screen readers
+- Error messages lack specificity and actionable guidance
+
+## Correct
 
 ```html
-<!-- Correct approach: Balanced inline validation -->
+<!-- ✅ Good: Balanced inline validation -->
 <form id="signup-form" novalidate>
   <!-- Email with validation on blur and after correction -->
   <div class="form-group" data-validate="email">
@@ -3137,13 +3242,13 @@ function validateConfirm() {
 function showError(input, feedback, message) {
   input.setAttribute('aria-invalid', 'true');
   feedback.className = 'feedback error';
-  feedback.innerHTML = `<span class="icon">✕</span> ${message}`;
+  feedback.innerHTML = `<span class="icon">&#10005;</span> ${message}`;
 }
 
 function showSuccess(input, feedback, message) {
   input.setAttribute('aria-invalid', 'false');
   feedback.className = 'feedback success';
-  feedback.innerHTML = `<span class="icon">✓</span> ${message}`;
+  feedback.innerHTML = `<span class="icon">&#10003;</span> ${message}`;
 }
 
 function showPending(input, feedback, message) {
@@ -3162,232 +3267,16 @@ function showPending(input, feedback, message) {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Blur-first validation avoids interrupting users while they type
+- Revalidation on input clears errors as soon as the user corrects them
+- Password strength indicator provides real-time, positive feedback
+- Async username check with debounce avoids overwhelming the server
+- ARIA live regions announce validation results to screen readers
 
-Inline validation improves form completion:
+Reference: [web.dev - Best Practices for Form Validation](https://web.dev/learn/forms/validation)
 
-1. **Immediate Feedback**: Users know right away if data is valid.
-2. **Error Prevention**: Catches mistakes before submission.
-3. **Reduced Frustration**: No surprise errors at the end.
-4. **Guided Input**: Real-time requirements help users succeed.
 
-Validation timing guidelines:
-
-| Field Type | Validate On | Revalidate On |
-|------------|-------------|---------------|
-| Email, URL | Blur | Input (after first blur) |
-| Username | Blur + debounce | Input (after first blur) |
-| Password | Input (immediate) | - |
-| Confirm Password | Blur | Input (after first blur) |
-| Required text | Blur | Input (after first blur) |
-
-Key principles:
-
-1. **Don't validate empty fields on input** - Wait for blur
-2. **Revalidate on input after first error** - Clear errors as user fixes them
-3. **Password is special** - Real-time feedback for requirements
-4. **Debounce async validations** - Don't overwhelm server
-5. **Show positive feedback** - Confirm when input is valid
-6. **Preserve error until fixed** - Don't flash errors on/off
-
----
-
----
-title: Use Correct Input Types
-impact: HIGH
-impactDescription: Improves mobile UX and reduces errors
-tags: forms, input-types, mobile, ux
----
-
-## Use Correct Input Types
-
-**Impact: HIGH (Improves mobile UX and reduces errors)**
-
-Use the correct HTML input types to provide appropriate virtual keyboards, validation, and user experience across devices.
-
-## Bad Example
-
-```html
-<!-- Anti-pattern: Using generic text inputs for everything -->
-<form>
-  <label for="email">Email</label>
-  <input type="text" id="email" name="email">
-
-  <label for="phone">Phone</label>
-  <input type="text" id="phone" name="phone">
-
-  <label for="age">Age</label>
-  <input type="text" id="age" name="age">
-
-  <label for="website">Website</label>
-  <input type="text" id="website" name="website">
-
-  <label for="dob">Date of Birth</label>
-  <input type="text" id="dob" name="dob" placeholder="MM/DD/YYYY">
-
-  <label for="password">Password</label>
-  <input type="text" id="password" name="password">
-
-  <label for="color-choice">Favorite Color</label>
-  <input type="text" id="color-choice" name="color">
-</form>
-```
-
-## Good Example
-
-```html
-<!-- Correct approach: Semantic input types -->
-<form>
-  <!-- Email: brings up @ keyboard on mobile -->
-  <label for="email">Email</label>
-  <input type="email"
-         id="email"
-         name="email"
-         autocomplete="email"
-         inputmode="email"
-         placeholder="name@example.com">
-
-  <!-- Phone: numeric keypad on mobile -->
-  <label for="phone">Phone</label>
-  <input type="tel"
-         id="phone"
-         name="phone"
-         autocomplete="tel"
-         inputmode="tel"
-         placeholder="+1 (555) 123-4567">
-
-  <!-- Number: numeric input with spinners -->
-  <label for="age">Age</label>
-  <input type="number"
-         id="age"
-         name="age"
-         min="0"
-         max="150"
-         inputmode="numeric">
-
-  <!-- URL: optimized keyboard for URLs -->
-  <label for="website">Website</label>
-  <input type="url"
-         id="website"
-         name="website"
-         autocomplete="url"
-         inputmode="url"
-         placeholder="https://example.com">
-
-  <!-- Date: native date picker -->
-  <label for="dob">Date of Birth</label>
-  <input type="date"
-         id="dob"
-         name="dob"
-         min="1900-01-01"
-         max="2024-12-31"
-         autocomplete="bday">
-
-  <!-- Password: masked input with browser features -->
-  <label for="password">Password</label>
-  <input type="password"
-         id="password"
-         name="password"
-         autocomplete="new-password"
-         minlength="8">
-
-  <!-- Color picker -->
-  <label for="color-choice">Favorite Color</label>
-  <input type="color"
-         id="color-choice"
-         name="color"
-         value="#3b82f6">
-
-  <!-- Search: may show clear button and search styling -->
-  <label for="search">Search</label>
-  <input type="search"
-         id="search"
-         name="search"
-         autocomplete="off"
-         inputmode="search">
-
-  <!-- Range slider -->
-  <label for="volume">Volume: <output id="volume-output">50</output>%</label>
-  <input type="range"
-         id="volume"
-         name="volume"
-         min="0"
-         max="100"
-         value="50"
-         oninput="document.getElementById('volume-output').textContent = this.value">
-
-  <!-- Time input -->
-  <label for="meeting-time">Meeting Time</label>
-  <input type="time"
-         id="meeting-time"
-         name="meeting-time"
-         min="09:00"
-         max="18:00">
-
-  <!-- File upload -->
-  <label for="document">Upload Document</label>
-  <input type="file"
-         id="document"
-         name="document"
-         accept=".pdf,.doc,.docx"
-         multiple>
-
-  <!-- Hidden field for form data -->
-  <input type="hidden" name="csrf_token" value="abc123">
-</form>
-```
-
-## Why
-
-Correct input types provide significant benefits:
-
-1. **Mobile Keyboards**: Different input types trigger appropriate virtual keyboards (numeric, email with @, URL with .com).
-
-2. **Built-in Validation**: Browsers validate email, URL, number formats automatically.
-
-3. **Native UI**: Date, time, color, and range inputs provide native pickers.
-
-4. **Autofill**: Combined with autocomplete attributes, browsers can autofill forms accurately.
-
-5. **Accessibility**: Screen readers announce the input type and constraints.
-
-6. **Security**: Password fields mask input and may trigger password managers.
-
-Available input types:
-
-| Type | Use Case | Mobile Keyboard |
-|------|----------|-----------------|
-| `text` | Generic text | Standard |
-| `email` | Email addresses | Email (@, .com) |
-| `tel` | Phone numbers | Numeric |
-| `url` | Web addresses | URL (/, .com) |
-| `number` | Numeric values | Numeric |
-| `password` | Sensitive data | Standard (masked) |
-| `search` | Search queries | Search |
-| `date` | Calendar dates | Date picker |
-| `time` | Time values | Time picker |
-| `datetime-local` | Date + time | DateTime picker |
-| `month` | Month/year | Month picker |
-| `week` | Week/year | Week picker |
-| `color` | Color values | Color picker |
-| `range` | Slider values | Slider |
-| `file` | File uploads | File picker |
-| `hidden` | Hidden data | None |
-
-Best practices:
-- Always pair with appropriate `autocomplete` attribute
-- Use `inputmode` for fine-grained keyboard control
-- Set `min`, `max`, `step` for numeric inputs
-- Use `pattern` for custom validation regex
-- Test on mobile devices to verify keyboard behavior
-
----
-
----
-title: Design Effective Multi-Step Forms
-impact: MEDIUM
-impactDescription: Increases completion rates by 15-30%
-tags: forms, multi-step, ux, progress-indication
 ---
 
 ## Design Effective Multi-Step Forms
@@ -3396,10 +3285,10 @@ tags: forms, multi-step, ux, progress-indication
 
 Design multi-step forms that are easy to navigate, maintain context, and don't overwhelm users. Break complex forms into logical, manageable steps.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Poor multi-step form -->
+<!-- ❌ Bad: Poor multi-step form -->
 <form>
   <!-- No progress indication -->
   <!-- No step numbers or titles -->
@@ -3435,10 +3324,18 @@ function nextStep() {
 </script>
 ```
 
-## Good Example
+**Problems:**
+- No progress indicator, so users do not know how many steps remain
+- No back navigation to return to previous steps
+- No validation before advancing, allowing incomplete data
+- No screen reader announcements for step changes
+- No data persistence if the user navigates away
+- No review step before final submission
+
+## Correct
 
 ```html
-<!-- Correct approach: Accessible multi-step form -->
+<!-- ✅ Good: Accessible multi-step form -->
 <div class="multi-step-form">
   <!-- Progress indicator -->
   <nav aria-label="Form progress">
@@ -3477,7 +3374,7 @@ function nextStep() {
   <form id="registration-form" novalidate>
     <!-- Step 1: Personal Information -->
     <fieldset id="step-1" class="form-step">
-      <legend>
+      <legend tabindex="-1">
         <span class="step-title">Step 1 of 3: Personal Information</span>
       </legend>
 
@@ -3523,7 +3420,7 @@ function nextStep() {
 
     <!-- Step 2: Address -->
     <fieldset id="step-2" class="form-step" hidden>
-      <legend>
+      <legend tabindex="-1">
         <span class="step-title">Step 2 of 3: Address</span>
       </legend>
 
@@ -3594,7 +3491,7 @@ function nextStep() {
 
     <!-- Step 3: Review -->
     <fieldset id="step-3" class="form-step" hidden>
-      <legend>
+      <legend tabindex="-1">
         <span class="step-title">Step 3 of 3: Review & Submit</span>
       </legend>
 
@@ -3770,40 +3667,17 @@ window.addEventListener('load', () => {
 </script>
 ```
 
-## Why
+**Benefits:**
+- Progress indicator shows users where they are and how much is left
+- Back navigation and edit buttons let users revisit and correct previous steps
+- Per-step validation catches errors early before advancing
+- Screen reader announcements communicate step changes
+- Data persistence via localStorage preserves progress across page reloads
+- Review step lets users verify all information before final submission
 
-Multi-step forms improve complex form UX:
+Reference: [web.dev - Multi-step Forms](https://web.dev/learn/forms/auto)
 
-1. **Reduced Cognitive Load**: Breaking forms into steps prevents overwhelming users.
 
-2. **Progress Visibility**: Users know how much they've done and what's left.
-
-3. **Data Preservation**: Users can go back without losing progress.
-
-4. **Error Isolation**: Validation per step catches errors early.
-
-5. **Completion Rates**: Shorter perceived forms have higher completion rates.
-
-Multi-step form best practices:
-
-1. **Clear progress**: Show current step and total steps
-2. **Logical grouping**: Related fields together
-3. **Back navigation**: Always allow returning to previous steps
-4. **Data persistence**: Save progress (localStorage, server-side)
-5. **Step validation**: Validate before advancing
-6. **Review step**: Let users verify before submitting
-7. **Edit capability**: Allow editing previous steps from review
-8. **Focus management**: Focus first element of each step
-9. **Screen reader announcements**: Announce step changes
-10. **Save & continue later**: For long forms
-
----
-
----
-title: Use Placeholders Appropriately
-impact: MEDIUM
-impactDescription: Prevents accessibility and usability issues
-tags: forms, placeholders, labels, accessibility
 ---
 
 ## Use Placeholders Appropriately
@@ -3812,10 +3686,10 @@ tags: forms, placeholders, labels, accessibility
 
 Use placeholders appropriately as supplementary hints, never as replacements for labels. Placeholders have significant accessibility and usability limitations.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Placeholders as labels -->
+<!-- ❌ Bad: Placeholders as labels -->
 <form>
   <!-- No visible labels - only placeholders -->
   <input type="text" placeholder="First Name">
@@ -3845,10 +3719,18 @@ label { display: none; }
 </style>
 ```
 
-## Good Example
+**Problems:**
+- Placeholders vanish when users start typing, removing all context
+- Users must remember what each field requires while entering data
+- Default placeholder contrast often fails WCAG minimum requirements
+- Some screen readers do not announce placeholder text
+- Browser autofill may not identify fields without proper labels
+- Users with cognitive disabilities struggle when instructions disappear
+
+## Correct
 
 ```html
-<!-- Correct approach: Labels with optional placeholder hints -->
+<!-- ✅ Good: Labels with optional placeholder hints -->
 <form>
   <div class="form-group">
     <label for="first-name">First Name</label>
@@ -3961,50 +3843,16 @@ label {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Visible labels persist regardless of input state, providing constant context
+- Persistent hint text via `aria-describedby` keeps format instructions available
+- Placeholders serve as supplementary examples, not primary labels
+- Screen readers announce both the label and the described-by hint text
+- Browser autofill correctly identifies fields by their labels
 
-Placeholder-only patterns have serious problems:
+Reference: [MDN Placeholder Attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/placeholder)
 
-1. **Disappearing Labels**: When users click into a field, the placeholder vanishes, leaving no context for what data is expected.
 
-2. **Memory Burden**: Users must remember what each field requires while typing.
-
-3. **Low Contrast**: Default placeholder text often has insufficient contrast (accessibility violation).
-
-4. **Translation Issues**: Placeholders may not translate well or may truncate in other languages.
-
-5. **Screen Reader Support**: Some screen readers don't announce placeholders, or announce them only once.
-
-6. **Validation Confusion**: Users may think the placeholder text is pre-filled content.
-
-7. **Autofill Issues**: Browser autofill may not correctly identify fields without labels.
-
-8. **Cognitive Load**: Users with cognitive disabilities may struggle to remember disappeared instructions.
-
-When placeholders are appropriate:
-
-- **Format examples**: `(555) 123-4567` for phone
-- **Short hints**: `e.g., blue widget` for search
-- **Optional context**: `@username` for social handles
-
-Placeholder best practices:
-
-1. Always use visible labels
-2. Keep placeholders short and supplementary
-3. Don't put critical information in placeholders
-4. Don't put required field indicators in placeholders
-5. Use `aria-describedby` for persistent hints
-6. Style placeholders distinctly from entered text
-7. Ensure placeholder contrast meets WCAG guidelines
-8. Test with the placeholder hidden to verify usability
-
----
-
----
-title: Provide Clear Form Submission Feedback
-impact: HIGH
-impactDescription: Prevents user confusion and double submissions
-tags: forms, feedback, ux, loading-states
 ---
 
 ## Provide Clear Form Submission Feedback
@@ -4013,10 +3861,10 @@ tags: forms, feedback, ux, loading-states
 
 Provide clear, immediate feedback when users submit forms. Users should always know the current state: submitting, success, or failure.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: No submission feedback -->
+<!-- ❌ Bad: No submission feedback -->
 <form onsubmit="submitForm()">
   <input type="email" name="email" required>
   <button type="submit">Subscribe</button>
@@ -4044,7 +3892,7 @@ async function submitForm() {
 ```
 
 ```html
-<!-- Anti-pattern: Confusing states -->
+<!-- ❌ Bad: Confusing states -->
 <form>
   <input type="email" name="email">
   <!-- Button changes but no visual feedback -->
@@ -4059,10 +3907,17 @@ btn.textContent = 'Sending...';
 </script>
 ```
 
-## Good Example
+**Problems:**
+- No loading indicator leaves users wondering if the form submitted
+- Silent success provides no confirmation that the action worked
+- Generic `alert('Error')` gives no actionable guidance
+- Button is not disabled during submission, allowing double-clicks
+- Page reload on error loses all entered data
+
+## Correct
 
 ```html
-<!-- Correct approach: Comprehensive submission feedback -->
+<!-- ✅ Good: Comprehensive submission feedback -->
 <form id="newsletter-form" novalidate>
   <div class="form-group">
     <label for="email">Email Address</label>
@@ -4097,7 +3952,7 @@ btn.textContent = 'Sending...';
 </form>
 
 <!-- Success state (shown after successful submission) -->
-<div id="success-message" class="success-panel" hidden>
+<div id="success-message" class="success-panel" tabindex="-1" hidden>
   <svg class="success-icon" aria-hidden="true" viewBox="0 0 24 24">
     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/>
   </svg>
@@ -4247,364 +4102,50 @@ button[type="submit"]:disabled {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Loading state with disabled button prevents double submissions
+- Screen reader users are notified of state changes via ARIA live regions
+- Clear success confirmation builds user confidence
+- Specific error messages with recovery guidance help users fix issues
+- Form data is preserved on error so users do not need to retype
 
-Submission feedback is critical for user confidence:
+Reference: [web.dev - Form Submission](https://web.dev/learn/forms/auto)
 
-1. **Acknowledgment**: Users need to know their action was received.
 
-2. **Prevent Duplicates**: Loading states prevent multiple submissions.
-
-3. **Error Recovery**: Clear error messages help users fix issues.
-
-4. **Accessibility**: Screen reader users need announcements for state changes.
-
-5. **Trust**: Professional feedback builds confidence in your application.
-
-Submission state best practices:
-
-| State | Visual | Accessible | Technical |
-|-------|--------|------------|-----------|
-| Idle | Normal button | Standard label | Enabled |
-| Loading | Spinner, disabled | aria-busy, announce | Prevent double-submit |
-| Success | Confirmation UI | Announce, focus | Clear form or redirect |
-| Error | Error message | Announce, focus | Keep form data |
-
-Key implementation details:
-
-1. **Disable during submission**: Prevent double-clicks
-2. **Show loading indicator**: Spinner or progress bar
-3. **Announce state changes**: Use aria-live regions
-4. **Focus management**: Move focus to success/error message
-5. **Preserve input**: Never clear form data on error
-6. **Specific error messages**: Explain what went wrong
-7. **Recovery path**: Provide clear next steps
-8. **Timeout handling**: Handle slow or failed network requests
-9. **Optimistic UI**: Consider showing success immediately for fast operations
-
----
-
----
-title: Design User-Friendly Form Validation
-impact: HIGH
-impactDescription: Reduces form abandonment by 20-30%
-tags: forms, validation, ux, error-handling
----
-
-## Design User-Friendly Form Validation
-
-**Impact: HIGH (Reduces form abandonment by 20-30%)**
-
-Design form validation that helps users succeed. Good validation provides clear feedback, prevents frustration, and guides users to correct errors efficiently.
-
-## Bad Example
-
-```html
-<!-- Anti-pattern: Poor validation UX -->
-<form onsubmit="return validateForm()">
-  <input type="text" id="email" placeholder="Email">
-  <input type="text" id="password" placeholder="Password">
-  <button type="submit">Sign Up</button>
-</form>
-
-<script>
-function validateForm() {
-  // Only validates on submit
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  // Generic, unhelpful error message
-  if (!email || !password) {
-    alert('Please fill in all fields');
-    return false;
-  }
-
-  // Regex-only validation with no feedback
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    alert('Invalid email');
-    return false;
-  }
-
-  // Unclear requirements
-  if (password.length < 8) {
-    alert('Password too short');
-    return false;
-  }
-
-  return true;
-}
-</script>
-
-<style>
-/* Error state with no guidance */
-.error { border-color: red; }
-</style>
-```
-
-## Good Example
-
-```html
-<!-- Correct approach: User-friendly validation -->
-<form id="signup-form" novalidate>
-  <div class="form-group">
-    <label for="email">
-      Email Address
-      <span class="required" aria-hidden="true">*</span>
-    </label>
-    <input type="email"
-           id="email"
-           name="email"
-           required
-           aria-required="true"
-           aria-describedby="email-hint email-error"
-           autocomplete="email">
-    <p id="email-hint" class="hint">We'll send your confirmation here</p>
-    <p id="email-error" class="error-message" role="alert" hidden></p>
-  </div>
-
-  <div class="form-group">
-    <label for="password">
-      Password
-      <span class="required" aria-hidden="true">*</span>
-    </label>
-    <input type="password"
-           id="password"
-           name="password"
-           required
-           aria-required="true"
-           aria-describedby="password-requirements password-error"
-           minlength="8"
-           autocomplete="new-password">
-
-    <!-- Show requirements upfront, not just on error -->
-    <div id="password-requirements" class="requirements">
-      <p>Password must contain:</p>
-      <ul>
-        <li id="req-length" class="requirement">
-          <span class="icon" aria-hidden="true"></span>
-          At least 8 characters
-        </li>
-        <li id="req-uppercase" class="requirement">
-          <span class="icon" aria-hidden="true"></span>
-          One uppercase letter
-        </li>
-        <li id="req-number" class="requirement">
-          <span class="icon" aria-hidden="true"></span>
-          One number
-        </li>
-      </ul>
-    </div>
-    <p id="password-error" class="error-message" role="alert" hidden></p>
-  </div>
-
-  <div class="form-group">
-    <label for="confirm-password">
-      Confirm Password
-      <span class="required" aria-hidden="true">*</span>
-    </label>
-    <input type="password"
-           id="confirm-password"
-           name="confirmPassword"
-           required
-           aria-required="true"
-           aria-describedby="confirm-error"
-           autocomplete="new-password">
-    <p id="confirm-error" class="error-message" role="alert" hidden></p>
-  </div>
-
-  <button type="submit" id="submit-btn">Create Account</button>
-</form>
-
-<script>
-const form = document.getElementById('signup-form');
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-const confirmInput = document.getElementById('confirm-password');
-
-// Validate on blur (when leaving field)
-emailInput.addEventListener('blur', validateEmail);
-passwordInput.addEventListener('input', validatePassword);
-confirmInput.addEventListener('blur', validateConfirmPassword);
-
-// Also validate on submit
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  const isEmailValid = validateEmail();
-  const isPasswordValid = validatePassword();
-  const isConfirmValid = validateConfirmPassword();
-
-  if (isEmailValid && isPasswordValid && isConfirmValid) {
-    submitForm();
-  } else {
-    // Focus first invalid field
-    const firstError = form.querySelector('[aria-invalid="true"]');
-    if (firstError) firstError.focus();
-  }
-});
-
-function validateEmail() {
-  const email = emailInput.value.trim();
-  const errorEl = document.getElementById('email-error');
-
-  if (!email) {
-    showError(emailInput, errorEl, 'Email address is required');
-    return false;
-  }
-
-  if (!isValidEmail(email)) {
-    showError(emailInput, errorEl, 'Please enter a valid email address (e.g., name@example.com)');
-    return false;
-  }
-
-  clearError(emailInput, errorEl);
-  return true;
-}
-
-function validatePassword() {
-  const password = passwordInput.value;
-  const requirements = {
-    length: password.length >= 8,
-    uppercase: /[A-Z]/.test(password),
-    number: /[0-9]/.test(password)
-  };
-
-  // Update requirement indicators in real-time
-  updateRequirement('req-length', requirements.length);
-  updateRequirement('req-uppercase', requirements.uppercase);
-  updateRequirement('req-number', requirements.number);
-
-  const allMet = Object.values(requirements).every(Boolean);
-
-  if (allMet) {
-    passwordInput.setAttribute('aria-invalid', 'false');
-    return true;
-  }
-
-  passwordInput.setAttribute('aria-invalid', 'true');
-  return false;
-}
-
-function validateConfirmPassword() {
-  const password = passwordInput.value;
-  const confirm = confirmInput.value;
-  const errorEl = document.getElementById('confirm-error');
-
-  if (!confirm) {
-    showError(confirmInput, errorEl, 'Please confirm your password');
-    return false;
-  }
-
-  if (confirm !== password) {
-    showError(confirmInput, errorEl, 'Passwords do not match');
-    return false;
-  }
-
-  clearError(confirmInput, errorEl);
-  return true;
-}
-
-function updateRequirement(id, met) {
-  const el = document.getElementById(id);
-  el.classList.toggle('met', met);
-  el.classList.toggle('unmet', !met);
-}
-
-function showError(input, errorEl, message) {
-  input.setAttribute('aria-invalid', 'true');
-  errorEl.textContent = message;
-  errorEl.hidden = false;
-}
-
-function clearError(input, errorEl) {
-  input.setAttribute('aria-invalid', 'false');
-  errorEl.hidden = true;
-}
-
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-</script>
-
-<style>
-.requirement.met .icon::before { content: '✓'; color: green; }
-.requirement.unmet .icon::before { content: '○'; color: #666; }
-.error-message { color: #dc2626; }
-</style>
-```
-
-## Why
-
-Good validation UX is critical because:
-
-1. **Reduce Frustration**: Poor validation is one of the top causes of form abandonment.
-
-2. **Guide Success**: Clear requirements help users enter correct data the first time.
-
-3. **Instant Feedback**: Real-time validation prevents wasted submission attempts.
-
-4. **Accessible**: Proper error association ensures all users understand issues.
-
-5. **Trust Building**: Professional validation suggests a trustworthy service.
-
-Validation timing strategies:
-
-| Timing | Pros | Cons | Best For |
-|--------|------|------|----------|
-| On Submit | Non-intrusive | Delayed feedback | Simple forms |
-| On Blur | Balanced feedback | Interrupts flow | Most fields |
-| On Input | Immediate | Can be annoying | Password strength |
-| Debounced | Prevents flashing | Slight delay | Async validation |
-
-Best practices:
-
-1. **Show requirements upfront** - Don't hide rules until users fail
-2. **Validate at the right time** - Blur for most, input for passwords
-3. **Be specific** - "Enter at least 8 characters" not "Invalid input"
-4. **Suggest corrections** - "Did you mean gmail.com?"
-5. **Allow submission attempts** - Don't disable submit, let users discover errors
-6. **Focus first error** - Guide users to the problem
-7. **Preserve valid input** - Never clear correctly entered data
-8. **Format as user types** - Phone numbers, credit cards
-9. **Use positive confirmation** - Checkmarks for met requirements
-
----
-
----
-title: Respect Prefers-Reduced-Motion
-impact: CRITICAL
-impactDescription: WCAG 2.1 Level AA - Animation from interactions
-tags: accessibility, animation, motion, vestibular
 ---
 
 ## Respect Prefers-Reduced-Motion
 
-**Impact: CRITICAL (WCAG 2.1 Level AA - Animation from interactions)**
-
-## Why It Matters
+**Impact: CRITICAL (WCAG 2.1 Level AAA - Animation from interactions)**
 
 Some users experience motion sickness, vestibular disorders, or distraction from animations. The `prefers-reduced-motion` media query lets users opt out of non-essential motion. Respecting this preference is crucial for accessibility.
 
 ## Incorrect
 
 ```tsx
-// ❌ No reduced motion consideration
+// ❌ Bad: No reduced motion consideration
 <div className="animate-bounce">
   Bouncing element
 </div>
 
-// ❌ JavaScript animations without check
+// ❌ Bad: JavaScript animations without check
 useEffect(() => {
   animate(element, { x: 100 }, { duration: 1000 })
 }, [])
 ```
+
+**Problems:**
+- Animations play regardless of user preference, triggering vestibular disorders
+- No CSS or JavaScript checks for the `prefers-reduced-motion` media query
+- Continuous animations (bounce, pulse) are especially problematic
+- Users have no way to opt out of motion on the page
 
 ## Correct
 
 ### CSS Approach
 
 ```css
-/* Base: no animation for reduced motion preference */
+/* ✅ Good: Base - no animation for reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -4631,7 +4172,7 @@ useEffect(() => {
 ### Tailwind CSS
 
 ```tsx
-// ✅ Use motion-reduce variant
+// ✅ Good: Use motion-reduce variant
 <div className="
   transition-transform duration-300
   hover:scale-105
@@ -4641,7 +4182,7 @@ useEffect(() => {
   Hover me
 </div>
 
-// ✅ Disable animation for reduced motion
+// ✅ Good: Disable animation for reduced motion
 <div className="
   animate-pulse
   motion-reduce:animate-none
@@ -4649,7 +4190,7 @@ useEffect(() => {
   Loading...
 </div>
 
-// ✅ Simplify rather than remove
+// ✅ Good: Simplify rather than remove
 <div className="
   transition-all duration-300 ease-out
   motion-reduce:transition-opacity motion-reduce:duration-150
@@ -4661,7 +4202,7 @@ useEffect(() => {
 ### JavaScript Check
 
 ```tsx
-// Hook for checking preference
+// ✅ Good: Hook for checking preference
 function usePrefersReducedMotion(): boolean {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
@@ -4700,6 +4241,7 @@ function AnimatedComponent() {
 ### Framer Motion Integration
 
 ```tsx
+// ✅ Good: Framer Motion reduced motion support
 import { motion, useReducedMotion } from 'framer-motion'
 
 function Card() {
@@ -4723,7 +4265,7 @@ function Card() {
 ### Animation with Fallback
 
 ```tsx
-// Show static alternative for reduced motion
+// ✅ Good: Show static alternative for reduced motion
 function LoadingIndicator() {
   const prefersReducedMotion = usePrefersReducedMotion()
 
@@ -4736,6 +4278,13 @@ function LoadingIndicator() {
   )
 }
 ```
+
+**Benefits:**
+- Users with vestibular disorders can browse without triggering motion sickness
+- Respects user OS-level preference for reduced motion
+- Reduces CPU and battery usage when animations are disabled
+- WCAG 2.3.3 Animation from Interactions compliance
+- Provides static alternatives that preserve the information conveyed by animation
 
 ## What to Keep vs Remove
 
@@ -4755,7 +4304,7 @@ function LoadingIndicator() {
 - State change indicators
 
 ```tsx
-// ✅ Essential feedback - keep but simplify
+// ✅ Good: Essential feedback - keep but simplify
 <button
   className={cn(
     'transition-colors',  // Color change is usually OK
@@ -4784,13 +4333,362 @@ function LoadingIndicator() {
 }
 ```
 
-## Benefits
+Reference: [WCAG 2.3.3 Animation from Interactions](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html)
 
-- Accessibility for vestibular disorders
-- Better experience for motion-sensitive users
-- Respects user preferences
-- WCAG 2.3.3 compliance
-- Reduces CPU/battery usage
+
+---
+
+## Optimize Image Loading for UX
+
+**Impact: MEDIUM (Prevents layout shifts and improves perceived performance)**
+
+Unoptimized images are a leading cause of layout shifts and slow page loads. Providing explicit dimensions, lazy loading off-screen images, and serving modern formats dramatically improves both Core Web Vitals and perceived performance.
+
+## Incorrect
+
+```html
+<!-- ❌ Bad: no dimensions, no lazy loading, no responsive sources, missing alt -->
+<img src="/photos/hero.jpg" />
+
+<img src="/photos/team.png" />
+
+<img src="/photos/product.jpg" class="product-thumb" />
+```
+
+```tsx
+// ❌ Bad: React component with same issues
+function Gallery() {
+  return (
+    <div>
+      <img src="/photos/hero.jpg" />
+      <img src="/photos/team.png" />
+      {products.map((p) => (
+        <img key={p.id} src={p.image} />
+      ))}
+    </div>
+  )
+}
+```
+
+**Problems:**
+- Missing `width` and `height` causes Cumulative Layout Shift (CLS) as images load
+- All images load eagerly, blocking the critical rendering path
+- No modern format (WebP/AVIF) sources wastes bandwidth
+- Missing `alt` text harms accessibility and SEO
+- No `fetchpriority` hint means the browser cannot prioritize the hero image
+
+## Correct
+
+```html
+<!-- ✅ Good: hero image with high priority, explicit dimensions, alt text -->
+<img
+  src="/photos/hero.jpg"
+  alt="Team collaboration in the office"
+  width="1200"
+  height="600"
+  fetchpriority="high"
+/>
+
+<!-- ✅ Good: below-fold image with lazy loading and responsive sources -->
+<picture>
+  <source srcset="/photos/team.avif" type="image/avif" />
+  <source srcset="/photos/team.webp" type="image/webp" />
+  <img
+    src="/photos/team.png"
+    alt="Our engineering team"
+    width="800"
+    height="450"
+    loading="lazy"
+    decoding="async"
+  />
+</picture>
+
+<!-- ✅ Good: responsive image with srcset for different viewports -->
+<img
+  src="/photos/product-400.jpg"
+  srcset="
+    /photos/product-400.jpg 400w,
+    /photos/product-800.jpg 800w,
+    /photos/product-1200.jpg 1200w
+  "
+  sizes="(max-width: 600px) 400px, (max-width: 1024px) 800px, 1200px"
+  alt="Product thumbnail"
+  width="400"
+  height="400"
+  loading="lazy"
+  decoding="async"
+/>
+```
+
+```tsx
+// ✅ Good: React component with optimized image loading
+function Gallery({ products }: { products: Product[] }) {
+  return (
+    <div>
+      {/* Hero image: high priority, no lazy loading */}
+      <img
+        src="/photos/hero.jpg"
+        alt="Team collaboration in the office"
+        width={1200}
+        height={600}
+        fetchPriority="high"
+      />
+
+      {/* Below-fold image: modern formats with fallback */}
+      <picture>
+        <source srcSet="/photos/team.avif" type="image/avif" />
+        <source srcSet="/photos/team.webp" type="image/webp" />
+        <img
+          src="/photos/team.png"
+          alt="Our engineering team"
+          width={800}
+          height={450}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+
+      {/* Product list: lazy loaded with dimensions */}
+      {products.map((p) => (
+        <img
+          key={p.id}
+          src={p.image}
+          alt={p.name}
+          width={300}
+          height={300}
+          loading="lazy"
+          decoding="async"
+        />
+      ))}
+    </div>
+  )
+}
+```
+
+**Benefits:**
+- Explicit `width` and `height` eliminate layout shifts by reserving space before load
+- `loading="lazy"` defers off-screen images, reducing initial page weight
+- `<picture>` with WebP/AVIF sources can reduce image size by 25-50%
+- `fetchpriority="high"` on the hero image improves Largest Contentful Paint (LCP)
+- `decoding="async"` prevents image decoding from blocking the main thread
+- Proper `alt` text improves accessibility and SEO
+
+Reference: [web.dev - Optimize images](https://web.dev/articles/fast#optimize_your_images)
+
+
+---
+
+## Prevent Cumulative Layout Shift
+
+**Impact: MEDIUM (Layout shifts frustrate users and hurt Core Web Vitals)**
+
+Cumulative Layout Shift (CLS) measures unexpected movement of visible page content. High CLS causes misclicks, reading disruption, and user frustration. Reserve space for dynamic content, stabilize fonts, and use skeletons to keep layouts predictable.
+
+## Incorrect
+
+```css
+/* ❌ Bad: no space reserved for dynamic content */
+.ad-banner {
+  /* No dimensions — shifts page when ad loads */
+}
+
+.video-wrapper {
+  /* No aspect ratio — collapses until video loads */
+}
+
+/* ❌ Bad: font swap without size adjustment causes text reflow */
+@font-face {
+  font-family: 'BrandFont';
+  src: url('/fonts/brand.woff2') format('woff2');
+  font-display: swap;
+  /* No size-adjust — fallback font has different metrics */
+}
+```
+
+```tsx
+// ❌ Bad: dynamic content injected without reserved space
+function Feed() {
+  const [banner, setBanner] = useState<Banner | null>(null)
+
+  useEffect(() => {
+    fetchBanner().then(setBanner)
+  }, [])
+
+  return (
+    <div>
+      <h1>Latest News</h1>
+      {/* Banner pops in and pushes content down */}
+      {banner && (
+        <div>
+          <img src={banner.image} alt={banner.alt} />
+        </div>
+      )}
+      <ArticleList />
+    </div>
+  )
+}
+
+// ❌ Bad: embed without dimensions
+function VideoSection() {
+  return (
+    <div>
+      <iframe
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        title="Video"
+      />
+    </div>
+  )
+}
+```
+
+**Problems:**
+- Ads and banners without reserved space push content down when they load
+- Embeds and media without dimensions collapse to zero height then expand
+- Font swap without `size-adjust` causes text to reflow as the web font loads (FOUT)
+- Users accidentally click the wrong element when content shifts beneath their cursor
+
+## Correct
+
+```css
+/* ✅ Good: reserve space for media with aspect-ratio */
+.video-wrapper {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  background-color: #f0f0f0;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+}
+
+/* ✅ Good: reserve fixed space for ad banners */
+.ad-banner {
+  min-height: 250px;
+  width: 100%;
+  background-color: #fafafa;
+  contain: layout;
+}
+
+/* ✅ Good: font swap with size-adjust to match fallback metrics */
+@font-face {
+  font-family: 'BrandFont';
+  src: url('/fonts/brand.woff2') format('woff2');
+  font-display: swap;
+  size-adjust: 105%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+
+/* ✅ Good: aspect-ratio for responsive images */
+.thumbnail {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  object-fit: cover;
+  background-color: #e5e7eb;
+}
+
+/* ✅ Good: skeleton placeholder animation */
+.skeleton {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+```
+
+```tsx
+// ✅ Good: skeleton placeholder reserves space for async content
+function BannerSkeleton() {
+  return (
+    <div
+      className="w-full rounded-lg bg-gray-200 animate-pulse"
+      style={{ minHeight: 200 }}
+      aria-hidden="true"
+    />
+  )
+}
+
+function Feed() {
+  const [banner, setBanner] = useState<Banner | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    fetchBanner()
+      .then(setBanner)
+      .finally(() => setIsLoading(false))
+  }, [])
+
+  return (
+    <div>
+      <h1>Latest News</h1>
+      {/* Space is always reserved — no layout shift */}
+      <div style={{ minHeight: 200 }}>
+        {isLoading ? (
+          <BannerSkeleton />
+        ) : banner ? (
+          <img
+            src={banner.image}
+            alt={banner.alt}
+            width={800}
+            height={200}
+          />
+        ) : null}
+      </div>
+      <ArticleList />
+    </div>
+  )
+}
+
+// ✅ Good: embed with aspect-ratio wrapper
+function VideoSection() {
+  return (
+    <div style={{ aspectRatio: '16 / 9', width: '100%', backgroundColor: '#f0f0f0' }}>
+      <iframe
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        title="Video"
+        width="100%"
+        height="100%"
+        loading="lazy"
+      />
+    </div>
+  )
+}
+
+// ✅ Good: ad slot with reserved dimensions and containment
+function AdSlot({ slotId }: { slotId: string }) {
+  return (
+    <div
+      style={{
+        minHeight: 250,
+        width: '100%',
+        contain: 'layout',
+        backgroundColor: '#fafafa',
+      }}
+      data-ad-slot={slotId}
+    >
+      {/* Ad script injects content here without shifting layout */}
+    </div>
+  )
+}
+```
+
+**Benefits:**
+- `aspect-ratio` reserves the correct space for media before it loads
+- Skeleton placeholders prevent content from jumping as data arrives
+- `font-display: swap` with `size-adjust` minimizes text reflow during font loading
+- `contain: layout` prevents ad content from affecting surrounding layout
+- Reserved `min-height` on dynamic slots keeps content below them stable
+- Improved CLS score directly benefits search ranking and user satisfaction
+
+Reference: [web.dev - Cumulative Layout Shift](https://web.dev/articles/cls)
+
 
 ---
 

@@ -156,7 +156,7 @@ npx skills add AsyrafHussin/agent-skills --skill tailwind-best-practices
 
 ### [web-design-guidelines](skills/web-design-guidelines)
 
-WCAG accessibility, semantic HTML, keyboard navigation, color contrast, and motion preferences. Contains 21 rules across 8 categories.
+WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance. Contains 23 rules across 4 categories covering accessibility (WCAG 2.2), form patterns, reduced motion, and layout stability.
 
 **Example:** `Review my UI for accessibility and UX issues`
 

@@ -1,7 +1,7 @@
 ---
 title: Implement Smart Inline Validation
 impact: MEDIUM
-impactDescription: Reduces errors by 20-40%
+impactDescription: "Reduces errors by 20-40%"
 tags: forms, validation, ux, inline-validation
 ---
 
@@ -11,10 +11,10 @@ tags: forms, validation, ux, inline-validation
 
 Implement inline validation that provides immediate, contextual feedback as users complete form fields. Validate at the right moment to help without interrupting.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: Aggressive inline validation -->
+<!-- ❌ Bad: Aggressive inline validation -->
 <form>
   <input type="email"
          id="email"
@@ -39,7 +39,7 @@ function validateEmail() {
 }
 </script>
 
-<!-- Anti-pattern: No inline validation (only on submit) -->
+<!-- ❌ Bad: No inline validation (only on submit) -->
 <form onsubmit="return validate()">
   <input type="text" name="username">
   <input type="password" name="password">
@@ -48,10 +48,16 @@ function validateEmail() {
 </form>
 ```
 
-## Good Example
+**Problems:**
+- Validating on every keystroke shows errors before the user has finished typing
+- Submit-only validation delays feedback until the very end, causing frustration
+- No ARIA attributes to communicate validation state to screen readers
+- Error messages lack specificity and actionable guidance
+
+## Correct
 
 ```html
-<!-- Correct approach: Balanced inline validation -->
+<!-- ✅ Good: Balanced inline validation -->
 <form id="signup-form" novalidate>
   <!-- Email with validation on blur and after correction -->
   <div class="form-group" data-validate="email">
@@ -344,13 +350,13 @@ function validateConfirm() {
 function showError(input, feedback, message) {
   input.setAttribute('aria-invalid', 'true');
   feedback.className = 'feedback error';
-  feedback.innerHTML = `<span class="icon">✕</span> ${message}`;
+  feedback.innerHTML = `<span class="icon">&#10005;</span> ${message}`;
 }
 
 function showSuccess(input, feedback, message) {
   input.setAttribute('aria-invalid', 'false');
   feedback.className = 'feedback success';
-  feedback.innerHTML = `<span class="icon">✓</span> ${message}`;
+  feedback.innerHTML = `<span class="icon">&#10003;</span> ${message}`;
 }
 
 function showPending(input, feedback, message) {
@@ -369,30 +375,11 @@ function showPending(input, feedback, message) {
 </style>
 ```
 
-## Why
+**Benefits:**
+- Blur-first validation avoids interrupting users while they type
+- Revalidation on input clears errors as soon as the user corrects them
+- Password strength indicator provides real-time, positive feedback
+- Async username check with debounce avoids overwhelming the server
+- ARIA live regions announce validation results to screen readers
 
-Inline validation improves form completion:
-
-1. **Immediate Feedback**: Users know right away if data is valid.
-2. **Error Prevention**: Catches mistakes before submission.
-3. **Reduced Frustration**: No surprise errors at the end.
-4. **Guided Input**: Real-time requirements help users succeed.
-
-Validation timing guidelines:
-
-| Field Type | Validate On | Revalidate On |
-|------------|-------------|---------------|
-| Email, URL | Blur | Input (after first blur) |
-| Username | Blur + debounce | Input (after first blur) |
-| Password | Input (immediate) | - |
-| Confirm Password | Blur | Input (after first blur) |
-| Required text | Blur | Input (after first blur) |
-
-Key principles:
-
-1. **Don't validate empty fields on input** - Wait for blur
-2. **Revalidate on input after first error** - Clear errors as user fixes them
-3. **Password is special** - Real-time feedback for requirements
-4. **Debounce async validations** - Don't overwhelm server
-5. **Show positive feedback** - Confirm when input is valid
-6. **Preserve error until fixed** - Don't flash errors on/off
+Reference: [web.dev - Best Practices for Form Validation](https://web.dev/learn/forms/validation)

@@ -1,7 +1,7 @@
 ---
 title: Use Semantic HTML Elements
 impact: CRITICAL
-impactDescription: WCAG 2.1 Level A - Foundation for accessibility
+impactDescription: "WCAG 2.1 Level A - Foundation for accessibility"
 tags: accessibility, semantic-html, screen-readers, seo
 ---
 
@@ -9,14 +9,12 @@ tags: accessibility, semantic-html, screen-readers, seo
 
 **Impact: CRITICAL (WCAG 2.1 Level A - Foundation for accessibility)**
 
-## Why It Matters
-
 Semantic HTML provides meaning to content, enabling screen readers and assistive technologies to understand page structure. It improves SEO, maintainability, and accessibility without extra effort.
 
 ## Incorrect
 
 ```tsx
-// ❌ Div soup - no semantic meaning
+// ❌ Bad: Div soup - no semantic meaning
 <div className="header">
   <div className="logo">Logo</div>
   <div className="nav">
@@ -39,15 +37,15 @@ Semantic HTML provides meaning to content, enabling screen readers and assistive
 ```
 
 **Problems:**
-- Screen readers can't identify page structure
+- Screen readers cannot identify page structure
 - No keyboard navigation for "clickable" divs
-- Search engines can't understand content hierarchy
-- Assistive technology can't navigate sections
+- Search engines cannot understand content hierarchy
+- Assistive technology cannot navigate sections
 
 ## Correct
 
 ```tsx
-// ✅ Semantic HTML - meaningful structure
+// ✅ Good: Semantic HTML - meaningful structure
 <header>
   <a href="/" aria-label="Home">Logo</a>
   <nav aria-label="Main navigation">
@@ -76,6 +74,13 @@ Semantic HTML provides meaning to content, enabling screen readers and assistive
 </footer>
 ```
 
+**Benefits:**
+- Screen readers announce page structure
+- Keyboard users can navigate by landmarks
+- Better SEO indexing
+- Easier to style with CSS
+- Future-proof and maintainable
+
 ## Semantic Elements Reference
 
 | Element | Purpose | Use For |
@@ -96,37 +101,37 @@ Semantic HTML provides meaning to content, enabling screen readers and assistive
 ## Interactive Elements
 
 ```tsx
-// ❌ Div with click handler - not accessible
+// ❌ Bad: Div with click handler - not accessible
 <div onClick={handleClick} className="button">
   Click me
 </div>
 
-// ✅ Button element - accessible by default
+// ✅ Good: Button element - accessible by default
 <button onClick={handleClick}>
   Click me
 </button>
 
-// ❌ Span as link
+// ❌ Bad: Span as link
 <span onClick={() => navigate('/about')} className="link">
   About
 </span>
 
-// ✅ Anchor element
+// ✅ Good: Anchor element
 <a href="/about">About</a>
 
-// ✅ Link component (React Router/Next.js)
+// ✅ Good: Link component (React Router/Next.js)
 <Link href="/about">About</Link>
 ```
 
 ## Headings Hierarchy
 
 ```tsx
-// ❌ Skipping heading levels
+// ❌ Bad: Skipping heading levels
 <h1>Page Title</h1>
 <h3>Section Title</h3>  {/* Skipped h2 */}
 <h5>Subsection</h5>     {/* Skipped h4 */}
 
-// ✅ Proper heading hierarchy
+// ✅ Good: Proper heading hierarchy
 <h1>Page Title</h1>
 <h2>Section Title</h2>
 <h3>Subsection Title</h3>
@@ -137,14 +142,14 @@ Semantic HTML provides meaning to content, enabling screen readers and assistive
 ## Lists
 
 ```tsx
-// ❌ Not using lists for list content
+// ❌ Bad: Not using lists for list content
 <div className="menu">
   <div>Item 1</div>
   <div>Item 2</div>
   <div>Item 3</div>
 </div>
 
-// ✅ Use appropriate list elements
+// ✅ Good: Use appropriate list elements
 <ul>  {/* Unordered list */}
   <li>Item 1</li>
   <li>Item 2</li>
@@ -164,7 +169,7 @@ Semantic HTML provides meaning to content, enabling screen readers and assistive
 ## Tables
 
 ```tsx
-// ✅ Accessible table
+// ✅ Good: Accessible table
 <table>
   <caption>Monthly Sales Data</caption>
   <thead>
@@ -208,10 +213,4 @@ Semantic HTML provides meaning to content, enabling screen readers and assistive
 </search>
 ```
 
-## Benefits
-
-- Screen readers announce page structure
-- Keyboard users can navigate by landmarks
-- Better SEO indexing
-- Easier to style with CSS
-- Future-proof and maintainable
+Reference: [MDN Semantics](https://developer.mozilla.org/en-US/docs/Glossary/Semantics)

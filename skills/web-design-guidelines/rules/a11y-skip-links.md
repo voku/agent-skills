@@ -1,7 +1,7 @@
 ---
 title: Provide Skip Links for Navigation
 impact: HIGH
-impactDescription: WCAG 2.1 Level A - Bypass blocks
+impactDescription: "WCAG 2.1 Level A - Bypass blocks"
 tags: accessibility, navigation, keyboard, skip-links
 ---
 
@@ -11,10 +11,10 @@ tags: accessibility, navigation, keyboard, skip-links
 
 Provide skip links to allow keyboard and screen reader users to bypass repetitive content and navigate directly to main content areas.
 
-## Bad Example
+## Incorrect
 
 ```html
-<!-- Anti-pattern: No skip links -->
+<!-- ❌ Bad: No skip links -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,10 +41,16 @@ Provide skip links to allow keyboard and screen reader users to bypass repetitiv
 </html>
 ```
 
-## Good Example
+**Problems:**
+- Keyboard users must tab through every navigation link on every page to reach main content
+- Screen reader users have no shortcut to bypass repetitive header content
+- Users with motor disabilities waste effort on repeated key presses
+- No mechanism to jump between major page sections
+
+## Correct
 
 ```html
-<!-- Correct approach: Comprehensive skip links -->
+<!-- ✅ Good: Comprehensive skip links -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -156,29 +162,10 @@ Provide skip links to allow keyboard and screen reader users to bypass repetitiv
 </html>
 ```
 
-## Why
+**Benefits:**
+- Keyboard users can bypass navigation and jump directly to main content
+- Screen reader users get a consistent, fast way to reach key page sections
+- Motor-impaired users reduce the number of key presses needed
+- In-page navigation helps users of long pages find content quickly
 
-Skip links are a WCAG requirement and essential for usability:
-
-1. **Keyboard Efficiency**: Without skip links, keyboard users must tab through every navigation link on every page load to reach main content.
-
-2. **Screen Reader Navigation**: While screen reader users can navigate by headings, skip links provide a direct, consistent mechanism.
-
-3. **Repetitive Content**: Headers, navigation, sidebars appear on every page. Users shouldn't have to traverse them repeatedly.
-
-4. **Motor Disabilities**: Reducing the number of key presses helps users with motor impairments.
-
-5. **WCAG Requirement**: WCAG 2.1 Success Criterion 2.4.1 requires a mechanism to bypass repeated content.
-
-Skip link best practices:
-
-1. **First Focusable Element**: Skip link should be the very first focusable element
-2. **Visible on Focus**: Hidden until focused, then prominently displayed
-3. **Multiple Skip Links**: Consider links to main content, navigation, search, footer
-4. **Target Focusable**: Add `tabindex="-1"` to skip link targets for browser compatibility
-5. **Clear Labels**: "Skip to main content" is clearer than "Skip navigation"
-6. **Consistent Placement**: Same location on every page
-7. **High Contrast**: Ensure skip link is visible when focused
-8. **Table of Contents**: For long pages, provide in-page navigation
-
-Note: Some browsers don't move focus correctly to skip link targets without `tabindex="-1"` on the target element.
+Reference: [WCAG 2.4.1 Bypass Blocks](https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html)
