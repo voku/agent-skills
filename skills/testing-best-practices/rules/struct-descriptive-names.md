@@ -1,17 +1,20 @@
 ---
 title: Descriptive Test Names
-priority: CRITICAL
-category: Test Structure
+impact: CRITICAL
+impactDescription: "test documentation and debugging speed"
+tags: test-structure, naming, readability
 ---
 
-# Descriptive Test Names
+## Descriptive Test Names
 
-Write test names that clearly describe the scenario being tested and the expected outcome.
+**Impact: CRITICAL (test documentation and debugging speed)**
 
-## Bad Example
+Write test names that clearly describe the scenario being tested and the expected outcome. Good naming patterns include `[method/feature] [expected behavior] [under condition]`, `should [expected behavior] when [condition]`, or `returns [value] for [input description]`.
+
+## Incorrect
 
 ```typescript
-// Vague and uninformative names
+// ❌ Bad: Vague and uninformative names
 test('test1', () => {
   expect(validateEmail('test@example.com')).toBe(true);
 });
@@ -30,10 +33,16 @@ test('user test', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Names like `test1` and `it works` provide no insight into what is tested
+- When a test fails, the name gives no clue about what behavior broke
+- Cannot assess test coverage by reading test names alone
+- Inconsistent naming patterns across tests
+
+## Correct
 
 ```typescript
-// Clear, descriptive names following a consistent pattern
+// ✅ Good: Clear, descriptive names following a consistent pattern
 describe('validateEmail', () => {
   test('returns true for valid email with standard format', () => {
     expect(validateEmail('user@example.com')).toBe(true);
@@ -60,16 +69,10 @@ describe('createUser', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Test names serve as self-documenting specifications
+- Failed tests immediately reveal which behavior broke
+- Reviewing test names exposes gaps in coverage
+- Team members understand tested behaviors at a glance
 
-Descriptive test names serve as documentation and provide immediate insight when tests fail:
-
-1. **Self-documenting**: Test names explain what the code should do without reading the implementation
-2. **Faster debugging**: When a test fails, you immediately know what behavior broke
-3. **Better test coverage visibility**: Reviewing test names reveals gaps in coverage
-4. **Communication**: Team members can understand tested behaviors at a glance
-
-Good naming patterns include:
-- `[method/feature] [expected behavior] [under condition]`
-- `should [expected behavior] when [condition]`
-- `returns [value] for [input description]`
+Reference: [Better Specs — Naming Conventions](https://www.betterspecs.org/)

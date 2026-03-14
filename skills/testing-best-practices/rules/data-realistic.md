@@ -1,17 +1,20 @@
 ---
 title: Realistic Test Data
-priority: HIGH
-category: Test Data
+impact: HIGH
+impactDescription: "edge case discovery and validation accuracy"
+tags: test-data, realistic, internationalization, edge-cases
 ---
 
-# Realistic Test Data
+## Realistic Test Data
 
-Use data that resembles real-world inputs to catch edge cases and validation issues.
+**Impact: HIGH (edge case discovery and validation accuracy)**
 
-## Bad Example
+Use data that resembles real-world inputs to catch edge cases and validation issues. Include international characters, actual format patterns, realistic amounts, and known test values like Stripe test card numbers.
+
+## Incorrect
 
 ```typescript
-// Unrealistic placeholder data misses real-world issues
+// ❌ Bad: Unrealistic placeholder data misses real-world issues
 describe('UserRegistration', () => {
   test('registers new user', async () => {
     const result = await register({
@@ -40,14 +43,6 @@ describe('PaymentProcessor', () => {
   });
 });
 
-describe('SearchService', () => {
-  test('searches products', async () => {
-    const results = await search('aaa');
-
-    expect(results).toHaveLength(0);
-  });
-});
-
 describe('InternationalizationService', () => {
   test('formats user name', () => {
     // Only tests ASCII names
@@ -58,10 +53,16 @@ describe('InternationalizationService', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Placeholder values like `test` and `123` do not exercise real validation rules
+- Card number `1234` is not a valid test card format
+- Only ASCII names are tested, missing encoding and formatting issues
+- Trivially simple data misses edge cases found in production
+
+## Correct
 
 ```typescript
-// Realistic data catches real-world edge cases
+// ✅ Good: Realistic data catches real-world edge cases
 describe('UserRegistration', () => {
   test('registers user with common name format', async () => {
     const result = await register({
@@ -87,9 +88,9 @@ describe('UserRegistration', () => {
 
   test('registers user with international characters', async () => {
     const result = await register({
-      name: 'José García-López',
+      name: 'Jose Garcia-Lopez',
       email: 'jose.garcia@empresa.es',
-      password: 'Contraseña123!'
+      password: 'Contrasena123!'
     });
 
     expect(result.success).toBe(true);
@@ -97,9 +98,9 @@ describe('UserRegistration', () => {
 
   test('registers user with unicode name', async () => {
     const result = await register({
-      name: '田中 太郎',
+      name: 'Tanaka Taro',
       email: 'tanaka.taro@example.jp',
-      password: 'パスワード123!'
+      password: 'Password123!'
     });
 
     expect(result.success).toBe(true);
@@ -141,7 +142,6 @@ describe('PaymentProcessor', () => {
   });
 
   test('processes realistic order amount', async () => {
-    // Real e-commerce amounts, not round numbers
     const result = await processPayment({
       cardNumber: testCards.visa,
       expiry: '12/28',
@@ -150,27 +150,6 @@ describe('PaymentProcessor', () => {
     });
 
     expect(result.amount).toBe(147.83);
-  });
-});
-
-describe('SearchService', () => {
-  test('finds products with common search terms', async () => {
-    const results = await search('wireless headphones');
-
-    expect(results.length).toBeGreaterThan(0);
-    expect(results[0].name.toLowerCase()).toContain('headphone');
-  });
-
-  test('handles search with typos', async () => {
-    const results = await search('wireles headphone');
-
-    expect(results.length).toBeGreaterThan(0); // Fuzzy matching
-  });
-
-  test('handles search with special characters', async () => {
-    const results = await search("kid's toys");
-
-    expect(results).toBeDefined();
   });
 });
 
@@ -210,22 +189,27 @@ describe('AddressFormatter', () => {
     expect(formatted).toContain('Floor 102');
   });
 });
+
+describe('SearchService', () => {
+  test('handles search with special characters', async () => {
+    const results = await search("kid's toys");
+
+    expect(results).toBeDefined();
+  });
+
+  test('handles search with typos', async () => {
+    const results = await search('wireles headphone');
+
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
 ```
 
-## Why
+**Benefits:**
+- Real-world data reveals edge cases that placeholder data misses
+- Validation rules are tested with actual format patterns
+- International characters catch encoding and display issues
+- Tests document examples of valid real-world inputs
+- Tests are more likely to reflect production behavior
 
-Realistic test data provides significant benefits:
-
-1. **Edge case discovery**: Real data reveals issues placeholder data misses
-2. **Validation testing**: Ensures validation rules work with actual formats
-3. **Internationalization**: Tests with non-ASCII characters catch encoding issues
-4. **Documentation**: Tests show examples of valid real-world inputs
-5. **Integration readiness**: Tests are more likely to pass in production
-
-Guidelines for realistic data:
-- Use actual format patterns (phone numbers, addresses, emails)
-- Include international characters and formats
-- Test with realistic amounts and quantities
-- Use known test values (like Stripe test card numbers)
-- Include edge cases found in production data
-- Consider data from different regions and locales
+Reference: [Stripe Testing — Test Card Numbers](https://docs.stripe.com/testing)

@@ -1,17 +1,20 @@
 ---
 title: No Magic Numbers in Assertions
-priority: HIGH
-category: Assertions
+impact: HIGH
+impactDescription: "test self-documentation and maintainability"
+tags: assertions, magic-numbers, constants
 ---
 
-# No Magic Numbers in Assertions
+## No Magic Numbers in Assertions
 
-Use named constants or explanatory variables instead of unexplained numeric literals.
+**Impact: HIGH (test self-documentation and maintainability)**
 
-## Bad Example
+Use named constants or explanatory variables instead of unexplained numeric literals. Name constants after their business meaning, not their value, and show derivation of expected values through calculation.
+
+## Incorrect
 
 ```typescript
-// Magic numbers obscure the meaning of tests
+// ❌ Bad: Magic numbers obscure the meaning of tests
 describe('DiscountCalculator', () => {
   test('calculates discount correctly', () => {
     const total = calculator.calculateTotal(100, 'SUMMER2024');
@@ -42,29 +45,18 @@ describe('PaginationService', () => {
     expect(result.endIndex).toBe(19);   // Why 19?
   });
 });
-
-describe('RateLimiter', () => {
-  test('allows requests within limit', async () => {
-    for (let i = 0; i < 100; i++) {
-      await rateLimiter.checkLimit('user-1');
-    }
-    // Why 100? Is this the exact limit?
-  });
-
-  test('blocks after exceeding limit', async () => {
-    for (let i = 0; i < 101; i++) {
-      await rateLimiter.checkLimit('user-2');
-    }
-
-    await expect(rateLimiter.checkLimit('user-2')).rejects.toThrow();
-  });
-});
 ```
 
-## Good Example
+**Problems:**
+- Numeric literals give no indication of what they represent
+- Reviewers cannot verify correctness without understanding the formula
+- Changing a business rule requires finding and updating scattered numbers
+- Debugging a failure requires reverse-engineering the expected value
+
+## Correct
 
 ```typescript
-// Named constants explain the meaning of values
+// ✅ Good: Named constants explain the meaning of values
 describe('DiscountCalculator', () => {
   const ORIGINAL_PRICE = 100;
   const SUMMER_DISCOUNT_PERCENT = 15;
@@ -99,9 +91,8 @@ describe('DiscountCalculator', () => {
 describe('PaginationService', () => {
   const TOTAL_ITEMS = 50;
   const PAGE_SIZE = 10;
-  const CURRENT_PAGE = 2; // 0-indexed, so this is the third page
+  const CURRENT_PAGE = 2;
 
-  // Derived values explained through calculation
   const EXPECTED_TOTAL_PAGES = Math.ceil(TOTAL_ITEMS / PAGE_SIZE);
   const EXPECTED_START_INDEX = CURRENT_PAGE * PAGE_SIZE;
   const EXPECTED_END_INDEX = EXPECTED_START_INDEX + PAGE_SIZE - 1;
@@ -137,30 +128,21 @@ describe('RateLimiter', () => {
   });
 
   test('blocks requests exceeding the rate limit', async () => {
-    // Exhaust the limit
     for (let i = 0; i < REQUESTS_AT_LIMIT; i++) {
       await rateLimiter.checkLimit('user-2');
     }
 
-    // Next request should fail
     await expect(rateLimiter.checkLimit('user-2'))
       .rejects.toThrow(`Rate limit of ${RATE_LIMIT_PER_MINUTE} requests exceeded`);
   });
 });
 ```
 
-## Why
+**Benefits:**
+- Constants are self-documenting and explain what values represent
+- Changing a value requires an update in only one place
+- Calculations show how expected values are derived so reviewers can verify logic
+- When tests fail, the constant names help understand what the numbers mean
+- Domain terminology in constant names improves readability
 
-Eliminating magic numbers improves test quality:
-
-1. **Self-documenting**: Constants explain what values represent
-2. **Maintainability**: Change a value in one place when requirements change
-3. **Verifiability**: Calculations show how expected values are derived
-4. **Code review**: Reviewers can validate the logic, not just the numbers
-5. **Debugging**: When tests fail, you understand what the numbers mean
-
-Guidelines:
-- Name constants after their business meaning, not their value
-- Show derivation of expected values through calculation
-- Use domain terminology in constant names
-- Consider extracting to shared test utilities if used across files
+Reference: [Clean Code — Chapter 17: Smells and Heuristics (Magic Numbers)](https://www.oreilly.com/library/view/clean-code-a/9780136083238/)

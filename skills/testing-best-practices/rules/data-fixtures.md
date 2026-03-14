@@ -1,20 +1,23 @@
 ---
 title: Test Fixtures
-priority: HIGH
-category: Test Data
+impact: HIGH
+impactDescription: "test data reusability and consistency"
+tags: test-data, fixtures, setup, reusable-data
 ---
 
-# Test Fixtures
+## Test Fixtures
 
-Use fixtures to manage reusable test data and complex setup scenarios.
+**Impact: HIGH (test data reusability and consistency)**
 
-## Bad Example
+Use fixtures to manage reusable test data and complex setup scenarios. Organize fixtures by domain or entity, include expected values alongside input data, and create fixture loaders for database setup.
+
+## Incorrect
 
 ```typescript
-// Repeated inline data setup across tests
+// ❌ Bad: Repeated inline data setup across tests
 describe('ReportService', () => {
   test('generates sales report', async () => {
-    // Setup data inline - duplicated across tests
+    // Setup data inline — duplicated across tests
     const salesData = [
       { date: '2024-01-01', product: 'Widget', quantity: 10, price: 29.99 },
       { date: '2024-01-01', product: 'Gadget', quantity: 5, price: 49.99 },
@@ -49,9 +52,16 @@ describe('ReportService', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Large blocks of inline data are duplicated across multiple tests
+- Expected values are hardcoded without connection to the fixture data
+- Database setup logic is repeated in every test
+- Changes to test data require updates in many places
+
+## Correct
 
 ```typescript
+// ✅ Good: Fixtures organized by domain with expected values
 // fixtures/sales.fixture.ts
 export const salesFixtures = {
   january2024: [
@@ -61,7 +71,6 @@ export const salesFixtures = {
     { date: '2024-01-02', product: 'Gadget', quantity: 8, price: 49.99 }
   ],
 
-  // Pre-calculated expected values
   january2024Expected: {
     totalRevenue: 1099.55,
     widgetRevenue: 749.75,
@@ -96,22 +105,6 @@ export const userFixtures = {
   }
 };
 
-// fixtures/products.fixture.ts
-export const productFixtures = {
-  basic: [
-    { id: 'prod-1', name: 'Widget', price: 29.99, stock: 100 },
-    { id: 'prod-2', name: 'Gadget', price: 49.99, stock: 50 }
-  ],
-
-  outOfStock: [
-    { id: 'prod-3', name: 'Rare Item', price: 199.99, stock: 0 }
-  ],
-
-  discounted: [
-    { id: 'prod-4', name: 'Sale Widget', price: 29.99, discount: 20, stock: 200 }
-  ]
-};
-
 // helpers/fixture-loader.ts
 export class FixtureLoader {
   constructor(private db: Database) {}
@@ -122,10 +115,6 @@ export class FixtureLoader {
 
   async loadUsers(...users: Array<typeof userFixtures.admin>): Promise<void> {
     await this.db.insert('users', users);
-  }
-
-  async loadProducts(products: typeof productFixtures.basic): Promise<void> {
-    await this.db.insert('products', products);
   }
 
   async clearAll(): Promise<void> {
@@ -168,18 +157,6 @@ describe('ReportService', () => {
         salesFixtures.january2024Expected.widgetRevenue
       );
     });
-
-    test('groups by product', async () => {
-      const report = await reportService.generate('sales', {
-        month: 'january',
-        groupBy: 'product'
-      });
-
-      expect(report.groups).toHaveLength(2);
-      expect(report.groups.find(g => g.product === 'Widget').quantity).toBe(
-        salesFixtures.january2024Expected.widgetCount
-      );
-    });
   });
 });
 
@@ -209,35 +186,15 @@ describe('AuthorizationService', () => {
 
     expect(canDelete).toBe(false);
   });
-
-  test('premium user can export data', async () => {
-    await fixtureLoader.loadUsers(userFixtures.premiumUser);
-
-    const canExport = await authService.checkPermission(
-      userFixtures.premiumUser.id,
-      'export'
-    );
-
-    expect(canExport).toBe(true);
-  });
 });
 ```
 
-## Why
+**Benefits:**
+- Same data is reused across multiple tests without duplication
+- All tests use identical baseline data for consistency
+- Test data is updated in one place when requirements change
+- Fixtures describe test scenarios and serve as documentation
+- Pre-calculated expected values stored alongside input data prevent drift
+- Test logic is cleanly separated from test data
 
-Test fixtures provide structured test data management:
-
-1. **Reusability**: Same data used across multiple tests
-2. **Consistency**: All tests use identical baseline data
-3. **Maintainability**: Update data in one place
-4. **Documentation**: Fixtures describe test scenarios
-5. **Separation**: Test logic separate from test data
-6. **Pre-calculated values**: Expected results stored with fixtures
-
-Best practices for fixtures:
-- Organize fixtures by domain/entity
-- Include expected values alongside input data
-- Create fixture loaders for database setup
-- Use descriptive names for fixture scenarios
-- Keep fixtures in dedicated directories
-- Version control fixtures with tests
+Reference: [Django Docs — Fixtures](https://docs.djangoproject.com/en/stable/howto/initial-data/)

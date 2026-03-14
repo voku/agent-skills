@@ -1,17 +1,20 @@
 ---
 title: Deterministic Tests
-priority: CRITICAL
-category: Test Isolation
+impact: CRITICAL
+impactDescription: "CI/CD reliability and developer trust"
+tags: test-isolation, deterministic, flaky-tests
 ---
 
-# Deterministic Tests
+## Deterministic Tests
 
-Tests should produce the same result every time they run, regardless of environment or timing.
+**Impact: CRITICAL (CI/CD reliability and developer trust)**
 
-## Bad Example
+Tests should produce the same result every time they run, regardless of environment or timing. Common sources of non-determinism include time, random values, external services, file systems, databases, and concurrency.
+
+## Incorrect
 
 ```typescript
-// Non-deterministic tests with random/time dependencies
+// ❌ Bad: Non-deterministic tests with random/time dependencies
 describe('OrderService', () => {
   test('generates unique order id', () => {
     const order = createOrder({ items: [{ id: 1 }] });
@@ -48,10 +51,16 @@ describe('OrderService', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Random value assertions can fail unpredictably
+- Time-based tests break at midnight or across time zones
+- Real `setTimeout` delays make tests impossibly slow
+- Race conditions produce intermittent failures
+
+## Correct
 
 ```typescript
-// Deterministic tests with controlled dependencies
+// ✅ Good: Deterministic tests with controlled dependencies
 describe('OrderService', () => {
   let orderService: OrderService;
   let mockIdGenerator: jest.Mocked<IdGenerator>;
@@ -94,7 +103,6 @@ describe('OrderService', () => {
 
     const order = orderService.createOrder({ items: [{ id: 1 }] });
 
-    // Simulate time passing by changing clock
     mockClock.now.mockReturnValue(afterExpiration);
 
     expect(order.isExpired(mockClock)).toBe(true);
@@ -130,20 +138,11 @@ describe('OrderService', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Failed tests can be debugged consistently with reproducible results
+- Developers trust the test suite because it is reliable
+- No wasted time investigating false alarms
+- Tests can safely run in parallel
+- Results are the same locally and in CI
 
-Deterministic tests are crucial for reliable CI/CD:
-
-1. **Reproducible failures**: Failed tests can be debugged consistently
-2. **Trust**: Developers trust the test suite when it's reliable
-3. **No false alarms**: No wasted time investigating "phantom" failures
-4. **Parallel execution**: Deterministic tests can safely run in parallel
-5. **Environment independence**: Tests work the same locally and in CI
-
-Common sources of non-determinism to control:
-- **Time**: Inject clocks, use fixed timestamps
-- **Random values**: Seed random generators or inject ID generators
-- **External services**: Mock network calls
-- **File system**: Use in-memory alternatives or temp directories
-- **Database**: Use transactions or test-specific data
-- **Concurrency**: Avoid race conditions, use deterministic ordering
+Reference: [Martin Fowler — Eradicating Non-Determinism in Tests](https://martinfowler.com/articles/nonDeterminism.html)

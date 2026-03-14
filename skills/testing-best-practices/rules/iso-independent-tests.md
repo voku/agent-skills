@@ -1,17 +1,20 @@
 ---
 title: Independent Tests
-priority: CRITICAL
-category: Test Isolation
+impact: CRITICAL
+impactDescription: "test reliability and parallel execution"
+tags: test-isolation, independence, parallel
 ---
 
-# Independent Tests
+## Independent Tests
 
-Each test should be completely independent and not rely on other tests.
+**Impact: CRITICAL (test reliability and parallel execution)**
 
-## Bad Example
+Each test should be completely independent and not rely on other tests. Signs of dependent tests include tests that pass individually but fail together, tests that fail in different orders, and tests that only pass when the full suite runs.
+
+## Incorrect
 
 ```typescript
-// Tests depend on each other and share state
+// ❌ Bad: Tests depend on each other and share state
 describe('ShoppingCart', () => {
   const cart = new ShoppingCart(); // Shared instance!
 
@@ -40,10 +43,16 @@ describe('ShoppingCart', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- A shared mutable instance couples all tests together
+- Tests cannot be run individually or in a different order
+- A failure in one test cascades to all subsequent tests
+- Parallelization is impossible because tests share state
+
+## Correct
 
 ```typescript
-// Each test is independent with its own setup
+// ✅ Good: Each test is independent with its own setup
 describe('ShoppingCart', () => {
   let cart: ShoppingCart;
 
@@ -87,19 +96,11 @@ describe('ShoppingCart', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Tests can be run in any order, shuffled, parallelized, or run individually
+- A failure in one test does not cascade to others
+- Failed tests can be reproduced in isolation for easier debugging
+- Independent tests can run concurrently for faster execution
+- Changes to one test do not affect others
 
-Independent tests are essential for reliable test suites:
-
-1. **Run in any order**: Tests can be shuffled, parallelized, or run individually
-2. **Isolated failures**: When one test fails, it doesn't cascade to other tests
-3. **Easier debugging**: Failed tests can be run in isolation to reproduce issues
-4. **Parallelization**: Independent tests can run concurrently for faster execution
-5. **Maintainability**: Changes to one test don't affect others
-6. **Reliable CI/CD**: No flaky failures due to test ordering
-
-Signs of dependent tests:
-- Tests that pass individually but fail when run together
-- Tests that fail when run in a different order
-- Tests that only pass when the full suite runs
-- Shared mutable state between tests
+Reference: [Jest Docs — Test Isolation](https://jestjs.io/docs/setup-teardown#general-advice)

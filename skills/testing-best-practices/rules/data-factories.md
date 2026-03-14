@@ -1,17 +1,20 @@
 ---
 title: Test Data Factories
-priority: HIGH
-category: Test Data
+impact: HIGH
+impactDescription: "test data consistency and reduced duplication"
+tags: test-data, factories, defaults
 ---
 
-# Test Data Factories
+## Test Data Factories
 
-Use factory functions to create test data with sensible defaults and easy customization.
+**Impact: HIGH (test data consistency and reduced duplication)**
 
-## Bad Example
+Use factory functions to create test data with sensible defaults and easy customization. Factories define the object structure once and let tests override only the properties that matter for each scenario.
+
+## Incorrect
 
 ```typescript
-// Duplicated object creation with inconsistent defaults
+// ❌ Bad: Duplicated object creation with inconsistent defaults
 describe('OrderService', () => {
   test('calculates total for single item', () => {
     const order = {
@@ -41,7 +44,7 @@ describe('OrderService', () => {
   });
 
   test('applies discount', () => {
-    // Copy-pasted with slight modifications - hard to spot differences
+    // Copy-pasted with slight modifications — hard to spot differences
     const order = {
       id: 'order-2',
       customerId: 'cust-456',
@@ -71,10 +74,16 @@ describe('OrderService', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Full object construction is duplicated across tests
+- Differences between test objects are hard to spot in walls of data
+- Schema changes require updates in every test
+- Inconsistent default values across tests cause confusion
+
+## Correct
 
 ```typescript
-// factories/order.factory.ts
+// ✅ Good: Factory functions with sensible defaults
 interface OrderFactoryOptions {
   id?: string;
   customerId?: string;
@@ -113,34 +122,18 @@ export const OrderFactory = {
     };
   },
 
-  // Preset factories for common scenarios
   createPending(options: OrderFactoryOptions = {}): Order {
     return this.create({ ...options, status: 'pending' });
   },
 
   createPaid(options: OrderFactoryOptions = {}): Order {
-    return this.create({
-      ...options,
-      status: 'paid',
-      paidAt: new Date()
-    });
+    return this.create({ ...options, status: 'paid' });
   },
 
   createShipped(options: OrderFactoryOptions = {}): Order {
-    return this.create({
-      ...options,
-      status: 'shipped',
-      paidAt: new Date(),
-      shippedAt: new Date(),
-      trackingNumber: 'TRACK123456'
-    });
+    return this.create({ ...options, status: 'shipped' });
   },
 
-  createWithItems(items: OrderItem[], options: OrderFactoryOptions = {}): Order {
-    return this.create({ ...options, items });
-  },
-
-  // Reset counter between test files if needed
   reset(): void {
     orderIdCounter = 0;
   }
@@ -178,18 +171,20 @@ describe('OrderService', () => {
   });
 
   test('calculates total for multiple items', () => {
-    const order = OrderFactory.createWithItems([
-      OrderItemFactory.create({ price: 10, quantity: 2 }),
-      OrderItemFactory.create({ price: 5, quantity: 3 })
-    ]);
+    const order = OrderFactory.create({
+      items: [
+        OrderItemFactory.create({ price: 10, quantity: 2 }),
+        OrderItemFactory.create({ price: 5, quantity: 3 }),
+      ],
+    });
 
-    expect(orderService.calculateTotal(order)).toBe(35); // (10*2) + (5*3)
+    expect(orderService.calculateTotal(order)).toBe(35);
   });
 
   test('applies percentage discount to total', () => {
     const order = OrderFactory.create({
       items: [OrderItemFactory.create({ price: 100 })],
-      discount: 10 // 10% discount
+      discount: 10
     });
 
     expect(orderService.calculateTotal(order)).toBe(90);
@@ -202,33 +197,15 @@ describe('OrderService', () => {
 
     expect(order.status).toBe('paid');
   });
-
-  test('ships paid order', async () => {
-    const order = OrderFactory.createPaid();
-
-    await orderService.ship(order.id, 'TRACK789');
-
-    expect(order.status).toBe('shipped');
-    expect(order.trackingNumber).toBe('TRACK789');
-  });
 });
 ```
 
-## Why
+**Benefits:**
+- Object structure is defined once, used everywhere
+- Sensible defaults minimize setup code in each test
+- Tests highlight only the properties that matter for each scenario
+- Schema changes require updates in a single place
+- Preset factory methods like `createPaid` improve test readability
+- Consistent test data patterns across the entire test suite
 
-Test data factories provide essential benefits:
-
-1. **Reduced duplication**: Define object structure once, use everywhere
-2. **Clear defaults**: Sensible defaults minimize test setup
-3. **Highlighted variations**: Tests show only the properties that matter for that scenario
-4. **Maintainability**: Schema changes require updates in one place
-5. **Readability**: Factory methods with descriptive names improve test clarity
-6. **Consistency**: All tests use consistent test data patterns
-
-Factory design tips:
-- Provide sensible defaults for all required fields
-- Allow overriding any property
-- Create preset methods for common scenarios
-- Include helper methods like `createMany`
-- Consider reset methods for sequence counters
-- Use TypeScript for type-safe options
+Reference: [Thoughtbot — Factory Patterns](https://thoughtbot.com/blog/factory_bot)

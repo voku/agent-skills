@@ -1,17 +1,20 @@
 ---
 title: Test Data Builders
-priority: HIGH
-category: Test Data
+impact: HIGH
+impactDescription: "complex test data readability and maintainability"
+tags: test-data, builder-pattern, fluent-api
 ---
 
-# Test Data Builders
+## Test Data Builders
 
-Use the builder pattern for complex test data with fluent, chainable configuration.
+**Impact: HIGH (complex test data readability and maintainability)**
 
-## Bad Example
+Use the builder pattern for complex test data with fluent, chainable configuration. Builders are ideal for objects with many optional configurations, while factories work better for simpler objects with few variations.
+
+## Incorrect
 
 ```typescript
-// Complex nested object construction is hard to read and maintain
+// ❌ Bad: Complex nested object construction is hard to read and maintain
 describe('ReportGenerator', () => {
   test('generates monthly sales report', () => {
     const report = {
@@ -53,10 +56,16 @@ describe('ReportGenerator', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Large inline object literals obscure what the test is actually verifying
+- Irrelevant properties clutter the test making it hard to spot the key data
+- Duplicating the same structure across tests is error-prone
+- Changes to the object shape require updates in every test
+
+## Correct
 
 ```typescript
-// Builder pattern for fluent test data construction
+// ✅ Good: Builder pattern for fluent test data construction
 class ReportBuilder {
   private report: Partial<Report> = {
     id: `report-${Date.now()}`,
@@ -69,73 +78,20 @@ class ReportBuilder {
     return new ReportBuilder();
   }
 
-  withId(id: string): this {
-    this.report.id = id;
-    return this;
-  }
-
   ofType(type: ReportType): this {
     this.report.type = type;
-    return this;
-  }
-
-  forDateRange(start: Date, end: Date): this {
-    this.report.dateRange = { start, end };
     return this;
   }
 
   forMonth(year: number, month: number): this {
     const start = new Date(year, month - 1, 1);
     const end = new Date(year, month, 0);
-    return this.forDateRange(start, end);
+    this.report.dateRange = { start, end };
+    return this;
   }
 
   forRegions(...regions: string[]): this {
     this.report.filters = { ...this.report.filters, regions };
-    return this;
-  }
-
-  forCategories(...categories: string[]): this {
-    this.report.filters = { ...this.report.filters, categories };
-    return this;
-  }
-
-  withAmountRange(min?: number, max?: number): this {
-    this.report.filters = {
-      ...this.report.filters,
-      minAmount: min,
-      maxAmount: max
-    };
-    return this;
-  }
-
-  includingRefunds(): this {
-    this.report.filters = { ...this.report.filters, includeRefunds: true };
-    return this;
-  }
-
-  excludingTestOrders(): this {
-    this.report.filters = { ...this.report.filters, excludeTestOrders: true };
-    return this;
-  }
-
-  groupedBy(...fields: string[]): this {
-    this.report.groupBy = fields;
-    return this;
-  }
-
-  sortedBy(field: string, direction: 'asc' | 'desc' = 'asc'): this {
-    this.report.sortBy = { field, direction };
-    return this;
-  }
-
-  asPdf(options: Partial<PdfOptions> = {}): this {
-    this.report.format = {
-      type: 'pdf',
-      pageSize: 'A4',
-      orientation: 'portrait',
-      ...options
-    };
     return this;
   }
 
@@ -175,7 +131,6 @@ class MonthlySalesReportBuilder extends ReportBuilder {
   constructor() {
     super();
     this.ofType('monthly-sales')
-      .excludingTestOrders()
       .groupedBy('region', 'category')
       .sortedBy('totalSales', 'desc')
       .asPdf({ orientation: 'landscape' });
@@ -210,20 +165,6 @@ describe('ReportGenerator', () => {
     expect(result.charts).toHaveLength(2);
   });
 
-  test('generates filtered report for high-value sales', () => {
-    const report = ReportBuilder.create()
-      .ofType('sales-detail')
-      .forMonth(2024, 1)
-      .forCategories('electronics')
-      .withAmountRange(1000, undefined)
-      .excludingTestOrders()
-      .build();
-
-    const result = generator.generate(report);
-
-    expect(result.data.every(row => row.amount >= 1000)).toBe(true);
-  });
-
   test('schedules and emails monthly report', () => {
     const report = MonthlySalesReportBuilder.create()
       .forMonth(2024, 1)
@@ -238,24 +179,12 @@ describe('ReportGenerator', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Fluent API with chainable methods reads like natural language
+- Method names explain what each configuration does (self-documenting)
+- Tests build only the data they need, nothing more
+- IDE autocomplete shows available configuration options
+- Base builders can be extended for common scenarios
+- Changes to data structure are isolated to the builder class
 
-The builder pattern excels for complex test data:
-
-1. **Fluent API**: Chainable methods read like natural language
-2. **Self-documenting**: Method names explain what each configuration does
-3. **Flexible**: Build exactly the data needed, nothing more
-4. **Discoverable**: IDE autocomplete shows available options
-5. **Composable**: Extend base builders for common scenarios
-6. **Maintainable**: Changes to data structure are isolated to the builder
-
-When to use builders vs factories:
-- **Builders**: Complex objects with many optional configurations
-- **Factories**: Simpler objects with few variations
-- **Both**: Factories can use builders internally
-
-Builder design tips:
-- Return `this` for chainability
-- Provide preset methods for common combinations
-- Create specialized subclass builders for common scenarios
-- Include a `build()` method that validates and returns the final object
+Reference: [Test Data Builder Pattern](https://wiki.c2.com/?TestDataBuilder)

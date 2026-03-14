@@ -1,40 +1,42 @@
 ---
 title: No Order Dependency
-priority: CRITICAL
-category: Test Isolation
+impact: CRITICAL
+impactDescription: "parallel execution and test stability"
+tags: test-isolation, order-independence, parallel
 ---
 
-# No Order Dependency
+## No Order Dependency
 
-Tests should pass regardless of the order in which they run.
+**Impact: CRITICAL (parallel execution and test stability)**
 
-## Bad Example
+Tests should pass regardless of the order in which they run. Many test runners shuffle test order to catch dependencies, and tests running in parallel have no guaranteed order.
+
+## Incorrect
 
 ```typescript
-// Tests that depend on execution order
+// ❌ Bad: Tests that depend on execution order
 describe('Database Integration', () => {
-  // This test creates data that later tests depend on
   test('inserts user into database', async () => {
     await db.query('INSERT INTO users (id, name) VALUES (1, "Alice")');
     const result = await db.query('SELECT * FROM users WHERE id = 1');
     expect(result.rows[0].name).toBe('Alice');
   });
 
-  // Depends on previous test's insert
   test('updates user in database', async () => {
+    // Depends on previous test's insert
     await db.query('UPDATE users SET name = "Alicia" WHERE id = 1');
     const result = await db.query('SELECT * FROM users WHERE id = 1');
     expect(result.rows[0].name).toBe('Alicia');
   });
 
-  // Depends on update from previous test
   test('verifies user state', async () => {
+    // Depends on update from previous test
     const result = await db.query('SELECT * FROM users WHERE id = 1');
     expect(result.rows[0].name).toBe('Alicia');
   });
 
-  // Must run last or will break other tests
   test('deletes user from database', async () => {
+    // Must run last or will break other tests
     await db.query('DELETE FROM users WHERE id = 1');
     const result = await db.query('SELECT * FROM users WHERE id = 1');
     expect(result.rows.length).toBe(0);
@@ -57,10 +59,16 @@ test('second operation', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Each test depends on state left behind by the previous test
+- Running tests in random order or in isolation will fail
+- Static counters and module-level variables create hidden coupling
+- Cannot safely parallelize or selectively run tests
+
+## Correct
 
 ```typescript
-// Each test is self-contained
+// ✅ Good: Each test is self-contained
 describe('Database Integration', () => {
   beforeEach(async () => {
     await db.query('DELETE FROM users');
@@ -110,7 +118,6 @@ describe('Step Processing', () => {
   });
 
   test('processes steps in sequence', () => {
-    // Tests the sequence concept in isolation
     const sequence = [1, 2, 3];
     const results = sequence.map(step => processStep(step));
 
@@ -119,23 +126,11 @@ describe('Step Processing', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Tests can be shuffled with `jest --randomize` to detect hidden dependencies
+- Parallel execution is safe because no test depends on another
+- Developers can run single tests or subsets during development
+- Watch mode correctly re-runs only changed tests
+- Individual tests are easy to debug in isolation
 
-Order-independent tests are essential for modern testing:
-
-1. **Random ordering**: Many test runners shuffle test order to catch dependencies
-2. **Parallel execution**: Tests running in parallel have no guaranteed order
-3. **Selective running**: Developers often run single tests or subsets
-4. **Watch mode**: Only changed tests may re-run during development
-5. **Debugging**: Isolated tests are easier to run and debug individually
-
-How to verify order independence:
-- Run tests in random order (`jest --randomize`)
-- Run tests in reverse order
-- Run individual tests in isolation
-- Run tests in parallel
-
-Signs of order dependency:
-- Tests pass in suite but fail in isolation
-- Flaky tests that sometimes fail
-- Tests that only work when run after specific other tests
+Reference: [Jest CLI — Randomize](https://jestjs.io/docs/cli#--randomize)

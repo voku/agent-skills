@@ -1,65 +1,52 @@
-# Testing Best Practices
+# Testing Best Practices v2.0.0
 
 Unit testing, integration testing, and TDD principles for reliable, maintainable test suites.
 
 ## Overview
 
-This skill provides guidance for:
-- Test structure and organization
-- Test isolation and independence
-- Effective assertions
-- Test data management
-- Mocking strategies
-- Coverage goals
+- Test structure (AAA pattern, descriptive names, one assertion per test)
+- Test isolation (independent, deterministic, no shared state)
+- Assertions (specific matchers, meaningful messages, custom matchers)
+- Test data (factories, builders, faker, fixtures)
+- Mocking (boundaries only, verify interactions, MSW)
+- Coverage (meaningful coverage, edge cases, unhappy paths)
+- Performance (fast unit tests, parallel execution, test organization)
+- 34 rules across 7 categories
 
 ## Categories
 
 ### 1. Test Structure (Critical)
-AAA pattern, descriptive names, one assertion per test.
+AAA pattern, descriptive names, one assertion, describe/it, BDD, setup/teardown.
 
 ### 2. Test Isolation (Critical)
-Independent tests, no shared state, deterministic results.
+Independent tests, no shared state, deterministic, cleanup, test doubles.
 
 ### 3. Assertions (High)
-Specific assertions, meaningful messages, named constants.
+Specific assertions, meaningful messages, expected-first, custom matchers.
 
 ### 4. Test Data (High)
-Factories, minimal data, realistic edge cases.
+Factories, builders, faker, minimal data, realistic edge cases, fixtures.
 
 ### 5. Mocking (Medium)
-Mock boundaries, verify interactions, realistic behavior.
+Mock at boundaries, verify interactions, don't over-mock, realistic mocks.
 
 ### 6. Coverage (Medium)
-Meaningful coverage, edge cases, error scenarios.
+Meaningful coverage, edge cases, error scenarios, 80% baseline not 100%.
+
+### 7. Performance (Low)
+Fast unit tests, parallel execution, organized test tiers.
 
 ## Usage
 
-Ask Claude to:
-- "Write tests for this function"
-- "Review test coverage"
-- "Check test isolation"
-- "Improve test structure"
-
-## Key Principles
-
-### AAA Pattern
-- **Arrange**: Set up test data
-- **Act**: Execute the code
-- **Assert**: Verify results
-
-### Test Isolation
-- Each test independent
-- No shared mutable state
-- Clean up after tests
-- Run in any order
-
-### Test Pyramid
-- Many unit tests (fast)
-- Some integration tests
-- Few E2E tests (slow)
+```
+Write tests for this service class
+Review my test code for best practices
+Set up testing strategy for this project
+```
 
 ## References
 
-- [Testing Library](https://testing-library.com/)
-- [Jest Documentation](https://jestjs.io/)
-- [PHPUnit Documentation](https://phpunit.de/)
+- [Vitest Documentation](https://vitest.dev)
+- [Jest Documentation](https://jestjs.io)
+- [Testing Library](https://testing-library.com)
+- [MSW (Mock Service Worker)](https://mswjs.io)

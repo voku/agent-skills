@@ -1,22 +1,24 @@
 ---
 title: Custom Matchers
-priority: HIGH
-category: Assertions
+impact: HIGH
+impactDescription: "assertion readability and reusability"
+tags: assertions, custom-matchers, domain-specific
 ---
 
-# Custom Matchers
+## Custom Matchers
 
-Create custom assertion matchers for domain-specific validations to improve readability and reusability.
+**Impact: HIGH (assertion readability and reusability)**
 
-## Bad Example
+Create custom assertion matchers for domain-specific validations to improve readability and reusability. Custom matchers are valuable when you have repeated assertion patterns, complex multi-property checks, or assertions that need better error messages.
+
+## Incorrect
 
 ```typescript
-// Repeated complex assertions without abstraction
+// ❌ Bad: Repeated complex assertions without abstraction
 describe('OrderService', () => {
   test('creates pending order', () => {
     const order = orderService.create({ items: [{ id: 1 }] });
 
-    // Repeated pattern for checking order state
     expect(order.status).toBe('pending');
     expect(order.paidAt).toBeNull();
     expect(order.shippedAt).toBeNull();
@@ -34,42 +36,29 @@ describe('OrderService', () => {
   });
 });
 
-describe('UserValidator', () => {
-  test('validates email format', () => {
-    const email = 'user@example.com';
-
-    // Complex regex repeated in tests
-    expect(email).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-    expect(email.split('@')[1]).toContain('.');
-  });
-
-  test('validates another email', () => {
-    const email = 'admin@company.org';
-
-    // Same validation duplicated
-    expect(email).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-    expect(email.split('@')[1]).toContain('.');
-  });
-});
-
 describe('DateUtils', () => {
   test('returns date within business hours', () => {
     const date = dateUtils.nextBusinessHour();
 
-    // Complex multi-step assertion
     const hours = date.getHours();
     expect(hours).toBeGreaterThanOrEqual(9);
     expect(hours).toBeLessThanOrEqual(17);
-    expect(date.getDay()).not.toBe(0); // Not Sunday
-    expect(date.getDay()).not.toBe(6); // Not Saturday
+    expect(date.getDay()).not.toBe(0);
+    expect(date.getDay()).not.toBe(6);
   });
 });
 ```
 
-## Good Example
+**Problems:**
+- Complex assertion patterns are duplicated across tests
+- Error messages are generic and do not explain domain context
+- Updating validation logic requires changes in multiple places
+- Tests read like implementation details rather than domain language
+
+## Correct
 
 ```typescript
-// Custom matchers encapsulate domain-specific assertions
+// ✅ Good: Custom matchers encapsulate domain-specific assertions
 expect.extend({
   toBePendingOrder(received: Order) {
     const isPending = received.status === 'pending';
@@ -91,36 +80,6 @@ expect.extend({
         pass
           ? `Expected order not to be a valid pending order`
           : `Expected order to be a valid pending order, but: ${failures.join(', ')}`
-    };
-  },
-
-  toBeShippedOrder(received: Order) {
-    const isShipped = received.status === 'shipped';
-    const isPaid = received.paidAt !== null;
-    const hasShippingDate = received.shippedAt !== null;
-    const hasTrackingNumber = !!received.trackingNumber;
-
-    const pass = isShipped && isPaid && hasShippingDate && hasTrackingNumber;
-
-    return {
-      pass,
-      message: () =>
-        pass
-          ? `Expected order not to be a valid shipped order`
-          : `Expected order to be shipped with payment and tracking info`
-    };
-  },
-
-  toBeValidEmail(received: string) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const pass = emailRegex.test(received);
-
-    return {
-      pass,
-      message: () =>
-        pass
-          ? `Expected "${received}" not to be a valid email`
-          : `Expected "${received}" to be a valid email (format: user@domain.tld)`
     };
   },
 
@@ -166,8 +125,6 @@ declare global {
   namespace jest {
     interface Matchers<R> {
       toBePendingOrder(): R;
-      toBeShippedOrder(): R;
-      toBeValidEmail(): R;
       toBeWithinBusinessHours(): R;
       toHaveValidationError(field: string, message?: string): R;
     }
@@ -180,26 +137,6 @@ describe('OrderService', () => {
     const order = orderService.create({ items: [{ id: 1 }] });
 
     expect(order).toBePendingOrder();
-  });
-
-  test('ships order with tracking', () => {
-    const order = orderService.create({ items: [{ id: 1 }] });
-    orderService.pay(order.id);
-    orderService.ship(order.id, 'TRACK123');
-
-    expect(order).toBeShippedOrder();
-  });
-});
-
-describe('UserValidator', () => {
-  test('accepts valid email addresses', () => {
-    expect('user@example.com').toBeValidEmail();
-    expect('admin@company.org').toBeValidEmail();
-  });
-
-  test('rejects invalid email addresses', () => {
-    expect('invalid').not.toBeValidEmail();
-    expect('missing@domain').not.toBeValidEmail();
   });
 });
 
@@ -221,20 +158,11 @@ describe('FormValidation', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Tests read like specifications using domain language
+- Complex validations are defined once and reused everywhere
+- Custom error messages explain failures in business terms
+- Validation logic is maintained in a single place
+- Consistent validation rules applied uniformly across tests
 
-Custom matchers provide significant benefits:
-
-1. **Readability**: Tests read like specifications in domain language
-2. **Reusability**: Define complex validations once, use everywhere
-3. **Better errors**: Custom messages explain failures in business terms
-4. **Maintainability**: Update validation logic in one place
-5. **Encapsulation**: Hide implementation details of validations
-6. **Consistency**: Same validation rules applied uniformly
-
-When to create custom matchers:
-- Repeated assertion patterns across tests
-- Domain-specific validations
-- Complex multi-property checks
-- Assertions that need better error messages
-- Validations that would benefit from parameterization
+Reference: [Jest Docs — Custom Matchers](https://jestjs.io/docs/expect#expectextendmatchers)

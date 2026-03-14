@@ -1,17 +1,20 @@
 ---
 title: Describe-It Block Structure
-priority: CRITICAL
-category: Test Structure
+impact: CRITICAL
+impactDescription: "test organization and readability"
+tags: test-structure, describe, it, grouping
 ---
 
-# Describe-It Block Structure
+## Describe-It Block Structure
 
-Organize tests using nested describe blocks and it/test functions for clear hierarchy and context.
+**Impact: CRITICAL (test organization and readability)**
 
-## Bad Example
+Organize tests using nested describe blocks and it/test functions for clear hierarchy and context. The hierarchy should mirror the structure of what you are testing: class > method > scenario.
+
+## Incorrect
 
 ```typescript
-// Flat structure without organization
+// ❌ Bad: Flat structure without organization
 test('calculator add positive numbers', () => {
   expect(calculator.add(2, 3)).toBe(5);
 });
@@ -37,10 +40,16 @@ test('calculator multiply', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- No logical grouping of related tests
+- No shared setup via `beforeEach`/`afterEach`
+- Flat test output makes it hard to scan results
+- Test names are long because they must include full context
+
+## Correct
 
 ```typescript
-// Well-organized hierarchical structure
+// ✅ Good: Well-organized hierarchical structure
 describe('Calculator', () => {
   let calculator: Calculator;
 
@@ -98,15 +107,11 @@ describe('Calculator', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Related tests are logically grouped under meaningful contexts
+- Shared setup is scoped to specific groups via `beforeEach`/`afterEach`
+- Test runner displays results in a clear hierarchy
+- Shorter test names because context is provided by describe blocks
+- Easier navigation and filtering by describe block names
 
-The describe-it structure provides multiple benefits:
-
-1. **Logical grouping**: Related tests are grouped together under meaningful contexts
-2. **Shared setup**: `beforeEach`/`afterEach` can be scoped to specific groups
-3. **Readable output**: Test runners display results in a clear hierarchy
-4. **Contextual naming**: Test names can be shorter since context is provided by describe blocks
-5. **Easier navigation**: Large test files become easier to scan and understand
-6. **Better filtering**: Run specific groups of tests using describe block names
-
-The hierarchy should mirror the structure of what you're testing: class > method > scenario.
+Reference: [Jest Docs — Organizing Tests](https://jestjs.io/docs/api#describename-fn)

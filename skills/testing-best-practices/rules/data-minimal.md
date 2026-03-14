@@ -1,17 +1,20 @@
 ---
 title: Minimal Test Data
-priority: HIGH
-category: Test Data
+impact: HIGH
+impactDescription: "test clarity and focus"
+tags: test-data, minimal, noise-reduction
 ---
 
-# Minimal Test Data
+## Minimal Test Data
 
-Use only the data necessary to test the specific behavior being verified.
+**Impact: HIGH (test clarity and focus)**
 
-## Bad Example
+Use only the data necessary to test the specific behavior being verified. If removing data does not break the test, remove it. Use factories with defaults for required but irrelevant fields.
+
+## Incorrect
 
 ```typescript
-// Excessive data obscures what's actually being tested
+// ❌ Bad: Excessive data obscures what's actually being tested
 describe('EmailValidator', () => {
   test('validates email format', () => {
     // Most of this data is irrelevant to email validation
@@ -80,10 +83,16 @@ describe('DiscountCalculator', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Walls of irrelevant data make it impossible to see what matters
+- Readers waste time determining which properties affect the behavior
+- More data means more things to update when schemas change
+- Excessive memory allocation slows test execution
+
+## Correct
 
 ```typescript
-// Minimal data focuses attention on what matters
+// ✅ Good: Minimal data focuses attention on what matters
 describe('EmailValidator', () => {
   test('returns true for valid email format', () => {
     const email = 'user@example.com';
@@ -131,7 +140,7 @@ describe('ShippingCalculator', () => {
   test('calculates shipping based on weight', () => {
     const item = {
       weight: 2.5,
-      price: 100 // Only if price affects shipping calculation
+      price: 100
     };
     const destination = { country: 'USA' };
 
@@ -141,7 +150,7 @@ describe('ShippingCalculator', () => {
   });
 });
 
-// For complex objects, use partial types or factories with minimal data
+// For complex objects, use factories with minimal overrides
 describe('OrderProcessor', () => {
   test('rejects order with invalid status', () => {
     const order = OrderFactory.create({
@@ -163,19 +172,11 @@ describe('OrderProcessor', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Immediately obvious which data affects the behavior under test
+- Less data to update when requirements change
+- Tests clearly document which inputs matter for each scenario
+- Less memory allocation and faster test execution
+- Irrelevant data does not distract readers or reviewers
 
-Minimal test data improves tests in several ways:
-
-1. **Clarity**: It's immediately obvious what data affects the behavior
-2. **Maintainability**: Less data to update when requirements change
-3. **Focus**: Tests clearly document which inputs matter
-4. **Speed**: Less memory allocation and processing
-5. **Noise reduction**: Irrelevant data doesn't distract readers
-
-Guidelines for minimal data:
-- Include only properties the function actually uses
-- Use factories with defaults for required but irrelevant fields
-- Consider what would change the test outcome
-- If removing data doesn't break the test, remove it
-- Document why specific values were chosen if not obvious
+Reference: [xUnit Patterns — Minimal Fixture](http://xunitpatterns.com/Minimal%20Fixture.html)

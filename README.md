@@ -204,7 +204,7 @@ npx skills add AsyrafHussin/agent-skills --skill git-workflow
 
 ### [testing-best-practices](skills/testing-best-practices)
 
-Unit, integration, and E2E testing. Covers AAA pattern, test isolation, mocking, test data factories, coverage strategy, and TDD principles.
+Unit, integration, and E2E testing with TypeScript/Vitest. Contains 34 rules across 7 categories covering test structure (AAA), isolation, assertions, test data factories, mocking, coverage strategy, and test performance.
 
 **Example:** `Write tests for this Laravel service class`
 

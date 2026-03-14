@@ -1,17 +1,20 @@
 ---
 title: Single Logical Assertion
-priority: CRITICAL
-category: Test Structure
+impact: CRITICAL
+impactDescription: "failure precision and test granularity"
+tags: test-structure, assertion, single-responsibility
 ---
 
-# Single Logical Assertion
+## Single Logical Assertion
 
-Each test should verify one specific behavior or logical concept.
+**Impact: CRITICAL (failure precision and test granularity)**
 
-## Bad Example
+Each test should verify one specific behavior or logical concept. Note that "single assertion" means testing one logical concept — using multiple `expect` statements is fine when they all verify different aspects of the same concept.
+
+## Incorrect
 
 ```typescript
-// Testing multiple unrelated behaviors
+// ❌ Bad: Testing multiple unrelated behaviors
 test('user registration', () => {
   const user = registerUser({
     email: 'test@example.com',
@@ -19,23 +22,28 @@ test('user registration', () => {
     name: 'John Doe'
   });
 
-  // Testing too many things at once
   expect(user.id).toBeDefined();
   expect(user.email).toBe('test@example.com');
   expect(user.name).toBe('John Doe');
-  expect(user.password).toBeUndefined(); // Password shouldn't be returned
+  expect(user.password).toBeUndefined();
   expect(user.createdAt).toBeInstanceOf(Date);
-  expect(user.isActive).toBe(false); // Needs email verification
+  expect(user.isActive).toBe(false);
   expect(user.role).toBe('user');
   expect(sendWelcomeEmail).toHaveBeenCalledWith('test@example.com');
   expect(auditLog.entries).toHaveLength(1);
 });
 ```
 
-## Good Example
+**Problems:**
+- When the test fails, it is unclear which specific behavior broke
+- Multiple unrelated behaviors are coupled into one test
+- Changing one behavior forces updates to an unrelated test
+- CI/CD reports cannot show granular pass/fail per behavior
+
+## Correct
 
 ```typescript
-// Each test verifies one logical concept
+// ✅ Good: Each test verifies one logical concept
 describe('registerUser', () => {
   const validInput = {
     email: 'test@example.com',
@@ -83,14 +91,11 @@ describe('registerUser', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Precise failure identification pinpoints exactly which behavior broke
+- Each behavior is verified independently
+- Test names clearly map to specific behaviors
+- Easier maintenance when individual behaviors change
+- Granular CI/CD feedback shows exactly what is working and what is not
 
-Single-assertion tests provide several benefits:
-
-1. **Precise failure identification**: When a test fails, you know exactly which behavior broke
-2. **Independent verification**: Each behavior is tested in isolation
-3. **Better documentation**: Test names clearly map to specific behaviors
-4. **Easier maintenance**: Changing one behavior only affects its specific test
-5. **Granular feedback**: CI/CD reports show exactly what's working and what's not
-
-Note: "Single assertion" means testing one logical concept. Using multiple `expect` statements is fine when they all verify different aspects of the same concept (like using `toMatchObject` for related properties).
+Reference: [Unit Testing Best Practices — Single Assert](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices#avoid-multiple-asserts)

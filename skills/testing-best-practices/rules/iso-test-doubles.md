@@ -1,20 +1,23 @@
 ---
 title: Test Doubles for Isolation
-priority: CRITICAL
-category: Test Isolation
+impact: CRITICAL
+impactDescription: "unit test speed and reliability"
+tags: test-isolation, mocks, stubs, spies, fakes
 ---
 
-# Test Doubles for Isolation
+## Test Doubles for Isolation
 
-Use test doubles (mocks, stubs, spies, fakes) to isolate the unit under test from its dependencies.
+**Impact: CRITICAL (unit test speed and reliability)**
 
-## Bad Example
+Use test doubles (mocks, stubs, spies, fakes) to isolate the unit under test from its dependencies. Types include mocks (record interactions), stubs (return predetermined responses), spies (wrap real objects), fakes (simplified implementations), and dummies (unused placeholders).
+
+## Incorrect
 
 ```typescript
-// Tests tightly coupled to real implementations
+// ❌ Bad: Tests tightly coupled to real implementations
 describe('OrderService', () => {
   test('sends order confirmation email', async () => {
-    // Using real email service - slow, unreliable, sends real emails!
+    // Using real email service — slow, unreliable, sends real emails!
     const emailService = new EmailService();
     const orderService = new OrderService(emailService);
 
@@ -27,7 +30,7 @@ describe('OrderService', () => {
   });
 
   test('saves order to database', async () => {
-    // Using real database - slow, stateful, needs setup
+    // Using real database — slow, stateful, needs setup
     const database = new PostgresDatabase();
     const orderService = new OrderService(new EmailService(), database);
 
@@ -36,13 +39,12 @@ describe('OrderService', () => {
       items: [{ id: 1, quantity: 2 }]
     });
 
-    // Must query real database to verify
     const saved = await database.query('SELECT * FROM orders WHERE id = $1', [order.id]);
     expect(saved.rows[0]).toBeDefined();
   });
 
   test('handles payment processing', async () => {
-    // Using real payment gateway - charges real money!
+    // Using real payment gateway — charges real money!
     const paymentGateway = new StripeGateway(process.env.STRIPE_KEY);
     const orderService = new OrderService(
       new EmailService(),
@@ -50,16 +52,22 @@ describe('OrderService', () => {
       paymentGateway
     );
 
-    // This actually processes a payment!
     await orderService.placeOrder({ /* ... */ });
   });
 });
 ```
 
-## Good Example
+**Problems:**
+- Real email service sends actual emails during tests
+- Real database makes tests slow and stateful
+- Real payment gateway charges actual money
+- No way to simulate error scenarios reliably
+- Tests are flaky due to network and external service dependencies
+
+## Correct
 
 ```typescript
-// Using test doubles for isolation
+// ✅ Good: Using test doubles for isolation
 describe('OrderService', () => {
   let orderService: OrderService;
   let emailService: jest.Mocked<EmailService>;
@@ -68,7 +76,6 @@ describe('OrderService', () => {
   let inventoryService: jest.Mocked<InventoryService>;
 
   beforeEach(() => {
-    // Create mock implementations
     emailService = {
       send: jest.fn().mockResolvedValue({ messageId: 'msg-123' })
     };
@@ -143,7 +150,6 @@ describe('OrderService', () => {
     test('reserves inventory before processing payment', async () => {
       await orderService.placeOrder(validOrder);
 
-      // Verify call order
       const reserveCall = inventoryService.reserve.mock.invocationCallOrder[0];
       const chargeCall = paymentGateway.charge.mock.invocationCallOrder[0];
       expect(reserveCall).toBeLessThan(chargeCall);
@@ -183,27 +189,18 @@ class FakeOrderRepository implements OrderRepository {
     return this.orders.get(id) || null;
   }
 
-  // Test helper method
   getAll(): Order[] {
     return Array.from(this.orders.values());
   }
 }
 ```
 
-## Why
+**Benefits:**
+- No network calls, database queries, or I/O — tests run fast
+- Only the unit's logic is tested, not its dependencies
+- Any scenario including errors and edge cases can be simulated
+- Assertions verify exactly how dependencies were called
+- No real emails sent or real payments charged
+- No flakiness from external services
 
-Test doubles provide essential benefits for unit testing:
-
-1. **Speed**: No network calls, database queries, or I/O operations
-2. **Isolation**: Test only the unit's logic, not its dependencies
-3. **Control**: Simulate any scenario including errors and edge cases
-4. **Verification**: Assert exactly how dependencies were called
-5. **Safety**: No real emails sent, no real payments charged
-6. **Reliability**: No flakiness from external services
-
-Types of test doubles:
-- **Mock**: Programmable object that records interactions
-- **Stub**: Returns predetermined responses
-- **Spy**: Wraps real object and records calls
-- **Fake**: Working implementation with shortcuts (e.g., in-memory database)
-- **Dummy**: Placeholder that's never actually used
+Reference: [Martin Fowler — Mocks Aren't Stubs](https://martinfowler.com/articles/mocksArentStubs.html)

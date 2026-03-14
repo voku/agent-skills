@@ -1,17 +1,20 @@
 ---
 title: Given-When-Then Pattern
-priority: CRITICAL
-category: Test Structure
+impact: CRITICAL
+impactDescription: "behavior-driven test clarity"
+tags: test-structure, bdd, given-when-then
 ---
 
-# Given-When-Then Pattern
+## Given-When-Then Pattern
 
-Use behavior-driven development (BDD) style for tests that describe user-facing behavior.
+**Impact: CRITICAL (behavior-driven test clarity)**
 
-## Bad Example
+Use behavior-driven development (BDD) style for tests that describe user-facing behavior. The pattern maps directly to user stories: "Given [context], when [action], then [outcome]". This is especially valuable for business logic, acceptance tests, and integration tests.
+
+## Incorrect
 
 ```typescript
-// Technical, implementation-focused test
+// ❌ Bad: Technical, implementation-focused test
 test('order processing', () => {
   const order = new Order();
   order.items = [{ id: 1, price: 100 }];
@@ -23,10 +26,16 @@ test('order processing', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- No separation between preconditions, action, and outcome
+- Verifies multiple behaviors in a single test
+- Reads like implementation details rather than a specification
+- Non-developers cannot review or understand the test scenarios
+
+## Correct
 
 ```typescript
-// BDD-style with Given-When-Then structure
+// ✅ Good: BDD-style with Given-When-Then structure
 describe('Order Processing', () => {
   describe('given a customer with items in their cart', () => {
     let order: Order;
@@ -87,21 +96,11 @@ describe('Order Processing', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Tests read like specifications that non-developers can understand
+- Each scenario is explicit about its preconditions
+- Behavior focus over implementation details
+- Tests serve as living, executable documentation
+- Naturally leads to thinking about different scenarios and edge cases
 
-The Given-When-Then pattern provides several advantages:
-
-1. **Business language**: Tests read like specifications that non-developers can understand
-2. **Clear scenarios**: Each test scenario is explicit about its preconditions
-3. **Behavior focus**: Tests describe what the system does, not how it does it
-4. **Living documentation**: Tests serve as executable requirements
-5. **Better collaboration**: Product owners and QA can review and suggest test cases
-6. **Scenario coverage**: The structure naturally leads to thinking about different scenarios
-
-This pattern is especially valuable for:
-- User-facing features
-- Business logic with complex rules
-- Acceptance tests
-- Integration tests
-
-The pattern maps directly to user stories: "Given [context], when [action], then [outcome]"
+Reference: [Cucumber — Given When Then](https://cucumber.io/docs/gherkin/reference/)

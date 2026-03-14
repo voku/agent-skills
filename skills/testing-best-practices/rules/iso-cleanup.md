@@ -1,17 +1,20 @@
 ---
 title: Test Cleanup
-priority: CRITICAL
-category: Test Isolation
+impact: CRITICAL
+impactDescription: "resource management and test isolation"
+tags: test-isolation, cleanup, resource-management
 ---
 
-# Test Cleanup
+## Test Cleanup
 
-Always clean up resources and side effects created during tests.
+**Impact: CRITICAL (resource management and test isolation)**
 
-## Bad Example
+Always clean up resources and side effects created during tests. Resources that commonly need cleanup include database connections, file system changes, network servers, timers, event listeners, environment variables, global state, and mocks.
+
+## Incorrect
 
 ```typescript
-// Missing cleanup leads to resource leaks and test pollution
+// ❌ Bad: Missing cleanup leads to resource leaks and test pollution
 describe('FileProcessor', () => {
   test('creates output file', async () => {
     const processor = new FileProcessor();
@@ -19,7 +22,7 @@ describe('FileProcessor', () => {
 
     const exists = await fs.pathExists('/tmp/test-output.txt');
     expect(exists).toBe(true);
-    // File left on disk - pollutes filesystem
+    // File left on disk — pollutes filesystem
   });
 
   test('opens database connection', async () => {
@@ -27,7 +30,7 @@ describe('FileProcessor', () => {
     const users = await db.query('SELECT * FROM users');
 
     expect(users).toBeDefined();
-    // Connection never closed - resource leak
+    // Connection never closed — resource leak
   });
 
   test('starts server', async () => {
@@ -35,7 +38,7 @@ describe('FileProcessor', () => {
 
     const response = await fetch('http://localhost:3000/health');
     expect(response.ok).toBe(true);
-    // Server never stopped - port remains occupied
+    // Server never stopped — port remains occupied
   });
 
   test('modifies environment', () => {
@@ -57,15 +60,20 @@ describe('FileProcessor', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Files left on disk pollute the filesystem
+- Database connections are leaked, exhausting the connection pool
+- Servers keep ports occupied, causing subsequent tests to fail
+- Environment variables and event listeners persist across tests
+
+## Correct
 
 ```typescript
-// Proper cleanup ensures isolation and prevents resource leaks
+// ✅ Good: Proper cleanup ensures isolation and prevents resource leaks
 describe('FileProcessor', () => {
   const testFiles: string[] = [];
 
   afterEach(async () => {
-    // Clean up all created files
     await Promise.all(testFiles.map(file => fs.remove(file)));
     testFiles.length = 0;
   });
@@ -94,7 +102,6 @@ describe('DatabaseOperations', () => {
   });
 
   afterEach(async () => {
-    // Clean up test data
     await db.query('DELETE FROM users WHERE email LIKE $1', ['%@test.com']);
   });
 
@@ -162,22 +169,10 @@ describe('EventHandling', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Prevents memory leaks, file handle exhaustion, and connection pool depletion
+- Side effects do not leak between tests
+- Long-running CI test suites remain stable
+- Tests behave the same on clean and dirty environments
 
-Proper cleanup is essential for test reliability:
-
-1. **Resource management**: Prevents memory leaks, file handles, and connection pool exhaustion
-2. **Test isolation**: Side effects don't leak between tests
-3. **CI stability**: Long-running test suites don't fail due to resource exhaustion
-4. **Reproducibility**: Tests behave the same on clean and dirty environments
-5. **System health**: Production-like test environments stay clean
-
-Resources that commonly need cleanup:
-- Database connections and transactions
-- File system changes
-- Network servers and connections
-- Timers and intervals
-- Event listeners
-- Environment variables
-- Global state modifications
-- Mocks and spies
+Reference: [Jest Docs — Setup and Teardown](https://jestjs.io/docs/setup-teardown)

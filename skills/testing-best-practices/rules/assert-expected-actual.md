@@ -1,17 +1,20 @@
 ---
 title: Expected vs Actual Order
-priority: HIGH
-category: Assertions
+impact: HIGH
+impactDescription: "error message clarity and debugging speed"
+tags: assertions, expected-actual, convention
 ---
 
-# Expected vs Actual Order
+## Expected vs Actual Order
 
-Follow the convention of placing expected values first in assertions for consistent, readable error messages.
+**Impact: HIGH (error message clarity and debugging speed)**
 
-## Bad Example
+Follow the convention of placing expected values first in assertions for consistent, readable error messages. In Jest/Vitest the convention is `expect(actual).toBe(expected)`. Always follow your framework's convention and be consistent throughout the codebase.
+
+## Incorrect
 
 ```typescript
-// Inconsistent or reversed order causes confusing error messages
+// ❌ Bad: Inconsistent or reversed order causes confusing error messages
 describe('Calculator', () => {
   test('adds numbers', () => {
     const result = calculator.add(2, 3);
@@ -27,22 +30,27 @@ describe('Calculator', () => {
   });
 });
 
-// In assertion libraries with assertEquals(expected, actual):
+// Wrong order produces confusing error messages
 describe('StringUtils', () => {
   test('capitalizes string', () => {
     const result = capitalize('hello');
 
-    // Wrong order - confusing error message
-    assertEquals(result, 'Hello'); // Error: expected "Hello" but got "hello"
-                                   // Actually means the opposite!
+    // Wrong order — error message says the opposite of reality
+    assertEquals(result, 'Hello');
   });
 });
 ```
 
-## Good Example
+**Problems:**
+- Reversed assertion arguments produce misleading error messages
+- Mixed conventions within the same test suite confuse readers
+- Error messages say "expected X but got Y" with X and Y swapped
+- Code reviewers cannot quickly spot assertion issues
+
+## Correct
 
 ```typescript
-// Consistent order: actual value being tested first
+// ✅ Good: Consistent order — actual value being tested first
 describe('Calculator', () => {
   test('adds numbers correctly', () => {
     const result = calculator.add(2, 3);
@@ -67,7 +75,6 @@ describe('StringUtils', () => {
   test('capitalizes first letter', () => {
     const result = capitalize('hello');
 
-    // Clear: we're testing that result equals 'Hello'
     expect(result).toBe('Hello');
   });
 
@@ -76,23 +83,11 @@ describe('StringUtils', () => {
   });
 });
 
-// For libraries with assertEquals(expected, actual):
-describe('StringUtils with assertEquals', () => {
-  test('capitalizes string', () => {
-    const result = capitalize('hello');
-
-    // Correct order for assertEquals
-    assertEquals('Hello', result);
-    // Error message: expected "Hello" but got "hello" - makes sense!
-  });
-});
-
 // Object comparison follows same principle
 describe('UserFactory', () => {
   test('creates user with defaults', () => {
     const user = UserFactory.create({ name: 'John' });
 
-    // Actual object tested against expected shape
     expect(user).toMatchObject({
       name: 'John',
       role: 'user',
@@ -111,21 +106,11 @@ describe('UserFactory', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- When tests fail, the error message clearly shows what was expected vs what was received
+- Consistent patterns make tests easier to scan and understand
+- Aligns with framework conventions (`expect(actual).toBe(expected)`)
+- Code reviewers can quickly spot assertion issues
+- No mental translation needed when reading failure output
 
-Consistent expected/actual ordering is important for several reasons:
-
-1. **Clear error messages**: When tests fail, you immediately know what was expected vs received
-2. **Readability**: Consistent patterns make tests easier to scan and understand
-3. **Convention alignment**: Most modern frameworks use `expect(actual).toBe(expected)`
-4. **Code review**: Reviewers can quickly spot assertion issues
-5. **Debugging efficiency**: No mental translation needed when reading failures
-
-Framework conventions:
-- **Jest/Vitest**: `expect(actual).toBe(expected)`
-- **Chai**: `expect(actual).to.equal(expected)`
-- **JUnit**: `assertEquals(expected, actual)`
-- **NUnit**: `Assert.AreEqual(expected, actual)`
-- **pytest**: `assert actual == expected`
-
-Always follow your framework's convention and be consistent throughout the codebase.
+Reference: [Jest Docs — Expect](https://jestjs.io/docs/expect)

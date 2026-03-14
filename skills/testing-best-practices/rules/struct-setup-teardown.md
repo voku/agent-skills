@@ -1,17 +1,20 @@
 ---
 title: Setup and Teardown
-priority: CRITICAL
-category: Test Structure
+impact: CRITICAL
+impactDescription: "test reliability and resource management"
+tags: test-structure, setup, teardown, hooks
 ---
 
-# Setup and Teardown
+## Setup and Teardown
 
-Use setup and teardown hooks appropriately to prepare and clean up test environments.
+**Impact: CRITICAL (test reliability and resource management)**
 
-## Bad Example
+Use setup and teardown hooks appropriately to prepare and clean up test environments. Use `beforeAll` for expensive one-time setup, `beforeEach` for per-test setup, `afterEach` to clean up test-specific data, and `afterAll` to close shared resources.
+
+## Incorrect
 
 ```typescript
-// Duplicated setup and missing cleanup
+// ❌ Bad: Duplicated setup and missing cleanup
 describe('UserService', () => {
   test('creates user successfully', async () => {
     const db = await Database.connect();
@@ -20,7 +23,7 @@ describe('UserService', () => {
     const user = await userService.create({ name: 'John' });
 
     expect(user.name).toBe('John');
-    // Missing cleanup - database connection left open
+    // Missing cleanup — database connection left open
   });
 
   test('finds user by id', async () => {
@@ -31,7 +34,7 @@ describe('UserService', () => {
     const found = await userService.findById(created.id);
 
     expect(found.name).toBe('Jane');
-    // Missing cleanup - test data left in database
+    // Missing cleanup — test data left in database
   });
 
   test('updates user name', async () => {
@@ -46,30 +49,32 @@ describe('UserService', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Database connection is duplicated in every test
+- No cleanup of test data or resource handles
+- Connection leaks accumulate across tests
+- Tests may interfere with each other through leftover data
+
+## Correct
 
 ```typescript
-// Proper setup and teardown with hooks
+// ✅ Good: Proper setup and teardown with hooks
 describe('UserService', () => {
   let db: Database;
   let userService: UserService;
 
-  // One-time setup for expensive operations
   beforeAll(async () => {
     db = await Database.connect();
   });
 
-  // Per-test setup for service instance
   beforeEach(() => {
     userService = new UserService(db);
   });
 
-  // Clean up test data after each test
   afterEach(async () => {
     await db.query('DELETE FROM users WHERE email LIKE $1', ['%@test.com']);
   });
 
-  // Close resources after all tests
   afterAll(async () => {
     await db.disconnect();
   });
@@ -97,7 +102,6 @@ describe('UserService', () => {
   describe('update operations', () => {
     let existingUser: User;
 
-    // Nested setup for specific context
     beforeEach(async () => {
       existingUser = await userService.create({
         name: 'Bob',
@@ -122,20 +126,11 @@ describe('UserService', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- No resource leaks — connections and handles are properly closed
+- Each test starts with a clean state via `afterEach` cleanup
+- Common setup logic is not duplicated across tests (DRY)
+- Expensive setup like database connections is done once with `beforeAll`
+- Nested `beforeEach` provides context-specific setup for related tests
 
-Proper setup and teardown ensures:
-
-1. **No resource leaks**: Database connections, file handles, and other resources are properly closed
-2. **Test isolation**: Each test starts with a clean state
-3. **DRY code**: Common setup logic is not duplicated across tests
-4. **Reliable tests**: Tests don't fail due to leftover data from previous tests
-5. **Performance**: Expensive setup (like database connections) is done once
-
-Guidelines for hooks:
-- `beforeAll`: Expensive one-time setup (database connections, server startup)
-- `beforeEach`: Per-test setup (fresh instances, test data)
-- `afterEach`: Clean up test-specific data
-- `afterAll`: Clean up shared resources
-
-Keep setup focused on what the tests actually need. Over-complicated setup is a code smell.
+Reference: [Jest Docs — Setup and Teardown](https://jestjs.io/docs/setup-teardown)

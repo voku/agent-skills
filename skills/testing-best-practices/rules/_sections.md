@@ -1,33 +1,41 @@
-# Rule Sections
+# Sections
 
-## Priority Levels
+This file defines all sections, their ordering, impact levels, and descriptions.
+The section ID (in parentheses) is the filename prefix used to group rules.
 
-| Level | Description | When to Apply |
-|-------|-------------|---------------|
-| CRITICAL | Essential for reliable tests | Always |
-| HIGH | Significant impact on quality | Most test suites |
-| MEDIUM | Improves test clarity | When refactoring tests |
-| LOW | Specialized scenarios | Large-scale applications |
+---
 
-## Section Overview
+## 1. Test Structure (struct)
 
-### Test Structure (CRITICAL)
-Fundamental patterns for organizing test code. AAA pattern, descriptive naming, and proper test organization form the foundation of readable, maintainable test suites.
+**Impact:** CRITICAL
+**Description:** Fundamental patterns for organizing test code. AAA pattern for clear test flow, descriptive naming for test documentation, one assertion per test for precise failure messages, and proper setup/teardown for shared test context.
 
-### Test Isolation (CRITICAL)
-Ensuring tests run independently without shared state or order dependencies. Critical for reliable CI/CD and parallel execution.
+## 2. Test Isolation (iso)
 
-### Assertions (HIGH)
-Using specific, meaningful assertions with clear messages. Proper assertions make test failures immediately understandable and debuggable.
+**Impact:** CRITICAL
+**Description:** Tests must run independently without shared mutable state. Independent execution, deterministic results, no order dependency, proper cleanup, and strategic use of test doubles ensure reliable test suites that can run in any order and in parallel.
 
-### Test Data (HIGH)
-Managing test data through factories, builders, and fixtures. Quality test data is minimal yet realistic, making tests both focused and robust.
+## 3. Assertions (assert)
 
-### Mocking & Test Doubles (MEDIUM)
-Strategic use of mocks, stubs, and fakes to isolate units under test. Essential for fast, deterministic unit tests.
+**Impact:** HIGH
+**Description:** Effective assertions catch bugs and communicate intent. Specific matchers (toBe, toEqual, toContain), meaningful failure messages, consistent expected-first ordering, named constants over magic numbers, and custom matchers for domain logic.
 
-### Coverage Strategy (MEDIUM)
-Balancing coverage goals with meaningful tests. Focus on edge cases and error paths rather than arbitrary coverage percentages.
+## 4. Test Data (data)
 
-### Test Performance (LOW)
-Optimizing test execution speed. Important for large suites but shouldn't compromise test quality or clarity.
+**Impact:** HIGH
+**Description:** Well-managed test data makes tests readable and maintainable. Factories for consistent object creation, builder pattern for complex objects, faker for realistic data, minimal data focused on what matters, and proper fixture management.
+
+## 5. Mocking (mock)
+
+**Impact:** MEDIUM
+**Description:** Strategic mocking isolates code under test from external dependencies. Mock only at boundaries (APIs, databases, file system), verify important interactions, avoid over-mocking that tests implementation details, and use realistic mock behavior with tools like MSW.
+
+## 6. Coverage (cov)
+
+**Impact:** MEDIUM
+**Description:** Coverage strategy guides testing effort. Focus on meaningful coverage of business logic and decision branches, cover edge cases and boundary values, test error scenarios and unhappy paths, and treat 80% as a baseline guide not a rigid target.
+
+## 7. Performance (perf)
+
+**Impact:** LOW
+**Description:** Fast tests enable short feedback loops. Unit tests should run under 50ms each, parallel execution reduces total suite time, and organizing tests by speed tier (unit/integration/e2e) enables fast local feedback with comprehensive CI runs.

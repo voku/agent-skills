@@ -1,17 +1,20 @@
 ---
 title: Arrange-Act-Assert Pattern
-priority: CRITICAL
-category: Test Structure
+impact: CRITICAL
+impactDescription: "test readability and maintainability"
+tags: test-structure, aaa, arrange-act-assert
 ---
 
-# Arrange-Act-Assert Pattern
+## Arrange-Act-Assert Pattern
 
-Structure every test using the AAA pattern to ensure clarity and consistency.
+**Impact: CRITICAL (test readability and maintainability)**
 
-## Bad Example
+Structure every test using the AAA pattern to ensure clarity and consistency. The three phases — Arrange, Act, Assert — provide a clear narrative flow, making it immediately obvious what is being tested and what the expected behavior is.
+
+## Incorrect
 
 ```typescript
-// Mixed arrangement and assertions - confusing
+// ❌ Bad: Mixed arrangement and assertions — confusing
 test('calculates total price', () => {
   const cart = new ShoppingCart();
   expect(cart.isEmpty()).toBe(true);
@@ -24,10 +27,16 @@ test('calculates total price', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Setup and assertions are interleaved, making it hard to follow
+- Multiple unrelated behaviors verified in a single test
+- No clear separation between setup, action, and verification
+- Difficult to identify the root cause when the test fails
+
+## Correct
 
 ```typescript
-// Clear AAA structure
+// ✅ Good: Clear AAA structure
 test('calculates total price with discount applied', () => {
   // Arrange
   const cart = new ShoppingCart();
@@ -55,12 +64,10 @@ test('tracks item count correctly', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Each phase is clearly separated with comments
+- Tests are focused on a single behavior
+- Easy to identify setup, action, and verification at a glance
+- When tests fail, the issue is quickly localized to one of the three phases
 
-The AAA pattern makes tests easier to read, understand, and maintain:
-
-1. **Arrange**: Set up the test conditions and inputs
-2. **Act**: Execute the behavior being tested
-3. **Assert**: Verify the expected outcome
-
-This structure provides a clear narrative flow, making it immediately obvious what is being tested and what the expected behavior is. When tests fail, this pattern helps quickly identify whether the issue is in setup, execution, or verification.
+Reference: [Arrange-Act-Assert Pattern](https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/)

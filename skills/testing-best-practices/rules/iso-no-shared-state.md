@@ -1,17 +1,20 @@
 ---
 title: No Shared Mutable State
-priority: CRITICAL
-category: Test Isolation
+impact: CRITICAL
+impactDescription: "test predictability and flakiness prevention"
+tags: test-isolation, shared-state, mutable-state
 ---
 
-# No Shared Mutable State
+## No Shared Mutable State
 
-Avoid sharing mutable state between tests to prevent interference and flakiness.
+**Impact: CRITICAL (test predictability and flakiness prevention)**
 
-## Bad Example
+Avoid sharing mutable state between tests to prevent interference and flakiness. Shared mutable state is one of the most common causes of flaky tests. Use `beforeEach` to create fresh instances and reset any necessary state.
+
+## Incorrect
 
 ```typescript
-// Shared mutable state causes test interference
+// ❌ Bad: Shared mutable state causes test interference
 let counter = 0;
 const cache: Map<string, User> = new Map();
 const users: User[] = [];
@@ -47,10 +50,16 @@ jest.mock('./emailService', () => ({
 }));
 ```
 
-## Good Example
+**Problems:**
+- Module-level variables are mutated across tests
+- Cache and array state depend on prior test execution
+- Counter values are only correct if tests run in a specific order
+- Global mocks retain call counts from previous tests
+
+## Correct
 
 ```typescript
-// Each test has its own isolated state
+// ✅ Good: Each test has its own isolated state
 describe('UserCache', () => {
   let cache: UserCache;
   let userIdCounter: number;
@@ -117,22 +126,11 @@ describe('EmailNotificationService', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- Each test starts with a known, predictable state
+- One test cannot corrupt another test's data
+- Tests can run concurrently without conflicts
+- State is clearly defined within each test for easier debugging
+- Results are consistent whether running one test or the full suite
 
-Shared mutable state is one of the most common causes of flaky tests:
-
-1. **Predictable behavior**: Each test starts with known state
-2. **No side effects**: One test cannot corrupt another's data
-3. **Parallel execution**: Tests can run concurrently without conflicts
-4. **Easier debugging**: State is clearly defined within each test
-5. **Reliable results**: Same results whether running one test or the full suite
-
-Types of state to watch out for:
-- Module-level variables
-- Global singletons
-- Shared database records
-- File system state
-- Cached values
-- Mock function call counts (always reset mocks)
-
-Use `beforeEach` to create fresh instances and reset any necessary state.
+Reference: [Jest Docs — Setup and Teardown](https://jestjs.io/docs/setup-teardown)

@@ -1,22 +1,25 @@
 ---
 title: Specific Assertions
-priority: HIGH
-category: Assertions
+impact: HIGH
+impactDescription: "error message quality and test clarity"
+tags: assertions, specific, matchers
 ---
 
-# Specific Assertions
+## Specific Assertions
 
-Use the most specific assertion available for clearer tests and better error messages.
+**Impact: HIGH (error message quality and test clarity)**
 
-## Bad Example
+Use the most specific assertion available for clearer tests and better error messages. Specific matchers express intent more clearly and produce more informative failure output than generic boolean comparisons.
+
+## Incorrect
 
 ```typescript
-// Generic assertions hide intent and produce poor error messages
+// ❌ Bad: Generic assertions hide intent and produce poor error messages
 describe('UserService', () => {
   test('returns user by id', async () => {
     const user = await userService.findById('user-123');
 
-    // Too generic - doesn't express what we're checking
+    // Too generic — doesn't express what we're checking
     expect(user !== null).toBe(true);
     expect(user.name !== undefined).toBe(true);
   });
@@ -53,10 +56,16 @@ describe('UserService', () => {
 });
 ```
 
-## Good Example
+**Problems:**
+- Boolean comparisons like `expect(x !== null).toBe(true)` produce unhelpful "expected true, got false" messages
+- `JSON.stringify` checks are fragile and do not verify structure
+- Try/catch for error testing misses the case where no error is thrown
+- Generic assertions do not communicate intent to readers
+
+## Correct
 
 ```typescript
-// Specific assertions with clear intent
+// ✅ Good: Specific assertions with clear intent
 describe('UserService', () => {
   test('returns user by id', async () => {
     const user = await userService.findById('user-123');
@@ -125,21 +134,11 @@ describe('UserService', () => {
 });
 ```
 
-## Why
+**Benefits:**
+- When tests fail, the error output immediately explains what went wrong
+- Anyone reading the test knows exactly what is being verified
+- Assertions serve as executable specifications
+- Specific matchers work better with TypeScript for type safety
+- Easier to update tests when requirements change
 
-Specific assertions improve test quality in several ways:
-
-1. **Better error messages**: When tests fail, you immediately understand what went wrong
-2. **Clear intent**: Anyone reading the test knows exactly what's being verified
-3. **Documentation**: Assertions serve as executable specifications
-4. **Type safety**: Specific matchers work better with TypeScript
-5. **Maintainability**: Easier to update tests when requirements change
-
-Common specific assertions:
-- `toBeNull()` / `toBeUndefined()` instead of `toBe(null)`
-- `toHaveLength(n)` instead of `.length === n`
-- `toContain(item)` for arrays
-- `toMatchObject({})` for partial object matching
-- `toThrow(ErrorType)` for error checking
-- `toHaveBeenCalledWith()` for mock verification
-- `toMatch(/regex/)` for string patterns
+Reference: [Jest Docs — Using Matchers](https://jestjs.io/docs/using-matchers)
