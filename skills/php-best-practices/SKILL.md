@@ -1,6 +1,6 @@
 ---
 name: php-best-practices
-description: PHP 8.x strict typing, modern language features, type safety, RCA + Kanban workflow, and PHPStan + php-cs-fixer validation. 56 rules across 8 sections. Use when reviewing PHP code, checking type safety, auditing code quality, or ensuring PHP best practices. Triggers on "review PHP", "check PHP code", "audit PHP", "PHP best practices", or "PHP static analysis".
+description: PHP 8.x strict typing, modern language features, type safety, RCA + Kanban workflow, PHPStan + php-cs-fixer validation, value objects, no-magic design, and legacy migration. 56 rules across 9 sections. Use when reviewing PHP code, checking type safety, auditing code quality, or ensuring PHP best practices. Triggers on "review PHP", "check PHP code", "audit PHP", "PHP best practices", or "PHP static analysis".
 license: MIT
 metadata:
   author: php-community
@@ -10,7 +10,7 @@ metadata:
 
 # PHP Best Practices
 
-Modern PHP 8.x patterns, PSR standards, strict type system, SOLID principles, security, performance, and a mandatory static-analysis tooling loop. Contains **56 rules across 8 sections** for writing clean, maintainable, analyzable PHP code.
+Modern PHP 8.x patterns, PSR standards, strict type system, SOLID principles, security, performance, value objects, no-magic design, PHPStan PHPDoc, legacy migration, and a mandatory static-analysis tooling loop. Contains **56 rules across 9 sections** for writing clean, maintainable, analyzable PHP code.
 
 > **Core philosophy:** Prefer explicit, analyzable, intention-revealing code with strict contracts and safe defaults. Reject magic, duplication, vague naming, and hidden failure modes.
 
@@ -134,9 +134,10 @@ Reference these guidelines when:
 | 3 | Error Handling | HIGH | `error-` | 5 |
 | 4 | Security | CRITICAL | `sec-` | 5 |
 | 5 | Performance | MEDIUM | `perf-` | 5 |
-| 6 | SOLID / Design | HIGH | `solid-` | 5 |
+| 6 | SOLID / Design | HIGH | `solid-`, `design-` | 7 |
 | 7 | PSR / Structure | HIGH | `psr-` | 6 |
-| 8 | Tooling / Static Analysis | CRITICAL | (see below) | — |
+| 8 | Tooling / Static Analysis | CRITICAL | `tooling-`, `phpstan-` | 2 |
+| 9 | Legacy Migration | HIGH | `legacy-` | 1 |
 
 ## Quick Reference
 
@@ -206,13 +207,15 @@ Reference these guidelines when:
 - `perf-lazy-loading` - Defer expensive operations until needed
 - `perf-avoid-globals` - Avoid global variables, use dependency injection
 
-### 6. SOLID / Design (HIGH) — 5 rules
+### 6. SOLID / Design (HIGH) — 7 rules
 
 - `solid-srp` - Single Responsibility: one reason to change
 - `solid-ocp` - Open/Closed: extend, don't modify
 - `solid-lsp` - Liskov Substitution: subtypes must be substitutable
 - `solid-isp` - Interface Segregation: small, focused interfaces
 - `solid-dip` - Dependency Inversion: depend on abstractions
+- `design-value-objects` - Value objects over primitives; self-validating, immutable domain types
+- `design-no-magic` - Avoid `__get`/`__set`/`__call`; prefer explicit, typed methods and properties
 
 ### 7. PSR / Structure (HIGH) — 6 rules
 
@@ -223,14 +226,16 @@ Reference these guidelines when:
 - `psr-naming-methods` - Method naming conventions
 - `psr-12-coding-style` - Follow PSR-12 coding style
 
-### 8. Tooling / Static Analysis (CRITICAL)
+### 8. Tooling / Static Analysis (CRITICAL) — 2 rules
 
-No separate rule files — guidance is embedded here:
+- `tooling-phpstan-cs-fixer` - Mandatory PHPStan + php-cs-fixer loop; CI integration; level guide
+- `phpstan-phpdoc` - Generics (`@template`), array shapes, `class-string`, `int<min,max>`, conditional return types
 
-- **Run before every commit:** `vendor/bin/php-cs-fixer fix && vendor/bin/phpstan analyse`
-- **PHPDoc is a precision layer** for static analysis: use `@template`, `@param array<int, User>`, `@return non-empty-string` only when native PHP cannot express it
-- **Inline `@var` is a last resort** — restructure code to remove the ambiguity instead
-- **PHPStan level 6+ recommended;** use baseline only for legacy code, not as permanent tech debt
+PHPDoc is a precision layer — use it only when native PHP cannot express enough. Inline `@var` is a last resort.
+
+### 9. Legacy Migration (HIGH) — 1 rule
+
+- `legacy-migration` - Incremental modernisation: PHPStan baseline → Rector syntax transforms → type coverage → Strangler Fig isolation
 
 ## Essential Guidelines
 
@@ -240,9 +245,14 @@ For detailed examples and explanations, see the rule files:
 - [modern-constructor-promotion.md](rules/modern-constructor-promotion.md) - Constructor property promotion
 - [modern-enums.md](rules/modern-enums.md) - PHP 8.1+ enums with methods
 - [solid-srp.md](rules/solid-srp.md) - Single responsibility principle
+- [design-value-objects.md](rules/design-value-objects.md) - Value objects over primitives
+- [design-no-magic.md](rules/design-no-magic.md) - Avoid magic-heavy design
 - [sec-input-validation.md](rules/sec-input-validation.md) - Input validation and sanitization
 - [error-try-catch-specific.md](rules/error-try-catch-specific.md) - Specific exception handling
 - [perf-generators.md](rules/perf-generators.md) - Generators for large datasets
+- [phpstan-phpdoc.md](rules/phpstan-phpdoc.md) - PHPStan generics, array shapes, class-strings
+- [tooling-phpstan-cs-fixer.md](rules/tooling-phpstan-cs-fixer.md) - PHPStan + php-cs-fixer loop
+- [legacy-migration.md](rules/legacy-migration.md) - Legacy code migration strategy
 - [psr-12-coding-style.md](rules/psr-12-coding-style.md) - PSR-12 coding style
 
 ### Key Patterns (Quick Reference)
@@ -385,6 +395,11 @@ rules/sec-sql-prepared.md
 rules/perf-generators.md
 rules/solid-srp.md
 rules/solid-dip.md
+rules/design-value-objects.md
+rules/design-no-magic.md
 rules/psr-4-autoloading.md
 rules/psr-12-coding-style.md
+rules/phpstan-phpdoc.md
+rules/tooling-phpstan-cs-fixer.md
+rules/legacy-migration.md
 ```

@@ -30,17 +30,22 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 **Impact:** MEDIUM
 **Description:** Prefer native array and string functions over manual loops and regex for simple operations. Use generators for streaming large datasets. Avoid globals because they destroy testability and local reasoning, not only for performance. Lazy-load only genuinely expensive dependencies.
 
-## 6. SOLID / Design (solid)
+## 6. SOLID / Design (solid, design)
 
 **Impact:** HIGH
-**Description:** Single responsibility, open for extension, substitutable subtypes, focused interfaces, dependency on abstractions. Apply these principles pragmatically — one reason to change means one coherent purpose, not one method per class.
+**Description:** Single responsibility, open for extension, substitutable subtypes, focused interfaces, dependency on abstractions. Prefer explicit, typed value objects over primitive obsession. Avoid magic-heavy design (`__get`, `__call`) that destroys static-analysis visibility. Apply SOLID principles pragmatically — one reason to change means one coherent purpose, not one method per class.
 
 ## 7. PSR / Structure (psr)
 
 **Impact:** HIGH
 **Description:** PSR-4 autoloading, PSR-12 coding style, file structure discipline, namespace conventions, and naming. One automated style tool enforced by CI eliminates bike-shedding entirely.
 
-## 8. Tooling / Static Analysis (tooling)
+## 8. Tooling / Static Analysis (tooling, phpstan)
 
 **Impact:** CRITICAL
-**Description:** PHPStan + php-cs-fixer run before every commit and enforced in CI. PHPDoc annotations are a precision layer for static analysis — use them only when native PHP cannot express enough. Inline `@var` is a last resort. The goal is analyzable code, not annotation decoration.
+**Description:** PHPStan + php-cs-fixer run before every commit and enforced in CI. PHPDoc annotations are a precision layer for static analysis — use them only when native PHP cannot express enough (`@template`, array shapes, `class-string`, `int<min,max>`, conditional return types). Inline `@var` is a last resort. The goal is analyzable code, not annotation decoration.
+
+## 9. Legacy Migration (legacy)
+
+**Impact:** HIGH
+**Description:** Structured, incremental strategy for modernising legacy PHP codebases: safety-net first (PHPStan baseline + tests), automated Rector syntax transforms, incremental type coverage file-by-file, and Strangler Fig isolation of legacy modules behind typed interfaces. Never rewrite everything at once.
