@@ -1,3 +1,10 @@
+---
+title: Nullable Types
+impact: CRITICAL
+impactDescription: Strong type safety across all PHP code
+tags: php, types, strict-types, type-safety
+---
+
 # Nullable Types
 
 ## Why it matters

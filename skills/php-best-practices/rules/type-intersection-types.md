@@ -1,3 +1,10 @@
+---
+title: Intersection Types
+impact: CRITICAL
+impactDescription: Strong type safety across all PHP code
+tags: php, types, strict-types, type-safety
+---
+
 # Intersection Types
 
 ## Why it matters

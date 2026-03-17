@@ -1,3 +1,10 @@
+---
+title: Rule Title Here
+impact: MEDIUM
+impactDescription: Optional description of impact
+tags: tag1, tag2, tag3
+---
+
 # Rule Title Here
 
 ## Why it matters

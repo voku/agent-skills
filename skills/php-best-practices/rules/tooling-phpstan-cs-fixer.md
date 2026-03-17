@@ -1,3 +1,10 @@
+---
+title: PHPStan + php-cs-fixer Validation Loop
+impact: CRITICAL
+impactDescription: PHPStan and php-cs-fixer static analysis tooling
+tags: php, phpstan, static-analysis, tooling
+---
+
 # PHPStan + php-cs-fixer Validation Loop
 
 ## Why it matters

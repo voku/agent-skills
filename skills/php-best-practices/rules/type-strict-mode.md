@@ -1,3 +1,10 @@
+---
+title: Strict Types Declaration
+impact: CRITICAL
+impactDescription: Strong type safety across all PHP code
+tags: php, types, strict-types, type-safety
+---
+
 # Strict Types Declaration
 
 ## Why it matters

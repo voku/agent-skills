@@ -1,3 +1,10 @@
+---
+title: Single Responsibility Principle (SRP)
+impact: HIGH
+impactDescription: SOLID principles and clean OOP design
+tags: php, solid, oop, design-patterns
+---
+
 # Single Responsibility Principle (SRP)
 
 ## Why it matters

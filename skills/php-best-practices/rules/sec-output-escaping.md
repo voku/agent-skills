@@ -1,3 +1,10 @@
+---
+title: Escape by Output Context
+impact: CRITICAL
+impactDescription: Security best practices and input safety
+tags: php, security, validation
+---
+
 # Escape by Output Context
 
 ## Why it matters

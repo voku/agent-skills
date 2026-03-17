@@ -1,3 +1,10 @@
+---
+title: Validate at Every Boundary
+impact: CRITICAL
+impactDescription: Security best practices and input safety
+tags: php, security, validation
+---
+
 # Validate at Every Boundary
 
 ## Why it matters

@@ -1,3 +1,10 @@
+---
+title: Nullsafe Operator
+impact: CRITICAL
+impactDescription: Modern PHP 8.x language features
+tags: php, modern-php, php8
+---
+
 # Nullsafe Operator
 
 ## Why it matters

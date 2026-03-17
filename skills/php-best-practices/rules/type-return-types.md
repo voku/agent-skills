@@ -1,3 +1,10 @@
+---
+title: Return Type Declarations
+impact: CRITICAL
+impactDescription: Strong type safety across all PHP code
+tags: php, types, strict-types, type-safety
+---
+
 # Return Type Declarations
 
 ## Why it matters

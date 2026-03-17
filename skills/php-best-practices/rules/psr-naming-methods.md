@@ -1,3 +1,10 @@
+---
+title: PSR Method Naming
+impact: HIGH
+impactDescription: PSR standards and code structure conventions
+tags: php, psr, coding-standards
+---
+
 # PSR Method Naming
 
 ## Why it matters

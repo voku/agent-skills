@@ -1,3 +1,10 @@
+---
+title: PSR-12 Coding Style
+impact: HIGH
+impactDescription: PSR standards and code structure conventions
+tags: php, psr, coding-standards
+---
+
 # PSR-12 Coding Style
 
 ## Why it matters

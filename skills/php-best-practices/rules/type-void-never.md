@@ -1,3 +1,10 @@
+---
+title: Void and Never Return Types
+impact: CRITICAL
+impactDescription: Strong type safety across all PHP code
+tags: php, types, strict-types, type-safety
+---
+
 # Void and Never Return Types
 
 ## Why it matters

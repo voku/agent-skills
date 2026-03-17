@@ -1,3 +1,10 @@
+---
+title: Validate File Uploads on Content, Not Client Claims
+impact: CRITICAL
+impactDescription: Security best practices and input safety
+tags: php, security, validation
+---
+
 # Validate File Uploads on Content, Not Client Claims
 
 ## Why it matters

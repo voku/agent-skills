@@ -1,3 +1,10 @@
+---
+title: Catch the Narrowest Exception You Can Recover From
+impact: HIGH
+impactDescription: Robust error handling and exception design
+tags: php, error-handling, exceptions
+---
+
 # Catch the Narrowest Exception You Can Recover From
 
 ## Why it matters

@@ -1,3 +1,10 @@
+---
+title: Prefer Dedicated String Functions Over Regex for Simple Operations
+impact: MEDIUM
+impactDescription: Runtime performance and memory efficiency
+tags: php, performance, optimization
+---
+
 # Prefer Dedicated String Functions Over Regex for Simple Operations
 
 ## Why it matters

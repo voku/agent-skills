@@ -1,3 +1,10 @@
+---
+title: Dependency Inversion Principle (DIP)
+impact: HIGH
+impactDescription: SOLID principles and clean OOP design
+tags: php, solid, oop, design-patterns
+---
+
 # Dependency Inversion Principle (DIP)
 
 ## Why it matters

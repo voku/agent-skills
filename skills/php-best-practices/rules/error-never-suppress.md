@@ -1,3 +1,10 @@
+---
+title: Never Suppress Errors with `@`
+impact: HIGH
+impactDescription: Robust error handling and exception design
+tags: php, error-handling, exceptions
+---
+
 # Never Suppress Errors with `@`
 
 ## Why it matters

@@ -1,3 +1,10 @@
+---
+title: Use Generators to Stream Large Datasets
+impact: MEDIUM
+impactDescription: Runtime performance and memory efficiency
+tags: php, performance, optimization
+---
+
 # Use Generators to Stream Large Datasets
 
 ## Why it matters

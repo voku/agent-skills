@@ -1,3 +1,10 @@
+---
+title: Create Custom Exceptions Only When Callers Need to React Differently
+impact: HIGH
+impactDescription: Robust error handling and exception design
+tags: php, error-handling, exceptions
+---
+
 # Create Custom Exceptions Only When Callers Need to React Differently
 
 ## Why it matters

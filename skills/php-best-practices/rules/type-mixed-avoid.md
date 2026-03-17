@@ -1,3 +1,10 @@
+---
+title: Avoid Mixed Type
+impact: CRITICAL
+impactDescription: Strong type safety across all PHP code
+tags: php, types, strict-types, type-safety
+---
+
 # Avoid Mixed Type
 
 ## Why it matters

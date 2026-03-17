@@ -1,3 +1,10 @@
+---
+title: Asymmetric Visibility
+impact: CRITICAL
+impactDescription: Modern PHP 8.x language features
+tags: php, modern-php, php8
+---
+
 # Asymmetric Visibility
 
 ## Why it matters

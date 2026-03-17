@@ -1,3 +1,10 @@
+---
+title: Avoid Magic-Heavy Design
+impact: HIGH
+impactDescription: PHP design patterns and value object discipline
+tags: php, design-patterns, value-objects
+---
+
 # Avoid Magic-Heavy Design
 
 ## Why it matters

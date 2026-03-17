@@ -1,3 +1,10 @@
+---
+title: Prefer Native Array Functions, But Profile Before Optimizing
+impact: MEDIUM
+impactDescription: Runtime performance and memory efficiency
+tags: php, performance, optimization
+---
+
 # Prefer Native Array Functions, But Profile Before Optimizing
 
 ## Why it matters
