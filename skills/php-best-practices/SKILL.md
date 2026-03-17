@@ -14,79 +14,12 @@ Modern PHP 8.x patterns, PSR standards, strict type system, SOLID principles, se
 
 > **Core philosophy:** Prefer explicit, analyzable, intention-revealing code with strict contracts and safe defaults. Reject magic, duplication, vague naming, and hidden failure modes.
 
-## Problem Definition (First Principles)
+## Metadata
 
-Before writing or reviewing any PHP code, define the problem explicitly:
-
-```
-🧐 Problem
-├── Task: What must the code accomplish?
-├── Constraints: PHP version, framework, performance budget, backwards-compat
-├── Assumptions: What inputs are guaranteed? What can be null?
-├── Edge cases: Empty collections, zero values, concurrent access, missing config
-└── Risk spots: Security surface (user input), type boundaries, legacy call sites
-```
-
-Use this checklist on every non-trivial implementation:
-
-- [ ] PHP version confirmed (`composer.json` → `require.php`)
-- [ ] All external inputs identified and validation strategy defined
-- [ ] Nullable paths enumerated — `?Type` vs `Type|null` vs exception
-- [ ] Legacy call sites listed if touching existing code
-- [ ] PHPStan level of the project confirmed (see `phpstan.neon`)
-
-## RCA — Root Cause Analysis
-
-Apply structured root-cause analysis **before** coding when fixing a bug or addressing a quality violation:
-
-```
-🌳 RCA
-├── Symptom: What error / test failure / PHPStan violation is observed?
-├── Immediate cause: The specific line / type mismatch / missing check
-├── Contributing factor: Why was this possible? (missing types, no validation, legacy design)
-└── Root cause: What structural gap allowed this? (no value objects, no strict types, missing tests)
-```
-
-### Example
-
-```
-Symptom:        TypeError in OrderService::create() — string passed where int expected
-Immediate cause: $data['user_id'] is never cast; HTTP input is always string
-Contributing:   No value object for UserId; array{} shape not annotated
-Root cause:     declare(strict_types=1) missing; no PHPStan analysis in CI
-Fix:            Add declare(strict_types=1); introduce UserId value object;
-                annotate $data shape; add PHPStan to CI at level 5+
-```
-
-## Kanban Workflow
-
-Follow this three-phase workflow for every PHP coding task:
-
-### Phase 1 — DEFINE / SCOPE
-
-- Confirm PHP version and available language features
-- State the Problem (first principles above)
-- Run RCA if fixing an existing issue
-- Identify files to create or modify
-- List new dependencies (check advisory DB before adding)
-
-### Phase 2 — DESIGN / PLANNING
-
-- Sketch class / interface boundaries
-- Choose value objects for all domain primitives
-- Define PHPDoc generics and array shapes for public APIs
-- Decide final / readonly / abstract modifiers
-- Plan exception hierarchy if new error paths are introduced
-- Outline PHPStan annotations needed
-
-### Phase 3 — CODING / FEEDBACK
-
-- Write code following all rules below
-- Run `vendor/bin/php-cs-fixer fix` — fix style
-- Run `vendor/bin/phpstan analyse` — fix type violations
-- Re-run until both pass with zero errors
-- Update tests; confirm all pass
-- Review output against the Problem statement
+- **Version:** 3.0.0
+- **PHP Version:** 8.0 - 8.5
+- **Rule Count:** 56 rules across 9 sections
+- **License:** MIT
 
 ## Step 1: Detect PHP Version
 
@@ -236,6 +169,80 @@ PHPDoc is a precision layer — use it only when native PHP cannot express enoug
 ### 9. Legacy Migration (HIGH) — 1 rule
 
 - `legacy-migration` - Incremental modernisation: PHPStan baseline → Rector syntax transforms → type coverage → Strangler Fig isolation
+
+## Problem Definition (First Principles)
+
+Before writing or reviewing any PHP code, define the problem explicitly:
+
+```
+🧐 Problem
+├── Task: What must the code accomplish?
+├── Constraints: PHP version, framework, performance budget, backwards-compat
+├── Assumptions: What inputs are guaranteed? What can be null?
+├── Edge cases: Empty collections, zero values, concurrent access, missing config
+└── Risk spots: Security surface (user input), type boundaries, legacy call sites
+```
+
+Use this checklist on every non-trivial implementation:
+
+- [ ] PHP version confirmed (`composer.json` → `require.php`)
+- [ ] All external inputs identified and validation strategy defined
+- [ ] Nullable paths enumerated — `?Type` vs `Type|null` vs exception
+- [ ] Legacy call sites listed if touching existing code
+- [ ] PHPStan level of the project confirmed (see `phpstan.neon`)
+
+## RCA — Root Cause Analysis
+
+Apply structured root-cause analysis **before** coding when fixing a bug or addressing a quality violation:
+
+```
+🌳 RCA
+├── Symptom: What error / test failure / PHPStan violation is observed?
+├── Immediate cause: The specific line / type mismatch / missing check
+├── Contributing factor: Why was this possible? (missing types, no validation, legacy design)
+└── Root cause: What structural gap allowed this? (no value objects, no strict types, missing tests)
+```
+
+### Example
+
+```
+Symptom:        TypeError in OrderService::create() — string passed where int expected
+Immediate cause: $data['user_id'] is never cast; HTTP input is always string
+Contributing:   No value object for UserId; array{} shape not annotated
+Root cause:     declare(strict_types=1) missing; no PHPStan analysis in CI
+Fix:            Add declare(strict_types=1); introduce UserId value object;
+                annotate $data shape; add PHPStan to CI at level 5+
+```
+
+## Kanban Workflow
+
+Follow this three-phase workflow for every PHP coding task:
+
+### Phase 1 — DEFINE / SCOPE
+
+- Confirm PHP version and available language features
+- State the Problem (first principles above)
+- Run RCA if fixing an existing issue
+- Identify files to create or modify
+- List new dependencies (check advisory DB before adding)
+
+### Phase 2 — DESIGN / PLANNING
+
+- Sketch class / interface boundaries
+- Choose value objects for all domain primitives
+- Define PHPDoc generics and array shapes for public APIs
+- Decide final / readonly / abstract modifiers
+- Plan exception hierarchy if new error paths are introduced
+- Outline PHPStan annotations needed
+
+### Phase 3 — CODING / FEEDBACK
+
+- Write code following all rules below
+- Run `vendor/bin/php-cs-fixer fix` — fix style
+- Run `vendor/bin/phpstan analyse` — fix type violations
+- Re-run until both pass with zero errors
+- Update tests; confirm all pass
+- Review output against the Problem statement
 
 ## Essential Guidelines
 
