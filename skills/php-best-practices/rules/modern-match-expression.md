@@ -66,6 +66,34 @@ function label(OrderStatus $status): string
         OrderStatus::Shipped  => 'On its way',
     };
 }
+
+// Enum + match returning a value object — exhaustiveness guarantees every case has a fee
+enum ShippingMethod: string
+{
+    case Standard  = 'standard';
+    case Express   = 'express';
+    case Overnight = 'overnight';
+    case Pickup    = 'pickup';
+}
+
+final class OrderProcessor
+{
+    public function calculateShippingFee(Order $order): Money
+    {
+        $baseRate = match ($order->shippingMethod) {
+            ShippingMethod::Standard  => new Money(599,  Currency::USD),
+            ShippingMethod::Express   => new Money(1299, Currency::USD),
+            ShippingMethod::Overnight => new Money(2499, Currency::USD),
+            ShippingMethod::Pickup    => new Money(0,    Currency::USD),
+            // No default — adding a new ShippingMethod case without updating here
+            // immediately produces UnhandledMatchError, not a silent wrong fee
+        };
+
+        return $order->isHeavy()
+            ? $baseRate->multiply(1.5)
+            : $baseRate;
+    }
+}
 ```
 
 ## Exceptions / trade-offs
