@@ -1,24 +1,24 @@
----
-title: Avoid Magic-Heavy Design
-impact: HIGH
-impactDescription: Preserves static-analysis visibility, improves IDE support, and makes code intent explicit
-tags: design, magic-methods, static-analysis, readability, phpstan
----
-
 # Avoid Magic-Heavy Design
 
-PHP's `__get`, `__set`, `__call`, `__callStatic`, and `__invoke` are powerful escape hatches, but overusing them hides behavior from IDEs, PHPStan, and future maintainers. Prefer explicit, typed methods and properties. Reserve magic methods for framework infrastructure, proxies, and data-transfer layers where the trade-off is justified.
+## Why it matters
 
-## Bad Example
+`__get`, `__set`, `__call`, and `__callStatic` make all property access and method dispatch invisible to static analysis. PHPStan returns `mixed` for every `__get` read and cannot verify that `$user->getNmae()` is a typo until it blows up at runtime. IDE autocompletion stops working. Refactoring becomes guesswork because there is no tooling to find all call sites of a dynamically dispatched method.
+
+## Rule
+
+Prefer explicit, typed properties and methods. Use magic methods only in framework infrastructure (ORM base classes, proxies, dynamic builders) where the trade-off is justified and PHPDoc stubs compensate for the lost static visibility.
+
+## Bad
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-// Magic __get/__set hides all property access from static analysis
+// __get/__set/__call — everything hidden from static analysis
 class User
 {
+    /** @var array<string, mixed> */
     private array $attributes = [];
 
     public function __get(string $name): mixed
@@ -33,36 +33,61 @@ class User
 
     public function __call(string $name, array $args): mixed
     {
-        // Dynamic method dispatch — impossible to statically verify
         if (str_starts_with($name, 'get')) {
-            $key = lcfirst(substr($name, 3));
-            return $this->attributes[$key] ?? null;
-        }
-        if (str_starts_with($name, 'set')) {
-            $key = lcfirst(substr($name, 3));
-            $this->attributes[$key] = $args[0];
-            return null;
+            return $this->attributes[lcfirst(substr($name, 3))] ?? null;
         }
         throw new \BadMethodCallException("Method {$name} not found");
     }
 }
 
-// Caller code:
 $user = new User();
 $user->email = 'alice@example.com'; // __set — no type check
-$user->name  = 42;                  // Accepted silently — wrong type
-$user->getNmae();                   // Typo — no compile-time error
-echo $user->email;                  // __get — PHPStan returns mixed
+$user->name  = 42;                  // accepted silently — wrong type
+$user->getNmae();                   // typo — silently returns null
+echo $user->email;                  // __get — PHPStan infers mixed
 ```
 
-## Good Example
+## Better
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-// Explicit, typed, readonly-by-default properties
+// Explicit properties — typed, but still mutable after construction
+class User
+{
+    public string $id;
+    public string $email;
+    public string $name;
+
+    public function __construct(string $id, string $email, string $name)
+    {
+        $this->id    = $id;
+        $this->email = $email;
+        $this->name  = $name;
+    }
+
+    public function isActive(): bool
+    {
+        return true;
+    }
+}
+
+// PHPStan and IDEs can now see all properties and methods.
+// Typos on property names produce static-analysis errors.
+$user = new User('1', 'alice@example.com', 'Alice');
+echo $user->email;
+```
+
+## Best
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Explicit, typed with value objects, readonly-by-default — no magic anywhere
 final class User
 {
     public function __construct(
@@ -93,13 +118,17 @@ final class User
     }
 
     // No __get, no __set, no __call
-    // PHPStan sees every property and method — full static analysis
 }
+
+// PHPStan sees every property and method. Value objects enforce invariants.
+// IDEs autocomplete getEmail() and know it returns Email, not mixed.
+$user = new User(new UserId(1), new Email('alice@example.com'), new UserName('Alice'));
+echo $user->getEmail()->value;  // string — not mixed
 ```
 
-## When Magic Methods Are Acceptable
+## When magic is acceptable
 
-Some frameworks and patterns legitimately require magic. Contain and document them:
+Framework infrastructure — ORM base classes, dynamic proxies, and autowiring containers — legitimately requires magic. Contain it and compensate with PHPDoc stubs:
 
 ```php
 <?php
@@ -107,8 +136,8 @@ Some frameworks and patterns legitimately require magic. Contain and document th
 declare(strict_types=1);
 
 /**
- * Eloquent-style dynamic query builder — magic is intentional here.
- * PHPStan plugin (larastan/larastan) provides type stubs for ->where() etc.
+ * Eloquent-style base model — magic is intentional at this layer.
+ * PHPStan plugin (larastan/larastan) provides type stubs.
  *
  * @method static static where(string $column, mixed $value)
  * @method static list<static> get()
@@ -120,7 +149,6 @@ abstract class Model
     /** @param list<mixed> $args */
     public function __call(string $name, array $args): mixed
     {
-        // Framework-level magic: justified, documented via @method stubs
         return $this->newQuery()->$name(...$args);
     }
 
@@ -134,7 +162,6 @@ abstract class Model
 // Explicit subclass restores full type safety for domain code:
 final class UserModel extends Model
 {
-    // Explicit scope methods replace magic:
     public static function active(): static
     {
         return static::where('status', 'active');
@@ -142,81 +169,25 @@ final class UserModel extends Model
 }
 ```
 
-## Fluent Builder Without Magic
+## Exceptions / trade-offs
 
-Use explicit chaining instead of `__call` for internal builders:
+- **ORM base classes** (Eloquent, Doctrine proxies): magic is the intended API. Use PHPDoc `@method` stubs or a PHPStan plugin to restore analysis coverage.
+- **Dynamic proxies and aspect wrappers**: justified if properly stubbed.
+- **`__invoke`**: acceptable and analyzable — it makes a class a first-class callable with a known signature.
+- `__toString` and `__clone` are fine — they have defined, predictable semantics.
 
-```php
-<?php
+Do not use magic merely to avoid typing out getter methods.
 
-declare(strict_types=1);
+## Static-analysis notes
 
-// Bad — magic chaining
-class QueryBuilder
-{
-    public function __call(string $method, array $args): static
-    {
-        $this->parts[$method] = $args;
-        return $this;
-    }
-}
+- `__get` returns `mixed` unless annotated with a `@property` stub in the class docblock.
+- PHPStan `@method` stubs in the docblock restore analysis for `__call` dispatchers.
+- Explicit typed properties and methods give PHPStan / Psalm / IDEs full visibility with zero annotation overhead.
+- The PHPStan `phpstan/phpstan-strict-rules` package flags undocumented magic usage.
 
-// Good — explicit, typed, analysis-friendly
-final class QueryBuilder
-{
-    private ?string $table = null;
-    /** @var list<string> */
-    private array $columns = ['*'];
-    /** @var list<array{column: string, value: mixed}> */
-    private array $wheres = [];
-    private ?int $limitValue = null;
+## Related topics
 
-    public function from(string $table): static
-    {
-        $clone        = clone $this;
-        $clone->table = $table;
-        return $clone;
-    }
-
-    public function select(string ...$columns): static
-    {
-        $clone          = clone $this;
-        $clone->columns = $columns;
-        return $clone;
-    }
-
-    public function where(string $column, mixed $value): static
-    {
-        $clone           = clone $this;
-        $clone->wheres[] = ['column' => $column, 'value' => $value];
-        return $clone;
-    }
-
-    /** @param int<1, max> $n */
-    public function limit(int $n): static
-    {
-        $clone             = clone $this;
-        $clone->limitValue = $n;
-        return $clone;
-    }
-
-    public function toSql(): string
-    {
-        // Build SQL from explicit fields
-        $cols = implode(', ', $this->columns);
-        $sql  = "SELECT {$cols} FROM {$this->table}";
-        // ... where clauses, limit
-        return $sql;
-    }
-}
-```
-
-## Why
-
-- **Static Analysis Visibility**: `__get`/`__call` return `mixed` unless annotated with PHPDoc stubs; explicit methods return precise types that PHPStan and Psalm can verify
-- **IDE Support**: Explicit methods and properties provide autocompletion and "go to definition"; magic methods do not without stubs
-- **Refactoring Safety**: Renaming an explicit property shows all usages; renaming a magic key does not
-- **Readability**: A method signature communicates its contract; a `__call` dispatcher requires reading the implementation to understand what is available
-- **Test Clarity**: Explicit methods are straightforward to mock; magic dispatchers require complex setup
-
-Reference: [PHP Magic Methods](https://www.php.net/manual/en/language.oop5.magic.php) | [PHPStan — Magic Methods](https://phpstan.org/writing-php-code/phpdocs-basics#magic-methods)
+- [design-value-objects.md](design-value-objects.md) — replace primitive attributes bags with typed value objects
+- [type-property-types.md](type-property-types.md) — type every property explicitly
+- [type-mixed-avoid.md](type-mixed-avoid.md) — avoid `mixed` returns that magic methods produce
+- [phpstan-phpdoc.md](phpstan-phpdoc.md) — use PHPDoc stubs where magic cannot be avoided
