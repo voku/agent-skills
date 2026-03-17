@@ -53,6 +53,11 @@ final readonly class UserRegistered
 // Exception — DescriptiveException
 final class UserNotFoundException extends \RuntimeException {}
 final class InsufficientFundsException extends \DomainException {}
+
+// Value Objects — descriptive nouns, immutable, no -VO suffix
+final readonly class EmailAddress {}  // not EmailAddressValueObject
+final readonly class Money {}         // not MoneyAmount or CurrencyValue
+final readonly class DateRange {}     // not DateRangeDto
 ```
 
 ## Best

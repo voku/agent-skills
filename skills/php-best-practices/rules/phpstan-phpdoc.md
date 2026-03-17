@@ -274,6 +274,13 @@ function connectToPort(int $port): void
 {
     // valid TCP port range enforced by type
 }
+
+/** @param numeric-string $amount */
+function parseMoneyString(string $amount): Money
+{
+    // PHPStan guarantees $amount is a valid numeric string before conversion
+    return new Money((int) round(floatval($amount) * 100), Currency::USD);
+}
 ```
 
 ## Generics
