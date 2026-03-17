@@ -98,4 +98,4 @@ class Category extends Model
 - Consistent naming makes migrations, queries, and team collaboration predictable
 - Custom `$table` overrides are explicit and self-documenting when needed
 
-Reference: [Laravel Eloquent Conventions](https://laravel.com/docs/12.x/eloquent#eloquent-model-conventions)
+Reference: [Laravel Eloquent Conventions](https://laravel.com/docs/13.x/eloquent#eloquent-model-conventions)

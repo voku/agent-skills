@@ -29,8 +29,8 @@ FAQPage structured data tells Google your page contains a list of questions and 
   </div>
 
   <div class="faq-item">
-    <h3>What PHP version does Laravel 12 require?</h3>
-    <p>Laravel 12 requires PHP 8.3 or higher.</p>
+    <h3>What PHP version does Laravel 13 require?</h3>
+    <p>Laravel 13 requires PHP 8.3 or higher.</p>
   </div>
 </div>
 ```
@@ -68,10 +68,10 @@ FAQPage structured data tells Google your page contains a list of questions and 
     },
     {
       "@type": "Question",
-      "name": "What PHP version does Laravel 12 require?",
+      "name": "What PHP version does Laravel 13 require?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Laravel 12 requires PHP 8.3 or higher. It is recommended to use the latest stable PHP release for optimal performance and security."
+        "text": "Laravel 13 requires PHP 8.3 or higher. It is recommended to use the latest stable PHP release for optimal performance and security."
       }
     }
   ]

@@ -92,4 +92,4 @@ return new class extends Migration
 - Each deploy is independently reversible without data loss
 - Safe for multi-server rolling deployments where old and new code coexist
 
-Reference: [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
+Reference: [Laravel Migrations](https://laravel.com/docs/13.x/migrations)

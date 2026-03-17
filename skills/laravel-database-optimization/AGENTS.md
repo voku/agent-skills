@@ -1,21 +1,21 @@
 # Laravel Database Optimization - Complete Reference
 
-**Version:** 1.1.0
-**Framework:** Laravel 12.x / PHP 8.3+
+**Version:** 1.1.1
+**Framework:** Laravel 13.x / PHP 8.3+
 **Date:** March 2026
 **License:** MIT
 
 ## Abstract
 
-Comprehensive database optimization patterns for Laravel 12 applications. Contains 33 rules across 9 categories covering N+1 query prevention, indexing strategies, Eloquent optimization, Redis caching, pagination, transactions, migrations, naming conventions, and query debugging. Each rule includes incorrect and correct code examples with practical Laravel implementations.
+Comprehensive database optimization patterns for Laravel 13 applications. Contains 33 rules across 9 categories covering N+1 query prevention, indexing strategies, Eloquent optimization, Redis caching, pagination, transactions, migrations, naming conventions, and query debugging. Each rule includes incorrect and correct code examples with practical Laravel implementations.
 
 ## References
 
-- [Laravel Eloquent Relationships](https://laravel.com/docs/12.x/eloquent-relationships)
-- [Laravel Database Queries](https://laravel.com/docs/12.x/queries)
-- [Laravel Cache](https://laravel.com/docs/12.x/cache)
-- [Laravel Pagination](https://laravel.com/docs/12.x/pagination)
-- [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
+- [Laravel Eloquent Relationships](https://laravel.com/docs/13.x/eloquent-relationships)
+- [Laravel Database Queries](https://laravel.com/docs/13.x/queries)
+- [Laravel Cache](https://laravel.com/docs/13.x/cache)
+- [Laravel Pagination](https://laravel.com/docs/13.x/pagination)
+- [Laravel Migrations](https://laravel.com/docs/13.x/migrations)
 
 ---
 
@@ -121,7 +121,7 @@ $posts = Post::with([
 - Constrained eager loads reduce memory usage by loading only relevant related records
 - Predictable, measurable database load that scales with relationship count, not row count
 
-Reference: [Laravel Eager Loading](https://laravel.com/docs/12.x/eloquent-relationships#eager-loading)
+Reference: [Laravel Eager Loading](https://laravel.com/docs/13.x/eloquent-relationships#eager-loading)
 
 
 ---
@@ -186,16 +186,16 @@ foreach ($posts as $post) {
 - Catches N+1 problems during development before they reach production
 - Safe to enable — only active in non-production environments, so production is never affected
 
-Reference: [Laravel Preventing Lazy Loading](https://laravel.com/docs/12.x/eloquent-relationships#preventing-lazy-loading)
+Reference: [Laravel Preventing Lazy Loading](https://laravel.com/docs/13.x/eloquent-relationships#preventing-lazy-loading)
 
 
 ---
 
-## Use Automatic Eager Loading (Laravel 12+)
+## Use Automatic Eager Loading (Laravel 13+)
 
 **Impact: CRITICAL (Eliminates N+1 queries without manual with() calls)**
 
-Laravel 12 introduces automatic eager loading, which detects when multiple models in a collection access the same relationship and batches those queries automatically. This eliminates the most common source of N+1 bugs without requiring developers to remember every `with()` call.
+Laravel 13 introduces automatic eager loading, which detects when multiple models in a collection access the same relationship and batches those queries automatically. This eliminates the most common source of N+1 bugs without requiring developers to remember every `with()` call.
 
 ## Incorrect
 
@@ -253,7 +253,7 @@ foreach ($posts as $post) {
 - Works in Blade templates, packages, and any code that iterates collections
 - Per-collection option provides fine-grained control when global activation is too broad
 
-Reference: [Laravel Automatic Eager Loading](https://laravel.com/docs/12.x/eloquent-relationships#automatic-eager-loading)
+Reference: [Laravel Automatic Eager Loading](https://laravel.com/docs/13.x/eloquent-relationships#automatic-eager-loading)
 
 
 ---
@@ -314,7 +314,7 @@ $users = User::select('id', 'name')
 - Lower memory usage per model instance — only selected attributes are hydrated
 - Enables covering index usage, eliminating table lookups for read-heavy queries
 
-Reference: [Laravel Eloquent Retrieving Models](https://laravel.com/docs/12.x/eloquent#retrieving-models)
+Reference: [Laravel Eloquent Retrieving Models](https://laravel.com/docs/13.x/eloquent#retrieving-models)
 
 
 ---
@@ -382,7 +382,7 @@ Schema::create('comments', function (Blueprint $table): void {
 - Index-backed WHERE clauses use B-tree lookups instead of full table scans
 - `morphs()` automatically creates a composite index on both polymorphic columns
 
-Reference: [Laravel Foreign Key Constraints](https://laravel.com/docs/12.x/migrations#foreign-key-constraints)
+Reference: [Laravel Foreign Key Constraints](https://laravel.com/docs/13.x/migrations#foreign-key-constraints)
 
 
 ---
@@ -458,7 +458,7 @@ $userOrders = Order::where('user_id', $userId)
 - Equality-first, range-last ordering maximizes index selectivity
 - The leftmost prefix rule means the composite index also serves queries using only the first column(s)
 
-Reference: [Laravel Index Columns](https://laravel.com/docs/12.x/migrations#creating-indexes)
+Reference: [Laravel Index Columns](https://laravel.com/docs/13.x/migrations#creating-indexes)
 
 
 ---
@@ -523,7 +523,7 @@ $plan = DB::select('EXPLAIN SELECT name, email FROM users WHERE status = ?', ['a
 - Dramatically faster for queries returning many rows from a filtered subset
 - PostgreSQL INCLUDE clause keeps indexed columns minimal while covering SELECT columns
 
-Reference: [Laravel Creating Indexes](https://laravel.com/docs/12.x/migrations#creating-indexes)
+Reference: [Laravel Creating Indexes](https://laravel.com/docs/13.x/migrations#creating-indexes)
 
 
 ---
@@ -592,7 +592,7 @@ $results = Article::whereFullText(['title', 'body'], $term)
 - `whereFullText()` provides a clean, database-agnostic API for full-text queries
 - Supports natural language mode and boolean mode for flexible search behavior
 
-Reference: [Laravel Full Text Indexes](https://laravel.com/docs/12.x/migrations#available-index-types)
+Reference: [Laravel Full Text Indexes](https://laravel.com/docs/13.x/migrations#available-index-types)
 
 
 ---
@@ -655,7 +655,7 @@ foreach ($activeUsers as $user) {
 - 30-50% faster on large result sets (benchmarked on 5,000+ rows)
 - Keep Eloquent for CRUD operations where events, casts, and mutators add value
 
-Reference: [Laravel Query Builder](https://laravel.com/docs/12.x/queries)
+Reference: [Laravel Query Builder](https://laravel.com/docs/13.x/queries)
 
 
 ---
@@ -718,7 +718,7 @@ echo $user->published_posts_count;
 - Dramatically lower memory usage when relations contain many records
 - Attributes follow a predictable naming convention: `{relation}_{function}_{column}`
 
-Reference: [Laravel Eloquent Aggregates](https://laravel.com/docs/12.x/eloquent-relationships#counting-related-models)
+Reference: [Laravel Eloquent Aggregates](https://laravel.com/docs/13.x/eloquent-relationships#counting-related-models)
 
 
 ---
@@ -788,7 +788,7 @@ foreach ($users as $user) {
 - Computed columns can be used in `orderBy`, `having`, and other clauses
 - Attributes are accessible directly on the model like regular columns
 
-Reference: [Laravel Subquery Selects](https://laravel.com/docs/12.x/eloquent#subquery-selects)
+Reference: [Laravel Subquery Selects](https://laravel.com/docs/13.x/eloquent#subquery-selects)
 
 
 ---
@@ -860,7 +860,7 @@ $products = Product::whereRelation('reviews', 'rating', '>=', 4)->get();
 - 10-100x improvement on large datasets compared to correlated `whereHas`
 - Choose `whereIn` for readability, `join` for maximum performance on hot paths
 
-Reference: [Laravel Eloquent whereHas](https://laravel.com/docs/12.x/eloquent-relationships#querying-relationship-existence)
+Reference: [Laravel Eloquent whereHas](https://laravel.com/docs/13.x/eloquent-relationships#querying-relationship-existence)
 
 
 ---
@@ -930,7 +930,7 @@ $userStats = Cache::remember(
 - Cleaner, less error-prone code with TTL and closure in a single call
 - `rememberForever()` variant for data that changes only via explicit invalidation
 
-Reference: [Laravel Cache Usage](https://laravel.com/docs/12.x/cache#retrieve-store)
+Reference: [Laravel Cache Usage](https://laravel.com/docs/13.x/cache#retrieve-store)
 
 
 ---
@@ -1031,7 +1031,7 @@ class Product extends Model
 - Works for changes made via controllers, commands, jobs, tinker, and queued processes
 - `ObservedBy` attribute (Laravel 11+) makes the binding explicit and discoverable
 
-Reference: [Laravel Model Observers](https://laravel.com/docs/12.x/eloquent#observers)
+Reference: [Laravel Model Observers](https://laravel.com/docs/13.x/eloquent#observers)
 
 
 ---
@@ -1129,7 +1129,7 @@ class ProductService
 
 > **Note:** Cache tags are only supported by Redis and Memcached drivers. The `file`, `database`, and `array` drivers do not support tags.
 
-Reference: [Laravel Cache Tags](https://laravel.com/docs/12.x/cache#cache-tags)
+Reference: [Laravel Cache Tags](https://laravel.com/docs/13.x/cache#cache-tags)
 
 
 ---
@@ -1212,7 +1212,7 @@ $notifications = Cache::remember(
 - Volatile data expires quickly, preventing users from seeing stale information
 - Documented TTL guidelines help teams make consistent caching decisions
 
-Reference: [Laravel Cache Configuration](https://laravel.com/docs/12.x/cache#configuration)
+Reference: [Laravel Cache Configuration](https://laravel.com/docs/13.x/cache#configuration)
 
 
 ---
@@ -1266,7 +1266,7 @@ return UserResource::collection(
 - Uses efficient index seeks (WHERE id > ?) instead of scanning and discarding rows
 - Ideal for infinite scroll, API feeds, and any dataset where users don't need to jump to arbitrary pages
 
-Reference: [Laravel Cursor Pagination](https://laravel.com/docs/12.x/pagination#cursor-pagination)
+Reference: [Laravel Cursor Pagination](https://laravel.com/docs/13.x/pagination#cursor-pagination)
 
 
 ---
@@ -1332,7 +1332,7 @@ User::where('email_verified_at', null)
 - Uses indexed primary key lookups instead of OFFSET scanning
 - Safe for operations that modify the rows being iterated over
 
-Reference: [Laravel Chunking Results](https://laravel.com/docs/12.x/eloquent#chunking-results)
+Reference: [Laravel Chunking Results](https://laravel.com/docs/13.x/eloquent#chunking-results)
 
 
 ---
@@ -1395,7 +1395,7 @@ DB::table('users')
 - `cursor()` returns a `LazyCollection` backed by a PHP generator
 - `lazyById()` combines the memory efficiency of generators with the consistency of ID-based chunking
 
-Reference: [Laravel Cursors](https://laravel.com/docs/12.x/eloquent#cursors)
+Reference: [Laravel Cursors](https://laravel.com/docs/13.x/eloquent#cursors)
 
 
 ---
@@ -1467,7 +1467,7 @@ DB::whenQueryingForLongerThan(5000, function (Connection $connection, QueryExecu
 - Explicit limits make resource consumption visible and reviewable in code review
 - Safety mechanisms like `whenQueryingForLongerThan()` catch issues before they escalate
 
-Reference: [Laravel Query Builder](https://laravel.com/docs/12.x/queries)
+Reference: [Laravel Query Builder](https://laravel.com/docs/13.x/queries)
 
 
 ---
@@ -1543,7 +1543,7 @@ dispatch(new SendOrderConfirmation($order))->afterCommit();
 - Side effects like jobs and notifications only execute after successful commit
 - External service failures don't roll back valid database changes
 
-Reference: [Laravel Database Transactions](https://laravel.com/docs/12.x/database#database-transactions)
+Reference: [Laravel Database Transactions](https://laravel.com/docs/13.x/database#database-transactions)
 
 
 ---
@@ -1612,7 +1612,7 @@ DB::transaction(function () use ($senderId, $receiverId, $amount): void {
 - The `attempts` parameter is built into Laravel's `DB::transaction()` — no external packages needed
 - Consistent lock ordering combined with retry makes deadlocks rare and survivable
 
-Reference: [Laravel Database Transactions](https://laravel.com/docs/12.x/database#database-transactions)
+Reference: [Laravel Database Transactions](https://laravel.com/docs/13.x/database#database-transactions)
 
 
 ---
@@ -1690,7 +1690,7 @@ $account = Account::sharedLock()->find($id);
 - `lockForUpdate()` blocks other transactions until the current one commits or rolls back
 - Combined with `attempts: 3`, handles transient deadlocks gracefully
 
-Reference: [Laravel Pessimistic Locking](https://laravel.com/docs/12.x/queries#pessimistic-locking)
+Reference: [Laravel Pessimistic Locking](https://laravel.com/docs/13.x/queries#pessimistic-locking)
 
 
 ---
@@ -1782,7 +1782,7 @@ return new class extends Migration
 - Each deploy is independently reversible without data loss
 - Safe for multi-server rolling deployments where old and new code coexist
 
-Reference: [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
+Reference: [Laravel Migrations](https://laravel.com/docs/13.x/migrations)
 
 
 ---
@@ -1866,7 +1866,7 @@ public bool $withinTransaction = false;
 - No application downtime or blocked requests during deployment
 - Standard `$table->index()` is still fine for small tables and initial migrations — only use raw SQL for large production tables
 
-Reference: [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
+Reference: [Laravel Migrations](https://laravel.com/docs/13.x/migrations)
 
 
 ---
@@ -1958,7 +1958,7 @@ return new class extends Migration
 - Backfilling in batches keeps the table available throughout the process
 - Modern databases handle NOT NULL with DEFAULT as instant operations, but nullable-first is universally safe
 
-Reference: [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
+Reference: [Laravel Migrations](https://laravel.com/docs/13.x/migrations)
 
 
 ---
@@ -2036,7 +2036,7 @@ Log::debug('Query', [
 - Quickly identifies whether an index exists but isn't being used vs. missing entirely
 - EXPLAIN ANALYZE shows actual vs. estimated row counts, revealing stale statistics
 
-Reference: [Laravel Query Builder](https://laravel.com/docs/12.x/queries)
+Reference: [Laravel Query Builder](https://laravel.com/docs/13.x/queries)
 
 
 ---
@@ -2200,7 +2200,7 @@ DB::whenQueryingForLongerThan(5000, function (Connection $connection, QueryExecu
 - `DB::listen()` integrates with any logging/alerting system (Slack, PagerDuty, etc.)
 - `whenQueryingForLongerThan()` detects death-by-a-thousand-cuts — many fast queries that add up
 
-Reference: [Laravel Database Monitoring](https://laravel.com/docs/12.x/database#monitoring-cumulative-query-time)
+Reference: [Laravel Database Monitoring](https://laravel.com/docs/13.x/database#monitoring-cumulative-query-time)
 
 
 ---
@@ -2298,7 +2298,7 @@ class Category extends Model
 - Consistent naming makes migrations, queries, and team collaboration predictable
 - Custom `$table` overrides are explicit and self-documenting when needed
 
-Reference: [Laravel Eloquent Conventions](https://laravel.com/docs/12.x/eloquent#eloquent-model-conventions)
+Reference: [Laravel Eloquent Conventions](https://laravel.com/docs/13.x/eloquent#eloquent-model-conventions)
 
 
 ---
@@ -2407,7 +2407,7 @@ class Comment extends Model
 - Standard `created_at`/`updated_at` work with Eloquent's `$timestamps` and date casting automatically
 - Polymorphic `_id`/`_type` columns match `morphTo()` method name, enabling auto-resolution
 
-Reference: [Laravel Eloquent Conventions](https://laravel.com/docs/12.x/eloquent#eloquent-model-conventions)
+Reference: [Laravel Eloquent Conventions](https://laravel.com/docs/13.x/eloquent#eloquent-model-conventions)
 
 
 ---
@@ -2581,7 +2581,7 @@ class Image extends Model
 - Eager loading reads naturally: `Post::with(['user', 'comments', 'tags'])->get()`
 - `whereHas('comments')` and `withCount('orders')` work without additional configuration
 
-Reference: [Laravel Eloquent Relationships](https://laravel.com/docs/12.x/eloquent-relationships)
+Reference: [Laravel Eloquent Relationships](https://laravel.com/docs/13.x/eloquent-relationships)
 
 
 ---
@@ -2689,7 +2689,7 @@ Schema::table('users', function (Blueprint $table) {
 - Laravel's auto-generated index names (`users_email_unique`) follow a predictable `{table}_{column}_{type}` pattern
 - Artisan generators enforce consistent naming: `php artisan make:migration add_phone_to_users_table --table=users`
 
-Reference: [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
+Reference: [Laravel Migrations](https://laravel.com/docs/13.x/migrations)
 
 
 ---

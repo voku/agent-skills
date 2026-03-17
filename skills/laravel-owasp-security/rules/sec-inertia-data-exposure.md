@@ -227,4 +227,4 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
 | `$request->user()->only([...])` | Shared auth props in HandleInertiaRequests |
 | Admin routes in `role:admin` middleware group | Ensure sensitive props never reach non-admin pages |
 
-Reference: [Inertia.js Shared Data](https://inertiajs.com/shared-data) | [Laravel API Resources](https://laravel.com/docs/12.x/eloquent-resources)
+Reference: [Inertia.js Shared Data](https://inertiajs.com/shared-data) | [Laravel API Resources](https://laravel.com/docs/13.x/eloquent-resources)

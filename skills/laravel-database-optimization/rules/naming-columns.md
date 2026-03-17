@@ -109,4 +109,4 @@ class Comment extends Model
 - Standard `created_at`/`updated_at` work with Eloquent's `$timestamps` and date casting automatically
 - Polymorphic `_id`/`_type` columns match `morphTo()` method name, enabling auto-resolution
 
-Reference: [Laravel Eloquent Conventions](https://laravel.com/docs/12.x/eloquent#eloquent-model-conventions)
+Reference: [Laravel Eloquent Conventions](https://laravel.com/docs/13.x/eloquent#eloquent-model-conventions)

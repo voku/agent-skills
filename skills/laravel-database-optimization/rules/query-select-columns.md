@@ -61,4 +61,4 @@ $users = User::select('id', 'name')
 - Lower memory usage per model instance — only selected attributes are hydrated
 - Enables covering index usage, eliminating table lookups for read-heavy queries
 
-Reference: [Laravel Eloquent Retrieving Models](https://laravel.com/docs/12.x/eloquent#retrieving-models)
+Reference: [Laravel Eloquent Retrieving Models](https://laravel.com/docs/13.x/eloquent#retrieving-models)

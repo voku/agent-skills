@@ -101,4 +101,4 @@ class Product extends Model
 - Works for changes made via controllers, commands, jobs, tinker, and queued processes
 - `ObservedBy` attribute (Laravel 11+) makes the binding explicit and discoverable
 
-Reference: [Laravel Model Observers](https://laravel.com/docs/12.x/eloquent#observers)
+Reference: [Laravel Model Observers](https://laravel.com/docs/13.x/eloquent#observers)

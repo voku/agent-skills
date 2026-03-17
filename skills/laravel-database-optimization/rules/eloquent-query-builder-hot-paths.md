@@ -63,4 +63,4 @@ foreach ($activeUsers as $user) {
 - 30-50% faster on large result sets (benchmarked on 5,000+ rows)
 - Keep Eloquent for CRUD operations where events, casts, and mutators add value
 
-Reference: [Laravel Query Builder](https://laravel.com/docs/12.x/queries)
+Reference: [Laravel Query Builder](https://laravel.com/docs/13.x/queries)

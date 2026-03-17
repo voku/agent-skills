@@ -92,4 +92,4 @@ return new class extends Migration
 - Backfilling in batches keeps the table available throughout the process
 - Modern databases handle NOT NULL with DEFAULT as instant operations, but nullable-first is universally safe
 
-Reference: [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
+Reference: [Laravel Migrations](https://laravel.com/docs/13.x/migrations)

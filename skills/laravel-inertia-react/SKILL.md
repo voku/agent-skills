@@ -4,8 +4,8 @@ description: Laravel + Inertia.js + React integration patterns. Use when buildin
 license: MIT
 metadata:
   author: AsyrafHussin
-  version: "1.0.1"
-  laravelVersion: "12.x"
+  version: "1.0.2"
+  laravelVersion: "13.x"
   phpVersion: "8.3+"
 ---
 

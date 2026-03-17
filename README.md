@@ -72,7 +72,7 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-best-practices
 
 ### [laravel-inertia-react](skills/laravel-inertia-react)
 
-Laravel 12 + Inertia.js + React 18 full-stack patterns. Covers page components, form handling, layouts, file uploads, and real-time features.
+Laravel 13 + Inertia.js + React 18 full-stack patterns. Covers page components, form handling, layouts, file uploads, and real-time features.
 
 **Example:** `How do I share data from Laravel to a React component with Inertia?`
 
@@ -240,7 +240,7 @@ npx skills add AsyrafHussin/agent-skills --skill seo-best-practices
 
 ### [laravel-database-optimization](skills/laravel-database-optimization)
 
-Laravel 12 database optimization. Contains 33 rules across 9 categories covering N+1 prevention, indexing strategies, Eloquent performance, Redis caching, cursor pagination, transactions, zero-downtime migrations, naming conventions, and query debugging.
+Laravel 13 database optimization. Contains 33 rules across 9 categories covering N+1 prevention, indexing strategies, Eloquent performance, Redis caching, cursor pagination, transactions, zero-downtime migrations, naming conventions, and query debugging.
 
 **Example:** `Optimize the database queries in this controller`
 

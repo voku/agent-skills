@@ -70,4 +70,4 @@ foreach ($users as $user) {
 - Computed columns can be used in `orderBy`, `having`, and other clauses
 - Attributes are accessible directly on the model like regular columns
 
-Reference: [Laravel Subquery Selects](https://laravel.com/docs/12.x/eloquent#subquery-selects)
+Reference: [Laravel Subquery Selects](https://laravel.com/docs/13.x/eloquent#subquery-selects)

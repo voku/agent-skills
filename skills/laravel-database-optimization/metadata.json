@@ -1,8 +1,8 @@
 {
   "name": "laravel-database-optimization",
-  "version": "1.1.0",
-  "description": "Comprehensive Laravel 12 database optimization guide designed for AI agents and LLMs. Contains 33 rules across 9 categories covering query performance, indexing strategies, Eloquent optimization, Redis caching, pagination, transactions, migrations, naming conventions, and query debugging.",
-  "framework": "Laravel 12.x",
+  "version": "1.1.1",
+  "description": "Comprehensive Laravel 13 database optimization guide designed for AI agents and LLMs. Contains 33 rules across 9 categories covering query performance, indexing strategies, Eloquent optimization, Redis caching, pagination, transactions, migrations, naming conventions, and query debugging.",
+  "framework": "Laravel 13.x",
   "phpVersion": "8.3+",
   "rulesTotal": 33,
   "lastUpdated": "2026-03-14",
@@ -72,13 +72,13 @@
     }
   ],
   "references": [
-    "https://laravel.com/docs/12.x/eloquent",
-    "https://laravel.com/docs/12.x/queries",
-    "https://laravel.com/docs/12.x/cache",
-    "https://laravel.com/docs/12.x/pagination",
-    "https://laravel.com/docs/12.x/migrations",
-    "https://laravel.com/docs/12.x/redis",
-    "https://laravel.com/docs/12.x/eloquent-relationships"
+    "https://laravel.com/docs/13.x/eloquent",
+    "https://laravel.com/docs/13.x/queries",
+    "https://laravel.com/docs/13.x/cache",
+    "https://laravel.com/docs/13.x/pagination",
+    "https://laravel.com/docs/13.x/migrations",
+    "https://laravel.com/docs/13.x/redis",
+    "https://laravel.com/docs/13.x/eloquent-relationships"
   ],
   "keywords": [
     "database",

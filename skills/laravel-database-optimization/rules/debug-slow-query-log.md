@@ -94,4 +94,4 @@ DB::whenQueryingForLongerThan(5000, function (Connection $connection, QueryExecu
 - `DB::listen()` integrates with any logging/alerting system (Slack, PagerDuty, etc.)
 - `whenQueryingForLongerThan()` detects death-by-a-thousand-cuts — many fast queries that add up
 
-Reference: [Laravel Database Monitoring](https://laravel.com/docs/12.x/database#monitoring-cumulative-query-time)
+Reference: [Laravel Database Monitoring](https://laravel.com/docs/13.x/database#monitoring-cumulative-query-time)

@@ -70,4 +70,4 @@ $userStats = Cache::remember(
 - Cleaner, less error-prone code with TTL and closure in a single call
 - `rememberForever()` variant for data that changes only via explicit invalidation
 
-Reference: [Laravel Cache Usage](https://laravel.com/docs/12.x/cache#retrieve-store)
+Reference: [Laravel Cache Usage](https://laravel.com/docs/13.x/cache#retrieve-store)

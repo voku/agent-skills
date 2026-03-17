@@ -69,4 +69,4 @@ DB::transaction(function () use ($senderId, $receiverId, $amount): void {
 - The `attempts` parameter is built into Laravel's `DB::transaction()` — no external packages needed
 - Consistent lock ordering combined with retry makes deadlocks rare and survivable
 
-Reference: [Laravel Database Transactions](https://laravel.com/docs/12.x/database#database-transactions)
+Reference: [Laravel Database Transactions](https://laravel.com/docs/13.x/database#database-transactions)

@@ -65,4 +65,4 @@ $plan = DB::select('EXPLAIN SELECT name, email FROM users WHERE status = ?', ['a
 - Dramatically faster for queries returning many rows from a filtered subset
 - PostgreSQL INCLUDE clause keeps indexed columns minimal while covering SELECT columns
 
-Reference: [Laravel Creating Indexes](https://laravel.com/docs/12.x/migrations#creating-indexes)
+Reference: [Laravel Creating Indexes](https://laravel.com/docs/13.x/migrations#creating-indexes)

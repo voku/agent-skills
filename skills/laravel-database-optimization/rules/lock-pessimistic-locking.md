@@ -78,4 +78,4 @@ $account = Account::sharedLock()->find($id);
 - `lockForUpdate()` blocks other transactions until the current one commits or rolls back
 - Combined with `attempts: 3`, handles transient deadlocks gracefully
 
-Reference: [Laravel Pessimistic Locking](https://laravel.com/docs/12.x/queries#pessimistic-locking)
+Reference: [Laravel Pessimistic Locking](https://laravel.com/docs/13.x/queries#pessimistic-locking)

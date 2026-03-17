@@ -83,4 +83,4 @@ $notifications = Cache::remember(
 - Volatile data expires quickly, preventing users from seeing stale information
 - Documented TTL guidelines help teams make consistent caching decisions
 
-Reference: [Laravel Cache Configuration](https://laravel.com/docs/12.x/cache#configuration)
+Reference: [Laravel Cache Configuration](https://laravel.com/docs/13.x/cache#configuration)

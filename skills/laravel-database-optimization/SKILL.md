@@ -4,17 +4,17 @@ description: Laravel database optimization patterns. Use when writing Eloquent q
 license: MIT
 metadata:
   author: agent-skills
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # Laravel Database Optimization
 
-Comprehensive database optimization guide for Laravel 12 applications. Contains 33 rules across 9 categories for writing performant database queries, proper indexing, efficient caching, naming conventions, and debugging slow queries in Laravel 12.
+Comprehensive database optimization guide for Laravel 13 applications. Contains 33 rules across 9 categories for writing performant database queries, proper indexing, efficient caching, naming conventions, and debugging slow queries in Laravel 13.
 
 ## Metadata
 
 - **Version:** 1.1.0
-- **Framework:** Laravel 12.x
+- **Framework:** Laravel 13.x
 - **PHP:** 8.3+
 
 ## When to Apply
@@ -219,16 +219,16 @@ Each rule file contains:
 - Brief explanation of why it matters
 - Bad Example with explanation
 - Good Example with explanation
-- Laravel 12 and PHP 8.3 specific context and references
+- Laravel 13 and PHP 8.3 specific context and references
 
 ## References
 
-- [Laravel Eloquent](https://laravel.com/docs/12.x/eloquent)
-- [Laravel Queries](https://laravel.com/docs/12.x/queries)
-- [Laravel Cache](https://laravel.com/docs/12.x/cache)
-- [Laravel Pagination](https://laravel.com/docs/12.x/pagination)
-- [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
-- [Laravel Redis](https://laravel.com/docs/12.x/redis)
+- [Laravel Eloquent](https://laravel.com/docs/13.x/eloquent)
+- [Laravel Queries](https://laravel.com/docs/13.x/queries)
+- [Laravel Cache](https://laravel.com/docs/13.x/cache)
+- [Laravel Pagination](https://laravel.com/docs/13.x/pagination)
+- [Laravel Migrations](https://laravel.com/docs/13.x/migrations)
+- [Laravel Redis](https://laravel.com/docs/13.x/redis)
 
 ## Full Compiled Document
 

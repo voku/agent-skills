@@ -215,4 +215,4 @@ return [
 | `session()->invalidate()` | Always call on logout |
 | `SESSION_LIFETIME=30` | Reduce idle session window |
 
-Reference: [Laravel Authentication](https://laravel.com/docs/12.x/authentication) | [Laravel Rate Limiting](https://laravel.com/docs/12.x/rate-limiting)
+Reference: [Laravel Authentication](https://laravel.com/docs/13.x/authentication) | [Laravel Rate Limiting](https://laravel.com/docs/13.x/rate-limiting)

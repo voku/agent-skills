@@ -1,8 +1,8 @@
 # Laravel OWASP Security — Full Compiled Reference
 
-OWASP Top 10 security audit checklist and secure coding reference for Laravel 12 + React/Inertia.js applications.
+OWASP Top 10 security audit checklist and secure coding reference for Laravel 13 + React/Inertia.js applications.
 
-**Version:** 1.0.2 | **Laravel:** 12.x | **PHP:** 8.3+ | **Author:** AsyrafHussin
+**Version:** 1.0.3 | **Laravel:** 13.x | **PHP:** 8.3+ | **Author:** AsyrafHussin
 
 ---
 
@@ -492,9 +492,9 @@ grep -r "guarded = \[\]" app/Models
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [OWASP Laravel Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Laravel_Cheat_Sheet.html)
-- [Laravel 12 Authentication](https://laravel.com/docs/12.x/authentication)
-- [Laravel 12 Authorization](https://laravel.com/docs/12.x/authorization)
-- [Laravel 12 Encryption](https://laravel.com/docs/12.x/encryption)
-- [Laravel 12 CSRF](https://laravel.com/docs/12.x/csrf)
+- [Laravel 13 Authentication](https://laravel.com/docs/13.x/authentication)
+- [Laravel 13 Authorization](https://laravel.com/docs/13.x/authorization)
+- [Laravel 13 Encryption](https://laravel.com/docs/13.x/encryption)
+- [Laravel 13 CSRF](https://laravel.com/docs/13.x/csrf)
 - [Inertia.js Security](https://inertiajs.com/security)
 - [DOMPurify](https://github.com/cure53/DOMPurify)

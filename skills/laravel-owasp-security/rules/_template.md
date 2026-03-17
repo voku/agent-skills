@@ -9,7 +9,7 @@ tags: security, owasp, tag1, tag2
 
 **Impact: HIGH (optional impact description)**
 
-Brief explanation of the rule and why it matters in Laravel 12 + React/Inertia.js applications. Explain the security implications, what an attacker could do if this rule is violated, and which OWASP category it maps to.
+Brief explanation of the rule and why it matters in Laravel 13 + React/Inertia.js applications. Explain the security implications, what an attacker could do if this rule is violated, and which OWASP category it maps to.
 
 ## Why It Matters
 
@@ -50,7 +50,7 @@ class GoodExample
     public function secureMethod(Request $request): ReturnType
     {
         // This demonstrates the correct approach
-        // Using Laravel 12 and PHP 8.3+ features
+        // Using Laravel 13 and PHP 8.3+ features
     }
 }
 ```

@@ -84,4 +84,4 @@ public bool $withinTransaction = false;
 - No application downtime or blocked requests during deployment
 - Standard `$table->index()` is still fine for small tables and initial migrations — only use raw SQL for large production tables
 
-Reference: [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
+Reference: [Laravel Migrations](https://laravel.com/docs/13.x/migrations)

@@ -78,4 +78,4 @@ Log::debug('Query', [
 - Quickly identifies whether an index exists but isn't being used vs. missing entirely
 - EXPLAIN ANALYZE shows actual vs. estimated row counts, revealing stale statistics
 
-Reference: [Laravel Query Builder](https://laravel.com/docs/12.x/queries)
+Reference: [Laravel Query Builder](https://laravel.com/docs/13.x/queries)
