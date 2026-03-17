@@ -206,6 +206,68 @@ $service->createOrder(
 
 A useful test: if two parameters share the same primitive type and could accidentally be swapped, that is a signal to introduce a value object.
 
+## Designing a value object
+
+A good value object is `final`, `readonly`, validates at construction, has an `equals()` method, and can carry domain behavior:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Immutable value object. Two Coordinates are equal when lat+lng match.
+ */
+final class Coordinates
+{
+    public function __construct(
+        public readonly float $latitude,
+        public readonly float $longitude,
+    ) {
+        if ($latitude < -90.0 || $latitude > 90.0) {
+            throw new \InvalidArgumentException("Latitude {$latitude} out of range [-90, 90]");
+        }
+        if ($longitude < -180.0 || $longitude > 180.0) {
+            throw new \InvalidArgumentException("Longitude {$longitude} out of range [-180, 180]");
+        }
+    }
+
+    public function equals(self $other): bool
+    {
+        return $this->latitude === $other->latitude
+            && $this->longitude === $other->longitude;
+    }
+
+    public function distanceKmTo(self $other): float
+    {
+        // Haversine formula — behaviour lives with data
+        $R    = 6371.0;
+        $dLat = deg2rad($other->latitude  - $this->latitude);
+        $dLng = deg2rad($other->longitude - $this->longitude);
+        $a    = sin($dLat / 2) ** 2
+            + cos(deg2rad($this->latitude)) * cos(deg2rad($other->latitude)) * sin($dLng / 2) ** 2;
+        return $R * 2 * atan2(sqrt($a), sqrt(1 - $a));
+    }
+
+    public function __toString(): string
+    {
+        return "{$this->latitude},{$this->longitude}";
+    }
+}
+```
+
+## When to create a value object
+
+| Primitive | Value Object | Reason |
+|-----------|-------------|--------|
+| `string $email` | `Email` | Validation, normalization, `domain()` method |
+| `int $userId` | `UserId` | Prevents mixing with other IDs; `positive-int` constraint |
+| `float $amount` + `string $currency` | `Money` | Prevents currency mismatch; `add()` / `multiply()` behavior |
+| `string $slug` | `Slug` | URL-safe validation, generation |
+| `string $uuid` | `Uuid` | Format validation, version detection |
+| `string $phone` | `PhoneNumber` | E.164 normalization, country code access |
+| `float $lat` + `float $lng` | `Coordinates` | Range validation, `distanceKmTo()` behavior |
+
 ## Static-analysis notes
 
 - `final readonly` value objects give PHPStan / Psalm full type inference — no `mixed` residue.

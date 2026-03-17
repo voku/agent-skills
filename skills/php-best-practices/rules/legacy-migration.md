@@ -92,6 +92,15 @@ final class UserService
     {
         return $this->repository->find(new UserId($id));
     }
+
+    /** @param array{name: string, email: string} $data */
+    public function createUser(array $data): User
+    {
+        return $this->repository->create(
+            name:  new UserName($data['name']),
+            email: new Email($data['email']),
+        );
+    }
 }
 
 // Phase 4: Strangler Fig — wrap legacy behind a typed interface
@@ -131,6 +140,22 @@ final class OrderService
 
 // When ready, swap LegacyOrderAdapter for a real repository —
 // OrderService does not change at all.
+```
+
+## Tracking migration progress
+
+Commit a migration checklist to the repository to make progress visible:
+
+```markdown
+## Migration Progress
+
+- [x] PHPStan baseline captured (1,423 violations at level 0)
+- [x] Rector applied — PHP 8.1 syntax transformations
+- [x] `declare(strict_types=1)` added to all files
+- [ ] PHPStan level raised to 3 (current: 1)
+- [ ] SQL injection: 12 of 34 query sites migrated to PDO
+- [ ] Value objects: UserId, Email, Money created; 8 of 25 services migrated
+- [ ] God class `OrderManager` (1,200 lines) → extract 4 focused classes
 ```
 
 ## Priority order for what to fix first

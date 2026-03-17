@@ -59,6 +59,7 @@ final class User
 
 declare(strict_types=1);
 
+// Domain entity — only business rules
 final class User
 {
     public function __construct(
@@ -72,24 +73,48 @@ final class User
     public function getEmail(): Email { return $this->email; }
     public function getName(): UserName { return $this->name; }
     public function isActive(): bool { return $this->status === UserStatus::Active; }
+    public function activate(): void { $this->status = UserStatus::Active; }
     public function deactivate(): void { $this->status = UserStatus::Inactive; }
 }
 
+// Persistence — only how a User is stored
 interface UserRepository
 {
     public function find(UserId $id): ?User;
     public function save(User $user): void;
+    public function delete(User $user): void;
 }
 
+final class DatabaseUserRepository implements UserRepository
+{
+    public function __construct(private readonly \PDO $pdo) {}
+
+    public function find(UserId $id): ?User
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$id->value]);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $data ? $this->hydrate($data) : null;
+    }
+
+    public function save(User $user): void { /* save implementation */ }
+    public function delete(User $user): void { /* delete implementation */ }
+
+    private function hydrate(array $data): User { /* hydration logic */ }
+}
+
+// Notification — only how a User is welcomed
 final class UserEmailNotifier
 {
     public function __construct(
         private readonly MailerInterface $mailer,
+        private readonly EmailTemplateRenderer $renderer,
     ) {}
 
     public function sendWelcomeEmail(User $user): void
     {
-        $this->mailer->send($user->getEmail()->value, 'Welcome!', '...');
+        $body = $this->renderer->render('welcome', ['name' => $user->getName()->value]);
+        $this->mailer->send($user->getEmail()->value, 'Welcome!', $body);
     }
 }
 ```

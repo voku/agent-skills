@@ -114,7 +114,7 @@ final class Order
     private string $orderNumber;
 
     public function __construct(
-        public readonly string $id,
+        public readonly OrderId $id,
         /** @var list<OrderLine> */
         public readonly array $lines,
         public readonly \DateTimeImmutable $createdAt,
@@ -123,7 +123,7 @@ final class Order
         $this->orderNumber = sprintf(
             'ORD-%s-%s',
             $createdAt->format('Ymd'),
-            strtoupper(substr($id, 0, 8)),
+            strtoupper(substr($id->value, 0, 8)),
         );
     }
 

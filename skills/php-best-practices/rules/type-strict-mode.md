@@ -143,6 +143,21 @@ format(42);      // OK
 ## Static-analysis notes
 PHPStan and Psalm enforce type correctness independently of `strict_types`, but the combination catches coercion bugs at both static-analysis time and runtime. Set `phpstan.neon` level ≥ 6 alongside strict types for maximum coverage. IDEs (PhpStorm) use the declare to enable stronger inspections automatically. php-cs-fixer with `declare_strict_types: true` adds the declaration automatically to every file.
 
+Pair with PHPDoc pseudo-types for even tighter contracts:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// PHPStan understands these annotations alongside strict_types
+/** @var positive-int $count */
+$count = getCount();
+
+/** @var non-empty-string $name */
+$name = getName();
+```
+
 ## Version notes
 `PHP 7.0+`
 
@@ -150,4 +165,5 @@ PHPStan and Psalm enforce type correctness independently of `strict_types`, but 
 - [type-parameter-types.md](type-parameter-types.md) — parameter types enforced by strict mode
 - [type-return-types.md](type-return-types.md) — return types enforced by strict mode
 - [type-property-types.md](type-property-types.md) — property types complement strict mode
+- [phpstan-phpdoc.md](phpstan-phpdoc.md) — PHPDoc pseudo-types (positive-int, non-empty-string) for richer type contracts
 - [tooling-phpstan-cs-fixer.md](tooling-phpstan-cs-fixer.md) — automate adding strict_types with php-cs-fixer

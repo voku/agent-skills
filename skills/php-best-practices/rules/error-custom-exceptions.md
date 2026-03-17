@@ -96,6 +96,24 @@ try {
 } catch (PaymentFailedException $e) {
     return response()->json(['error' => 'Payment failed', 'code' => $e->gatewayCode], 402);
 }
+
+// Throwing side — each exception carries typed domain data
+final class UserService
+{
+    public function register(array $data): User
+    {
+        if (empty($data['email'])) {
+            throw new ValidationException(['email' => 'Email is required']);
+        }
+        if ($this->repository->findByEmail($data['email'])) {
+            throw new DuplicateEmailException($data['email']);
+        }
+        if (!$this->gateway->charge($data['amount'])) {
+            throw new PaymentFailedException('Card declined', $this->gateway->lastCode());
+        }
+        return $this->repository->create($data);
+    }
+}
 ```
 
 ## Exceptions / trade-offs

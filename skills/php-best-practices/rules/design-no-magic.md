@@ -87,41 +87,43 @@ echo $user->email;
 
 declare(strict_types=1);
 
-// Explicit, typed, readonly-by-default — no magic anywhere
+// Explicit, typed with value objects, readonly-by-default — no magic anywhere
 final class User
 {
     public function __construct(
-        public readonly string $id,
-        private string $email,
-        private string $name,
-        private bool $active = true,
+        public readonly UserId $id,
+        private Email $email,
+        private UserName $name,
+        private UserStatus $status = UserStatus::Active,
     ) {}
 
-    public function getEmail(): string
+    public function getEmail(): Email
     {
         return $this->email;
     }
 
-    public function getName(): string
+    public function getName(): UserName
     {
         return $this->name;
     }
 
     public function isActive(): bool
     {
-        return $this->active;
+        return $this->status === UserStatus::Active;
     }
 
     public function deactivate(): void
     {
-        $this->active = false;
+        $this->status = UserStatus::Inactive;
     }
+
+    // No __get, no __set, no __call
 }
 
-// Full static analysis, IDE autocompletion, and safe refactoring.
-// PHPStan sees every property and method. No surprises.
-$user = new User('1', 'alice@example.com', 'Alice');
-echo $user->getEmail();  // string — not mixed
+// PHPStan sees every property and method. Value objects enforce invariants.
+// IDEs autocomplete getEmail() and know it returns Email, not mixed.
+$user = new User(new UserId(1), new Email('alice@example.com'), new UserName('Alice'));
+echo $user->getEmail()->value;  // string — not mixed
 ```
 
 ## When magic is acceptable

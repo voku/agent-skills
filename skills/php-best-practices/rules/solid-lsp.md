@@ -101,6 +101,11 @@ interface PaymentGateway
      * Never returns a result with status Pending — it is always terminal.
      */
     public function charge(Money $amount, PaymentMethod $method): PaymentResult;
+
+    /**
+     * Refund must return the same currency as the original payment.
+     */
+    public function refund(PaymentId $paymentId, Money $amount): RefundResult;
 }
 
 final class StripeGateway implements PaymentGateway
@@ -122,6 +127,20 @@ final class StripeGateway implements PaymentGateway
             };
         }
     }
+
+    public function refund(PaymentId $paymentId, Money $amount): RefundResult
+    {
+        // Returns same currency as documented in the contract
+        $refund = $this->stripe->refunds->create([
+            'charge' => $paymentId->value,
+            'amount' => $amount->cents(),
+        ]);
+
+        return new RefundResult(
+            id: new RefundId($refund->id),
+            amount: $amount,
+        );
+    }
 }
 
 final class PayPalGateway implements PaymentGateway
@@ -140,6 +159,17 @@ final class PayPalGateway implements PaymentGateway
             'DECLINED'  => throw new PaymentDeclinedException($response->message),
             default     => throw new PaymentDeclinedException('Unexpected PayPal status'),
         };
+    }
+
+    public function refund(PaymentId $paymentId, Money $amount): RefundResult
+    {
+        // Same contract honored: returns RefundResult in original currency
+        $response = $this->client->createRefund($paymentId->value, $amount->toPayPalArray());
+
+        return new RefundResult(
+            id: new RefundId($response->id),
+            amount: $amount,
+        );
     }
 }
 

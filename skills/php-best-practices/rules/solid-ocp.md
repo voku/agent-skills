@@ -93,6 +93,7 @@ declare(strict_types=1);
 interface PaymentMethod
 {
     public function process(Money $amount): PaymentResult;
+    public function calculateFee(Money $amount): Money;
     public function getName(): string;
 }
 
@@ -104,10 +105,34 @@ final class CreditCardPayment implements PaymentMethod
 
     public function process(Money $amount): PaymentResult
     {
-        return $this->gateway->charge($amount->multiply(1 + self::FEE_RATE));
+        return $this->gateway->charge($amount->add($this->calculateFee($amount)));
+    }
+
+    public function calculateFee(Money $amount): Money
+    {
+        return $amount->multiply(self::FEE_RATE);
     }
 
     public function getName(): string { return 'credit_card'; }
+}
+
+final class PayPalPayment implements PaymentMethod
+{
+    private const FEE_RATE = 0.035;
+
+    public function __construct(private readonly PayPalClient $client) {}
+
+    public function process(Money $amount): PaymentResult
+    {
+        return $this->client->createPayment($amount->add($this->calculateFee($amount)));
+    }
+
+    public function calculateFee(Money $amount): Money
+    {
+        return $amount->multiply(self::FEE_RATE);
+    }
+
+    public function getName(): string { return 'paypal'; }
 }
 
 final class CryptoPayment implements PaymentMethod
@@ -118,7 +143,12 @@ final class CryptoPayment implements PaymentMethod
 
     public function process(Money $amount): PaymentResult
     {
-        return $this->gateway->processPayment($amount->multiply(1 + self::FEE_RATE));
+        return $this->gateway->processPayment($amount->add($this->calculateFee($amount)));
+    }
+
+    public function calculateFee(Money $amount): Money
+    {
+        return $amount->multiply(self::FEE_RATE);
     }
 
     public function getName(): string { return 'crypto'; }
@@ -152,9 +182,81 @@ final class PaymentServiceProvider
         $container->singleton(PaymentProcessor::class, static function (Container $c): PaymentProcessor {
             $processor = new PaymentProcessor();
             $processor->register($c->make(CreditCardPayment::class));
+            $processor->register($c->make(PayPalPayment::class));
             $processor->register($c->make(CryptoPayment::class));
             return $processor;
         });
+    }
+}
+```
+
+## Strategy pattern — second OCP example
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Discount strategies: add a new one without touching existing code
+interface DiscountStrategy
+{
+    public function calculate(Money $amount): Money;
+    public function getDescription(): string;
+}
+
+final class PercentageDiscount implements DiscountStrategy
+{
+    public function __construct(
+        private readonly float $percentage,
+    ) {}
+
+    public function calculate(Money $amount): Money
+    {
+        return $amount->multiply($this->percentage);
+    }
+
+    public function getDescription(): string
+    {
+        return sprintf('%d%% off', (int) ($this->percentage * 100));
+    }
+}
+
+final class FixedAmountDiscount implements DiscountStrategy
+{
+    public function __construct(
+        private readonly Money $discountAmount,
+    ) {}
+
+    public function calculate(Money $amount): Money
+    {
+        return $this->discountAmount->min($amount);
+    }
+
+    public function getDescription(): string
+    {
+        return "{$this->discountAmount->format()} off";
+    }
+}
+
+final class BuyOneGetOneFreeDiscount implements DiscountStrategy
+{
+    public function calculate(Money $amount): Money
+    {
+        return $amount->divide(2);
+    }
+
+    public function getDescription(): string
+    {
+        return 'Buy one get one free';
+    }
+}
+
+// DiscountCalculator is closed for modification — open to new strategies
+final class DiscountCalculator
+{
+    public function apply(Money $amount, DiscountStrategy $strategy): Money
+    {
+        return $amount->subtract($strategy->calculate($amount));
     }
 }
 ```
