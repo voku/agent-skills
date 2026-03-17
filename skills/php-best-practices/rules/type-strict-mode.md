@@ -1,200 +1,42 @@
----
-title: Strict Types Declaration
-impact: CRITICAL
-impactDescription: Prevents type coercion bugs, enforces type safety
-tags: type-system, strict-types, type-safety, php8
----
-
 # Strict Types Declaration
 
-`declare(strict_types=1)` enforces strict type checking for function arguments and return values. Without it, PHP silently coerces types, hiding bugs. Strict mode catches type errors early, improving code reliability.
+## Why it matters
+Without `declare(strict_types=1)`, PHP silently coerces types at call sites: a `float` passed to an `int` parameter is truncated, a numeric string passes where an `int` is expected, and bugs hide until production. Every hour of debugging a coercion-related bug is a direct cost of omitting one line.
 
-## Bad Example
+## Rule
+Every PHP file must begin with `<?php` followed immediately by `declare(strict_types=1);` as the first statement — no namespace, no use, no blank lines between `<?php` and the declare.
+
+## Bad
 
 ```php
 <?php
 
-// No strict types - silent coercion
+declare(strict_types=1);
+
+// no strict_types — numeric strings silently coerce
 function calculateTotal(int $price, int $quantity): int
 {
     return $price * $quantity;
 }
 
-// These hide problems:
-calculateTotal("10", "5");   // Returns 50 - numeric strings coerced to int
-calculateTotal(10.99, 2);    // Returns 20 - float truncated to int (deprecated in 8.1)
-// calculateTotal("abc", 2); // TypeError in PHP 8.0+ (non-numeric string)
+calculateTotal("10", "5");  // returns 50 — bug hidden
+calculateTotal(10.99, 2);   // returns 20 — float truncated silently
+```
 
-// Missing from file
+## Better
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// strict_types present, but declare is buried after namespace
 namespace App\Services;
 
-class Calculator
-{
-    // ...
-}
+declare(strict_types=1); // wrong position — must come first
 ```
 
-## Good Example
-
-```php
-<?php
-
-declare(strict_types=1);
-
-// Strict types - TypeError on wrong types
-function calculateTotal(int $price, int $quantity): int
-{
-    return $price * $quantity;
-}
-
-calculateTotal(10, 5);       // Returns 50
-calculateTotal("10", "5");   // TypeError
-calculateTotal(10.99, 2);    // TypeError
-```
-
-## Declaration Rules
-
-```php
-<?php
-
-// MUST be the first statement in the file
-declare(strict_types=1);
-
-namespace App\Services;
-
-use App\Models\User;
-
-class UserService
-{
-    // ...
-}
-```
-
-```php
-<?php
-
-namespace App\Services; // Wrong - declare must come first
-
-declare(strict_types=1);
-
-class UserService
-{
-    // ...
-}
-```
-
-## Scope
-
-```php
-<?php
-
-declare(strict_types=1);
-
-// Strict mode applies to function CALLS in this file
-function addNumbers(int $a, int $b): int
-{
-    return $a + $b;
-}
-
-// This call is in strict mode
-addNumbers(1, 2);     //
-addNumbers("1", "2"); // TypeError
-
-// Strict mode also applies to internal PHP function calls
-strlen("hello");      // Works
-// strlen(12345);     // TypeError - int given, string expected
-```
-
-## File-by-File Basis
-
-```php
-<?php
-// file: src/Strict.php
-declare(strict_types=1);
-
-function strictFunction(int $n): int
-{
-    return $n * 2;
-}
-```
-
-```php
-<?php
-// file: src/NonStrict.php
-// No declare - weak mode
-
-require_once 'Strict.php';
-
-// Calls from weak mode file still coerce
-strictFunction("5"); // Returns 10 - coercion happens at call site
-```
-
-## Return Type Enforcement
-
-```php
-<?php
-
-declare(strict_types=1);
-
-// Return type strictly enforced
-function getPrice(): float
-{
-    return 99.99; // Must return float
-}
-
-function getCount(): int
-{
-    return 42; // Must return int
-}
-
-// This would cause TypeError
-function broken(): int
-{
-    return "42"; // TypeError - can't return string as int
-}
-```
-
-## With Nullable Types
-
-```php
-<?php
-
-declare(strict_types=1);
-
-function findUser(int $id): ?User
-{
-    // Must return User or null, nothing else
-    return User::find($id);
-}
-
-function process(?string $data): void
-{
-    // $data must be string or null
-}
-
-process("hello"); //
-process(null);    //
-process(123);     // TypeError
-```
-
-## With Union Types
-
-```php
-<?php
-
-declare(strict_types=1);
-
-function format(string|int $value): string
-{
-    return (string) $value;
-}
-
-format("hello"); //
-format(42);      //
-format(3.14);    // TypeError - float not in union
-```
-
-## Best Practice Template
+## Best
 
 ```php
 <?php
@@ -203,14 +45,14 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Contracts\RepositoryInterface;
-use App\Models\User;
+use App\Contracts\UserRepositoryInterface;
 use App\Exceptions\UserNotFoundException;
+use App\Models\User;
 
 final class UserService
 {
     public function __construct(
-        private readonly RepositoryInterface $repository,
+        private readonly UserRepositoryInterface $repository,
     ) {}
 
     public function findById(int $id): User
@@ -224,14 +66,9 @@ final class UserService
         return $user;
     }
 
-    public function create(array $data): User
-    {
-        return $this->repository->create($data);
-    }
-
     /**
      * @param array<int> $ids
-     * @return array<User>
+     * @return list<User>
      */
     public function findMany(array $ids): array
     {
@@ -240,27 +77,18 @@ final class UserService
 }
 ```
 
-## IDE/Static Analysis
+## Exceptions / trade-offs
+- **Generated files**: Auto-generated stubs (e.g., protobuf, migration snapshots) may omit strict types if the generator does not support it. Add it when the generator allows.
+- **Call-site scoping**: `declare(strict_types=1)` only affects calls *made from* the file where it is declared; it does not change the behaviour of functions defined in that file when called from a non-strict file.
+- **`ini_set` has no effect**: You cannot enable strict mode via `php.ini` or `ini_set` — the declare is the only mechanism.
 
-```php
-<?php
+## Static-analysis notes
+PHPStan and Psalm enforce type correctness independently of `strict_types`, but the combination catches coercion bugs at both static-analysis time and runtime. Set `phpstan.neon` level ≥ 6 alongside strict types for maximum coverage. IDEs (PhpStorm) use the declare to enable stronger inspections automatically.
 
-declare(strict_types=1);
+## Version notes
+`PHP 7.0+`
 
-// PHPStan/Psalm will catch type errors even more strictly
-// Combined with strict_types, you get maximum type safety
-
-/** @var positive-int $count */
-$count = getCount();
-
-/** @var non-empty-string $name */
-$name = getName();
-```
-
-## Why
-
-- **Type Safety**: Catches type bugs at runtime immediately
-- **No Surprises**: No silent type coercion
-- **Static Analysis**: Works with PHPStan/Psalm for maximum safety
-- **Self-Documenting**: Code intent is explicit and enforced
-- **Industry Standard**: Required for reliable modern PHP
+## Related topics
+- [type-parameter-types.md](type-parameter-types.md) — parameter types enforced by strict mode
+- [type-return-types.md](type-return-types.md) — return types enforced by strict mode
+- [type-property-types.md](type-property-types.md) — property types complement strict mode
