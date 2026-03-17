@@ -65,6 +65,71 @@ final readonly class Colour
 - Classes designed to be extended may be `readonly` but not `final`; be aware that child classes must also be `readonly`.
 - ORM entities managed by Doctrine or Eloquent typically require mutable, non-readonly properties.
 
+## Value objects and DTOs
+
+```php
+<?php
+
+declare(strict_types=1);
+
+final readonly class EmailAddress
+{
+    public function __construct(
+        public string $local,
+        public string $domain,
+    ) {
+        if (!filter_var("{$local}@{$domain}", FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException("Invalid email: {$local}@{$domain}");
+        }
+    }
+
+    public function full(): string
+    {
+        return "{$this->local}@{$this->domain}";
+    }
+
+    public function equals(self $other): bool
+    {
+        return $this->local === $other->local
+            && $this->domain === $other->domain;
+    }
+}
+
+// DTO: immutable request object
+final readonly class CreateUserRequest
+{
+    public function __construct(
+        public string $email,
+        public string $name,
+        public ?string $phone = null,
+    ) {}
+}
+
+// Domain event: always immutable
+final readonly class UserCreated
+{
+    public function __construct(
+        public int $userId,
+        public string $email,
+        public \DateTimeImmutable $occurredAt,
+    ) {}
+}
+
+// Wither method: return new instance with one field changed
+final readonly class Money
+{
+    public function __construct(
+        public int $amountCents,
+        public string $currency,
+    ) {}
+
+    public function withCurrency(string $currency): self
+    {
+        return new self($this->amountCents, $currency);
+    }
+}
+```
+
 ## Static-analysis notes
 PHPStan and Psalm treat every property in a `readonly class` as write-once. Any write attempt after construction is flagged as an error. Tools also recognise that `readonly class` implies all properties are `readonly`, and will warn about redundant per-property annotations.
 
@@ -74,3 +139,4 @@ PHPStan and Psalm treat every property in a `readonly class` as write-once. Any 
 ## Related topics
 - [modern-readonly-properties.md](modern-readonly-properties.md) — per-property readonly for when you need selective immutability
 - [modern-constructor-promotion.md](modern-constructor-promotion.md) — pair with promotion for compact value objects
+- [design-value-objects.md](design-value-objects.md) — full domain value objects often use readonly classes

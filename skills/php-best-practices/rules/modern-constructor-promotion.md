@@ -66,12 +66,99 @@ final class CreateUserCommand
 - When the constructor body has non-trivial logic (validation, transformation, conditional branching), keep traditional declarations so the assignments are not buried among the promoted parameter list.
 - Non-promoted properties (e.g., lazily initialised, computed in the body) can coexist, but more than one or two breaks the clarity benefit.
 
+## With validation in the constructor
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Value objects: validate the invariant directly in the promoted constructor
+final class Email
+{
+    public function __construct(
+        public readonly string $value,
+    ) {
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException("Invalid email: {$value}");
+        }
+    }
+}
+
+final class Money
+{
+    public function __construct(
+        public readonly int $amountCents,
+        public readonly string $currency = 'USD',
+    ) {
+        if ($amountCents < 0) {
+            throw new \InvalidArgumentException('Amount cannot be negative');
+        }
+        if (strlen($currency) !== 3) {
+            throw new \InvalidArgumentException('Currency must be 3-letter ISO code');
+        }
+    }
+}
+```
+
+## Mixed promoted and non-promoted
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Computed properties cannot be promoted — mix when needed
+final class Order
+{
+    private string $orderNumber;
+
+    public function __construct(
+        public readonly string $id,
+        /** @var list<OrderLine> */
+        public readonly array $lines,
+        public readonly \DateTimeImmutable $createdAt,
+    ) {
+        // Computed property: cannot be promoted
+        $this->orderNumber = sprintf(
+            'ORD-%s-%s',
+            $createdAt->format('Ymd'),
+            strtoupper(substr($id, 0, 8)),
+        );
+    }
+
+    public function getOrderNumber(): string
+    {
+        return $this->orderNumber;
+    }
+}
+```
+
+## Visibility combinations
+
+```php
+<?php
+
+declare(strict_types=1);
+
+final class Entity
+{
+    public function __construct(
+        public readonly string $id,        // public, immutable
+        protected string $name,            // protected, mutable
+        private string $internalState,     // private, mutable
+        private readonly array $metadata,  // private, immutable
+    ) {}
+}
+```
+
 ## Static-analysis notes
-PHPStan and Psalm infer the property type directly from the promoted parameter type, including nullability. No separate `@var` annotation is required or useful.
+PHPStan and Psalm infer the property type directly from the promoted parameter type, including nullability. No separate `@var` annotation is required or useful. Promoted `readonly` properties get `@readonly` semantics automatically in PHPStan's analysis.
 
 ## Version notes
-`PHP 8.0+`
+`PHP 8.0+` (promotion). `readonly` modifier on promoted properties: `PHP 8.1+`.
 
 ## Related topics
 - [modern-readonly-properties.md](modern-readonly-properties.md) — add `readonly` to promoted properties for immutability
 - [modern-readonly-classes.md](modern-readonly-classes.md) — make every property readonly at the class level
+- [design-value-objects.md](design-value-objects.md) — validation in promoted constructors for value objects

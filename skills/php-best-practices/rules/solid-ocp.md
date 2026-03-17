@@ -137,10 +137,10 @@ final class PaymentProcessor
 
     public function process(string $methodName, Money $amount): PaymentResult
     {
-        return $this->methods[$methodName]
+        $method = $this->methods[$methodName]
             ?? throw new UnsupportedPaymentMethodException($methodName);
 
-        return $this->methods[$methodName]->process($amount);
+        return $method->process($amount);
     }
 }
 

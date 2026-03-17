@@ -144,6 +144,57 @@ final class UserSyncService
 ## Exceptions / trade-offs
 Deep technical namespaces like `App\Infrastructure\Persistence\Doctrine` are fine for infrastructure code — they don't need to carry domain meaning. The rule about domain namespaces applies to entities, value objects, services, and repositories in the domain/application layers. Aliases are a last resort; if you need many aliases, the namespace design probably needs rethinking.
 
+## Namespace layer conventions
+
+```
+Domain layer:
+  App\Domain\User          — User aggregate (Entity, ValueObject, Event)
+  App\Domain\Order         — Order aggregate
+  App\Domain\Shared        — Shared value objects across aggregates
+
+Application layer:
+  App\Application\Command  — Command objects
+  App\Application\Query    — Query objects
+  App\Application\Dto      — Data transfer objects
+  App\Application\Handler  — Command and query handlers
+
+Infrastructure layer:
+  App\Infrastructure\Persistence    — Database implementations
+  App\Infrastructure\Http           — HTTP controllers, middleware, resources
+  App\Infrastructure\Queue          — Queue workers and jobs
+  App\Infrastructure\Cache          — Cache implementations
+
+Tests:
+  Tests\Unit\Domain\User
+  Tests\Integration\Application
+  Tests\Feature\Http
+```
+
+## Resolving name conflicts with aliases
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Application\Sync;
+
+// Alias to resolve collision between domain User and API resource User
+use App\Domain\User\User as DomainUser;
+use App\Http\Resources\User as UserResource;
+
+// Or use more descriptive aliases
+use App\External\Payment\User as PaymentUser;
+
+final class UserSyncService
+{
+    public function toResource(DomainUser $user): UserResource
+    {
+        return new UserResource($user);
+    }
+}
+```
+
 ## Static-analysis notes
 PHPStan and Psalm will error on undefined class names from missing or incorrect imports. PHP-CS-Fixer's `ordered_imports` and `no_unused_imports` rules keep import blocks tidy automatically. Deptrac can enforce that domain namespaces do not import from infrastructure namespaces.
 

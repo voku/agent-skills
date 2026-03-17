@@ -65,6 +65,46 @@ $processed = array_map(fn (Order $o): string => $o->statusLabel(), $orders);
 - Arrow functions cannot contain `return` statements; if you need early returns or guards, use a closure or a method.
 - Multi-step pipelines may benefit from named methods over chained arrow functions to keep stack traces readable.
 
+## Practical array operation patterns
+
+```php
+<?php
+
+declare(strict_types=1);
+
+$multiplier = 3;
+$numbers    = [1, 2, 3, 4, 5];
+
+// Map, filter, sort with captured outer scope
+$tripled = array_map(fn (int $n): int => $n * $multiplier, $numbers);
+$evens   = array_filter($numbers, fn (int $n): bool => $n % 2 === 0);
+
+// Sorting
+/** @var list<User> $users */
+usort($users, fn (User $a, User $b): int => $a->name <=> $b->name);
+
+/** @var list<Product> $products */
+usort($products, fn (Product $a, Product $b): int => $a->price() <=> $b->price());
+
+// Collection extraction
+$activeEmails = array_map(
+    fn (User $u): string => $u->email(),
+    array_filter($users, fn (User $u): bool => $u->isActive()),
+);
+
+// Higher-order factory: return an arrow function from a function
+function multiplierOf(int $factor): \Closure
+{
+    return fn (int $n): int => $n * $factor;
+}
+
+$double = multiplierOf(2);
+$triple = multiplierOf(3);
+
+array_map($double, $numbers); // [2, 4, 6, 8, 10]
+array_map($triple, $numbers); // [3, 6, 9, 12, 15]
+```
+
 ## Static-analysis notes
 PHPStan and Psalm infer the return type from the arrow function body expression. Explicit return type annotations (`: int`, `: string`) are recommended for public APIs and non-obvious transforms; they are optional for trivially obvious cases.
 

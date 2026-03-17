@@ -119,6 +119,55 @@ final class UserService
 ## Exceptions / trade-offs
 Bootstrap files (e.g., `index.php`, `artisan`) legitimately mix procedural setup with includes — they are entry points, not class files. Migration files and Doctrine fixtures are similar. These are the only acceptable exceptions to "one class per file."
 
+## File structure order (reference)
+
+```
+1.  Opening tag:           <?php
+2.  Strict types:          declare(strict_types=1);
+3.  Blank line
+4.  Namespace:             namespace App\Domain\User;
+5.  Blank line
+6.  Use statements:
+    a. PHP native classes  (DateTimeImmutable, InvalidArgumentException…)
+    b. External packages   (Psr\Log\LoggerInterface, Doctrine\…)
+    c. Internal project    (App\Domain\…, App\Application\…)
+    — alphabetised within each group, blank line between groups
+7.  Blank line
+8.  Class / interface / trait / enum declaration
+    a. Traits              (use LoggableTrait;)
+    b. Constants           (public → protected → private)
+    c. Properties          (public → protected → private)
+    d. Constructor
+    e. Public methods
+    f. Protected methods
+    g. Private methods
+```
+
+## Use statement grouping
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services;
+
+// Group 1: PHP native
+use DateTimeImmutable;
+use InvalidArgumentException;
+use RuntimeException;
+
+// Group 2: External packages (alphabetised by vendor)
+use Psr\Log\LoggerInterface;
+use Stripe\StripeClient;
+
+// Group 3: Internal project (alphabetised by namespace)
+use App\Domain\User\User;
+use App\Domain\User\UserRepository;
+use App\Events\UserCreated;
+use App\Exceptions\UserNotFoundException;
+```
+
 ## Static-analysis notes
 PHP-CS-Fixer with `ordered_imports`, `declare_strict_types`, `single_blank_line_before_namespace`, and `no_unused_imports` rules will enforce and autofix the ordering. PHPStan will catch undeclared namespaces and missing imports at level 0+.
 

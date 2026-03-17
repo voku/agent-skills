@@ -72,6 +72,45 @@ function label(OrderStatus $status): string
 - When genuine fall-through is needed (multiple inputs share one result), `match` supports comma-separated arms: `'a', 'b' => 'result'` — this is not a reason to keep `switch`.
 - Complex compound conditions that cannot be expressed as simple value equality (e.g., range checks, regex, multiple variables) are better served by `if`/`elseif` or a strategy pattern.
 
+## Multiple conditions per arm and `match(true)`
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// Multiple values in one arm
+function discount(string $customerType): float
+{
+    return match ($customerType) {
+        'premium', 'vip', 'gold' => 0.20,
+        'silver', 'regular'      => 0.10,
+        'new'                    => 0.05,
+        default                  => 0.0,
+    };
+}
+
+// match(true) for range-based conditions
+function httpCategory(int $code): string
+{
+    return match (true) {
+        $code >= 200 && $code < 300 => 'Success',
+        $code >= 300 && $code < 400 => 'Redirection',
+        $code >= 400 && $code < 500 => 'Client Error',
+        $code >= 500                => 'Server Error',
+        default                     => 'Informational',
+    };
+}
+
+// Strict comparison: '1' === 1 is false — match never coerces
+$value = '1';
+$result = match ($value) {
+    1   => 'integer one', // will NOT match '1'
+    '1' => 'string one',  // matches
+    default => 'other',
+};
+```
+
 ## Static-analysis notes
 PHPStan and Psalm verify exhaustiveness when `match` operates on an enum type with no `default` arm. Adding a new enum case without updating every `match` site becomes a static analysis error.
 

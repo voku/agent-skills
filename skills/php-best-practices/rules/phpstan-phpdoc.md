@@ -152,6 +152,245 @@ function requireAtLeastOneAdmin(): array
 }
 ```
 
+## String Pseudo-Types
+
+PHP's `string` type is a blunt instrument — it could mean `"admin"`, `""`, `"123"`, or a dangerous SQL statement. PHPStan sharpens this with string pseudo-types that define intent, constraints, and trust boundaries.
+
+| Type | What it guarantees |
+|------|--------------------|
+| `non-empty-string` | String that is not `''` |
+| `numeric-string` | String that represents a number (`"123.45"`) |
+| `literal-string` | String known at compile time — no user input |
+| `class-string` | A fully-qualified, valid class name |
+| `callable-string` | A string that is a callable global function name |
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// non-empty-string: guaranteed not ''
+/**
+ * @param non-empty-string $username
+ */
+function setUsername(string $username): void
+{
+    saveToDatabase($username); // PHPStan: safe — cannot be empty
+}
+
+setUsername('alice');  // OK
+// setUsername('');    // PHPStan error
+
+// literal-string: prevents SQL injection in raw-query wrappers
+/**
+ * @param literal-string $sql
+ */
+function runQuery(string $sql): mixed
+{
+    return $this->db->query($sql); // Only compile-time constants allowed
+}
+
+runQuery('SELECT * FROM users');       // OK — literal
+// runQuery($_GET['query']);           // PHPStan error — tainted user input
+
+// callable-string: verifies the string resolves to a real callable
+/**
+ * @param callable-string $callback
+ */
+function invoke(string $callback): void
+{
+    $callback(); // PHPStan checks it is actually callable
+}
+
+invoke('trim');              // OK
+// invoke('undefinedFn');   // PHPStan error
+
+// class-string<T>: constrains to verified class names
+/**
+ * @template T of Model
+ * @param class-string<T> $modelClass
+ * @return T
+ */
+function findFirst(string $modelClass): mixed
+{
+    return $modelClass::query()->first();
+}
+
+$user = findFirst(User::class); // PHPStan infers User return type
+
+// Intersection: literal + domain value
+/**
+ * @param (literal-string&'database_host') $key
+ */
+function getConfig(string $key): mixed
+{
+    return $GLOBALS['config'][$key] ?? null;
+}
+```
+
+## Numeric and Range Types
+
+PHPStan embeds constraints directly in integer types — `int $page` says nothing; `int<1, 100> $page` says exactly what is valid.
+
+| Type | What it guarantees |
+|------|--------------------|
+| `positive-int` | Integer > 0 |
+| `non-negative-int` | Integer >= 0 |
+| `int<min, max>` | Integer within a specific range |
+| `int<0, max>` | Non-negative unbounded integer |
+| `numeric-string` | String that safely converts to a number |
+
+```php
+<?php
+
+declare(strict_types=1);
+
+/** @return positive-int */
+function nextId(): int
+{
+    return $this->sequence->next(); // PHPStan: result is > 0
+}
+
+/** @return non-negative-int */
+function countItems(): int
+{
+    return count($this->items); // never negative
+}
+
+/** @param int<1, 100> $perPage */
+function paginate(int $perPage = 15): Paginator
+{
+    // $perPage is statically guaranteed to be 1-100
+}
+
+/** @return int<0, 255> */
+function parseColorChannel(string $hex): int
+{
+    return hexdec($hex) & 0xFF;
+}
+
+/** @param int<1, 65535> $port */
+function connectToPort(int $port): void
+{
+    // valid TCP port range enforced by type
+}
+```
+
+## Generics
+
+```php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @template TKey of array-key
+ * @template TValue
+ */
+final class TypedMap
+{
+    /** @var array<TKey, TValue> */
+    private array $storage = [];
+
+    /**
+     * @param TKey   $key
+     * @param TValue $value
+     */
+    public function set(mixed $key, mixed $value): void
+    {
+        $this->storage[$key] = $value;
+    }
+
+    /**
+     * @param TKey $key
+     * @return TValue|null
+     */
+    public function get(mixed $key): mixed
+    {
+        return $this->storage[$key] ?? null;
+    }
+}
+
+/**
+ * @template T
+ * @param list<T>            $items
+ * @param callable(T): bool  $predicate
+ * @return list<T>
+ */
+function filterList(array $items, callable $predicate): array
+{
+    return array_values(array_filter($items, $predicate));
+}
+```
+
+## Array Shapes
+
+```php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @param array{name: string, email: string, age?: int} $data
+ * @return array{id: int, name: string, email: string}
+ */
+function createUser(array $data): array
+{
+    return [
+        'id'    => generateId(),
+        'name'  => $data['name'],
+        'email' => $data['email'],
+    ];
+}
+
+/**
+ * @param array{
+ *     driver: non-empty-string,
+ *     host: non-empty-string,
+ *     port: int<1, 65535>,
+ *     database: non-empty-string,
+ *     username: string,
+ *     password: string,
+ * } $config
+ */
+function createConnection(array $config): \PDO
+{
+    return new \PDO(
+        "mysql:host={$config['host']};dbname={$config['database']}",
+        $config['username'],
+        $config['password'],
+    );
+}
+```
+
+## Conditional Return Types
+
+```php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @param string|null $value
+ * @return ($value is string ? int : null)
+ */
+function maybeLength(?string $value): ?int
+{
+    return $value !== null ? strlen($value) : null;
+}
+
+/**
+ * @template T
+ * @param T|null $value
+ * @param T      $default
+ * @return T
+ */
+function coalesce(mixed $value, mixed $default): mixed
+{
+    return $value ?? $default;
+}
+```
+
 ## Exceptions / trade-offs
 
 - **Do not annotate what native types already express.** `public function getId(): int` needs no `@return int` PHPDoc — the native declaration is the contract.
@@ -167,6 +406,8 @@ function requireAtLeastOneAdmin(): array
 - **`int<min, max>`** — PHPStan propagates the range constraint through arithmetic and comparisons.
 - **`@template`** gives full generic safety at zero runtime cost. PHPStan infers the concrete type at each call site.
 - **`non-empty-string`** and **`non-empty-list<T>`** eliminate the need for defensive `=== ''` or `=== []` guards after the annotation point.
+- **`literal-string`** is the PHPStan mechanism for preventing user-supplied strings from reaching SQL/shell/eval functions.
+- **`positive-int`** and **`non-negative-int`** are shorthand for `int<1, max>` and `int<0, max>` respectively.
 - PHPStan level 7+ requires `@param`/`@return` annotations when native types are absent; level 9 flags all `mixed` usage.
 
 ## Related topics
@@ -175,3 +416,4 @@ function requireAtLeastOneAdmin(): array
 - [design-value-objects.md](design-value-objects.md) — value objects often eliminate the need for complex array shapes
 - [tooling-phpstan-cs-fixer.md](tooling-phpstan-cs-fixer.md) — run PHPStan to validate annotations in CI
 - [type-union-types.md](type-union-types.md) — prefer native union types over PHPDoc unions where PHP supports it
+- [sec-sql-prepared.md](sec-sql-prepared.md) — `literal-string` complements prepared statements for SQL safety
