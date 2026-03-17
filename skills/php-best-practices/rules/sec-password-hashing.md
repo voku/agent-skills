@@ -1,3 +1,10 @@
+---
+title: Hash Passwords with `password_hash()` and Verify with `password_verify()`
+impact: CRITICAL
+impactDescription: Security best practices and input safety
+tags: php, security, validation
+---
+
 # Hash Passwords with `password_hash()` and Verify with `password_verify()`
 
 ## Why it matters

@@ -1,3 +1,10 @@
+---
+title: Liskov Substitution Principle (LSP)
+impact: HIGH
+impactDescription: SOLID principles and clean OOP design
+tags: php, solid, oop, design-patterns
+---
+
 # Liskov Substitution Principle (LSP)
 
 ## Why it matters

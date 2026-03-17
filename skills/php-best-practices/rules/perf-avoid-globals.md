@@ -1,3 +1,10 @@
+---
+title: Avoid Global Variables
+impact: MEDIUM
+impactDescription: Runtime performance and memory efficiency
+tags: php, performance, optimization
+---
+
 # Avoid Global Variables
 
 ## Why it matters

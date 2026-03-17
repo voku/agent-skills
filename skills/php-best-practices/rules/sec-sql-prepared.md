@@ -1,3 +1,10 @@
+---
+title: Use Prepared Statements for All SQL
+impact: CRITICAL
+impactDescription: Security best practices and input safety
+tags: php, security, validation
+---
+
 # Use Prepared Statements for All SQL
 
 ## Why it matters

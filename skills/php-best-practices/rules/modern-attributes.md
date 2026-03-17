@@ -1,3 +1,10 @@
+---
+title: PHP Attributes
+impact: CRITICAL
+impactDescription: Modern PHP 8.x language features
+tags: php, modern-php, php8
+---
+
 # PHP Attributes
 
 ## Why it matters

@@ -1,3 +1,10 @@
+---
+title: PHPStan-Style PHPDoc Annotations
+impact: CRITICAL
+impactDescription: PHPDoc annotations for static analysis
+tags: php, phpstan, phpdoc, static-analysis
+---
+
 # PHPStan-Style PHPDoc Annotations
 
 ## Why it matters

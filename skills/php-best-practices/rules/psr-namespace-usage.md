@@ -1,3 +1,10 @@
+---
+title: PSR Namespace Usage
+impact: HIGH
+impactDescription: PSR standards and code structure conventions
+tags: php, psr, coding-standards
+---
+
 # PSR Namespace Usage
 
 ## Why it matters

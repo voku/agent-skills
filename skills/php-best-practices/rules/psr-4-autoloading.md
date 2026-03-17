@@ -1,3 +1,10 @@
+---
+title: PSR-4 Autoloading
+impact: HIGH
+impactDescription: PSR standards and code structure conventions
+tags: php, psr, coding-standards
+---
+
 # PSR-4 Autoloading
 
 ## Why it matters

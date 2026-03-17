@@ -1,3 +1,10 @@
+---
+title: Interface Segregation Principle (ISP)
+impact: HIGH
+impactDescription: SOLID principles and clean OOP design
+tags: php, solid, oop, design-patterns
+---
+
 # Interface Segregation Principle (ISP)
 
 ## Why it matters

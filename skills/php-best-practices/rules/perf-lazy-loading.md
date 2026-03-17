@@ -1,3 +1,10 @@
+---
+title: Lazy-Load Only Genuinely Expensive Dependencies
+impact: MEDIUM
+impactDescription: Runtime performance and memory efficiency
+tags: php, performance, optimization
+---
+
 # Lazy-Load Only Genuinely Expensive Dependencies
 
 ## Why it matters

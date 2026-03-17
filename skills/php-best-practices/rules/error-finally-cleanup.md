@@ -1,3 +1,10 @@
+---
+title: Use `finally` for Guaranteed Cleanup, Not Control Flow
+impact: HIGH
+impactDescription: Robust error handling and exception design
+tags: php, error-handling, exceptions
+---
+
 # Use `finally` for Guaranteed Cleanup, Not Control Flow
 
 ## Why it matters

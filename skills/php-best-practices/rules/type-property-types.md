@@ -1,3 +1,10 @@
+---
+title: Property Type Declarations
+impact: CRITICAL
+impactDescription: Strong type safety across all PHP code
+tags: php, types, strict-types, type-safety
+---
+
 # Property Type Declarations
 
 ## Why it matters

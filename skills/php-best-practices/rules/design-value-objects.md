@@ -1,3 +1,10 @@
+---
+title: Value Objects Over Primitives
+impact: HIGH
+impactDescription: PHP design patterns and value object discipline
+tags: php, design-patterns, value-objects
+---
+
 # Value Objects Over Primitives
 
 ## Why it matters

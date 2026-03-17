@@ -1,3 +1,10 @@
+---
+title: Open/Closed Principle (OCP)
+impact: HIGH
+impactDescription: SOLID principles and clean OOP design
+tags: php, solid, oop, design-patterns
+---
+
 # Open/Closed Principle (OCP)
 
 ## Why it matters

@@ -1,3 +1,10 @@
+---
+title: Keep Exception Hierarchies Shallow and Purposeful
+impact: HIGH
+impactDescription: Robust error handling and exception design
+tags: php, error-handling, exceptions
+---
+
 # Keep Exception Hierarchies Shallow and Purposeful
 
 ## Why it matters

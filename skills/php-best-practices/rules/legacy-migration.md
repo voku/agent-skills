@@ -1,3 +1,10 @@
+---
+title: Legacy Code Migration Strategy
+impact: HIGH
+impactDescription: Incremental legacy codebase migration
+tags: php, legacy, migration, refactoring
+---
+
 # Legacy Code Migration Strategy
 
 ## Why it matters
