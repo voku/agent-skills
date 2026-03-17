@@ -11,8 +11,6 @@ Every PHP file must begin with `<?php` followed immediately by `declare(strict_t
 ```php
 <?php
 
-declare(strict_types=1);
-
 // no strict_types — numeric strings silently coerce
 function calculateTotal(int $price, int $quantity): int
 {

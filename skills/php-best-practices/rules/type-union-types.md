@@ -69,8 +69,6 @@ declare(strict_types=1);
 
 namespace App\Config;
 
-use Stringable;
-
 final class ConfigLoader
 {
     /** @var array<string, string|int|bool|null> */

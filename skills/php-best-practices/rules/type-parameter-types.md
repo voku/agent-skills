@@ -38,7 +38,7 @@ declare(strict_types=1);
 class OrderService
 {
     /**
-     * @param array<int, array{sku: string, qty: int}> $items
+     * @param list<array{sku: string, qty: int}> $items
      */
     public function createOrder(
         User $user,
