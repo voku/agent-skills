@@ -1,153 +1,83 @@
----
-title: Match Expression
-impact: HIGH
-impactDescription: Type-safe, concise alternative to switch with no fall-through
-tags: modern-features, match, control-flow, php8
----
-
 # Match Expression
 
-Use match expressions instead of switch statements for cleaner, safer code (PHP 8.0+).
+## Why it matters
+`switch` has two traps: loose comparison (`==`) silently coerces types, and fall-through means a missing `break` delivers the wrong branch without any error. `match` uses strict comparison, always returns a value, and throws `UnhandledMatchError` on a missing arm — bugs surface immediately instead of silently misbehaving.
 
-## Bad Example
+## Rule
+Prefer `match` over `switch` for expression-oriented branching. When matching an enum, omit `default` so `UnhandledMatchError` fires on unhandled cases rather than silently using a fallback.
 
+## Bad
 ```php
 <?php
 
 declare(strict_types=1);
 
-function getStatusMessage(int $code): string
+function label(string $status): string
 {
-    // Switch is verbose and error-prone
-    switch ($code) {
-        case 200:
-            $message = 'OK';
+    switch ($status) {
+        case 'active':
+            $label = 'Active';
             break;
-        case 201:
-            $message = 'Created';
-            break;
-        case 400:
-            $message = 'Bad Request';
-            break;
-        case 404:
-            $message = 'Not Found';
-            break;
-        case 500:
-            $message = 'Internal Server Error';
-            break;
+        case 'inactive':
+            $label = 'Inactive';
+            // missing break — falls through to default silently
         default:
-            $message = 'Unknown';
-            // Easy to forget break - falls through!
+            $label = 'Unknown';
     }
-    return $message;
-}
-
-// Type coercion issues
-$value = '1';
-switch ($value) {
-    case 1: // Matches due to loose comparison!
-        echo 'One';
-        break;
+    return $label;
 }
 ```
 
-## Good Example
-
+## Better
 ```php
 <?php
 
 declare(strict_types=1);
 
-function getStatusMessage(int $code): string
+function label(string $status): string
 {
-    // Match is an expression - returns a value
-    return match ($code) {
-        200 => 'OK',
-        201 => 'Created',
-        400 => 'Bad Request',
-        404 => 'Not Found',
-        500 => 'Internal Server Error',
-        default => 'Unknown',
+    return match ($status) {
+        'active'   => 'Active',
+        'inactive' => 'Inactive',
+        default    => 'Unknown',
     };
 }
-
-// Multiple values per arm
-function getHttpStatusCategory(int $code): string
-{
-    return match (true) {
-        $code >= 100 && $code < 200 => 'Informational',
-        $code >= 200 && $code < 300 => 'Success',
-        $code >= 300 && $code < 400 => 'Redirection',
-        $code >= 400 && $code < 500 => 'Client Error',
-        $code >= 500 && $code < 600 => 'Server Error',
-        default => 'Unknown',
-    };
-}
-
-// Multiple conditions in one arm
-function getDiscount(string $customerType): float
-{
-    return match ($customerType) {
-        'premium', 'vip', 'gold' => 0.20,
-        'silver', 'regular' => 0.10,
-        'new' => 0.05,
-        default => 0.0,
-    };
-}
-
-// With enums - exhaustive matching
-enum PaymentMethod
-{
-    case CreditCard;
-    case PayPal;
-    case BankTransfer;
-    case Crypto;
-}
-
-function getPaymentFee(PaymentMethod $method): float
-{
-    return match ($method) {
-        PaymentMethod::CreditCard => 2.9,
-        PaymentMethod::PayPal => 3.5,
-        PaymentMethod::BankTransfer => 0.5,
-        PaymentMethod::Crypto => 1.0,
-        // No default needed - all cases covered
-        // Adding new enum case = UnhandledMatchError at runtime
-    };
-}
-
-// Match as expression in complex scenarios
-class OrderProcessor
-{
-    public function calculateShipping(Order $order): Money
-    {
-        $baseRate = match ($order->shippingMethod) {
-            ShippingMethod::Standard => new Money(599, 'USD'),
-            ShippingMethod::Express => new Money(1299, 'USD'),
-            ShippingMethod::Overnight => new Money(2499, 'USD'),
-            ShippingMethod::Pickup => new Money(0, 'USD'),
-        };
-
-        return $order->isHeavy()
-            ? $baseRate->multiply(1.5)
-            : $baseRate;
-    }
-}
-
-// Strict comparison - no type coercion
-$value = '1';
-$result = match ($value) {
-    1 => 'integer one',      // Won't match - strict comparison
-    '1' => 'string one',     // Matches
-    default => 'other',
-};
 ```
 
-## Why
+## Best
+```php
+<?php
 
-- **Expression**: Returns a value directly, no break statements needed
-- **Strict Comparison**: Uses === preventing type coercion bugs
-- **Exhaustive**: Error if value doesn't match any arm (without default)
-- **Concise**: Much less boilerplate than switch
-- **No Fall-through**: Impossible to accidentally fall through cases
-- **Enum Support**: Perfect pairing with enums for exhaustive matching
+declare(strict_types=1);
+
+enum OrderStatus: string
+{
+    case Pending  = 'pending';
+    case Paid     = 'paid';
+    case Shipped  = 'shipped';
+}
+
+// No default: UnhandledMatchError fires if a new case is added but not handled here
+function label(OrderStatus $status): string
+{
+    return match ($status) {
+        OrderStatus::Pending  => 'Awaiting payment',
+        OrderStatus::Paid     => 'Payment received',
+        OrderStatus::Shipped  => 'On its way',
+    };
+}
+```
+
+## Exceptions / trade-offs
+- When genuine fall-through is needed (multiple inputs share one result), `match` supports comma-separated arms: `'a', 'b' => 'result'` — this is not a reason to keep `switch`.
+- Complex compound conditions that cannot be expressed as simple value equality (e.g., range checks, regex, multiple variables) are better served by `if`/`elseif` or a strategy pattern.
+
+## Static-analysis notes
+PHPStan and Psalm verify exhaustiveness when `match` operates on an enum type with no `default` arm. Adding a new enum case without updating every `match` site becomes a static analysis error.
+
+## Version notes
+`PHP 8.0+`
+
+## Related topics
+- [modern-enums.md](modern-enums.md) — backed enums as safe match subjects
+- [modern-enums-methods.md](modern-enums-methods.md) — exhaustive match inside enum methods
