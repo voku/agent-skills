@@ -1,6 +1,6 @@
 # PHP Best Practices
 
-Modern PHP 8.x patterns, PSR standards, and SOLID principles for clean, maintainable code.
+Modern PHP 8.x patterns, PSR standards, SOLID principles, PHPStan-style PHPDoc, value objects, and a mandatory static-analysis tooling loop for clean, maintainable code.
 
 ## Overview
 
@@ -11,8 +11,20 @@ This skill provides guidance for:
 - Type system best practices
 - PSR standards compliance
 - SOLID principles
+- PHPStan-style PHPDoc (generics, array shapes, class-strings, int-ranges)
+- Value objects and no-magic design
+- Legacy code migration strategy
+- Mandatory PHPStan + php-cs-fixer validation loop
 
-## Categories (51 rules)
+## Workflow
+
+Every PHP coding task follows three phases:
+
+1. **DEFINE / SCOPE** — confirm PHP version, state the problem, run RCA for bugs
+2. **DESIGN / PLANNING** — class boundaries, value objects, PHPDoc shapes, modifiers
+3. **CODING / FEEDBACK** — implement, run `php-cs-fixer fix && phpstan analyse`, iterate
+
+## Categories (61 rules)
 
 ### 1. Type System (Critical) — 9 rules
 Strict types, return types, union/intersection types, nullable handling, void/never.
@@ -35,6 +47,18 @@ Generators, lazy loading, native array/string functions, avoiding globals.
 ### 7. Security (Critical) — 5 rules
 Input validation, output escaping, password hashing, prepared statements, file upload security.
 
+### 8. PHPStan PHPDoc (Critical) — 1 rule
+Generics (`@template`), array shapes (`array{key: type}`), `class-string<T>`, `int<min, max>`, conditional return types.
+
+### 9. Design Patterns (High) — 2 rules
+Value objects over primitives (self-validating, immutable domain types). Avoiding magic-heavy design (`__get`/`__call`) in favour of explicit typed methods.
+
+### 10. Legacy Migration (High) — 1 rule
+Incremental modernisation: PHPStan baseline → Rector transforms → type coverage → Strangler Fig isolation.
+
+### 11. Tooling (Critical) — 1 rule
+Mandatory PHPStan + php-cs-fixer loop; composer scripts; CI (GitHub Actions) integration; PHPStan level 0→9 guide.
+
 ## Usage
 
 Ask Claude to:
@@ -42,6 +66,8 @@ Ask Claude to:
 - "Check PHP types"
 - "Audit PHP for SOLID"
 - "Check PHP best practices"
+- "Run PHPStan analysis on this code"
+- "Migrate this legacy PHP class"
 
 ## Key Guidelines
 
@@ -53,6 +79,9 @@ Ask Claude to:
 - Match expressions over switch
 - Named arguments for clarity
 - Type declarations everywhere
+- PHPStan `@template` / array-shape annotations on public APIs
+- Value objects for domain primitives (UserId, Email, Money)
+- `final` by default; open only when extension is intentional
 
 ### Avoid
 - Mixed type when specific type possible
@@ -61,9 +90,19 @@ Ask Claude to:
 - Suppressing errors with @
 - Global variables
 - God classes
+- Magic `__get` / `__set` / `__call` outside framework infrastructure
+- Bare primitives where value objects express domain constraints
+
+### Tooling Loop (mandatory)
+```bash
+vendor/bin/php-cs-fixer fix && vendor/bin/phpstan analyse
+```
 
 ## References
 
 - [PHP Manual](https://www.php.net/manual/)
 - [PHP-FIG PSR Standards](https://www.php-fig.org/psr/)
 - [PHP The Right Way](https://phptherightway.com/)
+- [PHPStan](https://phpstan.org/)
+- [php-cs-fixer](https://cs.symfony.com/)
+- [Rector](https://getrector.com/)

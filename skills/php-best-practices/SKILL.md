@@ -1,22 +1,94 @@
 ---
 name: php-best-practices
-description: PHP 8.x modern patterns, PSR standards, and SOLID principles. Use when reviewing PHP code, checking type safety, auditing code quality, or ensuring PHP best practices. Triggers on "review PHP", "check PHP code", "audit PHP", or "PHP best practices".
+description: PHP 8.x strict typing, PHPStan-style PHPDoc, readability, RCA + Kanban workflow, legacy modernization, and PHPStan + php-cs-fixer validation. Use when reviewing PHP code, checking type safety, auditing code quality, or ensuring PHP best practices. Triggers on "review PHP", "check PHP code", "audit PHP", "PHP best practices", or "PHP static analysis".
 license: MIT
 metadata:
   author: php-community
-  version: "2.1.0"
+  version: "3.0.0"
   phpVersion: "8.0 - 8.5"
 ---
 
 # PHP Best Practices
 
-Modern PHP 8.x patterns, PSR standards, type system best practices, and SOLID principles. Contains 51 rules for writing clean, maintainable PHP code.
+Modern PHP 8.x patterns, PSR standards, type system best practices, SOLID principles, PHPStan-style PHPDoc, value objects, and a mandatory static-analysis tooling loop. Contains 61 rules for writing clean, maintainable PHP code.
+
+## Problem Definition (First Principles)
+
+Before writing or reviewing any PHP code, define the problem explicitly:
+
+```
+🧐 Problem
+├── Task: What must the code accomplish?
+├── Constraints: PHP version, framework, performance budget, backwards-compat
+├── Assumptions: What inputs are guaranteed? What can be null?
+├── Edge cases: Empty collections, zero values, concurrent access, missing config
+└── Risk spots: Security surface (user input), type boundaries, legacy call sites
+```
+
+Use this checklist on every non-trivial implementation:
+
+- [ ] PHP version confirmed (`composer.json` → `require.php`)
+- [ ] All external inputs identified and validation strategy defined
+- [ ] Nullable paths enumerated — `?Type` vs `Type|null` vs exception
+- [ ] Legacy call sites listed if touching existing code
+- [ ] PHPStan level of the project confirmed (see `phpstan.neon`)
+
+## RCA — Root Cause Analysis
+
+Apply structured root-cause analysis **before** coding when fixing a bug or addressing a quality violation:
+
+```
+🌳 RCA
+├── Symptom: What error / test failure / PHPStan violation is observed?
+├── Immediate cause: The specific line / type mismatch / missing check
+├── Contributing factor: Why was this possible? (missing types, no validation, legacy design)
+└── Root cause: What structural gap allowed this? (no value objects, no strict types, missing tests)
+```
+
+### Example
+
+```
+Symptom:        TypeError in OrderService::create() — string passed where int expected
+Immediate cause: $data['user_id'] is never cast; HTTP input is always string
+Contributing:   No value object for UserId; array{} shape not annotated
+Root cause:     declare(strict_types=1) missing; no PHPStan analysis in CI
+Fix:            Add declare(strict_types=1); introduce UserId value object;
+                annotate $data shape; add PHPStan to CI at level 5+
+```
+
+## Kanban Workflow
+
+Follow this three-phase workflow for every PHP coding task:
+
+### Phase 1 — DEFINE / SCOPE
+
+- Confirm PHP version and available language features
+- State the Problem (first principles above)
+- Run RCA if fixing an existing issue
+- Identify files to create or modify
+- List new dependencies (check advisory DB before adding)
+
+### Phase 2 — DESIGN / PLANNING
+
+- Sketch class / interface boundaries
+- Choose value objects for all domain primitives
+- Define PHPDoc generics and array shapes for public APIs
+- Decide final / readonly / abstract modifiers
+- Plan exception hierarchy if new error paths are introduced
+- Outline PHPStan annotations needed
+
+### Phase 3 — CODING / FEEDBACK
+
+- Write code following all rules below
+- Run `vendor/bin/php-cs-fixer fix` — fix style
+- Run `vendor/bin/phpstan analyse` — fix type violations
+- Re-run until both pass with zero errors
+- Update tests; confirm all pass
+- Review output against the Problem statement
 
 ## Step 1: Detect PHP Version
 
 **Always check the project's PHP version before giving any advice.** Features vary significantly across 8.0 - 8.5. Never suggest syntax that doesn't exist in the project's version.
-
-Check `composer.json` for the required PHP version:
 ```json
 { "require": { "php": "^8.1" } }   // -> 8.1 rules and below
 { "require": { "php": "^8.3" } }   // -> 8.3 rules and below
@@ -62,6 +134,10 @@ Reference these guidelines when:
 | 5 | Error Handling | HIGH | `error-` | 5 |
 | 6 | Performance | MEDIUM | `perf-` | 5 |
 | 7 | Security | CRITICAL | `sec-` | 5 |
+| 8 | PHPStan PHPDoc | CRITICAL | `phpstan-` | 1 |
+| 9 | Design Patterns | HIGH | `design-` | 2 |
+| 10 | Legacy Migration | HIGH | `legacy-` | 1 |
+| 11 | Tooling | CRITICAL | `tooling-` | 1 |
 
 ## Quick Reference
 
@@ -148,6 +224,23 @@ Reference these guidelines when:
 - `sec-sql-prepared` - Use prepared statements for all SQL queries
 - `sec-file-uploads` - Validate file type, size, name; store outside web root
 
+### 8. PHPStan PHPDoc (CRITICAL) — 1 rule
+
+- `phpstan-phpdoc` - Generics (`@template`), array shapes, `class-string`, `int<min,max>`, conditional return types
+
+### 9. Design Patterns (HIGH) — 2 rules
+
+- `design-value-objects` - Value objects over primitives; self-validating, immutable domain types
+- `design-no-magic` - Avoid `__get`/`__set`/`__call`; prefer explicit, typed methods and properties
+
+### 10. Legacy Migration (HIGH) — 1 rule
+
+- `legacy-migration` - Incremental modernisation: safety net → Rector → type coverage → Strangler Fig isolation
+
+### 11. Tooling (CRITICAL) — 1 rule
+
+- `tooling-phpstan-cs-fixer` - Mandatory PHPStan + php-cs-fixer loop; CI integration; level guide
+
 ## Essential Guidelines
 
 For detailed examples and explanations, see the rule files:
@@ -156,6 +249,11 @@ For detailed examples and explanations, see the rule files:
 - [modern-constructor-promotion.md](rules/modern-constructor-promotion.md) - Constructor property promotion
 - [modern-enums.md](rules/modern-enums.md) - PHP 8.1+ enums with methods
 - [solid-srp.md](rules/solid-srp.md) - Single responsibility principle
+- [phpstan-phpdoc.md](rules/phpstan-phpdoc.md) - PHPStan generics, array shapes, class-strings
+- [design-value-objects.md](rules/design-value-objects.md) - Value objects over primitives
+- [design-no-magic.md](rules/design-no-magic.md) - Avoid magic-heavy design
+- [legacy-migration.md](rules/legacy-migration.md) - Legacy code migration strategy
+- [tooling-phpstan-cs-fixer.md](rules/tooling-phpstan-cs-fixer.md) - PHPStan + php-cs-fixer loop
 
 ### Key Patterns (Quick Reference)
 
@@ -220,7 +318,52 @@ $result = $input
     |> htmlspecialchars(...);
 ```
 
-## Output Format
+## Response Template
+
+Use this structure when responding to any PHP coding request:
+
+```
+🧐 Problem
+Task:        [what the code must do]
+Constraints: [PHP version, framework, existing interfaces]
+Assumptions: [guaranteed inputs, null handling, scope boundaries]
+Edge cases:  [empty collections, zero values, concurrent writes, etc.]
+Risk spots:  [user input surfaces, legacy call sites, type boundaries]
+
+🌳 RCA  (only for bug fixes / refactors)
+Symptom:        [observed error / violation]
+Immediate:      [specific line or type mismatch]
+Contributing:   [missing types / no value objects / no validation]
+Root cause:     [structural gap — strict_types off, no PHPStan, no tests]
+
+📋 Kanban
+[x] DEFINE / SCOPE   — PHP version confirmed, problem stated
+[x] DESIGN / PLANNING — class boundaries, value objects, PHPDoc shapes
+[ ] CODING / FEEDBACK — implementation + php-cs-fixer + phpstan loop
+```
+
+**PHP implementation:**
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\YourNamespace;
+
+// … typed, final, readonly-where-appropriate implementation …
+```
+
+**Validation:**
+
+```bash
+vendor/bin/php-cs-fixer fix && vendor/bin/phpstan analyse
+```
+
+```
+✅ php-cs-fixer: no violations
+✅ phpstan (level 8): no errors
+```
 
 When auditing code, output findings in this format:
 
@@ -243,4 +386,9 @@ Read individual rule files for detailed explanations:
 rules/modern-constructor-promotion.md
 rules/type-strict-mode.md
 rules/solid-srp.md
+rules/phpstan-phpdoc.md
+rules/design-value-objects.md
+rules/design-no-magic.md
+rules/legacy-migration.md
+rules/tooling-phpstan-cs-fixer.md
 ```
