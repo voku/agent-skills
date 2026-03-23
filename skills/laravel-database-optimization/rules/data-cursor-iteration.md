@@ -63,4 +63,4 @@ DB::table('users')
 - `cursor()` returns a `LazyCollection` backed by a PHP generator
 - `lazyById()` combines the memory efficiency of generators with the consistency of ID-based chunking
 
-Reference: [Laravel Cursors](https://laravel.com/docs/12.x/eloquent#cursors)
+Reference: [Laravel Cursors](https://laravel.com/docs/13.x/eloquent#cursors)

@@ -69,4 +69,4 @@ $results = Article::whereFullText(['title', 'body'], $term)
 - `whereFullText()` provides a clean, database-agnostic API for full-text queries
 - Supports natural language mode and boolean mode for flexible search behavior
 
-Reference: [Laravel Full Text Indexes](https://laravel.com/docs/12.x/migrations#available-index-types)
+Reference: [Laravel Full Text Indexes](https://laravel.com/docs/13.x/migrations#available-index-types)

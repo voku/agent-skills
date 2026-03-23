@@ -108,4 +108,4 @@ Schema::table('users', function (Blueprint $table) {
 - Laravel's auto-generated index names (`users_email_unique`) follow a predictable `{table}_{column}_{type}` pattern
 - Artisan generators enforce consistent naming: `php artisan make:migration add_phone_to_users_table --table=users`
 
-Reference: [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
+Reference: [Laravel Migrations](https://laravel.com/docs/13.x/migrations)

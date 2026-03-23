@@ -63,4 +63,4 @@ echo $user->published_posts_count;
 - Dramatically lower memory usage when relations contain many records
 - Attributes follow a predictable naming convention: `{relation}_{function}_{column}`
 
-Reference: [Laravel Eloquent Aggregates](https://laravel.com/docs/12.x/eloquent-relationships#counting-related-models)
+Reference: [Laravel Eloquent Aggregates](https://laravel.com/docs/13.x/eloquent-relationships#counting-related-models)

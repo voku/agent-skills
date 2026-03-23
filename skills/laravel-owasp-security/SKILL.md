@@ -4,14 +4,14 @@ description: OWASP Top 10 security audit and secure coding guidelines for Larave
 license: MIT
 metadata:
   author: AsyrafHussin
-  version: "1.0.2"
-  laravelVersion: "12.x"
+  version: "1.0.3"
+  laravelVersion: "13.x"
   phpVersion: "8.3+"
 ---
 
 # Laravel OWASP Security
 
-Dual-purpose security skill for Laravel 12 + React/Inertia.js applications. Run a full OWASP Top 10 audit against a codebase, or use as a secure coding reference when building features.
+Dual-purpose security skill for Laravel 13 + React/Inertia.js applications. Run a full OWASP Top 10 audit against a codebase, or use as a secure coding reference when building features.
 
 ## How to Audit
 
@@ -319,7 +319,7 @@ Each rule file contains:
 - Why it matters in Laravel/React context
 - Incorrect code example with explanation
 - Correct code example with fix
-- Laravel 12 and PHP 8.3+ specific context
+- Laravel 13 and PHP 8.3+ specific context
 
 ## Full Compiled Document
 

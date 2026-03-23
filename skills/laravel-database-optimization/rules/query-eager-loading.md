@@ -52,4 +52,4 @@ $posts = Post::with([
 - Constrained eager loads reduce memory usage by loading only relevant related records
 - Predictable, measurable database load that scales with relationship count, not row count
 
-Reference: [Laravel Eager Loading](https://laravel.com/docs/12.x/eloquent-relationships#eager-loading)
+Reference: [Laravel Eager Loading](https://laravel.com/docs/13.x/eloquent-relationships#eager-loading)

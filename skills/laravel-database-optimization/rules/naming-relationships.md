@@ -174,4 +174,4 @@ class Image extends Model
 - Eager loading reads naturally: `Post::with(['user', 'comments', 'tags'])->get()`
 - `whereHas('comments')` and `withCount('orders')` work without additional configuration
 
-Reference: [Laravel Eloquent Relationships](https://laravel.com/docs/12.x/eloquent-relationships)
+Reference: [Laravel Eloquent Relationships](https://laravel.com/docs/13.x/eloquent-relationships)

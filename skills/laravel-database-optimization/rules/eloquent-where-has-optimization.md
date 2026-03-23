@@ -72,4 +72,4 @@ $products = Product::whereRelation('reviews', 'rating', '>=', 4)->get();
 - 10-100x improvement on large datasets compared to correlated `whereHas`
 - Choose `whereIn` for readability, `join` for maximum performance on hot paths
 
-Reference: [Laravel Eloquent whereHas](https://laravel.com/docs/12.x/eloquent-relationships#querying-relationship-existence)
+Reference: [Laravel Eloquent whereHas](https://laravel.com/docs/13.x/eloquent-relationships#querying-relationship-existence)

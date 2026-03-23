@@ -72,4 +72,4 @@ DB::whenQueryingForLongerThan(5000, function (Connection $connection, QueryExecu
 - Explicit limits make resource consumption visible and reviewable in code review
 - Safety mechanisms like `whenQueryingForLongerThan()` catch issues before they escalate
 
-Reference: [Laravel Query Builder](https://laravel.com/docs/12.x/queries)
+Reference: [Laravel Query Builder](https://laravel.com/docs/13.x/queries)

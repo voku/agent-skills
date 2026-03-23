@@ -9,7 +9,7 @@ tags: database, optimization, tag3
 
 **Impact: HIGH (optional impact description)**
 
-Brief explanation of the rule and why it matters for database performance in Laravel 12 applications. This should be clear and concise, explaining the performance implications and when this pattern applies. Focus on measurable improvements and real-world scenarios.
+Brief explanation of the rule and why it matters for database performance in Laravel 13 applications. This should be clear and concise, explaining the performance implications and when this pattern applies. Focus on measurable improvements and real-world scenarios.
 
 ## Incorrect
 
@@ -37,7 +37,7 @@ class BadExample
 ```php
 <?php
 
-// Optimized approach using Laravel 12 and PHP 8.3 patterns
+// Optimized approach using Laravel 13 and PHP 8.3 patterns
 class GoodExample
 {
     public function index(): View
@@ -59,7 +59,7 @@ class GoodExample
 
 // Alternative patterns or edge cases
 // Advanced usage examples
-// Laravel 12 specific features
+// Laravel 13 specific features
 ```
 
 ## Problems
@@ -74,4 +74,4 @@ class GoodExample
 - **Benefit 2**: Scalability or reliability gain
 - **Benefit 3**: How it helps in production Laravel applications
 
-Reference: [Laravel 12 Documentation](https://laravel.com/docs/12.x)
+Reference: [Laravel 13 Documentation](https://laravel.com/docs/13.x)

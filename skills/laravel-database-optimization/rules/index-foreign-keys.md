@@ -68,4 +68,4 @@ Schema::create('comments', function (Blueprint $table): void {
 - Index-backed WHERE clauses use B-tree lookups instead of full table scans
 - `morphs()` automatically creates a composite index on both polymorphic columns
 
-Reference: [Laravel Foreign Key Constraints](https://laravel.com/docs/12.x/migrations#foreign-key-constraints)
+Reference: [Laravel Foreign Key Constraints](https://laravel.com/docs/13.x/migrations#foreign-key-constraints)

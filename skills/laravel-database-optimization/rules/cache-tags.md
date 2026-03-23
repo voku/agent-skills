@@ -98,4 +98,4 @@ class ProductService
 
 > **Note:** Cache tags are only supported by Redis and Memcached drivers. The `file`, `database`, and `array` drivers do not support tags.
 
-Reference: [Laravel Cache Tags](https://laravel.com/docs/12.x/cache#cache-tags)
+Reference: [Laravel Cache Tags](https://laravel.com/docs/13.x/cache#cache-tags)

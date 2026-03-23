@@ -1,11 +1,11 @@
 # Laravel OWASP Security
 
-OWASP Top 10 security audit and secure coding guidelines for Laravel 12 + React/Inertia.js applications.
+OWASP Top 10 security audit and secure coding guidelines for Laravel 13 + React/Inertia.js applications.
 
 ## Overview
 
 This skill provides:
-- Full OWASP Top 10 security audit checklist mapped to Laravel 12 patterns
+- Full OWASP Top 10 security audit checklist mapped to Laravel 13 patterns
 - 6 React/Inertia.js-specific security checks (R1–R6)
 - Auto-detection of React + Inertia.js stack
 - PASS/FAIL/N/A audit output with `file:line` references
@@ -53,6 +53,6 @@ This skill provides:
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [OWASP Laravel Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Laravel_Cheat_Sheet.html)
-- [Laravel 12 Security Documentation](https://laravel.com/docs/12.x/authentication)
+- [Laravel 13 Security Documentation](https://laravel.com/docs/13.x/authentication)
 - [Inertia.js Documentation](https://inertiajs.com)
 - [DOMPurify](https://github.com/cure53/DOMPurify)

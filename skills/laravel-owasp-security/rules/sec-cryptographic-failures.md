@@ -172,4 +172,4 @@ class SettingsController extends Controller
 | `URL::signedRoute()` | Password reset, email verify links |
 | `URL::temporarySignedRoute()` | Time-limited one-time links |
 
-Reference: [Laravel Encryption](https://laravel.com/docs/12.x/encryption) | [OWASP A02:2021](https://owasp.org/Top10/A02_2021-Cryptographic_Failures/)
+Reference: [Laravel Encryption](https://laravel.com/docs/13.x/encryption) | [OWASP A02:2021](https://owasp.org/Top10/A02_2021-Cryptographic_Failures/)

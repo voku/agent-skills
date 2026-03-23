@@ -60,7 +60,7 @@ npx skills update            # Update all skills to latest
 
 ### [laravel-best-practices](skills/laravel-best-practices)
 
-Laravel 12 conventions and architecture. Contains 29 rules across 7 categories.
+Laravel 13 conventions and architecture. Contains 31 rules across 7 categories.
 
 **Example:** `Review this Laravel controller for best practices`
 
@@ -72,7 +72,7 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-best-practices
 
 ### [laravel-inertia-react](skills/laravel-inertia-react)
 
-Laravel 12 + Inertia.js + React 18 full-stack patterns. Covers page components, form handling, layouts, file uploads, and real-time features.
+Laravel 13 + Inertia.js + React 18 full-stack patterns. Covers page components, form handling, layouts, file uploads, and real-time features.
 
 **Example:** `How do I share data from Laravel to a React component with Inertia?`
 
@@ -84,7 +84,7 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-inertia-react
 
 ### [laravel-testing](skills/laravel-testing)
 
-Laravel 12 testing with Pest PHP 4 and PHPUnit 11. Contains 21 rules across 6 categories covering HTTP feature tests, model factories, database assertions, facade faking (Mail, Queue, Notification, Event, Storage), authentication testing, and test organisation patterns. Detects Pest or PHPUnit automatically from `composer.json`.
+Laravel 13 testing with Pest PHP 4 and PHPUnit 12. Contains 24 rules across 6 categories covering HTTP feature tests, model factories, database assertions, facade faking (Mail, Queue, Notification, Event, Storage, AI SDK), authentication testing, and test organisation patterns. Detects Pest or PHPUnit automatically from `composer.json`.
 
 **Example:** `Write feature tests for this Laravel controller`
 
@@ -240,12 +240,36 @@ npx skills add AsyrafHussin/agent-skills --skill seo-best-practices
 
 ### [laravel-database-optimization](skills/laravel-database-optimization)
 
-Laravel 12 database optimization. Contains 33 rules across 9 categories covering N+1 prevention, indexing strategies, Eloquent performance, Redis caching, cursor pagination, transactions, zero-downtime migrations, naming conventions, and query debugging.
+Laravel 13 database optimization. Contains 33 rules across 9 categories covering N+1 prevention, indexing strategies, Eloquent performance, Redis caching, cursor pagination, transactions, zero-downtime migrations, naming conventions, and query debugging.
 
 **Example:** `Optimize the database queries in this controller`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill laravel-database-optimization
+```
+
+---
+
+### [laravel-ai-sdk](skills/laravel-ai-sdk)
+
+Laravel AI SDK for building AI-powered features. Contains 17 rules across 7 categories covering agents, tools, structured output, streaming, images, audio, embeddings, vector stores, and testing with fakes.
+
+**Example:** `Create an AI agent that analyzes sales transcripts`
+
+```bash
+npx skills add AsyrafHussin/agent-skills --skill laravel-ai-sdk
+```
+
+---
+
+### [laravel-mcp](skills/laravel-mcp)
+
+Laravel MCP server development. Contains 7 rules across 5 categories covering server creation, tools with schemas, prompts, resources, authentication (OAuth/Sanctum), and testing.
+
+**Example:** `Create an MCP tool that exposes weather data to AI clients`
+
+```bash
+npx skills add AsyrafHussin/agent-skills --skill laravel-mcp
 ```
 
 ---

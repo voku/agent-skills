@@ -54,4 +54,4 @@ return UserResource::collection(
 - Uses efficient index seeks (WHERE id > ?) instead of scanning and discarding rows
 - Ideal for infinite scroll, API feeds, and any dataset where users don't need to jump to arbitrary pages
 
-Reference: [Laravel Cursor Pagination](https://laravel.com/docs/12.x/pagination#cursor-pagination)
+Reference: [Laravel Cursor Pagination](https://laravel.com/docs/13.x/pagination#cursor-pagination)

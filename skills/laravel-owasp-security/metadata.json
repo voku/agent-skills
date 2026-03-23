@@ -1,19 +1,19 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "organization": "AsyrafHussin",
   "date": "March 2026",
-  "laravelVersion": "12.x",
+  "laravelVersion": "13.x",
   "phpVersion": "8.3+",
-  "abstract": "OWASP Top 10 security audit checklist and secure coding reference for Laravel 12 + React/Inertia.js applications. Dual-purpose: run a full OWASP-mapped security audit with PASS/FAIL/N/A output, or use as a secure coding reference when building features. Covers all 10 OWASP Top 10:2021 categories (A01–A10) plus additional Laravel-specific checks and 6 React/Inertia.js-specific security checks including data-page exposure, dangerouslySetInnerHTML XSS, CSRF in Inertia, and sensitive props in shared state. Auto-detects React + Inertia.js stack and applies extended checks. Each rule includes incorrect vs. correct PHP/TypeScript code examples using Laravel 12 and PHP 8.3+ patterns.",
+  "abstract": "OWASP Top 10 security audit checklist and secure coding reference for Laravel 13 + React/Inertia.js applications. Dual-purpose: run a full OWASP-mapped security audit with PASS/FAIL/N/A output, or use as a secure coding reference when building features. Covers all 10 OWASP Top 10:2021 categories (A01–A10) plus additional Laravel-specific checks and 6 React/Inertia.js-specific security checks including data-page exposure, dangerouslySetInnerHTML XSS, CSRF in Inertia, and sensitive props in shared state. Auto-detects React + Inertia.js stack and applies extended checks. Each rule includes incorrect vs. correct PHP/TypeScript code examples using Laravel 13 and PHP 8.3+ patterns.",
   "references": [
     "https://owasp.org/www-project-top-ten/",
     "https://cheatsheetseries.owasp.org/cheatsheets/Laravel_Cheat_Sheet.html",
-    "https://laravel.com/docs/12.x/authentication",
-    "https://laravel.com/docs/12.x/authorization",
-    "https://laravel.com/docs/12.x/csrf",
-    "https://laravel.com/docs/12.x/encryption",
-    "https://laravel.com/docs/12.x/hashing",
-    "https://laravel.com/docs/12.x/rate-limiting",
+    "https://laravel.com/docs/13.x/authentication",
+    "https://laravel.com/docs/13.x/authorization",
+    "https://laravel.com/docs/13.x/csrf",
+    "https://laravel.com/docs/13.x/encryption",
+    "https://laravel.com/docs/13.x/hashing",
+    "https://laravel.com/docs/13.x/rate-limiting",
     "https://inertiajs.com",
     "https://github.com/cure53/DOMPurify"
   ],
@@ -97,12 +97,12 @@
     }
   ],
   "keyFeatures": [
-    "Full OWASP Top 10 checklist mapped to Laravel 12 patterns",
+    "Full OWASP Top 10 checklist mapped to Laravel 13 patterns",
     "Auto-detects React + Inertia.js stack for extended checks",
     "6 React/Inertia.js-specific security checks (R1-R6)",
     "PASS/FAIL/N/A audit output format with file:line references",
     "Dual-purpose: audit runner + secure coding reference",
-    "PHP 8.3+ and Laravel 12 code examples",
+    "PHP 8.3+ and Laravel 13 code examples",
     "DOMPurify integration for dangerouslySetInnerHTML",
     "Inertia data-page exposure detection",
     "CSP nonce-based Content-Security-Policy guidance"

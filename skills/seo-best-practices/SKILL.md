@@ -4,7 +4,7 @@ description: SEO patterns and conventions for web applications. Use when impleme
 license: MIT
 metadata:
   author: agent-skills
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # SEO Best Practices

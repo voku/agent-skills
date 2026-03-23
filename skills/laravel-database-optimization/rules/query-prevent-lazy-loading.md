@@ -65,4 +65,4 @@ foreach ($posts as $post) {
 - Catches N+1 problems during development before they reach production
 - Safe to enable — only active in non-production environments, so production is never affected
 
-Reference: [Laravel Preventing Lazy Loading](https://laravel.com/docs/12.x/eloquent-relationships#preventing-lazy-loading)
+Reference: [Laravel Preventing Lazy Loading](https://laravel.com/docs/13.x/eloquent-relationships#preventing-lazy-loading)

@@ -1,10 +1,10 @@
-# Laravel Database Optimization v1.1.0
+# Laravel Database Optimization v1.1.1
 
-Database optimization patterns and best practices for Laravel 12 applications.
+Database optimization patterns and best practices for Laravel 13 applications.
 
 ## Overview
 
-This skill provides 33 rules across 9 categories for optimizing database performance in Laravel 12 applications. Covers query optimization, indexing, caching, pagination, transactions, migrations, naming conventions, and debugging.
+This skill provides 33 rules across 9 categories for optimizing database performance in Laravel 13 applications. Covers query optimization, indexing, caching, pagination, transactions, migrations, naming conventions, and debugging.
 
 ## Categories
 
@@ -69,9 +69,9 @@ This skill triggers automatically when:
 
 ## References
 
-- [Laravel Eloquent](https://laravel.com/docs/12.x/eloquent)
-- [Laravel Queries](https://laravel.com/docs/12.x/queries)
-- [Laravel Cache](https://laravel.com/docs/12.x/cache)
-- [Laravel Pagination](https://laravel.com/docs/12.x/pagination)
-- [Laravel Migrations](https://laravel.com/docs/12.x/migrations)
-- [Laravel Redis](https://laravel.com/docs/12.x/redis)
+- [Laravel Eloquent](https://laravel.com/docs/13.x/eloquent)
+- [Laravel Queries](https://laravel.com/docs/13.x/queries)
+- [Laravel Cache](https://laravel.com/docs/13.x/cache)
+- [Laravel Pagination](https://laravel.com/docs/13.x/pagination)
+- [Laravel Migrations](https://laravel.com/docs/13.x/migrations)
+- [Laravel Redis](https://laravel.com/docs/13.x/redis)

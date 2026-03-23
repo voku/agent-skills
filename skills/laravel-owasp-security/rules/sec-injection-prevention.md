@@ -204,4 +204,4 @@ class NewPasswordController extends Controller
 | `$request->validated()` | Mass operations in controllers |
 | Set `user_id` explicitly | Ownership fields — never in fillable |
 
-Reference: [OWASP Laravel Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Laravel_Cheat_Sheet.html) | [Laravel Eloquent Mass Assignment](https://laravel.com/docs/12.x/eloquent#mass-assignment)
+Reference: [OWASP Laravel Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Laravel_Cheat_Sheet.html) | [Laravel Eloquent Mass Assignment](https://laravel.com/docs/13.x/eloquent#mass-assignment)

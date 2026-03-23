@@ -66,4 +66,4 @@ User::where('email_verified_at', null)
 - Uses indexed primary key lookups instead of OFFSET scanning
 - Safe for operations that modify the rows being iterated over
 
-Reference: [Laravel Chunking Results](https://laravel.com/docs/12.x/eloquent#chunking-results)
+Reference: [Laravel Chunking Results](https://laravel.com/docs/13.x/eloquent#chunking-results)

@@ -164,4 +164,4 @@ class ToyyibPayController extends Controller
 | `@csrf` in Blade forms | Non-Inertia forms |
 | Webhook signature verification | Authenticate excluded routes differently |
 
-Reference: [Laravel CSRF Protection](https://laravel.com/docs/12.x/csrf) | [Inertia.js Security](https://inertiajs.com/security)
+Reference: [Laravel CSRF Protection](https://laravel.com/docs/13.x/csrf) | [Inertia.js Security](https://inertiajs.com/security)

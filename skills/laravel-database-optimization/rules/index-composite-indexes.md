@@ -76,4 +76,4 @@ $userOrders = Order::where('user_id', $userId)
 - Equality-first, range-last ordering maximizes index selectivity
 - The leftmost prefix rule means the composite index also serves queries using only the first column(s)
 
-Reference: [Laravel Index Columns](https://laravel.com/docs/12.x/migrations#creating-indexes)
+Reference: [Laravel Index Columns](https://laravel.com/docs/13.x/migrations#creating-indexes)

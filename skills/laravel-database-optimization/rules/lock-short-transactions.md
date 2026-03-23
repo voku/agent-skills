@@ -76,4 +76,4 @@ dispatch(new SendOrderConfirmation($order))->afterCommit();
 - Side effects like jobs and notifications only execute after successful commit
 - External service failures don't roll back valid database changes
 
-Reference: [Laravel Database Transactions](https://laravel.com/docs/12.x/database#database-transactions)
+Reference: [Laravel Database Transactions](https://laravel.com/docs/13.x/database#database-transactions)

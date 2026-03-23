@@ -1,15 +1,15 @@
 ---
-title: Use Automatic Eager Loading (Laravel 12+)
+title: Use Automatic Eager Loading (Laravel 13+)
 impact: CRITICAL
 impactDescription: "Eliminates N+1 queries without manual with() calls"
 tags: auto-eager-loading, n-plus-one, laravel-12
 ---
 
-## Use Automatic Eager Loading (Laravel 12+)
+## Use Automatic Eager Loading (Laravel 13+)
 
 **Impact: CRITICAL (Eliminates N+1 queries without manual with() calls)**
 
-Laravel 12 introduces automatic eager loading, which detects when multiple models in a collection access the same relationship and batches those queries automatically. This eliminates the most common source of N+1 bugs without requiring developers to remember every `with()` call.
+Laravel 13 introduces automatic eager loading, which detects when multiple models in a collection access the same relationship and batches those queries automatically. This eliminates the most common source of N+1 bugs without requiring developers to remember every `with()` call.
 
 ## Incorrect
 
@@ -67,4 +67,4 @@ foreach ($posts as $post) {
 - Works in Blade templates, packages, and any code that iterates collections
 - Per-collection option provides fine-grained control when global activation is too broad
 
-Reference: [Laravel Automatic Eager Loading](https://laravel.com/docs/12.x/eloquent-relationships#automatic-eager-loading)
+Reference: [Laravel Automatic Eager Loading](https://laravel.com/docs/13.x/eloquent-relationships#automatic-eager-loading)

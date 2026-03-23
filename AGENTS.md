@@ -3,7 +3,7 @@
 This repository contains comprehensive skills for AI coding agents, optimized for:
 - React + Vite
 - React + TypeScript
-- Laravel 12 + Inertia.js + React
+- Laravel 13 + Inertia.js + React
 - Tailwind CSS
 - React Query + Zustand
 - PHP 8.x
@@ -15,9 +15,9 @@ This repository contains comprehensive skills for AI coding agents, optimized fo
 |-------|-------|----------------|
 | react-vite-best-practices | 40+ | Build optimization, code splitting |
 | typescript-react-patterns | 35+ | Type safety, generics |
-| laravel-best-practices | 45+ | Architecture, Eloquent, security |
+| laravel-best-practices | 31 | Architecture, Eloquent, security |
 | laravel-inertia-react | 30+ | Page components, forms |
-| laravel-testing | 21+ | Pest PHP 4 & PHPUnit 11, HTTP tests, factories, faking |
+| laravel-testing | 24 | Pest PHP 4 & PHPUnit 12, HTTP tests, factories, faking, AI SDK |
 | tailwind-best-practices | 35+ | Responsive, dark mode |
 | state-management | 40+ | React Query, Zustand |
 | web-design-guidelines | 50+ | Accessibility, UX |
@@ -26,6 +26,8 @@ This repository contains comprehensive skills for AI coding agents, optimized fo
 | api-design-patterns | 35+ | REST, error handling, pagination |
 | git-workflow | 25+ | Commits, branching, PRs |
 | testing-best-practices | 35+ | Unit tests, mocking, coverage |
+| laravel-ai-sdk | 17 | Agents, tools, embeddings, testing |
+| laravel-mcp | 7 | MCP servers, tools, prompts, resources |
 
 ## Usage
 
