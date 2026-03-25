@@ -1,26 +1,108 @@
 ---
 name: seo-best-practices
-description: SEO patterns and conventions for web applications. Use when implementing meta tags, structured data, Core Web Vitals, sitemaps, Open Graph, or optimizing pages for search engines. Triggers on tasks involving SEO, search optimization, schema markup, or social sharing meta tags.
+description: SEO patterns, conventions, and audit for web applications. Use when implementing meta tags, structured data, Core Web Vitals, sitemaps, Open Graph, auditing SEO, or optimizing pages for search engines. Triggers on "audit SEO", "check SEO", "review SEO", or tasks involving search optimization, schema markup, or social sharing meta tags.
 license: MIT
 metadata:
   author: agent-skills
-  version: "1.1.1"
+  version: "1.2.0"
 ---
 
 # SEO Best Practices
 
-Comprehensive SEO patterns for web applications built with React and Laravel. Contains 31 rules across 8 categories covering Core Web Vitals, technical SEO, structured data, performance, social sharing, and mobile-first indexing.
+Comprehensive SEO patterns for web applications built with React and Laravel. Contains 31 rules across 8 categories covering Core Web Vitals, technical SEO, structured data, performance, social sharing, and mobile-first indexing. Supports both **coding reference** and **audit mode**.
 
 ## Metadata
 
-- **Version:** 1.1.0
+- **Version:** 1.2.0
 - **Scope:** Laravel Blade and Laravel + Inertia.js + React
 - **Rule Count:** 31 rules across 8 categories
 - **License:** MIT
 
+## How to Audit
+
+When the user asks to "audit SEO", "check SEO", or "review SEO" — run the checklist below against their codebase.
+
+### Audit Step 1: Determine Scope
+
+- If arguments provided (`$ARGUMENTS`): audit only those pages or files
+- If no arguments: audit all pages and layouts in the codebase
+
+### Audit Step 2: Detect Project Type
+
+Use the detection logic in "Step 1: Detect Project Type" below to determine Laravel Blade vs Laravel + Inertia + React.
+
+### Audit Step 3: Run SEO Checklist
+
+Work through every item below. For each, output:
+- **PASS** — brief confirmation of what was verified
+- **FAIL** — exact `file:line`, description of the issue, and fix recommendation
+- **N/A** — if the check does not apply to this project
+
+#### Core Web Vitals
+- [ ] Hero/above-the-fold images use `fetchpriority="high"` and are preloaded (LCP < 2.5s)
+- [ ] No long-running JavaScript tasks blocking interaction (INP < 200ms)
+- [ ] All images and embeds have explicit `width`/`height` attributes (CLS < 0.1)
+- [ ] No dynamically injected content that shifts layout without reserved space
+
+#### Technical SEO
+- [ ] Every page has a unique `<title>` tag (50-60 characters)
+- [ ] Every page has a `<meta name="description">` (150-160 characters)
+- [ ] Every page has a `<link rel="canonical">` pointing to the correct URL
+- [ ] `robots.txt` exists and does not block important pages
+- [ ] XML sitemap exists and includes all indexable pages
+- [ ] URLs are clean, lowercase, hyphenated — no query params for indexable pages
+
+#### On-Page SEO
+- [ ] One `<h1>` per page containing the primary keyword
+- [ ] Heading hierarchy is sequential (h1 → h2 → h3) — no skipped levels
+- [ ] Images have descriptive `alt` text (not empty, not "image", not filename)
+- [ ] Internal links use descriptive anchor text (not "click here")
+- [ ] Semantic HTML used (`<article>`, `<section>`, `<nav>`, `<main>`)
+
+#### Structured Data
+- [ ] JSON-LD structured data present on key pages (Article, Product, FAQ, BreadcrumbList)
+- [ ] JSON-LD uses `@graph` when combining multiple schema types
+- [ ] Structured data validates with Google Rich Results Test (no errors)
+- [ ] Organization/WebSite schema present on homepage
+
+#### Performance SEO
+- [ ] Images use modern formats (WebP/AVIF) with fallbacks
+- [ ] Below-the-fold images use `loading="lazy"`
+- [ ] Fonts use `font-display: swap` or `optional`
+- [ ] Critical resources use `<link rel="preconnect">` or `<link rel="preload">`
+
+#### Social Sharing
+- [ ] Open Graph tags present (`og:title`, `og:description`, `og:image`, `og:url`, `og:type`)
+- [ ] `og:image` is at least 1200x630px
+- [ ] Twitter Card tags present (`twitter:card`, at minimum `summary_large_image`)
+
+#### React/SPA SEO (if applicable)
+- [ ] SSR or SSG configured for indexable pages — not client-side only
+- [ ] Meta tags update on route change (via `<Head>` component or equivalent)
+- [ ] `head-key` attribute used to prevent duplicate meta tags (Inertia.js)
+
+#### Mobile-First
+- [ ] `<meta name="viewport" content="width=device-width, initial-scale=1">` present
+- [ ] Content parity between mobile and desktop (no hidden content)
+- [ ] Touch targets are at least 48x48px with adequate spacing
+
+### Audit Step 4: Summary
+
+End the audit with:
+```
+## SEO Audit Summary
+- **PASS**: X checks
+- **FAIL**: X checks
+- **N/A**: X checks
+- **Top Priority Fixes**: (list the 3 most impactful FAIL items)
+```
+
+---
+
 ## When to Apply
 
 Reference these guidelines when:
+- Running an SEO audit on a codebase
 - Adding meta tags (`<title>`, description, canonical, robots)
 - Implementing structured data (JSON-LD / Schema.org)
 - Optimizing Core Web Vitals (LCP, INP, CLS)

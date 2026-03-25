@@ -26,7 +26,7 @@ This repository contains comprehensive skills for AI coding agents, optimized fo
 | php-best-practices | 51 | PHP 8.x, PSR, SOLID |
 | prd-writing | 25 | PRD workflow, feature specs, requirements |
 | react-vite-best-practices | 23 | Build optimization, code splitting |
-| seo-best-practices | 31 | Meta tags, structured data, Core Web Vitals |
+| seo-best-practices | 31 | Meta tags, structured data, Core Web Vitals, SEO audit |
 | state-management | 26 | React Query, Zustand |
 | tailwind-best-practices | 29 | Responsive, dark mode |
 | testing-best-practices | 34 | Unit tests, mocking, coverage |

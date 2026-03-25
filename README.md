@@ -172,7 +172,7 @@ npx skills add AsyrafHussin/agent-skills --skill tailwind-best-practices
 
 WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance. Contains 23 rules across 4 categories. Supports accessibility audit mode with PASS/FAIL checklist output.
 
-**Example:** `Audit my page for accessibility` or `Review my UI for accessibility issues`
+**Example:** `Run accessibility audit on this project` or `Review this component for accessibility`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill web-design-guidelines
@@ -242,9 +242,9 @@ npx skills add AsyrafHussin/agent-skills --skill testing-best-practices
 
 ### [seo-best-practices](skills/seo-best-practices)
 
-SEO patterns for Laravel Blade and Laravel + Inertia.js + React. Contains 31 rules across 8 categories covering Core Web Vitals, meta tags, structured data (JSON-LD, @graph, FAQ schema), Open Graph, performance, and mobile-first indexing. Auto-detects project type to apply the right rules.
+SEO patterns for Laravel Blade and Laravel + Inertia.js + React. Contains 31 rules across 8 categories covering Core Web Vitals, meta tags, structured data (JSON-LD), Open Graph, performance, and mobile-first indexing. Supports SEO audit mode with PASS/FAIL checklist output. Auto-detects project type.
 
-**Example:** `Review my page for SEO issues`
+**Example:** `Run SEO audit on this project` or `Set up Open Graph meta tags`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill seo-best-practices

@@ -1,9 +1,12 @@
 # SEO Best Practices
 
-Comprehensive SEO patterns for web applications built with React and Laravel.
+Comprehensive SEO patterns for web applications built with React and Laravel. Supports both coding reference and SEO audit mode with PASS/FAIL output.
+
+**Version:** 1.2.0
 
 ## Overview
 
+- SEO audit with PASS/FAIL/N/A checklist output
 - Core Web Vitals optimization (LCP, INP, CLS)
 - Technical SEO fundamentals (meta tags, canonical URLs, sitemaps, robots.txt)
 - Structured data with JSON-LD / Schema.org
@@ -11,7 +14,7 @@ Comprehensive SEO patterns for web applications built with React and Laravel.
 - React/SPA SEO (rendering strategies, dynamic meta tags)
 - Performance optimization (images, fonts, lazy loading)
 - Mobile-first indexing compliance
-- 28 rules across 8 categories
+- 31 rules across 8 categories
 
 ## Categories
 
@@ -42,7 +45,8 @@ Viewport configuration, content parity, and mobile UX requirements.
 ## Usage
 
 ```
-Review my page for SEO issues
+Run SEO audit on this project
+Review this page for SEO issues
 Add structured data to this blog post
 Optimize Core Web Vitals for this page
 Set up Open Graph meta tags
