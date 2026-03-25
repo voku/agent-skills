@@ -170,9 +170,9 @@ npx skills add AsyrafHussin/agent-skills --skill tailwind-best-practices
 
 ### [web-design-guidelines](skills/web-design-guidelines)
 
-WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance. Contains 23 rules across 4 categories covering accessibility (WCAG 2.2), form patterns, reduced motion, and layout stability.
+WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance. Contains 23 rules across 4 categories. Supports accessibility audit mode with PASS/FAIL checklist output.
 
-**Example:** `Review my UI for accessibility and UX issues`
+**Example:** `Audit my page for accessibility` or `Review my UI for accessibility issues`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill web-design-guidelines

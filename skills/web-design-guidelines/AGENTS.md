@@ -1,12 +1,16 @@
 # Web Design Guidelines - Complete Reference
 
-**Version:** 2.0.0
+**Version:** 2.1.0
 **Date:** March 2026
 **License:** MIT
 
 ## Abstract
 
-WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance patterns for inclusive web interfaces. Contains 23 rules across 4 categories.
+WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance patterns for inclusive web interfaces. Contains 23 rules across 4 categories. Supports both coding reference and audit mode.
+
+## How to Audit
+
+When asked to "audit accessibility" or "check WCAG compliance", run through each rule in this document as a checklist. For each item output **PASS**, **FAIL** (with `file:line` and fix), or **N/A**. End with a summary of pass/fail counts, WCAG level assessment, and top 3 priority fixes.
 
 ## References
 

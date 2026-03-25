@@ -31,7 +31,7 @@ This repository contains comprehensive skills for AI coding agents, optimized fo
 | tailwind-best-practices | 29 | Responsive, dark mode |
 | testing-best-practices | 34 | Unit tests, mocking, coverage |
 | typescript-react-patterns | 33 | Type safety, generics |
-| web-design-guidelines | 23 | Accessibility, UX |
+| web-design-guidelines | 23 | Accessibility, UX, WCAG audit |
 
 ## Usage
 
