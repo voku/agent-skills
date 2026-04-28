@@ -24,40 +24,34 @@ Every PHP coding task follows three phases:
 2. **DESIGN / PLANNING** — class boundaries, value objects, PHPDoc shapes, modifiers
 3. **CODING / FEEDBACK** — implement, run `php-cs-fixer fix && phpstan analyse`, iterate
 
-## Categories (61 rules)
+## Categories (56 rules across 9 sections)
 
-### 1. Type System (Critical) — 9 rules
+### 1. Types (Critical) — 9 rules
 Strict types, return types, union/intersection types, nullable handling, void/never.
 
-### 2. Modern PHP Features (Critical) — 16 rules
+### 2. Modern PHP (Critical) — 16 rules
 8.0: constructor promotion, match, named args. 8.1: enums, readonly. 8.2: readonly classes. 8.3: typed constants, #[\Override]. 8.4: property hooks, asymmetric visibility. 8.5: pipe operator.
 
-### 3. PSR Standards (High) — 6 rules
-PSR-4 autoloading, PSR-12 coding style, naming conventions, file structure, namespaces.
-
-### 4. SOLID Principles (High) — 5 rules
-Single responsibility, open/closed, Liskov substitution, interface segregation, dependency inversion.
-
-### 5. Error Handling (High) — 5 rules
+### 3. Error Handling (High) — 5 rules
 Custom exceptions, exception hierarchy, specific catches, finally cleanup, never suppress errors.
 
-### 6. Performance (Medium) — 5 rules
-Generators, lazy loading, native array/string functions, avoiding globals.
-
-### 7. Security (Critical) — 5 rules
+### 4. Security (Critical) — 5 rules
 Input validation, output escaping, password hashing, prepared statements, file upload security.
 
-### 8. PHPStan PHPDoc (Critical) — 1 rule
-Generics (`@template`), array shapes (`array{key: type}`), `class-string<T>`, `int<min, max>`, conditional return types.
+### 5. Performance (Medium) — 5 rules
+Generators, lazy loading, native array/string functions, avoiding globals.
 
-### 9. Design Patterns (High) — 2 rules
-Value objects over primitives (self-validating, immutable domain types). Avoiding magic-heavy design (`__get`/`__call`) in favour of explicit typed methods.
+### 6. SOLID / Design (High) — 7 rules
+Single responsibility, open/closed, Liskov substitution, interface segregation, dependency inversion, value objects over primitives, and no-magic design.
 
-### 10. Legacy Migration (High) — 1 rule
+### 7. PSR / Structure (High) — 6 rules
+PSR-4 autoloading, PSR-12 coding style, naming conventions, file structure, and namespaces.
+
+### 8. Tooling / Static Analysis (Critical) — 2 rules
+Generics (`@template`), array shapes (`array{key: type}`), `class-string<T>`, `int<min, max>`, conditional return types, plus the mandatory PHPStan + php-cs-fixer loop and CI integration.
+
+### 9. Legacy Migration (High) — 1 rule
 Incremental modernisation: PHPStan baseline → Rector transforms → type coverage → Strangler Fig isolation.
-
-### 11. Tooling (Critical) — 1 rule
-Mandatory PHPStan + php-cs-fixer loop; composer scripts; CI (GitHub Actions) integration; PHPStan level 0→9 guide.
 
 ## Usage
 

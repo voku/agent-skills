@@ -110,7 +110,7 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-owasp-security
 
 ### [php-best-practices](skills/php-best-practices)
 
-Modern PHP 8.0–8.5 patterns, type system, PSR standards, SOLID principles, PHPStan-style PHPDoc, value objects, legacy migration, and a mandatory static-analysis tooling loop. Contains 61 rules across 11 categories.
+Modern PHP 8.0–8.5 patterns, type system, PSR standards, SOLID principles, PHPStan-style PHPDoc, value objects, legacy migration, and a mandatory static-analysis tooling loop. Contains 56 rules across 9 sections.
 
 **Example:** `Review my PHP class for SOLID principles`
 
