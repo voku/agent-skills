@@ -1,13 +1,17 @@
 # SEO Best Practices - Complete Reference
 
-**Version:** 1.1.1
+**Version:** 1.2.0
 **Organization:** Agent Skills Contributors
 **Date:** March 2026
 **License:** MIT
 
 ## Abstract
 
-Comprehensive SEO patterns for web applications built with React and Laravel. Contains 31 rules across 8 categories covering Core Web Vitals, technical SEO, on-page optimization, structured data, performance, social sharing, React/SPA SEO, and mobile-first indexing. Each rule includes incorrect and correct code examples with practical HTML, React (Inertia.js), and Laravel implementations.
+Comprehensive SEO patterns for web applications built with React and Laravel. Contains 31 rules across 8 categories covering Core Web Vitals, technical SEO, on-page optimization, structured data, performance, social sharing, React/SPA SEO, and mobile-first indexing. Supports SEO audit mode with PASS/FAIL checklist output. Each rule includes incorrect and correct code examples with practical HTML, React (Inertia.js), and Laravel implementations.
+
+## How to Audit
+
+When asked to "audit SEO" or "check SEO", run through each rule in this document as a checklist. For each item output **PASS**, **FAIL** (with `file:line` and fix), or **N/A**. End with a summary of pass/fail counts and top 3 priority fixes.
 
 ## References
 

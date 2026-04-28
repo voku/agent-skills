@@ -5,7 +5,7 @@
   "framework": "Laravel 13.x",
   "phpVersion": "8.3+",
   "rulesTotal": 33,
-  "lastUpdated": "2026-03-14",
+  "lastUpdated": "2026-03-26",
   "categories": [
     {
       "name": "Query Performance & N+1",

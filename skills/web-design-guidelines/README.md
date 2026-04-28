@@ -1,9 +1,10 @@
-# Web Design Guidelines v2.0.0
+# Web Design Guidelines v2.1.0
 
-WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance patterns.
+WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance patterns. Supports both coding reference and accessibility audit mode with PASS/FAIL output.
 
 ## Overview
 
+- Accessibility audit with PASS/FAIL/N/A checklist output
 - Accessibility (semantic HTML, headings, keyboard nav, focus management, ARIA, color contrast, alt text, live regions)
 - Forms (autocomplete, input types, error display, validation, multi-step, placeholders, submit feedback)
 - Animation (prefers-reduced-motion)
@@ -27,6 +28,7 @@ Image loading optimization, layout stability (CLS prevention).
 ## Usage
 
 ```
+Audit my page for accessibility
 Review my UI for accessibility issues
 Check WCAG compliance on this component
 Audit this form for UX best practices

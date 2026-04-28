@@ -1,7 +1,7 @@
 {
   "name": "Web Design Guidelines",
-  "version": "2.0.0",
-  "description": "WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance patterns for inclusive web interfaces. Contains 23 rules across 4 categories.",
+  "version": "2.1.0",
+  "description": "WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance patterns for inclusive web interfaces. Contains 23 rules across 4 categories. Supports accessibility audit mode with PASS/FAIL checklist output.",
   "license": "MIT",
   "author": {
     "name": "Agent Skills Contributors",
@@ -29,8 +29,9 @@
     "aria",
     "semantic-html",
     "performance",
-    "ui-ux"
+    "ui-ux",
+    "audit"
   ],
   "rulesTotal": 23,
-  "lastUpdated": "2026-03-14"
+  "lastUpdated": "2026-03-26"
 }

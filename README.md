@@ -1,5 +1,7 @@
 # Agent Skills
 
+![Release](https://img.shields.io/github/v/release/AsyrafHussin/agent-skills?style=flat-square) ![Stars](https://img.shields.io/github/stars/AsyrafHussin/agent-skills?style=flat-square) ![License](https://img.shields.io/github/license/AsyrafHussin/agent-skills?style=flat-square)
+
 A collection of skills for AI coding agents. Works with Claude Code, Cursor, Codex, Windsurf, and [40+ agents](https://github.com/vercel-labs/skills#supported-agents).
 
 Skills follow the [Agent Skills](https://agentskills.io/) specification. Discover more at [skills.sh](https://skills.sh).
@@ -168,9 +170,9 @@ npx skills add AsyrafHussin/agent-skills --skill tailwind-best-practices
 
 ### [web-design-guidelines](skills/web-design-guidelines)
 
-WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance. Contains 23 rules across 4 categories covering accessibility (WCAG 2.2), form patterns, reduced motion, and layout stability.
+WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance. Contains 23 rules across 4 categories. Supports accessibility audit mode with PASS/FAIL checklist output.
 
-**Example:** `Review my UI for accessibility and UX issues`
+**Example:** `Run accessibility audit on this project` or `Review this component for accessibility`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill web-design-guidelines
@@ -214,6 +216,18 @@ npx skills add AsyrafHussin/agent-skills --skill git-workflow
 
 ---
 
+### [prd-writing](skills/prd-writing)
+
+Step-by-step workflow for writing Product Requirements Documents. 6-step process: assess project state, ask clarifying questions (with lettered options), draft using 12-section template, review, revise, and save. Contains 25 rules across 7 categories as supporting knowledge.
+
+**Example:** `Write a PRD for this feature`
+
+```bash
+npx skills add AsyrafHussin/agent-skills --skill prd-writing
+```
+
+---
+
 ### [testing-best-practices](skills/testing-best-practices)
 
 Unit, integration, and E2E testing with TypeScript/Vitest. Contains 34 rules across 7 categories covering test structure (AAA), isolation, assertions, test data factories, mocking, coverage strategy, and test performance.
@@ -226,11 +240,23 @@ npx skills add AsyrafHussin/agent-skills --skill testing-best-practices
 
 ---
 
+### [e2e-playwright-testing](skills/e2e-playwright-testing)
+
+End-to-end browser testing with Playwright. Contains 8 rules across 6 categories covering locator strategies, authentication reuse (storageState), React form gotchas (date inputs, sr-only checkboxes), web-first assertions, test organization, and reliability. Includes stack detection for React/Inertia/Vue projects.
+
+**Example:** `Write E2E tests for this login flow` or `Set up Playwright for this project`
+
+```bash
+npx skills add AsyrafHussin/agent-skills --skill e2e-playwright-testing
+```
+
+---
+
 ### [seo-best-practices](skills/seo-best-practices)
 
-SEO patterns for Laravel Blade and Laravel + Inertia.js + React. Contains 31 rules across 8 categories covering Core Web Vitals, meta tags, structured data (JSON-LD, @graph, FAQ schema), Open Graph, performance, and mobile-first indexing. Auto-detects project type to apply the right rules.
+SEO patterns for Laravel Blade and Laravel + Inertia.js + React. Contains 31 rules across 8 categories covering Core Web Vitals, meta tags, structured data (JSON-LD), Open Graph, performance, and mobile-first indexing. Supports SEO audit mode with PASS/FAIL checklist output. Auto-detects project type.
 
-**Example:** `Review my page for SEO issues`
+**Example:** `Run SEO audit on this project` or `Set up Open Graph meta tags`
 
 ```bash
 npx skills add AsyrafHussin/agent-skills --skill seo-best-practices
@@ -276,4 +302,4 @@ npx skills add AsyrafHussin/agent-skills --skill laravel-mcp
 
 ## License
 
-MIT
+[MIT](LICENSE)
