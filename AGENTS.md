@@ -160,7 +160,7 @@ Before finalizing any response, verify:
 | laravel-mcp | 7 | MCP servers, tools, prompts, resources |
 | laravel-owasp-security | 8 | OWASP Top 10, secure coding, auth |
 | laravel-testing | 24 | Pest PHP 4 & PHPUnit 12, HTTP tests, factories, faking, AI SDK |
-| php-best-practices | 51 | PHP 8.x, PSR, SOLID |
+| php-best-practices | 56 | PHP 8.x, static analysis, design |
 | prd-writing | 25 | PRD workflow, feature specs, requirements |
 | react-vite-best-practices | 23 | Build optimization, code splitting |
 | seo-best-practices | 31 | Meta tags, structured data, Core Web Vitals, SEO audit |
