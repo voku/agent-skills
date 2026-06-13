@@ -9,6 +9,8 @@ the `voku/agent-*` workflow.
 Skills follow the [Agent Skills](https://agentskills.io/) specification and can
 be installed by clients supported by the `skills` CLI.
 
+See [CHANGELOG.md](CHANGELOG.md) for recently added skills, review lenses, Laravel 13 updates, and operational-prompting guidance.
+
 ## Installation
 
 Install the catalog:
