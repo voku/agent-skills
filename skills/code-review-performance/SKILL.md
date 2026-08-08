@@ -33,7 +33,7 @@ Out of scope as primary concerns: type safety, security, retry hygiene without p
 
 ## Handoff
 
-When another concern becomes dominant, recommend **at most one** focused follow-up lens:
+When another concern becomes dominant, emit **at most one** focused handoff with the observed `path:line` and why that concern is dominant:
 
 - `code-review-architecture` for ownership/layering defects causing the cost;
 - `code-review-error-handling` for retries, timeout, or recovery behavior;
@@ -52,7 +52,7 @@ When another concern becomes dominant, recommend **at most one** focused follow-
 ```text
 STATUS: findings
 <path>:<line>: <CRITICAL|HIGH|MEDIUM|LOW> <problem>. <concrete fix>.
-HANDOFF: <code-review-* lens>   # optional, at most one
+HANDOFF: <code-review-* lens> <path>:<line> <why this concern is dominant>   # optional, at most one
 ```
 
 ```text
