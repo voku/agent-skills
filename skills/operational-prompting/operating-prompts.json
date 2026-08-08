@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "prompts": [
+    {
+      "id": "adversarial-review",
+      "template": "Treat the implementation as a first draft, even if it looks polished. Find at least {{minimum_failure_modes}} concrete failure modes and the design assumption most likely to be wrong. For each failure mode, name the exact scenario that triggers it and the evidence that would confirm or disprove it. Do not rubber-stamp the current solution."
+    },
+    {
+      "id": "continue-until-done",
+      "template": "Continue from the current validated state without restarting discovery. After each step, run the cheapest meaningful validation and use passing evidence as the signal to continue. Do not stop after the first acceptable result. Stop only when {{done_condition}} is satisfied or a concrete blocker makes further safe progress impossible."
+    },
+    {
+      "id": "coverage-mutation",
+      "template": "Measure the current test coverage first, then increase it by at least {{minimum_percentage_points}} percentage points. Coverage growth alone does not count as success. Run mutation testing with `{{mutation_command}}` and strengthen tests while meaningful mutants survive. New tests must prove behavior, edge cases, invariants, or regressions rather than merely execute lines. Report the baseline, final coverage, mutation result, surviving meaningful mutants, and the risk each new test closes."
+    },
+    {
+      "id": "deletion-first",
+      "template": "Before adding another abstraction, fallback, branch, helper, or compatibility path, check whether existing code can be deleted instead. List safe deletion candidates first. Extend the implementation only when removal would violate a verified requirement or contract. Prefer the smallest reviewable result with less code when behavior stays equivalent."
+    },
+    {
+      "id": "evidence-report",
+      "template": "Do not claim success beyond observable evidence. End with: what changed; why it changed; files touched; exact verification commands run; relevant raw results; verification skipped with reason; remaining risks and unknowns. An unexecuted command, model confidence, or another agent's agreement is not verification."
+    },
+    {
+      "id": "missingness-audit",
+      "template": "Audit what should exist but does not yet. Check for missing tests, validation, error handling, rollback or recovery behavior, observability, documentation, and boundary conditions that are required by the current task. Separate missingness from bugs in existing behavior. Do not invent work that is not grounded in repository evidence or the task contract."
+    },
+    {
+      "id": "multi-pass-correctness-simplify",
+      "template": "Use three separate passes. Pass 1: implement the requested change. Pass 2: review only for correctness, missing edge cases, broken assumptions, and untested paths. Pass 3: review only for simplification, deletion opportunities, duplicate logic, and unnecessary abstractions. Correctness must be established before simplification."
+    },
+    {
+      "id": "plan-horizon",
+      "template": "Plan the next {{horizon}}, not merely the next step. Cover the complete horizon with milestones that each have an observable outcome, required evidence, dependencies, risks, and a clear condition for moving on. Distinguish committed work from experiments and unknowns. Do not stop after producing the first actionable item."
+    },
+    {
+      "id": "regression-hunt",
+      "template": "Strengthen the tests until they expose at least {{minimum_findings}} real regression, broken assumption, missing edge case, weak assertion, behavior drift, or equivalent concrete defect. Coverage growth by itself does not satisfy this contract. If new tests find nothing, keep probing higher-risk branches and boundaries. When a new test fails, fix production code unless the verified requirement itself changed. Report each finding and the risk the corresponding test now closes."
+    },
+    {
+      "id": "retry-stop",
+      "template": "Retry only while each attempt is based on new evidence. If the same validation fails {{maximum_failures}} times in a row, stop. Do not attempt another speculative fix. Report the exact failing command, the latest concrete error, what changed between attempts, the smallest safe next step, and what information is still missing."
+    }
+  ]
+}
