@@ -34,7 +34,7 @@ Out of scope as primary concerns: security vulnerabilities, type-system design, 
 
 ## Handoff
 
-When another concern becomes dominant, recommend **at most one** focused follow-up lens:
+When another concern becomes dominant, emit **at most one** focused handoff with the observed `path:line` and why that concern is dominant:
 
 - `code-review-security` for leaked secrets or weakened controls;
 - `code-review-performance` for retry/backpressure/blocking cost;
@@ -54,7 +54,7 @@ When another concern becomes dominant, recommend **at most one** focused follow-
 ```text
 STATUS: findings
 <path>:<line>: <CRITICAL|HIGH|MEDIUM|LOW> <problem>. <concrete fix>.
-HANDOFF: <code-review-* lens>   # optional, at most one
+HANDOFF: <code-review-* lens> <path>:<line> <why this concern is dominant>   # optional, at most one
 ```
 
 ```text
