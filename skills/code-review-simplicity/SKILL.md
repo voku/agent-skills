@@ -26,6 +26,8 @@ Targeted simplicity lens for readability, cognitive load, unnecessary abstractio
 
 Prefer, in order: delete code, reuse an existing owner, use the language/platform, inline a needless abstraction, then add new structure only when the verified behavior requires it.
 
+Clean-code checks are concrete: intention-revealing names, small cohesive units with one reason to change, narrow interfaces, shallow control flow, and no helper/manager/configuration dumping ground created merely to move complexity elsewhere.
+
 ## Scope
 
 Run this lens when complexity or maintainability is the dominant concern or a workflow explicitly dispatches it. Do not broaden into a generic review bundle.
