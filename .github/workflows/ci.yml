@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-skills:
+    name: Validate Skills
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Validate Skill Metadata and Structure
+        run: |
+          python3 - << 'PYEOF'
+          import os
+          import sys
+
+          skills_dir = "skills"
+          errors = []
+
+          if not os.path.isdir(skills_dir):
+              print(f"Error: {skills_dir} directory not found")
+              sys.exit(1)
+
+          for entry in sorted(os.listdir(skills_dir)):
+              full_path = os.path.join(skills_dir, entry)
+              if not os.path.isdir(full_path):
+                  continue
+              skill_file = os.path.join(full_path, "SKILL.md")
+              if not os.path.isfile(skill_file):
+                  errors.append(f"Missing SKILL.md in {entry}")
+                  continue
+              with open(skill_file, "r", encoding="utf-8") as f:
+                  content = f.read()
+              if not content.startswith("---"):
+                  errors.append(f"{entry}/SKILL.md does not start with YAML frontmatter (---)")
+                  continue
+              parts = content.split("---", 2)
+              if len(parts) < 3:
+                  errors.append(f"{entry}/SKILL.md does not have closed YAML frontmatter (---)")
+                  continue
+              frontmatter = parts[1]
+              name_found = False
+              desc_found = False
+              for line in frontmatter.splitlines():
+                  line = line.strip()
+                  if line.startswith("name:"):
+                      name = line.split(":", 1)[1].strip().strip('"').strip("'")
+                      name_found = True
+                      if name != entry:
+                          errors.append(f"{entry}/SKILL.md name '{name}' does not match directory '{entry}'")
+                  if line.startswith("description:"):
+                      desc_found = True
+              if not name_found:
+                  errors.append(f"{entry}/SKILL.md is missing name in frontmatter")
+              if not desc_found:
+                  errors.append(f"{entry}/SKILL.md is missing description in frontmatter")
+
+          if errors:
+              print("Validation failed:")
+              for err in errors:
+                  print(" - " + err)
+              sys.exit(1)
+
+          print(f"Successfully validated {len([d for d in os.listdir(skills_dir) if os.path.isdir(os.path.join(skills_dir, d))])} skills.")
+          PYEOF

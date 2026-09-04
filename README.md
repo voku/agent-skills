@@ -1,6 +1,10 @@
 # Agent Skills
 
-![Release](https://img.shields.io/github/v/release/voku/agent-skills?style=flat-square) ![Stars](https://img.shields.io/github/stars/voku/agent-skills?style=flat-square) ![License](https://img.shields.io/github/license/voku/agent-skills?style=flat-square)
+[![Build Status](https://github.com/voku/agent-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/voku/agent-skills/actions)
+[![GitHub release](https://img.shields.io/github/v/release/voku/agent-skills?style=flat-square)](https://github.com/voku/agent-skills/releases)
+[![License](https://img.shields.io/github/license/voku/agent-skills?style=flat-square)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/voku/agent-skills?style=flat-square)](https://github.com/voku/agent-skills/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/voku/agent-skills?style=flat-square)](https://github.com/voku/agent-skills/network/members)
 
 A repository of portable skills for coding agents. This fork keeps the broader
 upstream skill catalog and adds voku's evidence-driven engineering skills used by
