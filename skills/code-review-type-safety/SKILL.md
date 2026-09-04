@@ -17,6 +17,7 @@ Targeted type-safety lens for honest contracts, runtime validation, unsafe casts
 |----------|----------|--------|
 | HIGH | Type coverage | `type-type-coverage` |
 | CRITICAL | Type correctness | `type-type-correctness` |
+| HIGH | Asymmetric rigor | `type-asymmetric-rigor` |
 | CRITICAL | Type safety | `type-type-safety` |
 | MEDIUM | Generic discipline | `type-generic-discipline` |
 

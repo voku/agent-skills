@@ -1,0 +1,57 @@
+{
+  "version": "1.0.0",
+  "skill": {
+    "name": "dogfood-closeout-classification",
+    "version": "1.0.0",
+    "description": "Durable closeout workflow constraints for collecting, classifying, and validating agent session learnings while guarding private repository boundaries",
+    "author": "Agent Skills Team",
+    "license": "MIT",
+    "keywords": [
+      "session-closeout",
+      "inference-classification",
+      "leak-check",
+      "private-context",
+      "hard-constraints"
+    ]
+  },
+  "categories": [
+    {
+      "id": "inference-triage",
+      "name": "Inference Triage",
+      "priority": "critical",
+      "description": "Every LLM inference point must be classified into a structured outcome before session closeout",
+      "rule_count": 1
+    },
+    {
+      "id": "leak-prevention",
+      "name": "Leak Prevention",
+      "priority": "critical",
+      "description": "Check public diffs for private context, paths, names, and credentials before upstreaming",
+      "rule_count": 1
+    },
+    {
+      "id": "environment-isolation",
+      "name": "Environment Isolation",
+      "priority": "high",
+      "description": "Keep host-specific runtime details private and generic upstream documentation abstract",
+      "rule_count": 1
+    }
+  ],
+  "references": [],
+  "configurations": {},
+  "meta": {
+    "created": "2026-06-23",
+    "last_updated": "2026-06-23",
+    "rule_count": 3,
+    "structure_version": "2.0",
+    "compatibility": {
+      "platforms": [
+        "GitHub Copilot",
+        "Codex",
+        "Claude Code",
+        "Cursor",
+        "Gemini CLI"
+      ]
+    }
+  }
+}

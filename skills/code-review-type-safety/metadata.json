@@ -27,6 +27,7 @@
   "tags": [
     "code-review",
     "review-lens",
+    "type-asymmetric-rigor",
     "type-generic-discipline",
     "type-type-correctness",
     "type-type-coverage",
@@ -48,6 +49,14 @@
       "prefix": "type-type-correctness",
       "count": 1,
       "description": "Annotations, assertions, and guards that match real behavior"
+    },
+    {
+      "id": "type-asymmetric-rigor",
+      "name": "Asymmetric Rigor",
+      "priority": "high",
+      "prefix": "type-asymmetric-rigor",
+      "count": 1,
+      "description": "The same value validated strictly in one sibling path and loosely in another"
     },
     {
       "id": "type-type-safety",
@@ -80,8 +89,8 @@
   ],
   "meta": {
     "created": "2026-05-26",
-    "last_updated": "2026-05-26",
-    "rule_count": 4,
+    "last_updated": "2026-08-07",
+    "rule_count": 5,
     "structure_version": "2.0",
     "compatibility": {
       "platforms": [

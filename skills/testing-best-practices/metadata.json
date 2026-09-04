@@ -59,7 +59,8 @@
       "name": "Coverage",
       "prefix": "cov",
       "impact": "MEDIUM",
-      "ruleCount": 4
+      "ruleCount": 4,
+      "count": 2
     },
     {
       "name": "Performance",
@@ -88,8 +89,8 @@
   "lastUpdated": "2026-03-14",
   "meta": {
     "created": "2026-03-14",
-    "last_updated": "2026-03-14",
-    "rule_count": 34,
+    "last_updated": "2026-08-07",
+    "rule_count": 36,
     "structure_version": "2.0",
     "compatibility": {
       "platforms": [
@@ -100,5 +101,9 @@
         "Gemini CLI"
       ]
     }
-  }
+  },
+  "tags": [
+    "cov-adversarial-probe",
+    "cov-regression-first"
+  ]
 }

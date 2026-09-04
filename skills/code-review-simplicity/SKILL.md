@@ -20,6 +20,7 @@ Targeted simplicity lens for readability, cognitive load, unnecessary abstractio
 | CRITICAL | Unnecessary complexity | `simp-unnecessary-complexity` |
 | CRITICAL | Colliding/redundant bounds | `simp-colliding-bounds` |
 | MEDIUM | Duplication | `simp-code-duplication` |
+| HIGH | Premature abstraction | `simp-premature-abstraction` |
 | LOW | Documentation/comments | `simp-documentation-comments` |
 | MEDIUM | Naming | `simp-naming-conventions` |
 | LOW | Testing/debugging simplicity | `simp-testing-debugging` |

@@ -16,6 +16,7 @@ Targeted resilience lens for signalling, propagation, retries, cleanup, and obse
 | Priority | Category | Prefix |
 |----------|----------|--------|
 | CRITICAL | Error signalling | `err-signalling-discipline` |
+| HIGH | Outcome messaging | `err-outcome-messaging` |
 | CRITICAL | Exception hygiene | `err-exception-hygiene` |
 | CRITICAL | Timeout & cancellation | `err-timeout-cancellation` |
 | HIGH | Retry semantics | `err-retry-semantics` |

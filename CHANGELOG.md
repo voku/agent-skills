@@ -6,6 +6,18 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-08-25 - Review rules, PHP static analysis, and dogfood closeout classification
+
+### Added
+
+- Added `php-static-analysis` skill providing implementation guidance for provably typed PHP code under strict analyzers (native types first, shape/generic precision, contract honesty, root-cause typing, scoped ignores, analyzer extensions).
+- Added `dogfood-closeout-classification` skill enforcing classification of LLM inference points and private leak checks before session closeout and upstream commits.
+- Added targeted review rules:
+  - `code-review-error-handling`: `err-outcome-messaging` (outcome messaging discipline).
+  - `code-review-simplicity`: `simp-premature-abstraction` (premature abstraction checks).
+  - `code-review-type-safety`: `type-asymmetric-rigor` (consistent validation rigor across sibling branches).
+  - `testing-best-practices`: `cov-adversarial-probe` (adversarial probing before happy-path tests) and `cov-regression-first` (regression test reproducing bug before fixing).
+
 ## 2026-08-14 - Falsification-safe adversarial review
 
 ### Changed
