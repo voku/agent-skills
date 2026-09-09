@@ -100,6 +100,18 @@ The skill keeps explicit safety and verification floors. A shorter patch that
 moves behavior into the wrong layer, drops a trust-boundary check, or leaves
 sibling callers broken is not simpler.
 
+### `engineering-codelight`
+
+Technology-neutral reasoning for non-trivial engineering work. It keeps evidence
+separate from authority, preserves uncertainty, checks instruction provenance and
+owner boundaries, favors falsifiable evidence and small causal changes, re-grounds
+stale plans, keeps failure recoverable, and turns durable lessons into structure.
+
+It is deliberately workflow-neutral: an existing project workflow remains the
+authority for lifecycle state and approvals. `engineering-codelight` complements
+the concrete implementation search in `coding-simplicity`; it does not replace it
+or any language- or review-specific skill.
+
 ### `code-review-*`
 
 The review skills are **independent targeted lenses**, not a mandatory review

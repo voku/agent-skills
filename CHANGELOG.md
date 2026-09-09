@@ -6,6 +6,19 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-09-09 - Codelight engineering reasoning
+
+### Added
+
+- Added `engineering-codelight`, a compact, technology-neutral reasoning skill
+  for non-trivial engineering work. It keeps evidence distinct from authority,
+  preserves uncertainty and instruction provenance, respects owner boundaries,
+  favors falsifiable small changes, re-grounds stale plans, makes recovery
+  possible, and promotes transferable learning into structural constraints.
+- Added CI checks for the skill's frontmatter/structure, nine-law core,
+  workflow-neutral boundary, prohibited lifecycle/framework text, and 5 KiB
+  preferred / 8 KiB review-size budgets.
+
 ## 2026-08-25 - Review rules, PHP static analysis, and dogfood closeout classification
 
 ### Added
