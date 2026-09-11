@@ -35,7 +35,7 @@ Before consequential mutation, establish outcome, scope, non-goals, evidence, an
 
 ### 6. Prefer falsifiable evidence
 
-Distinguish current from desired behavior. Prefer evidence that could disprove the explanation: a regression that detects the original failure, incompatible cases, consumer behavior, independent review, runtime observation, or measured before/after results. Bind important evidence to the exact state it validates.
+Distinguish current from desired behavior. Prefer evidence that could disprove the explanation: a regression that detects the original failure, incompatible cases, consumer behavior, independent review, runtime observation, or measured before/after results. Bind important evidence to the exact state it validates. For semantic review, prefer a fresh reviewer given only the contract, artifact, and relevant evidence; exclude implementation narration unless it is itself evidence.
 
 ### 7. Re-ground moving reality
 
@@ -55,6 +55,7 @@ When a lesson transfers, prefer an owner API, type, invariant, regression test, 
 - Ask a human when the remaining gap requires human intent/domain authority, material risk acceptance, permission, or a fact that current tools and sources cannot establish. A missing fact is not automatically an authority decision.
 - Stop consequential work only at a genuine human-authority boundary such as changed intent, accepted material risk, irreversible/destructive action, or permission/security authority.
 - Stop research, planning, review, or validation when further work cannot materially change the next safe decision.
+- When a host can enforce it, make investigation and review roles read-only; isolation is a capability boundary, not a workflow state.
 - Handoff state and evidence: outcome, scope, identities, decisions, validation, unknowns, risks, and next action. Do not persist private reasoning as a substitute for a usable record.
 
 ## Workflow boundary
