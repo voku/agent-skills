@@ -89,3 +89,22 @@ runtime consumes.
   mutation testing, deletion-first review, missingness audits, adversarial review,
   reproduce-before-fix, reject-and-restart, and multi-pass
   correctness/simplification work.
+- Added context-independent L1 controls for continuation, evidence reporting, and
+  bounded retry/stop behavior.
+
+### Changed
+
+- Operational contracts now use the five-part shape `Goal + Context + Constraints
+  + Verification + Done When`. Verification defines the measurement procedure;
+  Done When defines the observable stopping condition.
+- Code-review skills are targeted independent lenses rather than an automatic
+  review swarm. Start with the dominant lens and allow at most one evidence-backed
+  handoff when another concern becomes primary.
+- Reusable recipes carry no hidden task thresholds or project commands. Numeric
+  floors, retry limits, mutation commands, horizons, and other policy are explicit
+  caller arguments; repository facts come from the consuming project's recall.
+
+### Fixed
+
+- Repository badges, installation commands, clone examples, and per-skill `npx`
+  examples now point at `voku/agent-skills` instead of the upstream fork owner.
