@@ -6,6 +6,17 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-09-11 - Fresh review and read-only role boundaries
+
+### Changed
+
+- `engineering-codelight` now prefers fresh-context semantic review built from
+  the contract, artifact, and relevant evidence instead of implementation
+  narration that can anchor an independent reviewer.
+- Investigation and review roles should use host-enforced read-only capability
+  boundaries when the host supports them, without turning those host mechanics
+  into a second workflow or lifecycle.
+
 ## 2026-09-09 - Codelight engineering reasoning
 
 ### Added
