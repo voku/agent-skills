@@ -17,11 +17,11 @@
     ]
   },
   "organization": "Laravel Community",
-  "date": "March 2026",
+  "date": "September 2026",
   "laravelVersion": "13.x",
   "phpVersion": "8.3+",
-  "rulesTotal": 7,
-  "abstract": "Comprehensive Laravel MCP guide for AI agents and LLMs. Contains 7 rules across 5 categories covering MCP server creation, tool development with schemas and responses, prompt and resource definitions, authentication with OAuth and Sanctum, and unit testing. All examples use PHP 8.3 syntax and Laravel 13 conventions.",
+  "rulesTotal": 4,
+  "abstract": "Laravel MCP guidance for AI agents covering server registration/authentication, tool schemas, tool responses/error handling, resources/prompts, and testing. Validate framework and package behavior against the target repository before applying version-sensitive APIs.",
   "references": [
     "https://laravel.com/docs/13.x/mcp",
     "https://modelcontextprotocol.io/docs/getting-started/intro",
@@ -29,54 +29,50 @@
   ],
   "categories": [
     {
-      "name": "Servers",
-      "prefix": "server",
+      "name": "Servers & Auth",
+      "prefix": "mcp-servers",
       "impact": "CRITICAL",
-      "description": "Creating and registering MCP servers"
+      "ruleCount": 1,
+      "description": "Server registration, transport, middleware, and authentication boundaries"
     },
     {
-      "name": "Tools",
-      "prefix": "tool",
+      "name": "Tool Schemas",
+      "prefix": "mcp-tool-definition",
+      "impact": "CRITICAL",
+      "ruleCount": 1,
+      "description": "Tool descriptions, typed schemas, validation, and dependency injection"
+    },
+    {
+      "name": "Tool Responses",
+      "prefix": "mcp-tool-responses",
       "impact": "HIGH",
-      "description": "Building tools with schemas, validation, and responses"
+      "ruleCount": 1,
+      "description": "Structured responses, error handling, and observable failure contracts"
     },
     {
-      "name": "Prompts & Resources",
-      "prefix": "prompt, resource",
-      "impact": "MEDIUM",
-      "description": "Reusable prompt templates and data resources for AI clients"
-    },
-    {
-      "name": "Authentication",
-      "prefix": "auth",
+      "name": "Resources & Testing",
+      "prefix": "mcp-resources",
       "impact": "HIGH",
-      "description": "Protecting MCP servers with OAuth 2.1, Sanctum, or custom auth"
-    },
-    {
-      "name": "Testing",
-      "prefix": "test",
-      "impact": "HIGH",
-      "description": "Testing MCP servers with Inspector and unit tests"
+      "ruleCount": 1,
+      "description": "Resources, prompts, and focused MCP test coverage"
     }
   ],
   "keyFeatures": [
-    "MCP server creation with web and local transport",
-    "Tool development with JSON input/output schemas",
-    "Tool annotations (IsReadOnly, IsDestructive, IsIdempotent, IsOpenWorld)",
-    "Structured and streaming tool responses",
-    "Prompt templates with arguments and validation",
-    "Resources and resource templates with URI patterns",
-    "OAuth 2.1 authentication via Passport",
-    "Sanctum token-based authentication",
-    "Authorization with request user context",
-    "MCP Inspector for interactive debugging",
-    "Unit tests with assertOk, assertSee, assertHasErrors"
+    "MCP server registration with explicit authentication boundaries",
+    "Tool development with typed schemas and dependency injection",
+    "Structured tool responses with explicit failure handling",
+    "Prompt and resource exposure with focused MCP tests",
+    "Target-version verification before applying framework-sensitive APIs"
   ],
   "meta": {
     "created": "2026-03-01",
-    "last_updated": "2026-03-01",
-    "rule_count": 7,
+    "last_updated": "2026-09-14",
+    "rule_count": 4,
     "structure_version": "2.0",
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ],
     "compatibility": {
       "platforms": [
         "GitHub Copilot",
