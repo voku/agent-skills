@@ -1,190 +1,35 @@
-# Code Review Performance — Full Compiled Reference
+# Code Review Performance — Agent Projection
 
-Performance review lens for algorithmic cost, data access, caching, concurrency, and worst-case resource usage.
+**Version:** 2.0.0  
+**Rules:** 5 consolidated rules  
+**License:** MIT
 
-**Version:** 1.0.0 | **Rules:** 7 | **License:** MIT
+This file is a compact projection for agents. The canonical contract is `SKILL.md` plus the files under `rules/`. Do not add independent performance-review semantics here.
 
----
+## Fast Path
 
-## Operational Contract
+1. Use this lens only when cost, latency, throughput, or scalability is the dominant concern.
+2. Read `SKILL.md` first.
+3. Load only the rule files relevant to the observed cost path.
+4. Tie findings to real query, CPU, memory, network, or concurrency evidence.
+5. If another concern becomes dominant, hand off to at most one focused review lens.
 
-When applying this skill, agents must:
-- Treat this skill as repo-owned guidance and defer to repository or task-specific instructions when they conflict.
-- Limit work to the smallest relevant file and rule set for the current request.
-- Stop and ask when the scope, validation command, or required context is missing or contradictory.
-- Prefer machine-readable evidence first, then summarize files reviewed, commands run, failures, and unresolved risks.
+## Rule Index
 
-## Validation & Evidence
+| Rule | Priority | Focus |
+|------|----------|-------|
+| [`perf-database-nplusone`](rules/perf-database-nplusone.md) | CRITICAL | N+1 queries, eager loading, index/query shape |
+| [`perf-algorithmic-collections`](rules/perf-algorithmic-collections.md) | CRITICAL | Collection lookup shape and asymptotic cost |
+| [`perf-memory-streaming`](rules/perf-memory-streaming.md) | HIGH | Streaming, chunking, bounded memory |
+| [`perf-caching-invalidation`](rules/perf-caching-invalidation.md) | HIGH | TTLs, key versioning, stampede protection |
+| [`perf-network-batching`](rules/perf-network-batching.md) | HIGH | Remote-call batching and over-fetching |
 
-- Run the repository's existing validation commands in documented order when code changes are requested.
-- If the repository does not define validation for the task, say so instead of inventing one.
-- When the lens requires cross-file inspection, name the extra files reviewed.
+## Evidence Boundary
 
-## Trigger Phrases
+- Construct a worst-case input only when changed behavior can amplify work with input size.
+- Prefer removing unnecessary work before adding caches or concurrency machinery.
+- If a claimed regression depends on unavailable runtime/query evidence, report `blocked` rather than guessing.
 
-The skill activates on:
-- "performance review"
-- "find bottlenecks"
-- "n+1 review"
-- "resource usage"
-- "scalability review"
+## Terminal Contract
 
-## Scope Discipline
-
-### In Scope
-- Review performance concerns: efficiency, bottlenecks, and resource use
-- Analyze algorithmic complexity and data-access patterns
-- Check caching, batching, lazy loading, and concurrency behavior
-- Estimate worst-case cost for the modified path
-
-### Do Not Broaden Into
-- ❌ Primary type-safety analysis
-- ❌ Primary security vulnerability review
-- ❌ Retry or exception hygiene unless it changes performance behavior
-- ❌ Pure architecture or readability concerns
-
-## Cross-Lens Handoff Discipline
-
-Use this as a targeted lens, not a generic review bundle.
-
-- Prove one dominant cost or scalability issue first.
-- If another concern becomes primary, recommend exactly one next review lens instead of broadening into a vague multi-lens pass.
-- Keep the current pass focused on evidence this lens can actually prove.
-
-Smallest likely follow-up lenses:
-
-- `code-review-architecture` when the real cost comes from ownership, layering, or boundary design
-- `code-review-error-handling` when retries, timeouts, or partial-failure recovery dominate the regression
-- `code-review-simplicity` when duplicated or over-abstracted work is the main source of waste
-- `code-review-security` when the issue is adversarial resource exhaustion or unsafe cost amplification
-
-## Output Format
-
-Use this exact structure:
-
-```markdown
-## Must Fix
-- [CRITICAL|HIGH] [path:line] Title
-  - Description: What is wrong and why it matters
-  - Suggestion: Specific fix with code example
-  - Metadata: cross_lens_candidate=true/false, tradeoff_required=true/false
-
-## Observations
-- [MEDIUM|LOW] [path:line] Title
-  - Description: Informational finding
-  - Metadata: cross_lens_candidate=true/false, tradeoff_required=true/false
-
-## Summary
-[One paragraph overall assessment]
-```
-
-## Severity Scale
-
-- **CRITICAL**: Regressions likely to cause timeouts, outages, or severe user-facing slowdowns.
-- **HIGH**: Measurable inefficiencies or scalability problems with meaningful impact.
-- **MEDIUM**: Optimization opportunities with moderate cost savings.
-- **LOW**: Minor optimizations or asset-level polish.
-
-## Metadata Guidance
-
-- **cross_lens_candidate** — true when the performance issue also implies architecture, error-handling, or security follow-up, otherwise false.
-- **tradeoff_required** — true when the fix introduces complexity or maintenance trade-offs, otherwise false.
-
-## Adversarial Input Discipline
-
-- Construct one concrete high-load or worst-case input for the main code path changed in the diff.
-- Estimate the resulting CPU, query, memory, or network cost at that input size.
-- If no credible worst-case input can be constructed, return BLOCKED.
-
----
-
-
-## Section 1: Algorithmic Complexity — CRITICAL
-
-Complexity growth, nested loops, and expensive recomputation.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to algorithmic complexity.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 2: Database Performance — CRITICAL
-
-N+1 queries, indexes, joins, and query-shape efficiency.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to database performance.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 3: Network I/O — HIGH
-
-Batching, pagination, parallelism, timeouts, and unnecessary round trips.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to network i/o.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 4: Memory Management — HIGH
-
-Leaks, retention, object copying, and unbounded collections.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to memory management.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 5: Caching Strategy — MEDIUM
-
-Cacheability, invalidation, key design, and cold-path cost.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to caching strategy.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 6: Concurrency — HIGH
-
-Blocking work, pool exhaustion, async behavior, and race-related throughput loss.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to concurrency.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 7: Asset & Payload Optimization — LOW
-
-Bundles, images, compression, and lazy loading opportunities.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to asset & payload optimization.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
-
----
-
-## Integration Notes
-
-- Part of the six-pass review protocol. Precedence: SECURITY > ERROR_HANDLING > TYPE_SAFETY > PERFORMANCE > ARCHITECTURE > SIMPLICITY.
-- Findings merge deterministically across lenses by `(path, line, title)`.
-- CRITICAL and HIGH findings belong in `## Must Fix`; MEDIUM and LOW belong in `## Observations` unless repo-specific instructions say otherwise.
+Follow the exact `STATUS: findings|clean|blocked` contract in `SKILL.md`. The caller owns merge, dedupe, approval, persistence, and workflow progression.

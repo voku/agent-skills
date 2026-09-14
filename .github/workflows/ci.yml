@@ -282,6 +282,75 @@ jobs:
               if simplicity_metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
                   errors.append("code-review-simplicity metadata must identify SKILL.md + rules/ as canonical sources")
 
+          review_projection_contracts = {
+              "code-review-performance": {
+                  "rules": [
+                      "perf-database-nplusone",
+                      "perf-algorithmic-collections",
+                      "perf-memory-streaming",
+                      "perf-caching-invalidation",
+                      "perf-network-batching",
+                  ],
+                  "retired": [
+                      "perf-algorithmic-complexity",
+                      "perf-database-performance",
+                      "perf-network-io",
+                      "perf-memory-management",
+                      "perf-caching-strategy",
+                      "perf-concurrency",
+                      "perf-asset-optimization",
+                  ],
+              },
+              "code-review-error-handling": {
+                  "rules": [
+                      "err-signalling-hygiene",
+                      "err-outcome-batch-discipline",
+                      "err-timeouts-cancellation",
+                      "err-retry-idempotency",
+                      "err-cleanup-observability",
+                  ],
+                  "retired": [
+                      "err-signalling-discipline",
+                      "err-outcome-messaging",
+                      "err-exception-hygiene",
+                      "err-timeout-cancellation",
+                      "err-retry-semantics",
+                      "err-partial-failure",
+                      "err-observability",
+                      "err-resource-cleanup",
+                      "err-defensive-overreach",
+                  ],
+              },
+          }
+          for skill_name, contract in review_projection_contracts.items():
+              skill_dir = os.path.join(skills_dir, skill_name)
+              skill = skill_contents.get(skill_name)
+              if skill is None:
+                  errors.append(f"Missing {skill_name}/SKILL.md")
+                  continue
+
+              for rule_id in contract["rules"]:
+                  if rule_id not in skill:
+                      errors.append(f"{skill_name}/SKILL.md is missing consolidated rule: {rule_id}")
+                  rule_path = os.path.join(skill_dir, "rules", f"{rule_id}.md")
+                  if not os.path.isfile(rule_path):
+                      errors.append(f"{skill_name} is missing rule file: {rule_path}")
+
+              for projection_name in ["README.md", "AGENTS.md", "metadata.json"]:
+                  projection_path = os.path.join(skill_dir, projection_name)
+                  with open(projection_path, "r", encoding="utf-8") as f:
+                      projection = f.read()
+                  for retired_id in contract["retired"]:
+                      if retired_id in projection:
+                          errors.append(f"{skill_name}/{projection_name} still contains retired rule id: {retired_id}")
+
+              with open(os.path.join(skill_dir, "metadata.json"), "r", encoding="utf-8") as f:
+                  metadata = json.load(f)
+              if metadata.get("meta", {}).get("rule_count") != len(contract["rules"]):
+                  errors.append(f"{skill_name}/metadata.json must report exactly {len(contract['rules'])} consolidated rules")
+              if metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
+                  errors.append(f"{skill_name} metadata must identify SKILL.md + rules/ as canonical sources")
+
           if errors:
               print("Validation failed:")
               for err in errors:
