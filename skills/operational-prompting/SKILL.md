@@ -1,15 +1,15 @@
 ---
 name: operational-prompting
-description: Repo-owned operational prompting for coding agents. Use when designing AGENTS.md, Copilot/Codex instructions, path-specific instruction files, portable skill manifests, or validation contracts. Triggers on "operational prompting", "agent instructions", "repo-owned prompts", "Copilot instructions", or "portable agent skills".
+description: Repo-owned operational prompting for coding agents. Use when designing AGENTS.md, Copilot/Codex instructions, path-specific instruction files, portable Agent Skills guidance, or validation contracts. Triggers on "operational prompting", "agent instructions", "repo-owned prompts", "Copilot instructions", or "portable agent skills".
 license: MIT
 metadata:
   author: Agent Skills Team
-  version: "1.0.1"
+  version: "2.0.0"
 ---
 
 # Operational Prompting
 
-Modern coding-agent control for repository-bound work. Contains 8 rules across 4 categories for repo-owned instructions, instruction hierarchy, scope contracts, validation contracts, evidence output, machine-readable workflows, stopping conditions, and vendor-neutral skill manifests.
+Modern coding-agent control for repository-bound work. Contains 4 consolidated rules across instruction hierarchy, task scope and stopping, validation and evidence, and portable skill boundaries.
 
 ## When to Apply
 
@@ -17,14 +17,15 @@ Reference these guidelines when:
 - Designing repository instructions for coding agents
 - Migrating a giant custom prompt into repo-owned files
 - Defining AGENTS.md, `.github/copilot-instructions.md`, or `*.instructions.md`
-- Writing portable skill manifests or task-specific command recipes
+- Authoring portable Agent Skills guidance or task-specific command recipes
 - Tightening task boundaries, validation loops, or review output
 
 ## Maintenance Discipline
 
+- Treat this `SKILL.md` and `rules/` as the canonical skill contract. Supporting `README.md`, `AGENTS.md`, and `metadata.json` are projections and must not introduce independent semantics.
 - Edit the canonical repo-owned instruction source first, not installed, copied, or generated derivatives.
 - If a skill invokes, configures, or depends on a specific tool's CLI, API, schema, generated files, or runtime behavior, keep the canonical skill and its tool-specific resources in that tool's repository. Generic skill collections may explain the principle or link to the owner; they should not duplicate the executable instructions.
-- Regenerate machine-readable manifests or compiled prompt artifacts only when the interface-facing metadata actually changed.
+- Regenerate or refresh projections only when their interface-facing information changed.
 - After changing repo-owned guidance, rerun the repository's validation and install/sync steps for the affected agent assets.
 - When a durable correction appears only in chat history, memory, or review notes, promote it into the owning repo guidance instead of leaving it as tribal knowledge.
 - Clean stale generated copies when a skill, prompt file, or subagent definition is renamed, merged, or retired.
@@ -53,27 +54,27 @@ Examples:
 ## Quick Reference
 
 ### 1. Instruction Hierarchy (CRITICAL)
-- [`op-repo-owned-hierarchy`](rules/op-repo-owned-hierarchy.md) — Durable repo-owned instructions in AGENTS.md, layered provenance
+- [`op-repo-owned-hierarchy`](rules/op-repo-owned-hierarchy.md) — Durable repo-owned instructions in AGENTS.md with explicit provenance and precedence
 
 ### 2. Task Scope & Stopping (CRITICAL)
-- [`op-scope-stopping-contracts`](rules/op-scope-stopping-contracts.md) — Minimal surgical diffs, no drive-by refactoring, clear stopping conditions
+- [`op-scope-stopping-contracts`](rules/op-scope-stopping-contracts.md) — Minimal surgical diffs, no drive-by refactoring, explicit stopping conditions
 
 ### 3. Validation & Evidence (HIGH)
-- [`op-validation-evidence-loops`](rules/op-validation-evidence-loops.md) — Closed-loop verification with CLI exit codes and falsifiable terminal evidence
+- [`op-validation-evidence-loops`](rules/op-validation-evidence-loops.md) — Closed-loop verification with observable exit codes and falsifiable terminal evidence
 
 ### 4. Portability (MEDIUM)
-- [`op-portable-skill-manifests`](rules/op-portable-skill-manifests.md) — Vendor-neutral skill manifests, separating heuristics from tool mechanics
+- [`op-portable-skill-manifests`](rules/op-portable-skill-manifests.md) — Standard Agent Skills frontmatter and separation of portable heuristics from tool-coupled mechanics
 
 ## Essential Patterns
 
 ### Canonical-Source-First Workflow
 
 ```markdown
-1. Edit the reviewed source file, not generated copies
-2. Regenerate manifests or compiled assets only if needed
-3. Run the repo validation commands for the changed guidance surface
-4. Reinstall or resync generated agent assets
-5. Remind the user about any required client reload step only when that client actually needs one
+1. Edit the reviewed canonical source, not generated copies
+2. Refresh derived projections only if their exposed information changed
+3. Run the repository validation commands for the changed guidance surface
+4. Reinstall or resync generated agent assets when the consuming host requires it
+5. Report any required client reload step only when that client actually needs one
 ```
 
 ### Minimal Repository Contract
@@ -124,44 +125,8 @@ Examples:
 - After review or triage, hand off to the smallest proven next owner instead of escalating into another broad pass
 ```
 
-### Vendor-Neutral Skill Manifest
-
-```yaml
-schemaVersion: 1
-description: Repo-owned agent skills
-skillSchema:
-  requiredFields:
-    - name
-    - purpose
-    - triggers
-    - requiredEnvironment
-    - inputs
-    - commands
-    - expectedOutputs
-    - failureHandling
-  executionNotes:
-    - Execute commands from the repository root unless a skill says otherwise.
-    - Resolve paths relative to the repository root.
-    - Prefer deterministic, machine-readable output when available.
-skills:
-  - id: validate-repo
-    file: .ai/skills/validate-repo.yaml
-    summary: Run the repository validation suite in a stable order.
-```
-
 ## How to Use
 
-Read individual rule files for detailed explanations, anti-patterns, and copy-pasteable examples.
-
-Each rule file contains:
-- YAML frontmatter with metadata (title, impact, tags)
-- Why it matters
-- Bad / Better / Best examples
-- Exceptions and trade-offs
-- Related topics for adjacent rules
+Read the four rule files for their trigger anchors and Bad/Good examples. The rule files are the detailed canonical guidance; supporting projections must summarize rather than fork that meaning.
 
 Tool-specific instructions belong in the repository that owns the tool. Link or install that canonical skill rather than copying its commands or machine-readable resources into this collection.
-
-## Full Compiled Document
-
-For the complete guide with all rules expanded: `AGENTS.md`

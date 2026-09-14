@@ -1,18 +1,21 @@
 # Operational Prompting
 
-Repo-owned operational prompting for coding agents. 8 rules across 4 categories.
+Repo-owned operational prompting for coding agents. 4 consolidated rules across 4 categories.
 
-**Version:** 1.0.1
+**Version:** 2.0.0
 
 ## Overview
 
 This skill provides guidance for:
-- Replacing persona-heavy mega-prompts with repo-owned instruction files
-- Layering agent rules across global, repo, path, and task scopes
-- Defining exact validation commands and stopping conditions
-- Requiring evidence-first summaries instead of theatrical process narration
-- Publishing portable, vendor-neutral skill manifests in YAML
-- Keeping tool-coupled skills and machine-readable resources in the repository that owns the tool
+- Keeping durable agent instructions in reviewed repository files
+- Layering instruction provenance and precedence explicitly
+- Bounding tasks to surgical changes with falsifiable stopping conditions
+- Requiring executable validation and observable evidence
+- Authoring portable Agent Skills guidance without duplicating tool-specific CLI/API/runtime semantics
+
+## Canonical source
+
+`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce independent operational semantics.
 
 ## Ownership boundary
 
@@ -20,27 +23,23 @@ This collection owns tool-neutral engineering guidance. If a skill invokes, conf
 
 ## Categories
 
-### 1. Repo-Owned Control (Critical)
-Keep durable agent behavior in repository files and define an instruction hierarchy.
+### 1. Instruction Hierarchy (Critical)
+Keep durable agent behavior in repository files and make instruction provenance and precedence explicit.
 
-### 2. Task Contracts (Critical)
-Limit edits to the smallest affected scope and stop when requirements are unclear.
+### 2. Task Scope & Stopping (Critical)
+Limit edits to the smallest verified scope and define observable stop or escalation conditions.
 
 ### 3. Validation & Evidence (High)
-Bind work to exact commands, deterministic outputs, and auditable summaries.
+Bind work to executable commands, observable exit codes, and falsifiable evidence.
 
 ### 4. Portability (Medium)
-Publish portable skill manifests for Copilot, Codex, Claude, Gemini, and similar tools.
+Use standard Agent Skills frontmatter and keep portable heuristics separate from tool-coupled mechanics.
 
 ## Rules
 
 | Rule | Category | Impact |
 |------|----------|--------|
-| `repo-owned-instructions` | Repo-Owned Control | CRITICAL |
-| `instruction-hierarchy` | Repo-Owned Control | CRITICAL |
-| `scope-minimal-diff` | Task Contracts | CRITICAL |
-| `stop-ask-conditions` | Task Contracts | CRITICAL |
-| `validation-contracts` | Validation & Evidence | HIGH |
-| `evidence-output` | Validation & Evidence | HIGH |
-| `machine-readable-first` | Validation & Evidence | HIGH |
-| `portable-skill-manifests` | Portability | MEDIUM |
+| `op-repo-owned-hierarchy` | Instruction Hierarchy | CRITICAL |
+| `op-scope-stopping-contracts` | Task Scope & Stopping | CRITICAL |
+| `op-validation-evidence-loops` | Validation & Evidence | HIGH |
+| `op-portable-skill-manifests` | Portability | MEDIUM |

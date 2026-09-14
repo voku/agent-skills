@@ -22,6 +22,7 @@ jobs:
       - name: Validate Skill Metadata and Structure
         run: |
           python3 - << 'PYEOF'
+          import json
           import os
           import sys
 
@@ -124,6 +125,49 @@ jobs:
               for phrase in forbidden_phrases:
                   if phrase in normalized_codelight:
                       errors.append(f"engineering-codelight/SKILL.md contains forbidden text: {phrase}")
+
+          operational_dir = os.path.join(skills_dir, "operational-prompting")
+          operational_skill = skill_contents.get("operational-prompting")
+          expected_operational_rules = [
+              "op-repo-owned-hierarchy",
+              "op-scope-stopping-contracts",
+              "op-validation-evidence-loops",
+              "op-portable-skill-manifests",
+          ]
+          if operational_skill is None:
+              errors.append("Missing operational-prompting/SKILL.md")
+          else:
+              for rule_id in expected_operational_rules:
+                  if rule_id not in operational_skill:
+                      errors.append(f"operational-prompting/SKILL.md is missing consolidated rule: {rule_id}")
+                  rule_path = os.path.join(operational_dir, "rules", f"{rule_id}.md")
+                  if not os.path.isfile(rule_path):
+                      errors.append(f"operational-prompting is missing rule file: {rule_path}")
+
+              projection_paths = [
+                  os.path.join(operational_dir, "SKILL.md"),
+                  os.path.join(operational_dir, "README.md"),
+                  os.path.join(operational_dir, "AGENTS.md"),
+                  os.path.join(operational_dir, "metadata.json"),
+              ]
+              obsolete_contracts = [
+                  ".ai/skills/manifest.yaml",
+                  ".ai/skills/<skill>.yaml",
+              ]
+              for projection_path in projection_paths:
+                  with open(projection_path, "r", encoding="utf-8") as f:
+                      projection = f.read()
+                  for obsolete in obsolete_contracts:
+                      if obsolete in projection:
+                          errors.append(f"{projection_path} still contains obsolete custom manifest contract: {obsolete}")
+
+              metadata_path = os.path.join(operational_dir, "metadata.json")
+              with open(metadata_path, "r", encoding="utf-8") as f:
+                  operational_metadata = json.load(f)
+              if operational_metadata.get("meta", {}).get("rule_count") != 4:
+                  errors.append("operational-prompting/metadata.json must report exactly 4 consolidated rules")
+              if "portable_skills" in operational_metadata.get("configurations", {}):
+                  errors.append("operational-prompting/metadata.json must not own a private portable_skills manifest schema")
 
           if errors:
               print("Validation failed:")
