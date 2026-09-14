@@ -100,7 +100,16 @@ jobs:
                   if heading not in codelight:
                       errors.append(f"engineering-codelight/SKILL.md is missing required section: {heading}")
 
+              required_semantics = [
+                  "prefer a fresh reviewer given only the contract, artifact, and relevant evidence",
+                  "a missing fact is not automatically an authority decision",
+                  "make investigation and review roles read-only; isolation is a capability boundary, not a workflow state",
+              ]
               normalized_codelight = codelight.lower()
+              for semantic in required_semantics:
+                  if semantic not in normalized_codelight:
+                      errors.append(f"engineering-codelight/SKILL.md lost required semantic boundary: {semantic}")
+
               forbidden_phrases = [
                   "agent-loop enter",
                   "agent-loop finish",
