@@ -1,42 +1,26 @@
 # Code Review Architecture
 
-Architecture review lens for design quality, coupling, cohesion, module boundaries, and rollback-safe side effects.
+Targeted architecture review lens for design quality, coupling, cohesion, boundaries, and rollback-safe side effects.
 
-## Overview
+## Canonical source
 
-This skill provides:
-- A repo-structured adaptation of the Pi Ensemble review lens
-- Focused review guidance for architecture
-- A standardized Must Fix / Observations / Summary output contract
-- Adversarial-input discipline to avoid shallow approvals
+`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce an independent rule inventory.
 
-## Categories
+## Consolidated rules
 
-### 1. Coupling & Cohesion (Critical)
-Tight coupling, low cohesion, circular dependencies, dependency inversion issues.
-### 2. Separation of Concerns (Critical)
-Business logic placement, layering, and single-responsibility boundaries.
-### 3. Abstraction & Interfaces (High)
-Abstraction levels, interface quality, and leaky boundaries.
-### 4. Module Boundaries (High)
-API contracts, visibility, and boundary enforcement.
-### 5. Design Patterns (Medium)
-Appropriate pattern use, anti-patterns, and consistency.
-### 6. Data Flow (Medium)
-Clear data movement, state handling, and persistence separation.
-### 7. Extensibility & Maintainability (Medium)
-Configurability, duplication, and future change safety.
-### 8. Transaction Boundary Invariants (Critical)
-Transactional writes versus external side effects and lifecycle-hook safety.
+| Rule | Priority | Primary focus |
+|------|----------|---------------|
+| `arch-transaction-side-effects` | CRITICAL | External side effects outside DB transactions |
+| `arch-separation-domain-presentation` | CRITICAL | Domain/presentation separation |
+| `arch-coupling-cohesion` | HIGH | Dependency direction and cohesive ownership |
+| `arch-unidirectional-data-flow` | HIGH | Explicit data flow and immutable transfer objects |
+| `arch-contract-rigor-extensibility` | MEDIUM | Narrow contracts and composition |
 
 ## Usage
 
-- "review architecture"
-- "architecture review"
-- "module boundaries"
-- "Review this diff for architecture issues"
+Use this lens when architecture, module boundaries, transaction ownership, or structural maintainability is the dominant concern. Hand off when performance, error handling, security, type safety, or simplicity becomes primary.
 
 ## References
 
 - [Pi Ensemble architecture lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-architecture/SKILL.md)
-- [Martin Fowler on refactoring](https://refactoring.com/)
+- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)

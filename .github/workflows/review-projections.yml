@@ -1,0 +1,31 @@
+name: Review Lens Projection Contract
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'skills/code-review-*/**'
+      - 'tools/validate-review-projections.py'
+      - '.github/workflows/review-projections.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'skills/code-review-*/**'
+      - 'tools/validate-review-projections.py'
+      - '.github/workflows/review-projections.yml'
+
+jobs:
+  validate-review-projections:
+    name: Validate Review Projections
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Validate review-lens projection contracts
+        run: python3 tools/validate-review-projections.py

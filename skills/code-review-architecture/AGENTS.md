@@ -1,203 +1,35 @@
-# Code Review Architecture — Full Compiled Reference
+# Code Review Architecture — Agent Projection
 
-Architecture review lens for design quality, coupling, cohesion, module boundaries, and rollback-safe side effects.
+**Version:** 2.0.0  
+**Rules:** 5 consolidated rules  
+**License:** MIT
 
-**Version:** 1.0.0 | **Rules:** 8 | **License:** MIT
+This file is a compact projection for agents. The canonical contract is `SKILL.md` plus the files under `rules/`. Do not add independent architecture-review semantics here.
 
----
+## Fast Path
 
-## Operational Contract
+1. Use this lens only when architecture is the dominant concern.
+2. Read `SKILL.md` first.
+3. Load only rule files relevant to the observed boundary or ownership defect.
+4. Tie findings to real source, callers, transaction boundaries, and lifecycle hooks.
+5. Hand off to at most one focused review lens when another concern becomes dominant.
 
-When applying this skill, agents must:
-- Treat this skill as repo-owned guidance and defer to repository or task-specific instructions when they conflict.
-- Limit work to the smallest relevant file and rule set for the current request.
-- Stop and ask when the scope, validation command, or required context is missing or contradictory.
-- Prefer machine-readable evidence first, then summarize files reviewed, commands run, failures, and unresolved risks.
+## Rule Index
 
-## Validation & Evidence
+| Rule | Priority | Focus |
+|------|----------|-------|
+| [`arch-transaction-side-effects`](rules/arch-transaction-side-effects.md) | CRITICAL | External side effects outside DB transactions |
+| [`arch-separation-domain-presentation`](rules/arch-separation-domain-presentation.md) | CRITICAL | Domain/presentation separation |
+| [`arch-coupling-cohesion`](rules/arch-coupling-cohesion.md) | HIGH | Dependency direction and cohesive ownership |
+| [`arch-unidirectional-data-flow`](rules/arch-unidirectional-data-flow.md) | HIGH | Explicit data flow and immutable transfer objects |
+| [`arch-contract-rigor-extensibility`](rules/arch-contract-rigor-extensibility.md) | MEDIUM | Narrow contracts and composition |
 
-- Run the repository's existing validation commands in documented order when code changes are requested.
-- If the repository does not define validation for the task, say so instead of inventing one.
-- When the lens requires cross-file inspection, name the extra files reviewed.
+## Evidence Boundary
 
-## Trigger Phrases
+- Inspect transaction entry points, persisted types, and relevant hooks when persistence boundaries changed.
+- Prefer direct ownership and deletion over a new abstraction when both solve the verified defect.
+- If cross-file evidence required to prove the defect is unavailable, report `blocked` rather than guessing.
 
-The skill activates on:
-- "review architecture"
-- "architecture review"
-- "module boundaries"
-- "transaction boundary"
-- "separation of concerns"
+## Terminal Contract
 
-## Scope Discipline
-
-### In Scope
-- Review architectural concerns: design patterns, module structure, coupling, and boundaries
-- Analyze separation of concerns and responsibility assignment
-- Check abstraction levels, interfaces, and extension points
-- Verify transactional safety when durable writes interact with external systems
-
-### Do Not Broaden Into
-- ❌ Type errors or type coverage issues
-- ❌ Security vulnerabilities as the primary lens
-- ❌ Timeout, retry, or exception hygiene details
-- ❌ Raw throughput or micro-optimization analysis
-- ❌ Pure readability or naming concerns
-
-## Cross-Lens Handoff Discipline
-
-Use this as a targeted lens, not a generic review bundle.
-
-- Prove one dominant structural issue first.
-- If another concern becomes primary, recommend exactly one next review lens instead of broadening into a vague multi-lens pass.
-- Keep the current pass focused on evidence this lens can actually prove.
-
-Smallest likely follow-up lenses:
-
-- `code-review-performance` when the proven problem is mainly cost, query shape, or resource growth
-- `code-review-error-handling` when rollback, cleanup, or partial-failure semantics are local rather than structural
-- `code-review-security` when the boundary design mainly weakens isolation, authz, or trust controls
-- `code-review-simplicity` when the root issue is over-abstraction more than architecture correctness
-
-## Output Format
-
-Use this exact structure:
-
-```markdown
-## Must Fix
-- [CRITICAL|HIGH] [path:line] Title
-  - Description: What is wrong and why it matters
-  - Suggestion: Specific fix with code example
-  - Metadata: cross_lens_candidate=true/false, tradeoff_required=true/false
-
-## Observations
-- [MEDIUM|LOW] [path:line] Title
-  - Description: Informational finding
-  - Metadata: cross_lens_candidate=true/false, tradeoff_required=true/false
-
-## Summary
-[One paragraph overall assessment]
-```
-
-## Severity Scale
-
-- **CRITICAL**: Architectural violations that can create rollback inconsistency, cascading failures, or long-lived technical debt.
-- **HIGH**: Design flaws that materially hinder maintenance, extension, or safe change.
-- **MEDIUM**: Structural improvements that would simplify evolution or reduce coupling.
-- **LOW**: Minor architectural suggestions with limited risk.
-
-## Metadata Guidance
-
-- **cross_lens_candidate** — true when the finding also suggests another lens should inspect the same location, otherwise false.
-- **tradeoff_required** — true when the fix requires meaningful refactoring or behavior trade-offs, otherwise false.
-
-## Adversarial Input Discipline
-
-- Identify one plausible failure scenario for the main architectural change in the diff: rollback during a transaction, lifecycle hook under constraint failure, dependency cycle under load, or a contract change existing callers do not honor.
-- For transactional or bulk-persistence diffs, name the transactional entry point, list every persisted type touched inside it, inspect non-post-commit lifecycle hooks on those types, and state whether any hook writes to a non-transactional store.
-- If cross-file hook inspection is not performed when required, return BLOCKED instead of APPROVED.
-
----
-
-
-## Section 1: Coupling & Cohesion — CRITICAL
-
-Tight coupling, low cohesion, circular dependencies, dependency inversion issues.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to coupling & cohesion.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 2: Separation of Concerns — CRITICAL
-
-Business logic placement, layering, and single-responsibility boundaries.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to separation of concerns.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 3: Abstraction & Interfaces — HIGH
-
-Abstraction levels, interface quality, and leaky boundaries.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to abstraction & interfaces.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 4: Module Boundaries — HIGH
-
-API contracts, visibility, and boundary enforcement.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to module boundaries.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 5: Design Patterns — MEDIUM
-
-Appropriate pattern use, anti-patterns, and consistency.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to design patterns.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 6: Data Flow — MEDIUM
-
-Clear data movement, state handling, and persistence separation.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to data flow.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 7: Extensibility & Maintainability — MEDIUM
-
-Configurability, duplication, and future change safety.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to extensibility & maintainability.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 8: Transaction Boundary Invariants — CRITICAL
-
-Transactional writes versus external side effects and lifecycle-hook safety.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to transaction boundary invariants.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
-
----
-
-## Integration Notes
-
-- Part of the six-pass review protocol. Precedence: SECURITY > ERROR_HANDLING > TYPE_SAFETY > PERFORMANCE > ARCHITECTURE > SIMPLICITY.
-- Findings merge deterministically across lenses by `(path, line, title)`.
-- CRITICAL and HIGH findings belong in `## Must Fix`; MEDIUM and LOW belong in `## Observations` unless repo-specific instructions say otherwise.
+Follow the exact `STATUS: findings|clean|blocked` contract in `SKILL.md`. The caller owns merge, dedupe, approval, persistence, and workflow progression.

@@ -1,38 +1,26 @@
 # Code Review Security
 
-Security review lens for vulnerabilities, input validation, data protection, auth/authz, and secure defaults.
+Targeted security review lens for vulnerabilities, input validation, data protection, authentication/authorization, and secure defaults.
 
-## Overview
+## Canonical source
 
-This skill provides:
-- A repo-structured adaptation of the Pi Ensemble review lens
-- Focused review guidance for security
-- A standardized Must Fix / Observations / Summary output contract
-- Adversarial-input discipline to avoid shallow approvals
+`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce an independent rule inventory.
 
-## Categories
+## Consolidated rules
 
-### 1. Injection Vulnerabilities (Critical)
-SQL, command, XSS, template, and path traversal injection risks.
-### 2. Authentication & Authorization (Critical)
-Identity checks, session handling, access control, and token safety.
-### 3. Data Protection (High)
-Secrets, PII, encryption, logs, and exposure boundaries.
-### 4. Input Validation (High)
-Whitelisting, bounds checks, sanitization, and schema validation.
-### 5. Dependency Security (Medium)
-Known vulnerable packages and supply-chain exposure.
-### 6. Configuration Security (High)
-Hardcoded secrets, insecure defaults, debug exposure, and CORS/security headers.
+| Rule | Priority | Primary focus |
+|------|----------|---------------|
+| `sec-injection-defense` | CRITICAL | SQL/process/path injection defense |
+| `sec-auth-fail-closed` | CRITICAL | Identity, authorization, tenant isolation |
+| `sec-sink-appropriate-escaping` | HIGH | Context-aware escaping at output sinks |
+| `sec-input-revalidation` | HIGH | Server-side re-validation and assignment boundaries |
+| `sec-secrets-configuration` | HIGH | Secret injection, password hashing, secure configuration |
 
 ## Usage
 
-- "security review"
-- "check for vulnerabilities"
-- "auth review"
-- "Review this diff for security issues"
+Use this lens when a trust boundary, vulnerability, validation, authorization, secret, or output-sink concern dominates the review. Hand off when resilience, type safety, architecture, or performance becomes primary.
 
 ## References
 
-- [Pi Ensemble security lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-security/SKILL.md)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [Pi Ensemble security lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-security/SKILL.md)

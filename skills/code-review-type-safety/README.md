@@ -1,34 +1,25 @@
 # Code Review Type Safety
 
-Type-safety review lens for public API typing, runtime validation, unsafe casts, and generic discipline.
+Targeted type-safety review lens for honest contracts, native types, shape validation, symmetric rigor, and truthful nullability.
 
-## Overview
+## Canonical source
 
-This skill provides:
-- A repo-structured adaptation of the Pi Ensemble review lens
-- Focused review guidance for type safety
-- A standardized Must Fix / Observations / Summary output contract
-- Adversarial-input discipline to avoid shallow approvals
+`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce an independent rule inventory.
 
-## Categories
+## Consolidated rules
 
-### 1. Type Coverage (High)
-Typed public APIs, critical internals, and avoiding implicit any gaps.
-### 2. Type Correctness (Critical)
-Annotations, assertions, and guards that match real behavior.
-### 3. Type Safety (Critical)
-Unsafe casts, unknown data, discriminated unions, and runtime checks.
-### 4. Generic Discipline (Medium)
-Constraints, parameter bounds, and avoiding generic overuse.
+| Rule | Priority | Primary focus |
+|------|----------|---------------|
+| `type-strict-native-declarations` | CRITICAL | Native declarations and strict comparison |
+| `type-shape-validation-boundaries` | CRITICAL | DTO/shape validation at trust boundaries |
+| `type-symmetric-rigor` | HIGH | Symmetric contracts across sibling paths |
+| `type-nullability-truthfulness` | HIGH | Honest nullable contracts |
 
 ## Usage
 
-- "type safety review"
-- "review typings"
-- "schema mismatch"
-- "Review this diff for type-safety issues"
+Use this lens when typing, schema alignment, coercion, nullability, or contract honesty dominates the review. Hand off when security, architecture, simplicity, or failure behavior becomes primary.
 
 ## References
 
 - [Pi Ensemble type-safety lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-type-safety/SKILL.md)
-- [TypeScript handbook](https://www.typescriptlang.org/docs/)
+- [PHPStan Documentation](https://phpstan.org/user-guide/getting-started)
