@@ -264,62 +264,40 @@ Reference the rule files when:
 
 | Priority | Category | Impact | Rule File |
 |----------|----------|--------|-----------|
-| 1 | Broken Access Control | CRITICAL | `sec-broken-access-control` |
-| 2 | Cryptographic Failures | CRITICAL | `sec-cryptographic-failures` |
-| 3 | Injection Prevention | CRITICAL | `sec-injection-prevention` |
-| 4 | XSS & React/Inertia | HIGH | `sec-xss-react-inertia` |
-| 5 | CSRF Protection | HIGH | `sec-csrf-protection` |
-| 6 | Security Misconfiguration | HIGH | `sec-security-misconfiguration` |
-| 7 | Authentication & Rate Limiting | HIGH | `sec-authentication-rate-limiting` |
-| 8 | Inertia Data Exposure | HIGH | `sec-inertia-data-exposure` |
+| 1 | Inertia Data Exposure | CRITICAL | [`sec-inertia-data-exposure`](rules/sec-inertia-data-exposure.md) |
+| 2 | Access Control & IDOR | CRITICAL | [`sec-access-control-idor`](rules/sec-access-control-idor.md) |
+| 3 | Injection & Mass Assignment | CRITICAL | [`sec-injection-mass-assignment`](rules/sec-injection-mass-assignment.md) |
+| 4 | Authentication & Rate Limiting | HIGH | [`sec-authentication-rate-limiting`](rules/sec-authentication-rate-limiting.md) |
+| 5 | Cryptography & Configuration | HIGH | [`sec-cryptography-headers-config`](rules/sec-cryptography-headers-config.md) |
 
 ## Quick Reference
 
-### 1. Broken Access Control (CRITICAL)
-- `sec-broken-access-control` — Middleware, ownership checks, policies, scoped queries
+### 1. Inertia Data Exposure (CRITICAL)
+- [`sec-inertia-data-exposure`](rules/sec-inertia-data-exposure.md) — data-page attribute exposure, secret props, API Resources
 
-### 2. Cryptographic Failures (CRITICAL)
-- `sec-cryptographic-failures` — Password hashing, encrypted casts, signed URLs
+### 2. Access Control & IDOR (CRITICAL)
+- [`sec-access-control-idor`](rules/sec-access-control-idor.md) — Middleware, ownership checks, policies, scoped queries
 
-### 3. Injection Prevention (CRITICAL)
-- `sec-injection-prevention` — SQL injection, mass assignment, raw query bindings
+### 3. Injection & Mass Assignment (CRITICAL)
+- [`sec-injection-mass-assignment`](rules/sec-injection-mass-assignment.md) — SQL injection, mass assignment, raw query bindings, command isolation
 
-### 4. XSS & React/Inertia (HIGH)
-- `sec-xss-react-inertia` — dangerouslySetInnerHTML, DOMPurify, href/src validation
+### 4. Authentication & Rate Limiting (HIGH)
+- [`sec-authentication-rate-limiting`](rules/sec-authentication-rate-limiting.md) — Throttle, session regeneration, brute force prevention
 
-### 5. CSRF Protection (HIGH)
-- `sec-csrf-protection` — VerifyCsrfToken, webhook exclusions, Inertia CSRF
-
-### 6. Security Misconfiguration (HIGH)
-- `sec-security-misconfiguration` — APP_DEBUG, APP_KEY, security headers, CORS
-
-### 7. Authentication & Rate Limiting (HIGH)
-- `sec-authentication-rate-limiting` — Throttle, session regeneration, brute force prevention
-
-### 8. Inertia Data Exposure (HIGH)
-- `sec-inertia-data-exposure` — data-page attribute exposure, secret props, API Resources
+### 5. Cryptography & Configuration (HIGH)
+- [`sec-cryptography-headers-config`](rules/sec-cryptography-headers-config.md) — Password hashing, CSRF verification, security headers, DOMPurify
 
 ## How to Use
 
 Read individual rule files for detailed explanations and code examples:
 
 ```
-rules/sec-broken-access-control.md
-rules/sec-cryptographic-failures.md
-rules/sec-injection-prevention.md
-rules/sec-xss-react-inertia.md
-rules/sec-csrf-protection.md
-rules/sec-security-misconfiguration.md
-rules/sec-authentication-rate-limiting.md
 rules/sec-inertia-data-exposure.md
+rules/sec-access-control-idor.md
+rules/sec-injection-mass-assignment.md
+rules/sec-authentication-rate-limiting.md
+rules/sec-cryptography-headers-config.md
 ```
-
-Each rule file contains:
-- YAML frontmatter with metadata (title, impact, tags)
-- Why it matters in Laravel/React context
-- Incorrect code example with explanation
-- Correct code example with fix
-- Laravel 13 and PHP 8.3+ specific context
 
 ## Full Compiled Document
 

@@ -1,218 +1,59 @@
 ---
-title: Enforce Authentication and Rate Limiting
-impact: HIGH
-impactDescription: Prevents brute force, credential stuffing, and session fixation attacks
-tags: security, authentication, rate-limiting, throttle, session, owasp-a07
+id: sec-authentication-rate-limiting
+title: "Authentication, Rate Limiting, and Session Fixation"
+category: authentication
+priority: HIGH
+triggers: [missing-login-throttle, brute-force-vulnerability, session-fixation, weak-password-rules]
+tags: [security, laravel, authentication, rate-limiting, session-fixation, brute-force, owasp]
 ---
 
-## Enforce Authentication and Rate Limiting
+# Authentication, Rate Limiting, and Session Fixation
 
-**Impact: HIGH (Prevents brute force, credential stuffing, and session fixation attacks)**
+**Trigger Anchor:** Apply rate limiting (`throttle:login` or `RateLimiter`) on authentication and sensitive endpoints; regenerate session IDs upon login to prevent session fixation; enforce strong password rules using `Password::defaults()`.
 
-## Why It Matters
+---
 
-- **Risk**: Without rate limiting, attackers can attempt thousands of passwords per minute. Without session regeneration, session fixation allows an attacker to set a victim's session ID before login and hijack it after
-- **Impact**: Account takeover, credential stuffing at scale, session hijacking
-- **OWASP**: A07:2021 — Identification and Authentication Failures
-
-## Incorrect — No Rate Limiting
-
+### Bad
 ```php
-<?php
+// ❌ Unthrottled login endpoint vulnerable to credential stuffing and brute force
+Route::post('/login', [AuthController::class, 'login']);
 
-// ❌ Login route with no throttle — allows unlimited attempts
-Route::post('/login', [AuthenticatedSessionController::class, 'store']);
-
-// ❌ Password reset with no throttle — enumerable via timing
-Route::post('/forgot-password', [PasswordResetLinkController::class, 'store']);
-
-// ❌ Payment route with no throttle — allows mass submission
-Route::post('registrations/{registration}/payment', [PaymentController::class, 'store']);
-```
-
-```php
-<?php
-
-// ❌ Custom auth that doesn't hash passwords
+// ❌ Missing session regeneration after successful login allows session fixation
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(Request $request): Response
     {
-        $user = User::where('email', $request->email)
-                    ->where('password', $request->password)  // Plaintext comparison!
-                    ->first();
+        if (Auth::attempt($request->only('email', 'password'))) {
+            // Session ID not regenerated! Attacker with pre-set session gains access!
+            return redirect()->intended('/dashboard');
+        }
+        return back()->withErrors(['email' => 'Invalid credentials']);
     }
 }
 ```
 
+### Good
 ```php
-<?php
+// ✅ Throttle rate limiting applied to authentication routes
+Route::post('/login', [AuthController::class, 'login'])
+    ->middleware('throttle:5,1'); // Max 5 attempts per minute
 
-// ❌ No session regeneration after login — session fixation vulnerability
-class AuthenticatedSessionController extends Controller
+// ✅ Session regeneration on login and password validation rules
+class AuthController extends Controller
 {
-    public function store(LoginRequest $request): RedirectResponse
+    public function login(Request $request): RedirectResponse
     {
-        $request->authenticate();
-        // Missing session()->regenerate() — same session ID before and after login
-        return redirect()->intended(route('dashboard'));
-    }
-}
-```
-
-**Problems:**
-- No throttle allows unlimited login attempts — brute force and credential stuffing are trivial
-- No session regeneration after login allows session fixation — attacker sets victim's session ID and takes over after they log in
-- Plaintext password comparison bypasses all hashing protections
-
-## Correct — Rate Limiting on Auth Routes
-
-```php
-<?php
-
-// ✅ Throttle middleware on sensitive routes
-Route::post('/', [AuthenticatedSessionController::class, 'store'])
-    ->middleware('guest');
-// Note: throttle is handled inside LoginRequest via RateLimiter
-
-// ✅ Throttle on password reset
-Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
-    ->middleware(['guest', 'throttle:5,1'])
-    ->name('password.email');
-
-// ✅ Throttle on email verification
-Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-    ->middleware(['auth', 'throttle:6,1'])
-    ->name('verification.send');
-
-// ✅ Throttle on payment submission
-Route::post('registrations/{registration}/payment', [PaymentController::class, 'store'])
-    ->middleware(['auth', 'verified', 'role:student', 'throttle:10,1'])
-    ->name('student.payments.store');
-
-// ✅ Throttle on webhook callbacks
-Route::post('webhooks/toyyibpay', [ToyyibPayController::class, 'callback'])
-    ->middleware('throttle:60,1');
-```
-
-### Use RateLimiter in LoginRequest
-
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Http\Requests\Auth;
-
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
-
-class LoginRequest extends FormRequest
-{
-    public function authenticate(): void
-    {
-        $this->ensureIsNotRateLimited();
-
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
-        }
-
-        RateLimiter::clear($this->throttleKey());
-    }
-
-    public function ensureIsNotRateLimited(): void
-    {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
-        }
-
-        event(new Lockout($this));
-
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'email' => __('auth.throttle', ['seconds' => $seconds]),
+        $credentials = $request->validate([
+            'email'    => ['required', 'email'],
+            'password' => ['required', 'string'],
         ]);
-    }
 
-    public function throttleKey(): string
-    {
-        // Key combines email + IP — prevents per-IP bypass
-        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
-    }
-}
-```
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate(); // Prevents session fixation attacks
+            return redirect()->intended('/dashboard');
+        }
 
-### Always Regenerate Session After Login
-
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
-
-class AuthenticatedSessionController extends Controller
-{
-    public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
-
-        // ✅ Regenerate session ID — prevents session fixation
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard'));
-    }
-
-    public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
-
-        // ✅ Invalidate and regenerate on logout too
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+        return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
     }
 }
 ```
-
-### Session Configuration
-
-```php
-<?php
-
-// ✅ config/session.php — secure session settings
-return [
-    'lifetime'  => env('SESSION_LIFETIME', 30),  // 30 min — not 120
-    'http_only' => true,
-    'same_site' => 'lax',
-    'secure'    => env('SESSION_SECURE_COOKIE'),  // Auto-true on HTTPS
-    'domain'    => null,
-];
-```
-
-## Recommended Patterns
-
-| Pattern | Use Case |
-|---------|----------|
-| `RateLimiter::hit()` in `LoginRequest` | Login brute force prevention |
-| `throttle:5,1` middleware | Password reset, email verify routes |
-| `throttle:10,1` middleware | Payment and sensitive action routes |
-| `session()->regenerate()` | Always call after successful login |
-| `session()->invalidate()` | Always call on logout |
-| `SESSION_LIFETIME=30` | Reduce idle session window |
-
-Reference: [Laravel Authentication](https://laravel.com/docs/13.x/authentication) | [Laravel Rate Limiting](https://laravel.com/docs/13.x/rate-limiting)
