@@ -1,6 +1,6 @@
 ---
 name: code-slop
-description: Detect AI-generated code patterns ("slop") in PHP/Laravel and TypeScript/React source — comment narration, generic naming, premature interfaces, defensive overdose, mock-everything tests, and style fingerprints. 6 rules across 6 categories. Use when reviewing AI-assisted PRs, auditing code for taste/quality, or hardening a code-review checklist. Triggers on "review for AI slop", "find AI patterns", "check code feels human", "audit code-quality taste".
+description: Review PHP/Laravel and TypeScript/React code for qualitative maintainability patterns associated with low-signal generated or boilerplate-heavy changes: narration comments, weak naming, premature abstraction, defensive overdose, mock-everything tests, and style escape hatches. Use when reviewing AI-assisted PRs, auditing code-quality taste, or hardening a review checklist. These heuristics identify code problems, not author provenance.
 license: MIT
 metadata:
   author: agent-skills
@@ -9,80 +9,57 @@ metadata:
 
 # Code Slop Detection
 
-Taste-level review of code for AI-generated patterns ("slop"). Contains **6 consolidated rules across 6 categories** covering comments, naming, over-engineering, defensive overdose, test authenticity, and style fingerprints. Where `technical-debt` measures quantitative code debt (complexity, duplication, CVEs), this skill catches qualitative degradation: code that passes linting but inflates comprehension cost and hides defects.
+Taste-level review for code that passes mechanical checks but still inflates comprehension cost, hides failure semantics, or weakens tests. Where `technical-debt` measures quantitative debt such as complexity or duplication, this skill focuses on qualitative review signals.
 
-## Metadata
+## Evidence Boundary
 
-- **Version:** 2.0.0
-- **Scope:** PHP / Laravel + TypeScript / React (Node)
-- **Rule Count:** 6 rules across 6 categories
-- **License:** MIT
+These rules are **not an authorship detector**. A flagged pattern is evidence about the code, not proof that a human or an LLM wrote it. Report the concrete maintainability problem and observable evidence; do not infer provenance from style alone.
 
-## Why this skill exists
+Before applying language-specific examples or tools, ground the target repository:
 
-AI-generated code frequently exhibits specific anti-patterns:
-- **Narration comments** that merely restate syntax in English
-- **Generic catches** that log and swallow errors, converting failures into silent corruption
-- **Mock-everything tests** that verify test mocks instead of real business invariants
-- **Premature interfaces** with only a single implementation and zero polymorphic need
-
-The core insight: **reading cost > writing cost**. Code that cannot be quickly parsed and trusted creates comprehension debt.
+- inspect `composer.json` and the PHP/Laravel toolchain for PHP projects;
+- inspect `package.json`, TypeScript config, and lint/test tooling for Node/React projects;
+- prefer the changed diff and surrounding project conventions over generic style expectations;
+- use configured analyzers and tests where they can mechanically verify a concern.
 
 ## When to Apply
 
 Reference this skill when:
-- Reviewing an AI-assisted PR before merge
-- Auditing a repo that has accepted heavy generative code contributions
-- Hardening a team's code-review checklist against LLM boilerplate
-- Refactoring bloated services and noisy test suites
+- reviewing an AI-assisted PR before merge;
+- auditing a repository for boilerplate-heavy or low-signal code patterns;
+- hardening a team's code-review checklist;
+- refactoring bloated services or noisy test suites.
 
-## Rule Categories by Priority
+## Canonical Rule Boundaries
 
-| Priority | Category | Impact | Prefix | Rules |
-|----------|----------|--------|--------|-------|
-| 1 | Comments | CRITICAL | `comments-` | 1 |
-| 2 | Naming | CRITICAL | `naming-` | 1 |
-| 3 | Over-engineering | HIGH | `over-eng-` | 1 |
-| 4 | Defensive Overdose | HIGH | `defensive-` | 1 |
-| 5 | Test Slop | HIGH | `test-` | 1 |
-| 6 | Style Fingerprints | MEDIUM | `style-` | 1 |
+### Comments
+- [comments-hygiene.md](rules/comments-hygiene.md) - Strip line-by-line narration, empty docblocks, closing-brace labels, and stale placeholders; reserve comments for non-obvious why/context.
 
-## Quick Reference
+### Naming
+- [naming-hygiene.md](rules/naming-hygiene.md) - Prefer concise intention-revealing names over generic placeholders, redundant type suffixes, vague grab-bag names, or sentence-length identifiers.
 
-### 1. Comments (CRITICAL) — 1 rule
-- [comments-hygiene.md](rules/comments-hygiene.md) - Strip line-by-line comment narration, empty docblocks, closing-brace tags (`} // end if`), and lingering placeholder/TODO markers; reserve comments strictly for non-obvious *why*.
+### Over-engineering
+- [over-eng-simplicity.md](rules/over-eng-simplicity.md) - Reject abstractions without demonstrated polymorphic or reuse pressure, pass-through wrappers, and dependency sprawl.
 
-### 2. Naming (CRITICAL) — 1 rule
-- [naming-hygiene.md](rules/naming-hygiene.md) - Use concise, intention-revealing nouns and verbs without redundant type suffixes (`userArray`, `orderObj`), vague grab-bag suffixes (`*Helper`, `*Manager`), or run-on sentences (`theActiveAdminUser`).
+### Defensive Balance
+- [defensive-balance.md](rules/defensive-balance.md) - Avoid swallowing failures or defending impossible states while missing real boundary protections such as timeouts and explicit recovery semantics.
 
-### 3. Over-engineering (HIGH) — 1 rule
-- [over-eng-simplicity.md](rules/over-eng-simplicity.md) - Reject premature single-implementation interfaces, single-method wrapper classes, pass-through delegate functions, and dependency sprawl; prefer top-level functions and direct classes.
+### Test Authenticity
+- [test-authenticity.md](rules/test-authenticity.md) - Test observable behavior, boundaries, and state changes instead of reproducing implementation logic through mocks.
 
-### 4. Defensive Overdose (HIGH) — 1 rule
-- [defensive-balance.md](rules/defensive-balance.md) - Stop swallowing errors in generic catch blocks or asserting impossible nulls on typed values; catch only specific recoverable exceptions and enforce real boundary defenses (timeouts, rate limits).
+### Style Fingerprints
+- [style-fingerprints.md](rules/style-fingerprints.md) - Remove debug artifacts, type-system escape hatches, and trivial boilerplate that obscures intent.
 
-### 5. Test Slop (HIGH) — 1 rule
-- [test-authenticity.md](rules/test-authenticity.md) - Test observable behavior, boundary conditions, and state changes instead of mocking every collaborator; eliminate "does-not-throw" smoke tests, mirror implementations, and uninspected snapshots.
+## Review Output
 
-### 6. Style Fingerprints (MEDIUM) — 1 rule
-- [style-fingerprints.md](rules/style-fingerprints.md) - Eliminate debug dumps (`console.log`, `dd`), type-system escape hatches (`as any`, `@ts-ignore`), and trivial boolean boilerplate (`if (x) return true; else return false`).
+When useful, summarize findings in a ledger:
 
-## Audit Ledger Format
+| File | Verdict | Evidence | Suggested action |
+|------|---------|----------|------------------|
+| `path/to/file` | CLEAN / SUSPICIOUS / INFLATED / CRITICAL | Concrete observed pattern | Smallest corrective action |
 
-When auditing PRs or codebases, summarize findings in this ledger:
-
-| File | Verdict | Top findings | Suggested action |
-|------|---------|--------------|------------------|
-| `app/Services/UserExportService.php` | INFLATED | Comment narration; `*Helper` suffix; missing external timeout | Strip comments; inline trivial helper; add timeout |
-| `resources/js/Pages/Orders/Show.tsx` | CRITICAL | Type escapes (`as any`); mock-everything test; swallow catch | Narrow types; write behavioral test; propagate error |
-| `app/Models/Order.php` | CLEAN | Direct methods, strict typing | None |
-
-### Verdict Bands
-- **CLEAN:** < 5% of touched lines flagged -> Ship
-- **SUSPICIOUS:** 5–15% flagged -> Review flagged files before merge
-- **INFLATED:** 15–30% flagged -> Strip boilerplate and comments, re-test
-- **CRITICAL:** > 30% flagged -> Refactor section before merging
+Verdicts are review prioritization aids, not provenance claims. Prefer the underlying findings over a score when the score would imply more certainty than the evidence supports.
 
 ## How to Use
 
-Read individual rule files in `rules/` for concise triggers, Bad vs Good code comparisons, and concrete PHP/TypeScript refactoring examples.
+Read only the rule files relevant to the current change. Keep findings tied to concrete code, repository conventions, and mechanical evidence where available. `README.md`, `AGENTS.md`, and `metadata.json` are supporting projections; if they disagree with this file or `rules/`, follow the canonical source and repair the projection.
