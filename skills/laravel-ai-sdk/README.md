@@ -1,60 +1,36 @@
 # Laravel AI SDK
 
-Comprehensive guide for building AI-powered features with the Laravel AI SDK (`laravel/ai`). 17 rules across 7 categories.
+Portable guidance for building and reviewing AI-powered features with Laravel's AI SDK.
 
-**Version:** 1.0.0
+## Canonical Source
 
-## Overview
+`SKILL.md` defines when this skill applies and the high-level routing contract. `rules/` contains the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, category count, provider catalog, or compiled API reference.
 
-This skill provides guidance for:
-- Creating and configuring AI agents
-- Building custom tools and using provider tools
-- Generating images, audio, and transcriptions
-- Creating and querying vector embeddings
-- Managing files and vector stores for RAG
-- Testing AI features with fakes and assertions
+## When to Use
 
-## Categories
+Use this skill when a Laravel project uses `laravel/ai` for agents, tool calling, structured output, embeddings/RAG, media generation, provider resilience, or deterministic AI testing.
 
-### 1. Agents (Critical)
-Create agents with instructions, tools, structured output, streaming, and middleware.
+## Routing
 
-### 2. Tools (High)
-Build custom tools with JSON schemas. Use provider tools like WebSearch, WebFetch, FileSearch.
+1. Ground the installed Laravel, PHP, and AI SDK versions from the target repository.
+2. Read `SKILL.md` to select the canonical rule files matching the observed task.
+3. Load only those rules instead of compiling the whole AI SDK catalog into context.
+4. Follow project-local provider configuration, schemas, storage, queueing, and test conventions when they are stronger or more specific.
+5. Validate through the repository's configured toolchain and report only observed results.
 
-### 3. Embeddings & Search (High)
-Generate embeddings, cache them, query with pgvector, and rerank results.
+## Stable Boundaries
 
-### 4. Media Generation (Medium)
-Generate images and audio. Transcribe speech to text.
+- Treat tool schemas and structured outputs as executable contracts.
+- Verify provider/model capabilities and SDK APIs against the installed version before recommending them.
+- Prefer explicit resilience and observable failure handling over silent fallback behavior.
+- Keep embeddings/RAG concerns grounded in the application's actual storage and retrieval path.
+- Use deterministic fakes/assertions for tests rather than depending on live providers.
 
-### 5. Files & Storage (Medium)
-Store files with AI providers. Create vector stores for retrieval-augmented generation.
+## Projection Boundary
 
-### 6. Infrastructure (Medium)
-Automatic provider failover for resilience.
+Do not copy current rule IDs, counts, category totals, provider/API inventories, or expanded examples into this file. If this projection disagrees with `SKILL.md` or a file under `rules/`, preserve the mismatch as evidence and follow the canonical source.
 
-### 7. Testing (High)
-Fake agents, images, audio, embeddings, and vector stores. Assert prompts and generations.
+## References
 
-## Rules
-
-| Rule | Category | Impact |
-|------|----------|--------|
-| `agent-create-configure` | Agents | CRITICAL |
-| `agent-prompting` | Agents | CRITICAL |
-| `agent-structured-output` | Agents | HIGH |
-| `agent-streaming-async` | Agents | HIGH |
-| `agent-middleware` | Agents | MEDIUM |
-| `agent-anonymous` | Agents | MEDIUM |
-| `tool-create` | Tools | HIGH |
-| `tool-provider` | Tools | HIGH |
-| `embed-generate-cache` | Embeddings & Search | HIGH |
-| `embed-rerank` | Embeddings & Search | MEDIUM |
-| `media-images` | Media Generation | MEDIUM |
-| `media-audio-transcription` | Media Generation | MEDIUM |
-| `files-vector-stores` | Files & Storage | MEDIUM |
-| `infra-failover` | Infrastructure | MEDIUM |
-| `test-agents` | Testing | HIGH |
-| `test-media` | Testing | HIGH |
-| `test-data` | Testing | HIGH |
+- [Laravel AI SDK Documentation](https://laravel.com/docs/13.x/ai-sdk)
+- [Laravel AI SDK Repository](https://github.com/laravel/ai)
