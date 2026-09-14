@@ -1,236 +1,57 @@
 ---
 name: e2e-playwright-testing
-description: End-to-end testing with Playwright for web applications. Use when writing E2E tests, browser automation, form submission testing, or user flow testing. Triggers on "playwright", "e2e test", "browser test", "end-to-end", "form flow testing", or test files in tests/e2e/.
+description: End-to-end browser testing with Playwright for web applications. Use when writing or reviewing Playwright E2E tests, browser automation, form flows, authentication flows, locator strategy, or flaky browser-test behavior. Ground framework, auth, installed versions, and test configuration in the target repository before applying examples.
 license: MIT
 metadata:
   author: Agent Skills Contributors
   version: "1.0.0"
-  playwrightVersion: "1.50+"
-  nodeVersion: "18+"
 ---
 
 # E2E Playwright Testing
 
-> Patterns and conventions for reliable end-to-end browser testing with Playwright.
+Portable guidance for reliable browser-level tests with Playwright. The detailed contract is intentionally concentrated in the canonical rules under `rules/`; this file owns activation, repository grounding, and high-level flow discipline.
 
-Comprehensive E2E testing guide for web applications. Contains 8 rules across 6 categories covering locator strategies, authentication reuse, form testing (including React/SPA-specific gotchas), assertions, test organization, reliability, and CI/CD configuration.
+## Applicability and Stack Grounding
 
-## Stack Detection
+Before writing or reviewing E2E tests:
 
-**Before writing or reviewing E2E tests, detect the project stack:**
-
-### Step 1 — Check for Playwright
-
-```bash
-# Look in package.json devDependencies:
-# "@playwright/test" → Playwright is installed
-# Check for playwright.config.js or playwright.config.ts
-```
-
-- If `@playwright/test` is present → **use Playwright patterns from this skill**
-- If `cypress` is present → this skill does not apply
-
-### Step 2 — Detect Frontend Framework
-
-```bash
-# Check package.json dependencies:
-# "react" + "@inertiajs/react" → React + Inertia.js (SPA with server routing)
-# "react" + "react-router" → React SPA
-# "vue" → Vue.js
-# "next" → Next.js
-```
-
-**Why this matters:**
-- **React + Inertia.js**: Use `waitForURL` not `waitForLoadState('networkidle')` — Inertia uses `history.pushState`
-- **React controlled inputs**: `fill()` works for text but `keyboard.type()` needed for date/time
-- **SPA navigation**: Page doesn't do full reload — assertions must wait for content, not network idle
-
-### Step 3 — Detect Auth Pattern
-
-```bash
-# Check for session-based (Laravel Sanctum) or token-based (JWT) auth
-# Session: storageState saves cookies
-# Token: may need to save tokens to localStorage
-```
-
-### Step 4 — Detect Rate Limiting
-
-```bash
-# Check routes for throttle middleware
-# If present in dev, tests will hit 429 after ~5 login attempts
-# Solution: production-only throttle or increase limits in test env
-```
-
----
-
-## Metadata
-
-- **Version:** 1.0.0
-- **Rule Count:** 8 rules across 6 categories
-- **License:** MIT
-
-## When to Apply
-
-- Writing or reviewing Playwright E2E tests
-- Setting up E2E testing for a new project
-- Debugging flaky browser tests
-- Testing form submissions, authentication flows, or user interactions
-- Choosing locator strategies for elements
-- Configuring Playwright for CI/CD
+- inspect `package.json` and Playwright configuration to confirm `@playwright/test` is actually in use;
+- if the project uses Cypress or another browser-test framework instead, do not force Playwright guidance onto it;
+- inspect the frontend/navigation model (for example React, Inertia, Vue, Next.js) before choosing navigation waits or selectors;
+- inspect the authentication model and existing test setup before deciding how session state should be created or reused;
+- inspect shared mutable state, database setup, and configured workers before changing parallelism;
+- use the target repository's installed Playwright/Node versions and validation commands instead of assuming fixed version floors from this skill.
 
 ## Flow Discipline
 
 - Start with one concrete end-user path before automating nearby variants.
-- Prefer the narrowest meaningful E2E scope the project tooling supports.
-- When page structure or selectors are unclear, inspect the live DOM before inventing brittle selectors.
-- Assert the visible browser transition first, then verify persistence or backend side effects separately when the repository has a stable way to do that.
-- When role or label locators are not enough, prefer durable app-owned selectors such as explicit test ids, stable input names, or other intentional hooks over styling-driven CSS chains.
+- Prefer the narrowest meaningful E2E scope the repository tooling supports.
+- Inspect the live DOM or application markup before inventing brittle selectors.
+- Assert the visible browser transition first; verify persistence or backend side effects separately only when the repository has a stable mechanism for that evidence.
+- Prefer app-owned durable hooks over styling-driven CSS chains when accessible role/label locators are insufficient.
 
-## Rule Categories by Priority
+## Canonical Rule Boundaries
 
-| Priority | Category | Impact | Rule File |
-|----------|----------|--------|-----------|
-| 1 | Locators | CRITICAL | [`pw-locators-strict-mode`](rules/pw-locators-strict-mode.md) |
-| 2 | Assertions | CRITICAL | [`pw-web-first-assertions`](rules/pw-web-first-assertions.md) |
-| 3 | Authentication | HIGH | [`pw-auth-storage-state`](rules/pw-auth-storage-state.md) |
-| 4 | Forms & Inputs | HIGH | [`pw-form-interactions-custom-inputs`](rules/pw-form-interactions-custom-inputs.md) |
+### Accessible Locators
+- [`pw-locators-strict-mode`](rules/pw-locators-strict-mode.md) — prefer role/label/user-facing locators and resolve strict-mode ambiguity through scoping or filtering rather than brittle DOM selectors.
 
-## Quick Reference
+### Web-First Assertions
+- [`pw-web-first-assertions`](rules/pw-web-first-assertions.md) — use auto-retrying Playwright assertions and explicit event waits; avoid arbitrary `waitForTimeout()` sleeps and immediate boolean checks.
 
-### 1. Locators (CRITICAL)
-- [`pw-locators-strict-mode`](rules/pw-locators-strict-mode.md) — Accessible role/label locators, strict-mode disambiguation, scoping
+### Authenticated Sessions
+- [`pw-auth-storage-state`](rules/pw-auth-storage-state.md) — reuse authenticated browser state through Playwright setup projects and `storageState` when that matches the target application's auth model.
 
-### 2. Assertions (CRITICAL)
-- [`pw-web-first-assertions`](rules/pw-web-first-assertions.md) — Auto-retrying web-first expect assertions, eliminating arbitrary timeouts
+### Controlled Forms & Inputs
+- [`pw-form-interactions-custom-inputs`](rules/pw-form-interactions-custom-inputs.md) — use Playwright's form APIs for controlled inputs, interact with custom/hidden controls through accessible surfaces, and prefer direct `.fill()` for editable date/text inputs when supported by the actual control.
 
-### 3. Authentication (HIGH)
-- [`pw-auth-storage-state`](rules/pw-auth-storage-state.md) — Single auth setup, storageState JSON reuse across test workers
+## Operational Boundaries
 
-### 4. Forms & Inputs (HIGH)
-- [`pw-form-interactions-custom-inputs`](rules/pw-form-interactions-custom-inputs.md) — Controlled React inputs, custom hidden checkboxes, date picker entry
+- Do not encode framework-specific navigation assumptions without evidence from the target app.
+- Do not repeat UI login in every test when the repository can safely reuse isolated authenticated state.
+- Do not increase worker parallelism when tests share mutable state unless isolation evidence supports it.
+- Do not treat retries as a substitute for deterministic waits and assertions.
+- Keep selectors coupled to user-visible semantics or intentional test hooks, not incidental CSS structure.
 
-## Essential Patterns
+## Validation and Evidence
 
-### Browser-First Assertion Order
-
-```javascript
-// Prefer this order for state-changing flows:
-// 1. wait for the relevant next-step control or ready state
-// 2. perform the action
-// 3. wait for redirect or visible route/content transition
-// 4. assert the target page with URL plus stable visible anchors
-// 5. only then verify persistence or backend side effects if needed
-```
-
-### Locator Priority
-
-```javascript
-// 1st: Role (best — mirrors accessibility)
-page.getByRole('button', { name: 'Submit' })
-page.getByRole('tab', { name: 'Network' })
-page.getByRole('heading', { name: 'Dashboard' })
-
-// 2nd: Label (for form fields)
-page.getByLabel('Email')
-
-// 3rd: Text (for static content, use exact when ambiguous)
-page.getByText('Welcome', { exact: true })
-
-// 4th: ID (for inputs without proper labels)
-page.locator('#password')
-
-// Last resort: CSS selector
-page.locator('button.submit-btn')
-```
-
-### Auth Setup Pattern
-
-```javascript
-// Setup project logs in once per role, all tests reuse the state
-// 3 logins for 90+ tests (not 90 logins)
-
-// In test files:
-test.use({ role: 'customer' });
-test('shows dashboard', async ({ authedPage: page }) => {
-    await page.goto('/dashboard');
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-});
-```
-
-### React Date Input Gotcha
-
-```javascript
-// fill() doesn't trigger React onChange for date/time inputs
-// Use keyboard.type() instead:
-await dateInput.click();
-await page.keyboard.type('16042026');  // DDMMYYYY
-
-await timeInput.click();
-await page.keyboard.type('1000AM');    // 10:00 AM
-```
-
-### Strict Mode Fix
-
-```javascript
-// Bad: matches "Verified" AND "Unverified"
-page.getByRole('button', { name: 'Verified' })
-
-// Good: exact match
-page.getByRole('button', { name: 'Verified', exact: true })
-
-// Bad: matches heading AND breadcrumb
-page.getByText('POS Demo')
-
-// Good: use role to disambiguate
-page.getByRole('heading', { name: 'POS Demo' })
-```
-
-### Parallelism Decision
-
-```javascript
-// Default Playwright: fullyParallel: true
-// Use this when: tests are independent, each test creates its own data
-
-// Override to sequential: workers: 1
-// Use this when: tests share a seeded database with mutable state
-// Without this, one test's buy transaction changes the balance another test expects
-```
-
-## Configuration Template
-
-```javascript
-import { defineConfig, devices } from '@playwright/test';
-
-export default defineConfig({
-    testDir: './specs',
-    fullyParallel: false,              // true if tests are independent
-    workers: 1,                        // increase if no shared mutable state
-    forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 0,
-    reporter: [['html', { open: 'never' }], ['list']],
-    use: {
-        baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:8000',
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
-    },
-    projects: [
-        { name: 'auth-setup', testMatch: /auth\.setup\.js$/, testDir: './auth' },
-        { name: 'chrome', use: { ...devices['Desktop Chrome'] }, dependencies: ['auth-setup'] },
-        { name: 'mobile', use: { ...devices['iPhone 14'] }, dependencies: ['auth-setup'], testMatch: /responsive/ },
-    ],
-});
-```
-
-## References
-
-- [Playwright Documentation](https://playwright.dev)
-- [Best Practices](https://playwright.dev/docs/best-practices)
-- [Locators Guide](https://playwright.dev/docs/locators)
-- [Authentication Guide](https://playwright.dev/docs/auth)
-- [Test Assertions](https://playwright.dev/docs/test-assertions)
-- [Auto-waiting](https://playwright.dev/docs/actionability)
-
-## Full Compiled Document
-
-For the complete guide with all rules expanded: `AGENTS.md`
+Run the repository's existing Playwright/test commands in its documented order. Report observed failures, traces, screenshots, or browser transitions rather than inventing expected results. `README.md`, `AGENTS.md`, and `metadata.json` are supporting projections; if they disagree with this file or `rules/`, follow the canonical source and repair the projection.

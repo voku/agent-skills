@@ -1,27 +1,23 @@
 # E2E Playwright Testing
 
-End-to-end testing patterns with Playwright for web applications.
+Portable Playwright guidance for reliable end-to-end browser tests.
 
-## Overview
+## Canonical Source
 
-8 rules across 6 categories covering locator strategies, authentication reuse, form testing (including React-specific gotchas), assertions, test organization, and reliability.
+`SKILL.md` defines activation, repository grounding, flow discipline, and high-level operational boundaries. The files under `rules/` contain the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, count, framework-version table, or compiled example set.
 
-## Key Patterns
+## When to Use
 
-- **Locators:** Role-based over CSS selectors, strict mode handling
-- **Auth:** Setup project + storageState for login reuse
-- **Forms:** keyboard.type() for React date/time inputs, sr-only checkbox handling
-- **Reliability:** No arbitrary waits, single worker for shared DB, SPA navigation
+Use this skill for Playwright E2E tests, browser automation, locator strategy, authentication reuse, form interactions, flaky browser tests, or browser-level user flows.
 
-## Based On
+## Routing
 
-Patterns derived from real E2E implementation on a Laravel + React + Inertia.js gold trading platform (35+ pages, 94 Playwright tests). Bugs discovered during implementation informed the rules:
+1. Confirm Playwright is actually configured in the target repository.
+2. Read `SKILL.md` first.
+3. Load only the relevant rule files for locators, web-first assertions, auth storage state, or controlled form/input interactions.
+4. Ground navigation, auth, worker parallelism, and installed versions in the target project.
+5. Prefer observable browser transitions and repository-configured test evidence over sleeps or assumptions.
 
-1. CSRF 419 failures from rate limiting during auth
-2. React date inputs not triggering onChange with fill()
-3. Double-label checkbox toggling twice (check + uncheck)
-4. Strict mode violations from ambiguous text locators
+## Projection Boundary
 
-## Installation
-
-Copy the `e2e-playwright-testing` folder to your `.claude/skills/` directory.
+Do not copy current rule IDs, counts, tool-version floors, or long worked examples into this file. If this projection disagrees with `SKILL.md` or `rules/`, follow the canonical source and repair the projection.
