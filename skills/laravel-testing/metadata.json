@@ -1,9 +1,9 @@
 {
-  "version": "1.1.0",
+  "version": "2.0.0",
   "skill": {
     "name": "laravel-testing",
-    "version": "1.1.0",
-    "description": "Laravel 13 testing with Pest PHP 4 or PHPUnit 12. Use when writing feature tests, unit tests, or any test code in a Laravel application. Triggers on tasks involving HTTP tests, model factories, database assertions, mocking facades, authentication testing, or test organization patterns.",
+    "version": "2.0.0",
+    "description": "Laravel testing with Pest PHP or PHPUnit covering HTTP feature tests, model factories, database assertions, faking facades, authentication testing, and test organization. Triggers on tasks involving HTTP tests, model factories, database assertions, mocking facades, authentication testing, or test organisation patterns.",
     "author": "Laravel Community",
     "license": "MIT",
     "keywords": [
@@ -17,81 +17,45 @@
     ]
   },
   "organization": "Laravel Community",
-  "date": "March 2026",
-  "laravelVersion": "13.x",
-  "phpVersion": "8.3+",
-  "pestVersion": "4.x",
-  "phpunitVersion": "12.x",
-  "rulesTotal": 24,
-  "abstract": "Comprehensive Laravel 13 testing guide for AI agents and LLMs, supporting both Pest PHP 4 and PHPUnit 12. Contains 21 rules across 6 categories covering HTTP feature tests, model factories, database assertions, facade faking, authentication testing, and test organization patterns. Includes framework detection logic: checks composer.json and tests/Pest.php to determine the framework, asks the user if unclear. Framework-specific rules (describe/it, datasets, hooks) show both Pest and PHPUnit syntax side by side.",
+  "date": "September 2026",
+  "laravelVersion": "11.x - 13.x",
+  "phpVersion": "8.2+",
+  "rulesTotal": 6,
+  "abstract": "Laravel testing guidance for HTTP behavior, factories, database assertions, facade fakes, authentication, and test organization. Pest versus PHPUnit syntax is selected from the target repository rather than from a fixed version assumption in this metadata.",
   "references": [
-    "https://laravel.com/docs/13.x/testing",
-    "https://laravel.com/docs/13.x/http-tests",
-    "https://laravel.com/docs/13.x/database-testing",
-    "https://laravel.com/docs/13.x/eloquent-factories",
-    "https://laravel.com/docs/13.x/mocking",
-    "https://laravel.com/docs/13.x/notifications",
-    "https://laravel.com/docs/13.x/queues",
-    "https://laravel.com/docs/13.x/mail",
-    "https://laravel.com/docs/13.x/console-tests",
+    "https://laravel.com/docs/testing",
+    "https://laravel.com/docs/http-tests",
+    "https://laravel.com/docs/database-testing",
+    "https://laravel.com/docs/eloquent-factories",
+    "https://laravel.com/docs/mocking",
     "https://pestphp.com/docs/writing-tests",
-    "https://pestphp.com/docs/datasets",
-    "https://docs.phpunit.de/en/12.0/writing-tests-for-phpunit.html"
+    "https://docs.phpunit.de/"
   ],
   "categories": [
-    {
-      "name": "HTTP & Feature Tests",
-      "prefix": "http",
-      "impact": "CRITICAL",
-      "description": "Feature test structure, HTTP assertions, and response validation"
-    },
-    {
-      "name": "Model Factories",
-      "prefix": "factory",
-      "impact": "CRITICAL",
-      "description": "Creating test data with factories, states, sequences, and relationships"
-    },
-    {
-      "name": "Database Assertions",
-      "prefix": "db",
-      "impact": "HIGH",
-      "description": "Asserting database state after operations"
-    },
-    {
-      "name": "Faking Services",
-      "prefix": "fake",
-      "impact": "HIGH",
-      "description": "Faking Mail, Queue, Notification, and Event facades in tests"
-    },
-    {
-      "name": "Authentication Testing",
-      "prefix": "auth",
-      "impact": "HIGH",
-      "description": "Testing authenticated routes with actingAs and Sanctum"
-    },
-    {
-      "name": "Test Organisation Patterns",
-      "prefix": "pest",
-      "impact": "MEDIUM",
-      "description": "Pest-specific patterns: describe/it, datasets, and lifecycle hooks"
-    }
+    {"name":"HTTP & Feature Tests","prefix":"http","impact":"CRITICAL","ruleCount":1},
+    {"name":"Model Factories","prefix":"factory","impact":"CRITICAL","ruleCount":1},
+    {"name":"Database Assertions","prefix":"db","impact":"HIGH","ruleCount":1},
+    {"name":"Faking Facades","prefix":"fake","impact":"HIGH","ruleCount":1},
+    {"name":"Authentication Testing","prefix":"auth","impact":"HIGH","ruleCount":1},
+    {"name":"Test Organisation","prefix":"pest","impact":"MEDIUM","ruleCount":1}
   ],
   "keyFeatures": [
-    "Test declaration in both Pest (test/it/describe) and PHPUnit (test methods/classes) syntax",
-    "RefreshDatabase and DatabaseTransactions trait guidance",
-    "Model factory states, sequences, and relationship helpers",
-    "Full facade faking: Mail, Queue, Notification, Event, Storage",
-    "actingAs() and Sanctum::actingAs() for authentication",
-    "assertJson with fluent AssertableJson closures",
-    "Parameterized testing with Pest datasets",
-    "Modern PHP 8.3 syntax in all examples",
-    "AI SDK faking: Agent::fake(), Image::fake(), Audio::fake(), Embeddings::fake()"
+    "Repository-grounded Pest versus PHPUnit framework selection",
+    "HTTP feature testing against observable behavior",
+    "Minimal factories with explicit scenario states",
+    "Laravel database/model assertions for durable state",
+    "Facade fakes for isolated side-effect verification",
+    "Authentication setup matched to the application contract"
   ],
   "meta": {
     "created": "2026-03-01",
-    "last_updated": "2026-03-01",
-    "rule_count": 24,
+    "last_updated": "2026-09-14",
+    "rule_count": 6,
     "structure_version": "2.0",
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ],
     "compatibility": {
       "platforms": [
         "GitHub Copilot",
