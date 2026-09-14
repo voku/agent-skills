@@ -1,47 +1,35 @@
-# PRD Writing v1.0.0
+# PRD Writing
 
-Step-by-step workflow for writing clear, actionable Product Requirements Documents.
+Portable guidance for writing actionable, engineering-grounded Product Requirements Documents.
 
-## Workflow
+## Canonical Source
 
-1. **Assess project state** — existing codebase or greenfield?
-2. **Ask clarifying questions** — 3-5 questions with lettered options (A/B/C)
-3. **Draft the PRD** — fill in the 12-section template
-4. **Present for review** — get user feedback on problem, stories, scope
-5. **Revise** — incorporate feedback, resolve open questions
-6. **Save** — write to `docs/prd/{feature-name}.md`
+`SKILL.md` defines when this skill applies and the high-level PRD workflow. `rules/` contains the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, category count, or compiled PRD recipe.
 
-## Rules (25 across 7 categories)
+## When to Use
 
-### 1. Discovery (Critical)
-Problem-first thinking, clarifying questions, codebase exploration, stakeholder alignment.
+Use this skill when creating or reviewing a PRD, feature specification, requirements document, or product proposal that needs explicit scope, testable requirements, acceptance criteria, measurable outcomes, and engineering context.
 
-### 2. Structure (Critical)
-Standardized sections, executive summary, ready-to-use PRD template, consistent output location, single source of truth.
+## Routing
 
-### 3. Requirements (High)
-User personas, user stories, functional requirements, non-functional requirements.
+1. Ground the problem and current project state from available evidence.
+2. Read `SKILL.md` to confirm scope and select the relevant canonical rule files.
+3. Load only the rule guidance needed for the current PRD rather than compiling the full skill into context.
+4. Keep stakeholder decisions, assumptions, and unknowns visibly distinct from observed repository facts.
+5. Follow the target repository's own documentation location and conventions where they exist.
 
-### 4. Scope (High)
-Out of scope definition, non-goals, dependencies and blockers.
+## Stable Boundaries
 
-### 5. Metrics (High)
-Measurable success criteria, no vague language, key performance indicators.
+- Start with the problem and desired outcome rather than an implementation prescription.
+- Ask for human input when the unresolved gap requires product intent or authority, not merely because a fact has not yet been inspected.
+- Make functional requirements, non-functional constraints, and acceptance criteria falsifiable.
+- Keep explicit non-goals and out-of-scope items visible to limit scope drift.
+- Use quantitative success criteria only when the baseline or target is evidence-backed.
+- Keep implementation detail proportional to the PRD's purpose; technical design belongs with the appropriate engineering owner when it exceeds product-level constraints.
 
-### 6. Technical (Medium)
-Data model documentation, authentication model, API routes, integration points.
+## Projection Boundary
 
-### 7. Quality (Medium)
-Testable acceptance criteria, iterative review with feedback.
-
-## Usage
-
-```
-Write a PRD for this feature
-Create product requirements for user authentication
-Document requirements for the analytics dashboard
-Review this PRD for completeness
-```
+Do not copy the current rule list, rule count, category count, or canonical template into this file. If this projection disagrees with `SKILL.md` or a file under `rules/`, preserve the mismatch as evidence and follow the canonical source.
 
 ## References
 
