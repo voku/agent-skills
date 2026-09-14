@@ -21,6 +21,21 @@ Every skill lives in its own subdirectory under `skills/<skill-name>/` and must 
 - The `description` should be precise so coding agents can trigger the skill accurately when relevant.
 - Markdown content should provide concise, high-signal instructions, rules, and examples.
 
+## Knowledge ownership and lifecycle
+
+`agent-skills` owns portable, tool-neutral engineering guidance. Before adding or materially changing a skill or rule, establish that this repository is the right semantic owner.
+
+Use these questions as a decision contract:
+
+1. **Is the guidance portable and tool-neutral?** If correctness depends on one tool's CLI, API, schema, file layout, generated artifacts, or lifecycle behavior, keep the canonical instructions with that tool instead.
+2. **Does the guidance still require engineering judgment?** Heuristics and context-dependent practices belong here. Objective invariants are candidates for structural enforcement.
+3. **What evidence justifies the guidance?** Prefer a concrete failure, review finding, experiment, issue, regression, or other observable engineering cost over taste or convention alone.
+4. **Does another skill or semantic owner already express the same principle?** Extend or reuse the existing owner instead of creating overlapping guidance under a new name.
+5. **Could code own this instead?** Prefer an owner API, type, invariant, regression test, static-analysis rule, formatter rule, or automation when it can enforce the behavior reliably.
+6. **What would make this guidance removable?** Retire or shrink prose when it becomes stale, duplicated, disproven, harmful, tool-owned, or already structurally enforced.
+
+Do not add lifecycle metadata merely to classify prose. First prove a real consumer needs machine-readable lifecycle data. A smaller skill catalog with sharper ownership is preferable to preserving every historical rule forever.
+
 ## Adding or Updating a Skill
 
 1. Fork the repository and clone your fork.
