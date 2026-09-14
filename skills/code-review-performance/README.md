@@ -1,40 +1,26 @@
 # Code Review Performance
 
-Performance review lens for algorithmic cost, data access, caching, concurrency, and worst-case resource usage.
+Targeted performance review lens for query shape, algorithmic complexity, memory management, caching, and network I/O.
 
-## Overview
+## Canonical source
 
-This skill provides:
-- A repo-structured adaptation of the Pi Ensemble review lens
-- Focused review guidance for performance
-- A standardized Must Fix / Observations / Summary output contract
-- Adversarial-input discipline to avoid shallow approvals
+`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce an independent rule inventory.
 
-## Categories
+## Consolidated rules
 
-### 1. Algorithmic Complexity (Critical)
-Complexity growth, nested loops, and expensive recomputation.
-### 2. Database Performance (Critical)
-N+1 queries, indexes, joins, and query-shape efficiency.
-### 3. Network I/O (High)
-Batching, pagination, parallelism, timeouts, and unnecessary round trips.
-### 4. Memory Management (High)
-Leaks, retention, object copying, and unbounded collections.
-### 5. Caching Strategy (Medium)
-Cacheability, invalidation, key design, and cold-path cost.
-### 6. Concurrency (High)
-Blocking work, pool exhaustion, async behavior, and race-related throughput loss.
-### 7. Asset & Payload Optimization (Low)
-Bundles, images, compression, and lazy loading opportunities.
+| Rule | Priority | Primary focus |
+|------|----------|---------------|
+| `perf-database-nplusone` | CRITICAL | N+1 queries, eager loading, index/query shape |
+| `perf-algorithmic-collections` | CRITICAL | Collection lookup shape and asymptotic cost |
+| `perf-memory-streaming` | HIGH | Streaming, chunking, bounded memory |
+| `perf-caching-invalidation` | HIGH | TTLs, cache-key versioning, stampede protection |
+| `perf-network-batching` | HIGH | Remote-call batching and over-fetching |
 
 ## Usage
 
-- "performance review"
-- "find bottlenecks"
-- "n+1 review"
-- "Review this diff for performance regressions"
+Use this lens when cost, latency, throughput, or scalability is the dominant review concern. Keep it focused and hand off when security, architecture, resilience, type safety, or simplicity becomes the primary issue.
 
 ## References
 
 - [Pi Ensemble performance lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-performance/SKILL.md)
-- [Google Web Performance](https://web.dev/explore/fast)
+- [High Performance MySQL](https://www.oreilly.com/library/view/high-performance-mysql/9781492080503/)

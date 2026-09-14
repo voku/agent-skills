@@ -1,40 +1,24 @@
 # Code Review Error Handling
 
-Resilience-focused review lens for signalling, propagation, retries, cleanup, and observable failure behavior.
+Targeted resilience review lens for signalling, propagation, timeouts, retries, cleanup, and observable failure behavior.
 
-## Overview
+## Canonical source
 
-This skill provides:
-- A repo-structured adaptation of the Pi Ensemble review lens
-- Focused review guidance for error handling
-- A standardized Must Fix / Observations / Summary output contract
-- Adversarial-input discipline to avoid shallow approvals
+`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce an independent rule inventory.
 
-## Categories
+## Consolidated rules
 
-### 1. Error Signalling Discipline (Critical)
-Ignored return codes, unchecked fallible operations, and silent partial-success paths.
-### 2. Exception & Error Hygiene (Critical)
-Overbroad catches, swallowed errors, and lost causal context.
-### 3. Timeout & Cancellation Discipline (Critical)
-Explicit timeouts, cancellation propagation, and bounded waits.
-### 4. Retry Semantics (High)
-Max attempts, backoff, idempotency, and retryable error classes.
-### 5. Partial-Failure Handling (High)
-Batch safety, compensation, and caller-visible partial-success contracts.
-### 6. Error-Context Observability (Medium)
-Logs, trackers, correlation IDs, and actionable context.
-### 7. Resource Cleanup on Error Paths (High)
-Scoped release patterns for files, locks, sockets, and transactions.
-### 8. Defensive-Programming Overreach (Low)
-Unnecessary guards and catches that add noise without resilience value.
+| Rule | Priority | Primary focus |
+|------|----------|---------------|
+| `err-signalling-hygiene` | CRITICAL | Typed signalling, cause chaining, no swallowed errors |
+| `err-outcome-batch-discipline` | HIGH | Exact branch outcomes and aggregate batch status |
+| `err-timeouts-cancellation` | CRITICAL | Explicit timeouts, bounded waits, cancellation propagation |
+| `err-retry-idempotency` | HIGH | Retryability, idempotency, backoff, jitter |
+| `err-cleanup-observability` | HIGH | Cleanup, audit ordering, contextual observability |
 
 ## Usage
 
-- "error handling review"
-- "resilience review"
-- "retry logic"
-- "Review this diff for error-handling and resilience issues"
+Use this lens when resilience or failure behavior is the dominant review concern. Keep it focused and hand off when security, performance, architecture, type safety, or simplicity becomes primary.
 
 ## References
 
