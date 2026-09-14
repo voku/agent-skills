@@ -1,70 +1,27 @@
 # Code Slop Detection
 
-Taste-level review of code for AI-generated patterns ("slop") in **PHP/Laravel and TypeScript/React** projects. Catches code that passes every metric but reads like a tutorial blog post — not what a human teammate would write.
+Qualitative code-review guidance for low-signal comments, weak naming, unnecessary abstraction, defensive noise, inauthentic tests, and style escape hatches in PHP/Laravel and TypeScript/React codebases.
 
-**Version:** 1.0.0
+## Canonical Source
 
-## Overview
+`SKILL.md` defines activation, evidence boundaries, stack grounding, and review-output semantics. The files under `rules/` contain the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, count, authorship heuristic catalog, or compiled example set.
 
-- Audits AI-assisted PRs and codebases for AI-fingerprint patterns
-- Verdict bands: CLEAN / SUSPICIOUS / INFLATED / CRITICAL
-- Stack: PHP / Laravel + Node / TypeScript / React
-- 24 rules across 6 categories
-- Complements `technical-debt` (quantitative metrics) with qualitative taste
+## When to Use
 
-## What it catches that linters don't
+Use this skill for AI-assisted PR review, maintainability/taste audits, boilerplate cleanup, and review-checklist hardening.
 
-| Slop pattern | Why linters miss it |
-|---|---|
-| Narration comments | Looks like a "valid comment" to any linter |
-| Generic names (`data`, `result`) | Passes naming conventions |
-| Premature interfaces / single-method classes | Valid code structure |
-| Generic `catch (e) { console.error(...) }` | Try/catch is a valid pattern |
-| Mock-everything tests | Tests pass and run; coverage looks fine |
-| Missing `// HACK:` scars | No tool checks for *absence* of human imperfection |
+## Routing
 
-## Categories
+1. Inspect the target repository and the actual changed code.
+2. Read `SKILL.md` first.
+3. Load only the relevant rule files for comments, naming, over-engineering, defensive balance, test authenticity, or style fingerprints.
+4. Tie every finding to observable code and repository context.
+5. Treat the heuristics as code-quality signals, not proof that a human or an LLM authored the code.
 
-### 1. Comments (CRITICAL)
-Narration, empty docblocks, placeholder TODOs, closing-brace labels.
+## Relationship to `technical-debt`
 
-### 2. Naming (CRITICAL)
-Generic placeholders, over-descriptive run-ons, suffix abuse, type-in-name.
+`technical-debt` focuses on more quantitative or mechanically observable debt. `code-slop` focuses on qualitative comprehension and maintainability costs that may survive ordinary linting and tests.
 
-### 3. Over-engineering (HIGH)
-Premature interfaces, single-method classes, useless wrappers, dependency creep.
+## Projection Boundary
 
-### 4. Defensive overdose (HIGH)
-Generic catch blocks, impossible null checks, missing real defenses.
-
-### 5. Test slop (HIGH)
-Mock-everything, "doesn't throw" assertions, mirror-implementation, snapshot abuse.
-
-### 6. Style fingerprints (MEDIUM)
-Hyper-consistent formatting, `as any` escapes, no `// HACK:` scars, debug artifacts, trivial boilerplate.
-
-## Usage
-
-```
-Review this PR for AI slop
-Audit src/ for AI-generated code patterns
-Does this code look human-written?
-Find the slop in app/Services/
-Check this file against the slop checklist
-```
-
-## Differentiator vs `technical-debt`
-
-| Skill | Lens |
-|---|---|
-| `technical-debt` | Quantitative — complexity, duplication, CVEs, missing indexes |
-| `code-slop` | Qualitative — does this code feel AI-written? |
-
-Some overlap exists on dead code and generic catch blocks, but framing and remediation differ.
-
-## References
-
-- GitClear 2025 Trends Report
-- [arXiv 2510.03029 — LLM-Generated Code Smells](https://arxiv.org/abs/2510.03029)
-- [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop) — prose-slop sister project
-- [flamehaven01/AI-SLOP-Detector](https://github.com/flamehaven01/AI-SLOP-Detector) — AST scanner
+Do not copy current rule IDs, counts, framework-version tables, or long worked examples into this file. If this projection disagrees with `SKILL.md` or `rules/`, follow the canonical source and repair the projection.
