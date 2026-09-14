@@ -1,6 +1,6 @@
 ---
 name: php-best-practices
-description: PHP 8.x strict typing, modern language features, type safety, PHPStan + php-cs-fixer validation, value objects, no-magic design, and static analysis tooling. 15 rules across 8 categories. Use when reviewing PHP code, checking type safety, auditing code quality, or ensuring PHP best practices. Triggers on "review PHP", "check PHP code", "audit PHP", "PHP best practices", or "PHP static analysis".
+description: PHP 8.x strict typing, modern language features, type safety, PHPStan + php-cs-fixer validation, value objects, no-magic design, and static analysis tooling. Use when reviewing PHP code, checking type safety, auditing code quality, or ensuring PHP best practices. Triggers on "review PHP", "check PHP code", "audit PHP", "PHP best practices", or "PHP static analysis".
 license: MIT
 metadata:
   author: php-community
@@ -10,16 +10,9 @@ metadata:
 
 # PHP Best Practices
 
-Modern PHP 8.x patterns, PSR standards, strict type system, SOLID principles, security, performance, value objects, no-magic design, and PHPStan static analysis. Contains **15 consolidated rules across 8 categories** for writing clean, maintainable, analyzable PHP code.
+Modern PHP 8.x patterns, PSR standards, strict type system, SOLID principles, security, performance, value objects, no-magic design, and PHPStan static analysis for writing clean, maintainable, analyzable PHP code.
 
 > **Core philosophy:** Prefer explicit, analyzable, intention-revealing code with strict contracts and safe defaults. Reject magic, duplication, vague naming, and hidden failure modes.
-
-## Metadata
-
-- **Version:** 4.0.0
-- **PHP Version:** 8.0 - 8.5
-- **Rule Count:** 15 rules across 8 categories
-- **License:** MIT
 
 ## Step 1: Detect PHP Version
 
@@ -59,24 +52,24 @@ Reference these guidelines when:
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix | Rules |
-|----------|----------|--------|--------|-------|
-| 1 | Types | CRITICAL | `type-` | 2 |
-| 2 | Modern PHP (8.0 - 8.4) | CRITICAL | `modern-` | 6 |
-| 3 | Error Handling | HIGH | `error-` | 1 |
-| 4 | Security | CRITICAL | `sec-` | 1 |
-| 5 | Performance | MEDIUM | `perf-` | 1 |
-| 6 | Architecture & Design | HIGH | `design-`, `solid-` | 2 |
-| 7 | PSR Standards | HIGH | `psr-` | 1 |
-| 8 | Quality Tooling & Analysis | CRITICAL | `tooling-` | 1 |
+| Priority | Category | Impact | Prefix |
+|----------|----------|--------|--------|
+| 1 | Types | CRITICAL | `type-` |
+| 2 | Modern PHP | CRITICAL | `modern-` |
+| 3 | Error Handling | HIGH | `error-` |
+| 4 | Security | CRITICAL | `sec-` |
+| 5 | Performance | MEDIUM | `perf-` |
+| 6 | Architecture & Design | HIGH | `design-`, `solid-` |
+| 7 | PSR Standards | HIGH | `psr-` |
+| 8 | Quality Tooling & Analysis | CRITICAL | `tooling-` |
 
 ## Quick Reference
 
-### 1. Types (CRITICAL) — 2 rules
+### Types (CRITICAL)
 - [type-strict-declarations.md](rules/type-strict-declarations.md) - Enforce `declare(strict_types=1)`, explicit parameter/return/property types, and avoid `mixed`
 - [type-composition.md](rules/type-composition.md) - Composition types: unions (`|`), intersections (`&`), DNF types, `void`, `never`, and explicit nullability
 
-### 2. Modern PHP (CRITICAL) — 6 rules
+### Modern PHP (CRITICAL)
 - [modern-enums.md](rules/modern-enums.md) - Backed and pure enums with methods, interfaces, and exhaustive match handling
 - [modern-readonly.md](rules/modern-readonly.md) - Immutable data structures via readonly classes, readonly properties, and typed constants
 - [modern-property-hooks.md](rules/modern-property-hooks.md) - Property hooks (`get`/`set`) and asymmetric visibility (`public private(set)`)
@@ -84,23 +77,23 @@ Reference these guidelines when:
 - [modern-expressions.md](rules/modern-expressions.md) - Modern syntax: match expressions, nullsafe operator (`?->`), arrow functions, first-class callables
 - [modern-attributes.md](rules/modern-attributes.md) - Native attributes for metadata and `#[\Override]` for compile-time inheritance verification
 
-### 3. Error Handling (HIGH) — 1 rule
+### Error Handling (HIGH)
 - [error-handling.md](rules/error-handling.md) - Typed domain exceptions, narrow catch blocks, guaranteed resource cleanup in `finally`, and zero `@` suppression
 
-### 4. Security (CRITICAL) — 1 rule
+### Security (CRITICAL)
 - [sec-core-security.md](rules/sec-core-security.md) - Parameterized SQL statements, context-aware output escaping, password hashing, and safe file uploads
 
-### 5. Performance (MEDIUM) — 1 rule
+### Performance (MEDIUM)
 - [perf-efficiency.md](rules/perf-efficiency.md) - Memory streaming via generators (`yield`), native string/array optimizations, and zero global state
 
-### 6. Architecture & Design (HIGH) — 2 rules
+### Architecture & Design (HIGH)
 - [design-value-objects.md](rules/design-value-objects.md) - Self-validating immutable value objects over primitives, and elimination of magic methods (`__get`/`__set`)
 - [solid-principles.md](rules/solid-principles.md) - Single responsibility, open/closed, Liskov substitution, interface segregation, and dependency injection
 
-### 7. PSR Standards (HIGH) — 1 rule
+### PSR Standards (HIGH)
 - [psr-standards.md](rules/psr-standards.md) - PSR-4 autoloading namespace mapping, PSR-12 code style, and naming conventions
 
-### 8. Quality Tooling & Analysis (CRITICAL) — 1 rule
+### Quality Tooling & Analysis (CRITICAL)
 - [tooling-static-analysis.md](rules/tooling-static-analysis.md) - PHPDoc precision layer: array shapes (`array{id: int}`), `list<T>`, `@template` generics, PHPStan level 8+, and PHP-CS-Fixer
 
 ## Key Patterns (Quick Reference)
