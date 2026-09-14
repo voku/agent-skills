@@ -1,109 +1,32 @@
 {
   "name": "Laravel Queues & Jobs",
-  "version": "1.0.0",
-  "description": "Production-grade queue patterns for Laravel 13 (MySQL + Redis). Covers driver choice, job design (ShouldQueue, idempotency, serialisation), retry and failure handling, worker scaling and Supervisor config, Bus batching and chaining, queue testing, and when to adopt Horizon.",
-  "framework": "Laravel 13.x (PHP 8.3+) + MySQL + Redis",
+  "version": "2.0.0",
+  "description": "Production Laravel queue and job guidance covering driver/commit behavior, idempotent job design, retry/failure handling, worker scaling, Bus orchestration, and testing/operations.",
+  "framework": "Laravel 11.x - 13.x + MySQL + Redis",
   "license": "MIT",
   "author": {
     "name": "Agent Skills Contributors",
     "url": "https://github.com/AsyrafHussin/agent-skills"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/AsyrafHussin/agent-skills"
-  },
-  "keywords": [
-    "laravel",
-    "laravel-13",
-    "queues",
-    "jobs",
-    "background-jobs",
-    "horizon",
-    "redis",
-    "supervisor",
-    "idempotency",
-    "retry",
-    "failed-jobs",
-    "bus-batch",
-    "bus-chain",
-    "scheduling",
-    "queue-testing"
-  ],
   "categories": [
-    {
-      "id": "config",
-      "name": "Driver & Config",
-      "priority": "CRITICAL",
-      "description": "Driver choice (database/redis/sqs), after_commit, failed-jobs storage",
-      "ruleCount": 3
-    },
-    {
-      "id": "design",
-      "name": "Job Design",
-      "priority": "CRITICAL",
-      "description": "ShouldQueue, IDs not models, idempotency, constructor vs handle",
-      "ruleCount": 4
-    },
-    {
-      "id": "retry",
-      "name": "Retry & Failure",
-      "priority": "HIGH",
-      "description": "Tries and backoff, failed() method, transient vs permanent, FailOnTimeout",
-      "ruleCount": 4
-    },
-    {
-      "id": "scaling",
-      "name": "Scaling & Workers",
-      "priority": "HIGH",
-      "description": "Supervisor config, multi-queue priority, worker recycling",
-      "ruleCount": 3
-    },
-    {
-      "id": "bus",
-      "name": "Batching & Chaining",
-      "priority": "HIGH",
-      "description": "Bus::batch vs Bus::chain, failure handling, chunking large sets",
-      "ruleCount": 3
-    },
-    {
-      "id": "ops",
-      "name": "Testing & Operations",
-      "priority": "MEDIUM",
-      "description": "Queue::fake / Bus::fake, scheduled jobs, when to adopt Horizon",
-      "ruleCount": 3
-    }
+    {"id":"config","name":"Driver & Config","priority":"CRITICAL","ruleCount":1},
+    {"id":"design","name":"Job Design","priority":"CRITICAL","ruleCount":1},
+    {"id":"retry","name":"Retry & Failure","priority":"HIGH","ruleCount":1},
+    {"id":"scaling","name":"Scaling & Workers","priority":"HIGH","ruleCount":1},
+    {"id":"bus","name":"Batching & Chaining","priority":"HIGH","ruleCount":1},
+    {"id":"ops","name":"Testing & Operations","priority":"MEDIUM","ruleCount":1}
   ],
   "references": [
-    {
-      "title": "Laravel 13 — Queues",
-      "url": "https://laravel.com/docs/13.x/queues",
-      "type": "official"
-    },
-    {
-      "title": "Laravel 13 — Horizon",
-      "url": "https://laravel.com/docs/13.x/horizon",
-      "type": "official"
-    },
-    {
-      "title": "Laravel 13 — Task Scheduling",
-      "url": "https://laravel.com/docs/13.x/scheduling",
-      "type": "official"
-    },
-    {
-      "title": "Supervisor — A Process Control System",
-      "url": "http://supervisord.org/",
-      "type": "tool"
-    }
+    {"title":"Laravel Queues","url":"https://laravel.com/docs/queues","type":"official"},
+    {"title":"Laravel Horizon","url":"https://laravel.com/docs/horizon","type":"official"},
+    {"title":"Laravel Task Scheduling","url":"https://laravel.com/docs/scheduling","type":"official"}
   ],
-  "tags": [
-    "laravel",
-    "queues",
-    "jobs",
-    "horizon",
-    "redis",
-    "supervisor",
-    "production"
-  ],
-  "lastUpdated": "2026-05-17",
-  "rulesTotal": 20
+  "tags": ["laravel","queues","jobs","horizon","redis","supervisor","production"],
+  "rulesTotal": 6,
+  "meta": {
+    "last_updated": "2026-09-14",
+    "rule_count": 6,
+    "structure_version": "2.0",
+    "canonical_sources": ["SKILL.md", "rules/"]
+  }
 }
