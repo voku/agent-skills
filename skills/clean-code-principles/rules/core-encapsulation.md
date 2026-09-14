@@ -4,7 +4,7 @@ title: Encapsulation
 category: core-principles
 priority: critical
 tags: [encapsulation, information-hiding, data-protection]
-related: [solid-srp-class, core-law-demeter, solid-isp-interfaces]
+related: [solid-srp, core-law-demeter, solid-isp]
 ---
 
 # Encapsulation

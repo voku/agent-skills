@@ -1,9 +1,9 @@
 # Clean Code Principles - Agent Documentation
 
-**Version:** 1.0.2
-**Focus:** SOLID Principles, Core Principles (DRY, KISS, YAGNI), Design Patterns
-**Rules:** 23 (10 SOLID + 12 Core + 1 Pattern); 4 categories planned
-**License:** MIT
+**Version:** 1.1.0  
+**Focus:** SOLID Principles, Core Principles (DRY, KISS, YAGNI), Design Patterns  
+**Rules:** 14 (5 SOLID + 8 Core + 1 Pattern)  
+**License:** MIT  
 
 ---
 
@@ -24,7 +24,7 @@ When applying this skill, agents must:
 
 ## Overview
 
-The clean-code-principles skill offers language-agnostic software design principles organized into 7 categories, from CRITICAL (SOLID, Core Principles) to LOW priority (Comments). Each rule provides bad/good examples, explanations, and practical guidance.
+The clean-code-principles skill offers language-agnostic software design principles organized into 3 categories, from CRITICAL (SOLID, Core Principles) to HIGH priority (Design Patterns). Each rule provides bad/good examples, explanations, and practical guidance.
 
 ## When to Use This Skill
 
@@ -62,33 +62,33 @@ clean-code-principles/
 └── rules/
     ├── _sections.md      # Category definitions and organization
     ├── _template.md      # Template for new rules
-    ├── solid-*.md        # SOLID principles (10 rules)
-    ├── core-*.md         # Core principles (12 rules)
+    ├── solid-*.md        # SOLID principles (5 rules)
+    ├── core-*.md         # Core principles (8 rules)
     └── pattern-*.md      # Design patterns (1 rule)
 ```
 
 ## Rule Categories
 
-### 1. SOLID Principles (CRITICAL - 10 rules)
+### 1. SOLID Principles (CRITICAL - 5 rules)
 **Prefix:** `solid-`
 
 Five fundamental object-oriented design principles:
-- **S**ingle Responsibility: `solid-srp-class`, `solid-srp-function`
-- **O**pen/Closed: `solid-ocp-extension`, `solid-ocp-abstraction`
-- **L**iskov Substitution: `solid-lsp-contracts`, `solid-lsp-preconditions`
-- **I**nterface Segregation: `solid-isp-clients`, `solid-isp-interfaces`
-- **D**ependency Inversion: `solid-dip-abstractions`, `solid-dip-injection`
+- **S**ingle Responsibility: `solid-srp` (class and function levels)
+- **O**pen/Closed: `solid-ocp` (extension via abstraction)
+- **L**iskov Substitution: `solid-lsp` (contracts, invariants, and preconditions)
+- **I**nterface Segregation: `solid-isp` (focused, client-specific interfaces)
+- **D**ependency Inversion: `solid-dip` (depend on abstractions, inject dependencies)
 
 **Use when:** Designing architecture, planning refactoring, discussing system design
 
-### 2. Core Principles (CRITICAL - 12 rules)
+### 2. Core Principles (CRITICAL - 8 rules)
 **Prefix:** `core-`
 
 Fundamental coding practices:
-- **DRY** (Don't Repeat Yourself): 3 rules
-- **KISS** (Keep It Simple): 2 rules
-- **YAGNI** (You Aren't Gonna Need It): 2 rules
-- **Other**: Separation of Concerns, Composition Over Inheritance, Law of Demeter, Fail Fast, Encapsulation
+- **DRY** (Don't Repeat Yourself): `core-dry` (single source of truth & logic extraction)
+- **KISS** (Keep It Simple): `core-kiss` (simplicity over over-engineering & readability)
+- **YAGNI** (You Aren't Gonna Need It): `core-yagni` (avoid speculative features and premature abstractions)
+- **Other**: `core-separation-concerns`, `core-composition`, `core-law-demeter`, `core-fail-fast`, `core-encapsulation`
 
 **Use when:** Daily coding, code reviews, addressing duplication or complexity
 
@@ -96,15 +96,9 @@ Fundamental coding practices:
 **Prefix:** `pattern-`
 
 Common solutions to recurring problems:
-- Repository Pattern (data access abstraction)
+- Repository Pattern: `pattern-repository` (data access abstraction)
 
 **Use when:** Solving architectural problems, abstracting infrastructure concerns
-
-### 4-7. Future Categories
-- **Code Organization** (`org-`): Module structure, boundaries
-- **Naming & Readability** (`name-`): Identifier naming conventions
-- **Functions & Methods** (`func-`): Function-level best practices
-- **Comments & Documentation** (`doc-`): Documentation guidelines
 
 ## How to Use Rules
 
@@ -112,7 +106,7 @@ Common solutions to recurring problems:
 
 1. **By ID:** Reference specific rules using their ID
    ```
-   Check against solid-srp-class and core-dry
+   Check against solid-srp and core-dry
    ```
 
 2. **By Category:** Apply all rules in a category
@@ -125,159 +119,15 @@ Common solutions to recurring problems:
    This has duplicated validation logic - check DRY rules
    ```
 
-### Rule Format
-
-Each rule follows a consistent structure:
-
-```markdown
----
-id: {rule-id}
-title: {Full Title}
-category: {category}
-priority: {critical|high|medium|low}
-tags: [{tags}]
-related: [{related-rule-ids}]
----
-
-# {Rule Title}
-
-{One-sentence summary}
-
-## Bad Example
-{Anti-pattern code with problems listed}
-
-## Good Example
-{Correct implementation with benefits}
-
-## Why
-{5-7 benefits explaining the value}
-
-## When to Apply
-{Practical scenarios}
-```
-
-### Output Format
-
-When identifying violations, use:
-
-```
-file:line - [rule-id] Description of issue
-```
-
-Example:
-```
-src/services/UserService.ts:15 - [solid-srp-class] Class handles validation, persistence, and notifications
-src/utils/helpers.ts:42 - [core-dry] Email validation duplicated from validators/email.ts
-src/models/Order.ts:28 - [core-kiss-simplicity] Overly complex abstraction for simple use case
-```
-
-## Agent Strategies
-
-### Strategy 1: Architecture Review
-
-**Goal:** Assess overall system design
-
-**Approach:**
-1. Start with SOLID principles (highest impact)
-2. Identify violations of SRP, DIP, OCP
-3. Check for proper separation of concerns
-4. Evaluate composition vs inheritance
-5. Assess interface design (ISP)
-
-**Output:** Prioritized list of architectural issues with rule references
-
-### Strategy 2: Code Quality Audit
-
-**Goal:** Find code quality issues in specific files
-
-**Approach:**
-1. Scan for duplication (DRY rules)
-2. Check complexity (KISS rules)
-3. Look for overengineering (YAGNI rules)
-4. Verify single responsibility
-5. Assess encapsulation
-
-**Output:** File-by-file findings with specific line references
-
-### Strategy 3: Refactoring Guidance
-
-**Goal:** Provide actionable refactoring steps
-
-**Approach:**
-1. Identify the primary issue (which rule violated)
-2. Reference the good example from that rule
-3. Suggest specific refactoring steps
-4. Mention related rules that may also help
-5. Prioritize changes by impact
-
-**Output:** Step-by-step refactoring plan with rule references
-
-### Strategy 4: Design Decision Support
-
-**Goal:** Help choose between design alternatives
-
-**Approach:**
-1. Analyze each option against relevant principles
-2. Consider YAGNI (simplest solution first)
-3. Evaluate against SOLID principles
-4. Check alignment with KISS
-5. Recommend based on principle adherence
-
-**Output:** Comparative analysis with principle-based recommendation
-
-### Strategy 5: Pattern Application
-
-**Goal:** Suggest appropriate design patterns
-
-**Approach:**
-1. Identify the problem being solved
-2. Check if any patterns apply
-3. Verify pattern aligns with SOLID principles
-4. Ensure pattern isn't overengineering (YAGNI)
-5. Provide implementation guidance
-
-**Output:** Pattern recommendation with integration guidance
-
-## Best Practices for Agents
-
-### Do:
-- Start with CRITICAL rules (SOLID, Core)
-- Provide specific line numbers when possible
-- Reference rule IDs in all findings
-- Explain WHY a rule matters, not just that it's violated
-- Give actionable refactoring suggestions
-- Consider the codebase context
-- Prioritize by impact (CRITICAL > HIGH > MEDIUM > LOW)
-- Show code examples from the rules
-- Mention related rules that apply together
-
-### Don't:
-- Don't cite every minor violation
-- Don't recommend patterns without clear need (YAGNI)
-- Don't ignore context (some violations may be acceptable)
-- Don't focus on LOW priority rules when CRITICAL issues exist
-- Don't provide fixes without explaining the principle
-- Don't recommend complex solutions for simple problems (KISS)
-- Don't suggest abstractions without concrete use cases (YAGNI)
-
-### Prioritization
-
-When multiple issues exist:
-1. **CRITICAL - SOLID violations:** Architecture-level problems
-2. **CRITICAL - Core violations:** Duplication, complexity, overengineering
-3. **HIGH - Pattern opportunities:** Where patterns genuinely help
-4. **MEDIUM - Naming/Functions:** Readability improvements
-5. **LOW - Documentation:** Comment and doc issues
-
-## Example Interactions
+## Practical Application Examples
 
 ### Example 1: Architecture Review
 
 **User:** "Review the architecture of this OrderService class"
 
 **Agent Approach:**
-1. Check class responsibilities against `solid-srp-class`
-2. Evaluate dependencies against `solid-dip-injection`
+1. Check class responsibilities against `solid-srp`
+2. Evaluate dependencies against `solid-dip`
 3. Look for data access against `pattern-repository`
 4. Check for proper separation against `core-separation-concerns`
 
@@ -286,13 +136,13 @@ When multiple issues exist:
 Architecture Review - OrderService
 
 CRITICAL Issues:
-1. [solid-srp-class] Class has multiple responsibilities:
+1. [solid-srp] Class has multiple responsibilities:
    - Order validation (should be separate validator)
    - Direct database access (should use repository)
    - Email sending (should be separate service)
    - Payment processing (should be separate service)
 
-2. [solid-dip-abstractions] Direct dependency on concrete implementations:
+2. [solid-dip] Direct dependency on concrete implementations:
    - Instantiates MySQLDatabase directly (line 15)
    - Creates StripePaymentGateway in constructor (line 18)
 
@@ -305,7 +155,7 @@ Recommendations:
 3. Create repository abstraction for data access
 4. Extract email and payment to separate services
 
-See: solid-srp-class.md, solid-dip-injection.md, pattern-repository.md
+See: solid-srp.md, solid-dip.md, pattern-repository.md
 ```
 
 ### Example 2: Code Quality Check
@@ -314,8 +164,8 @@ See: solid-srp-class.md, solid-dip-injection.md, pattern-repository.md
 
 **Agent Approach:**
 1. Check for duplication (`core-dry`)
-2. Check complexity (`core-kiss-simplicity`)
-3. Check function responsibility (`solid-srp-function`)
+2. Check complexity (`core-kiss`)
+3. Check function responsibility (`solid-srp`)
 
 **Agent Output:**
 ```
@@ -323,15 +173,15 @@ Code Quality Issues:
 
 utils/validation.ts:
   Line 23 - [core-dry] Email regex duplicated from line 45 and validators/email.ts
-  Line 30 - [core-dry-extraction] Password validation logic should be extracted to reusable function
-  Line 50 - [solid-srp-function] Function validates both email AND password - split into two functions
+  Line 30 - [core-dry] Password validation logic should be extracted to reusable validator
+  Line 50 - [solid-srp] Function validates both email AND password - split into two functions
 
 Suggested refactoring:
-1. Extract common regex patterns to constants file (core-dry-single-source)
-2. Create separate validateEmail() and validatePassword() functions (solid-srp-function)
-3. Import from shared validators module (core-dry-extraction)
+1. Extract common regex patterns to constants file (core-dry)
+2. Create separate validateEmail() and validatePassword() functions (solid-srp)
+3. Import from shared validators module (core-dry)
 
-See: core-dry.md, core-dry-extraction.md, solid-srp-function.md
+See: core-dry.md, solid-srp.md
 ```
 
 ### Example 3: Design Decision
@@ -340,84 +190,51 @@ See: core-dry.md, core-dry-extraction.md, solid-srp-function.md
 
 **Agent Approach:**
 1. Apply `core-composition` principle
-2. Check LSP implications (`solid-lsp-contracts`)
-3. Consider YAGNI (`core-yagni-abstractions`)
+2. Check LSP implications (`solid-lsp`)
+3. Consider YAGNI (`core-yagni`)
 
 **Agent Output:**
 ```
 Recommendation: Use Composition
 
 Analysis:
-1. [core-composition] Composition is preferred over inheritance for flexibility
-   - Admins can have additional capabilities without inheritance constraints
-   - Easier to test each capability independently
-   - Can mix different permission sets dynamically
+1. [core-composition] Favor composition over inheritance:
+   - Admin "has roles/permissions", not strictly "is a User with extra fields"
+   - Composition allows dynamic role assignment without class proliferation
+   - Inheritance creates rigid hierarchies that break down when SuperAdmin or Auditor roles emerge
 
-2. [solid-lsp-contracts] Inheritance risks LSP violations
-   - If Admin overrides User methods differently
-   - If Admin has different behavior expectations
+2. [solid-lsp] Liskov Substitution Principle:
+   - If Admin overrides User methods to disallow standard operations, LSP is violated
 
-3. [core-yagni-abstractions] Start simple
-   - Don't create inheritance hierarchy unless you need polymorphism
-   - Compose from Permission and Role objects instead
-
-Suggested approach:
-```typescript
-class User {
-  constructor(
-    private permissions: PermissionSet,
-    private roleManager: RoleManager
-  ) {}
-}
+3. [core-yagni] Avoid speculative class hierarchies:
+   - Start with User holding a collection of Permissions/Roles
 ```
-
-See: core-composition.md, solid-lsp-contracts.md
-```
-
-## Integration with Other Skills
-
-This skill complements:
-- **refactoring**: Provides principles for refactoring decisions
-- **architecture-review**: Supplies SOLID and design principles
-- **code-review**: Offers quality criteria for reviews
-- **testing**: Promotes testable design (DIP, SRP)
 
 ## Rule Reference Quick Guide
 
 ### Most Common Rules
 
 **For duplication:**
-- `core-dry` - Main DRY principle
-- `core-dry-extraction` - How to extract duplicated code
-- `core-dry-single-source` - Configuration and constants
+- `core-dry` - Single source of truth & logic extraction
 
 **For complex code:**
-- `core-kiss-simplicity` - Avoid overengineering
-- `core-kiss-readability` - Optimize for readability
-- `core-yagni-features` - Don't build unused features
-- `core-yagni-abstractions` - Don't abstract prematurely
+- `core-kiss` - Simplicity over over-engineering and readability
+- `core-yagni` - Don't build speculative features or premature abstractions
 
 **For class design:**
-- `solid-srp-class` - Single responsibility for classes
-- `solid-dip-injection` - Dependency injection
+- `solid-srp` - Single responsibility for classes and functions
+- `solid-dip` - Dependency injection and abstractions
 - `core-separation-concerns` - Separate different concerns
 - `core-composition` - Favor composition over inheritance
 
-**For function design:**
-- `solid-srp-function` - Single responsibility for functions
-- `core-kiss-readability` - Clear, readable functions
-
 **For interfaces:**
-- `solid-isp-interfaces` - Small, focused interfaces
-- `solid-isp-clients` - Client-specific interfaces
+- `solid-isp` - Small, client-specific interfaces
 
 **For extensibility:**
-- `solid-ocp-extension` - Open for extension, closed for modification
-- `solid-ocp-abstraction` - Use abstractions for extension points
+- `solid-ocp` - Open for extension, closed for modification via abstraction
 
 **For inheritance:**
-- `solid-lsp-contracts` - Subtypes must honor contracts
-- `solid-lsp-preconditions` - Pre/postcondition rules
+- `solid-lsp` - Subtypes must honor base contracts, invariants, and preconditions
 - `core-composition` - Prefer composition
 
 **For data access:**
@@ -425,11 +242,11 @@ This skill complements:
 
 ## Metadata
 
-**Version:** 1.0.2
-**Rules:** 23 (10 SOLID, 12 Core, 1 Pattern)
-**Categories:** 7 (3 implemented, 4 planned)
-**Languages:** Language-agnostic (examples in TypeScript)
-**Last Updated:** 2026-03-07
+**Version:** 1.1.0  
+**Rules:** 14 (5 SOLID, 8 Core, 1 Pattern)  
+**Categories:** 3 (SOLID Principles, Core Principles, Design Patterns)  
+**Languages:** Language-agnostic (examples in TypeScript)  
+**Last Updated:** 2026-09-14  
 
 ## Resources
 
@@ -443,20 +260,6 @@ This skill complements:
 - [Refactoring Guru](https://refactoring.guru/) - Design patterns and code smells
 - [Martin Fowler's Catalog](https://refactoring.com/catalog/) - Refactoring techniques
 - [Uncle Bob's Blog](https://blog.cleancoder.com/) - Software craftsmanship
-
-## Contributing New Rules
-
-When adding new rules:
-1. Use `rules/_template.md` as starting point
-2. Follow naming convention: `{prefix}-{concept}-{specificity}.md`
-3. Include YAML frontmatter with all required fields
-4. Provide clear bad/good examples
-5. Explain 5-7 benefits in "Why" section
-6. Add to `metadata.json` rules array
-7. Update category counts in `_sections.md`
-8. Reference related rules in frontmatter
-9. Keep examples language-agnostic (TypeScript preferred)
-10. Aim for 300-400 lines of content
 
 ## License
 

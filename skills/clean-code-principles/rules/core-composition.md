@@ -4,7 +4,7 @@ title: Composition Over Inheritance
 category: core-principles
 priority: critical
 tags: [composition, inheritance, flexibility, design]
-related: [solid-srp-class, solid-dip-injection, core-encapsulation]
+related: [solid-srp, solid-dip, core-encapsulation]
 ---
 
 # Composition Over Inheritance

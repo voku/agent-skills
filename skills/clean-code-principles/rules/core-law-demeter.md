@@ -4,7 +4,7 @@ title: Law of Demeter
 category: core-principles
 priority: critical
 tags: [law-of-demeter, coupling, encapsulation]
-related: [core-encapsulation, solid-srp-class, core-separation-concerns]
+related: [core-encapsulation, solid-srp, core-separation-concerns]
 ---
 
 # Law of Demeter

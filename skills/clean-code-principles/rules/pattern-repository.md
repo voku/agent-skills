@@ -4,7 +4,7 @@ title: Design Pattern - Repository
 category: design-patterns
 priority: high
 tags: [design-patterns, repository, data-access, separation-of-concerns]
-related: [solid-dip-abstractions, solid-srp-class, core-separation-concerns]
+related: [solid-dip, solid-srp, core-separation-concerns]
 ---
 
 # Repository Pattern

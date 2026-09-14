@@ -4,7 +4,7 @@ title: Fail Fast Principle
 category: core-principles
 priority: critical
 tags: [fail-fast, error-handling, validation]
-related: [solid-lsp-preconditions, core-encapsulation]
+related: [solid-lsp, core-encapsulation]
 ---
 
 # Fail Fast Principle

@@ -48,7 +48,7 @@
       "name": "SOLID Principles",
       "priority": "critical",
       "prefix": "solid-",
-      "count": 10,
+      "count": 5,
       "description": "Five fundamental principles of object-oriented design"
     },
     {
@@ -56,7 +56,7 @@
       "name": "Core Principles",
       "priority": "critical",
       "prefix": "core-",
-      "count": 12,
+      "count": 8,
       "description": "Fundamental coding principles like DRY, KISS, and YAGNI"
     },
     {
@@ -66,98 +66,36 @@
       "prefix": "pattern-",
       "count": 1,
       "description": "Common design patterns for recurring problems"
-    },
-    {
-      "id": "code-organization",
-      "name": "Code Organization",
-      "priority": "high",
-      "prefix": "org-",
-      "count": 0,
-      "description": "Project structure and module boundaries"
-    },
-    {
-      "id": "naming-readability",
-      "name": "Naming & Readability",
-      "priority": "medium",
-      "prefix": "name-",
-      "count": 0,
-      "description": "Naming conventions and code readability"
-    },
-    {
-      "id": "functions-methods",
-      "name": "Functions & Methods",
-      "priority": "medium",
-      "prefix": "func-",
-      "count": 0,
-      "description": "Function-level best practices"
-    },
-    {
-      "id": "comments-documentation",
-      "name": "Comments & Documentation",
-      "priority": "low",
-      "prefix": "doc-",
-      "count": 0,
-      "description": "Documentation and commenting guidelines"
     }
   ],
   "rules": [
     {
-      "id": "solid-srp-class",
-      "title": "SOLID - Single Responsibility Principle (Class Level)",
+      "id": "solid-srp",
+      "title": "SOLID - Single Responsibility Principle",
       "category": "solid-principles",
       "priority": "critical"
     },
     {
-      "id": "solid-srp-function",
-      "title": "SOLID - Single Responsibility Principle (Function Level)",
+      "id": "solid-ocp",
+      "title": "SOLID - Open/Closed Principle",
       "category": "solid-principles",
       "priority": "critical"
     },
     {
-      "id": "solid-ocp-extension",
-      "title": "SOLID - Open/Closed Principle (Extension)",
+      "id": "solid-lsp",
+      "title": "SOLID - Liskov Substitution Principle",
       "category": "solid-principles",
       "priority": "critical"
     },
     {
-      "id": "solid-ocp-abstraction",
-      "title": "SOLID - Open/Closed (Abstraction)",
+      "id": "solid-isp",
+      "title": "SOLID - Interface Segregation Principle",
       "category": "solid-principles",
       "priority": "critical"
     },
     {
-      "id": "solid-lsp-contracts",
-      "title": "SOLID - Liskov Substitution (Contracts)",
-      "category": "solid-principles",
-      "priority": "critical"
-    },
-    {
-      "id": "solid-lsp-preconditions",
-      "title": "SOLID - Liskov Substitution (Preconditions)",
-      "category": "solid-principles",
-      "priority": "critical"
-    },
-    {
-      "id": "solid-isp-clients",
-      "title": "SOLID - Interface Segregation (Client-Specific)",
-      "category": "solid-principles",
-      "priority": "critical"
-    },
-    {
-      "id": "solid-isp-interfaces",
-      "title": "SOLID - Interface Segregation (Small Interfaces)",
-      "category": "solid-principles",
-      "priority": "critical"
-    },
-    {
-      "id": "solid-dip-abstractions",
-      "title": "SOLID - Dependency Inversion (Abstractions)",
-      "category": "solid-principles",
-      "priority": "critical"
-    },
-    {
-      "id": "solid-dip-injection",
-      "title": "SOLID - Dependency Inversion (Injection)",
+      "id": "solid-dip",
+      "title": "SOLID - Dependency Inversion Principle",
       "category": "solid-principles",
       "priority": "critical"
     },
@@ -168,38 +106,14 @@
       "priority": "critical"
     },
     {
-      "id": "core-dry-extraction",
-      "title": "DRY - Code Extraction",
+      "id": "core-kiss",
+      "title": "Keep It Simple, Stupid (KISS)",
       "category": "core-principles",
       "priority": "critical"
     },
     {
-      "id": "core-dry-single-source",
-      "title": "DRY - Single Source of Truth",
-      "category": "core-principles",
-      "priority": "critical"
-    },
-    {
-      "id": "core-kiss-simplicity",
-      "title": "KISS - Simplicity",
-      "category": "core-principles",
-      "priority": "critical"
-    },
-    {
-      "id": "core-kiss-readability",
-      "title": "KISS - Readability",
-      "category": "core-principles",
-      "priority": "critical"
-    },
-    {
-      "id": "core-yagni-features",
-      "title": "YAGNI - Features",
-      "category": "core-principles",
-      "priority": "critical"
-    },
-    {
-      "id": "core-yagni-abstractions",
-      "title": "YAGNI - Abstractions",
+      "id": "core-yagni",
+      "title": "You Aren't Gonna Need It (YAGNI)",
       "category": "core-principles",
       "priority": "critical"
     },
@@ -387,20 +301,20 @@
   },
   "metadata": {
     "created": "2026-01-17",
-    "updated": "2026-03-07",
+    "updated": "2026-09-14",
     "status": "active",
     "maturity": "stable",
     "coverage": {
-      "total_categories": 7,
+      "total_categories": 3,
       "implemented_categories": 3,
-      "total_rules": 23,
-      "coverage_percentage": 42.86
+      "total_rules": 14,
+      "coverage_percentage": 100.0
     }
   },
   "meta": {
     "created": "2026-01-17",
-    "last_updated": "2026-03-07",
-    "rule_count": 23,
+    "last_updated": "2026-09-14",
+    "rule_count": 14,
     "structure_version": "2.0",
     "compatibility": {
       "platforms": [

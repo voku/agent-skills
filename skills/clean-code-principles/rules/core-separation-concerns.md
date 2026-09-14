@@ -4,7 +4,7 @@ title: Separation of Concerns
 category: core-principles
 priority: critical
 tags: [separation-of-concerns, modularity, cohesion]
-related: [solid-srp-class, solid-srp-function, core-law-demeter]
+related: [solid-srp, core-law-demeter]
 ---
 
 # Separation of Concerns
