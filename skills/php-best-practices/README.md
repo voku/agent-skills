@@ -1,69 +1,33 @@
 # PHP Best Practices
 
-Modern PHP 8.x guidance for strict typing, modern language features, explicit error handling, security, performance, architecture, PSR standards, and static analysis.
-
-**Version:** 4.0.0  
-**Rules:** 15 consolidated rules across 8 categories  
-**PHP:** 8.0 - 8.5
+Modern PHP guidance for strict typing, language features, explicit error handling, security, performance, architecture, PSR standards, and static analysis.
 
 ## Canonical source
 
-`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce independent operational semantics.
+`SKILL.md` defines when this skill applies and the high-level contract. `rules/` contains the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, version table, or rule count.
 
-## Before applying the skill
+## When to use
 
-Detect the project's supported PHP version from `composer.json` and, when relevant, the runtime. Do not recommend syntax newer than the project can execute.
+Use this skill for PHP implementation or review work where the dominant concern is language-level correctness, explicit contracts, modern PHP usage, error handling, security, performance, design, standards, or static-analysis-friendly code.
 
-Prefer explicit, analyzable code with strict contracts and safe defaults. Native types come first; PHPDoc adds precision only where PHP cannot express enough. Use `final`/`readonly` deliberately, avoid magic-heavy design, and make failure observable instead of suppressing it.
+For analyzer-specific work where proving a type to PHPStan/Psalm is the primary task, prefer `php-static-analysis` as the focused implementation skill.
 
-## Categories
+## Routing
 
-| Category | Impact | Rules |
-|---|---|---:|
-| Types | CRITICAL | 2 |
-| Modern PHP | CRITICAL | 6 |
-| Error Handling | HIGH | 1 |
-| Security | CRITICAL | 1 |
-| Performance | MEDIUM | 1 |
-| Architecture & Design | HIGH | 2 |
-| PSR Standards | HIGH | 1 |
-| Quality Tooling & Analysis | CRITICAL | 1 |
+1. Detect the target project's supported PHP version from its own configuration and runtime evidence.
+2. Read `SKILL.md` to confirm scope and select the relevant canonical rule files.
+3. Load only the rules needed for the verified problem instead of compiling the entire skill into context.
+4. Apply project-local conventions and stronger repository instructions within their scope.
+5. Validate through the repository's configured tests, static analysis, and formatter/fixer; report only observed results.
 
-## Rule index
+## Stable boundaries
 
-### Types
-- `type-strict-declarations`
-- `type-composition`
+- Do not recommend syntax or runtime behavior newer than the target project supports.
+- Prefer native PHP types for enforceable contracts; use PHPDoc as a precision layer where PHP cannot express enough.
+- Prefer explicit, analyzable APIs over magic-heavy behavior when both satisfy the same requirement.
+- Make failures observable rather than suppressing diagnostics.
+- Keep modernization and refactoring scoped to the evidence-backed problem.
 
-### Modern PHP
-- `modern-enums`
-- `modern-readonly`
-- `modern-property-hooks`
-- `modern-constructor-arguments`
-- `modern-expressions`
-- `modern-attributes`
+## Projection boundary
 
-### Error Handling
-- `error-handling`
-
-### Security
-- `sec-core-security`
-
-### Performance
-- `perf-efficiency`
-
-### Architecture & Design
-- `design-value-objects`
-- `solid-principles`
-
-### PSR Standards
-- `psr-standards`
-
-### Quality Tooling & Analysis
-- `tooling-static-analysis`
-
-## Validation principle
-
-Use the repository's own test/static-analysis/style commands and report observed results. For PHP projects, prefer the strictest configured PHPStan level and the repository's configured formatter/fixer. Do not claim a check passed merely because the command was suggested.
-
-Read the canonical rule files for trigger-specific guidance and concrete examples.
+Do not copy the current canonical rule list or rule count into this file. If this projection disagrees with `SKILL.md` or a file under `rules/`, preserve the mismatch as evidence and follow the canonical source.
