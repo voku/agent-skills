@@ -5,116 +5,37 @@
 | Level | Description | When to Apply |
 |-------|-------------|---------------|
 | CRITICAL | Essential for production apps | Always |
-| HIGH | Significant performance impact | Most projects |
-| MEDIUM | Noticeable improvements | When optimizing |
-| LOW | Minor optimizations | Large-scale apps |
+| HIGH | Significant performance & UX impact | Most projects |
+| MEDIUM | Polish and coordination patterns | When scaling |
 
 ## Section Overview
 
-### Query Fundamentals (CRITICAL)
-Rules for basic React Query patterns. These are essential for any data fetching implementation, covering useQuery hooks, query keys, query functions, and conditional execution.
+### 1. Query Fundamentals (`query`)
+- **Impact:** CRITICAL
+- **Rules:** `rq-query-fundamentals`
+- **Description:** React Query basics: QueryClient configuration, query key factories with tuple `as const`, strongly-typed query functions with AbortSignal, conditional execution with `enabled`, and fine-grained data projection with `select`.
 
-**Impact:** Critical foundation for server state management. Proper implementation prevents cache collisions, enables automatic refetching, and ensures type safety.
+### 2. Mutation & Updates (`mutation`)
+- **Impact:** CRITICAL
+- **Rules:** `rq-mutations-optimistic`
+- **Description:** Server write operations with `useMutation`: optimistic updates with cache cancellation, snapshot capture in `onMutate`, error rollback via context, and cache invalidation on settle.
 
-**Key concepts:**
-- useQuery hook patterns and configuration
-- Query key factory patterns
-- Query function best practices
-- Conditional query execution with `enabled`
-- Data transformation with `select`
+### 3. Cache Lifecycles & Prefetching (`cache`)
+- **Impact:** HIGH
+- **Rules:** `rq-cache-lifecycles`
+- **Description:** Cache freshness vs garbage collection (`staleTime` vs `gcTime`), smooth page transitions via `placeholderData: keepPreviousData`, proactive prefetching, and retry strategies with exponential backoff.
 
-### Mutation & Updates (CRITICAL)
-Rules for creating, updating, and deleting data with React Query mutations. Covers setup, callbacks, optimistic updates, and cache invalidation strategies.
+### 4. Advanced Queries & Concurrency (`advanced`)
+- **Impact:** HIGH
+- **Rules:** `rq-advanced-patterns`
+- **Description:** Cursor and offset infinite lists via `useInfiniteQuery`, dynamic parallel requests with `useQueries`, request cancellation via `signal`, and React 18+ streaming with `useSuspenseQuery`.
 
-**Impact:** Essential for write operations. Proper mutation handling ensures data consistency, provides instant user feedback, and handles errors gracefully.
+### 5. Zustand Store Architecture (`zustand`)
+- **Impact:** CRITICAL
+- **Rules:** `zs-store-architecture`
+- **Description:** Type-safe Zustand store definitions, co-located actions, atomic scalar selectors, and shallow multi-property comparisons with `useShallow` to prevent render loops.
 
-**Key concepts:**
-- useMutation setup and configuration
-- Mutation callbacks (onSuccess, onError, onSettled)
-- Optimistic updates with rollback
-- Mutation variables and context
-- Side effects and cache updates
-
-### Zustand Stores (CRITICAL)
-Rules for client-side state management with Zustand. Covers store creation, TypeScript patterns, middleware, and integration with React Query.
-
-**Impact:** Critical for managing UI state, user preferences, and local-first data. Zustand provides lightweight, performant state management without boilerplate.
-
-**Key concepts:**
-- Store creation and TypeScript patterns
-- Selectors for performance optimization
-- Persist middleware for localStorage
-- DevTools integration
-- Combining with React Query for hybrid state management
-
-### Advanced Queries (HIGH)
-Rules for complex query patterns including infinite scrolling, pagination, dependent queries, and parallel fetching.
-
-**Impact:** High value for data-heavy applications. These patterns enable sophisticated UX like infinite scroll, complex data relationships, and optimized parallel loading.
-
-**Key concepts:**
-- Infinite queries for load-more patterns
-- Paginated queries with page management
-- Dependent queries (sequential data fetching)
-- Parallel queries for independent data
-- Query cancellation and cleanup
-
-### Cache & Performance (HIGH-MEDIUM)
-Rules for optimizing caching behavior, prefetching data, and configuring staleness. Covers staleTime, gcTime, invalidation, and retry logic.
-
-**Impact:** High impact on perceived performance and server load. Proper caching reduces network requests while ensuring data freshness.
-
-**Key concepts:**
-- staleTime configuration for freshness
-- gcTime (cache time) for memory management
-- Query invalidation strategies
-- Prefetching for anticipated navigation
-- Retry logic and error recovery
-- Placeholder and initial data patterns
-- Refetch configuration
-
-### DevTools & Patterns (MEDIUM)
-Rules for debugging, testing, and advanced patterns. Covers React Query DevTools, Zustand DevTools, Suspense integration, and best practices.
-
-**Impact:** Medium impact on developer experience and debugging. These tools and patterns help identify performance issues and streamline development.
-
-**Key concepts:**
-- React Query DevTools usage
-- Zustand DevTools integration
-- Suspense mode for React 18+
-- Testing strategies
-- Common pitfalls and solutions
-
-## Section Relationships
-
-```
-Query Fundamentals → Everything else
-    ↓
-Mutation & Updates → Cache & Performance
-    ↓
-Advanced Queries → Cache & Performance
-    ↓
-Zustand Stores ← → All Query Patterns
-    ↓
-DevTools & Patterns (observes all)
-```
-
-## When to Apply Each Section
-
-### Starting a new project
-1. **Query Fundamentals** - Set up QueryClient and basic patterns
-2. **Zustand Stores** - Create stores for UI state
-3. **Mutation & Updates** - Implement write operations
-4. **Cache & Performance** - Configure caching strategies
-
-### Optimizing existing app
-1. **Cache & Performance** - Audit staleTime/gcTime settings
-2. **Advanced Queries** - Replace manual pagination with useInfiniteQuery
-3. **Mutation & Updates** - Add optimistic updates for better UX
-4. **DevTools & Patterns** - Use DevTools to identify issues
-
-### Scaling up
-1. **Advanced Queries** - Implement dependent and parallel queries
-2. **Cache & Performance** - Add prefetching for common paths
-3. **Zustand Stores** - Extract complex component state to stores
-4. **DevTools & Patterns** - Implement comprehensive testing
+### 6. Persistence & Server-Client Boundary (`zustand`)
+- **Impact:** HIGH
+- **Rules:** `zs-persist-coordination`
+- **Description:** Storage persistence security using `partialize` (strictly excluding auth tokens, passwords, and sensitive keys), and clear architectural separation between React Query server state and Zustand UI state.
