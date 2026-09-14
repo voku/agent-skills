@@ -1,42 +1,26 @@
 # Code Review Simplicity
 
-Simplicity review lens for readability, cognitive load, unnecessary abstraction, duplication, and dead-range logic.
+Targeted simplicity review lens for readability, cognitive load, premature abstraction, dead logic, naming, and bounds clarity.
 
-## Overview
+## Canonical source
 
-This skill provides:
-- A repo-structured adaptation of the Pi Ensemble review lens
-- Focused review guidance for simplicity
-- A standardized Must Fix / Observations / Summary output contract
-- Adversarial-input discipline to avoid shallow approvals
+`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce independent review semantics or a separate rule inventory.
 
-## Categories
+## Consolidated rules
 
-### 1. Readability & Clarity (High)
-Naming, magic values, nesting, boolean complexity, and long functions.
-### 2. Cognitive Load (High)
-Parameter count, responsibility load, inheritance depth, and mental model cost.
-### 3. Unnecessary Complexity (Critical)
-Over-engineering, premature abstraction, and patterns without value.
-### 4. Colliding or Redundant Bounds (Critical)
-Bound-range collapse, dead-range logic, and constant-output paths.
-### 5. Code Duplication (Medium)
-Copy-paste logic and repeated structures that should converge.
-### 6. Documentation & Comments (Low)
-Missing, outdated, or contradictory explanation.
-### 7. Naming Conventions (Medium)
-Non-descriptive, inconsistent, or misleading names.
-### 8. Testing & Debugging Simplicity (Low)
-Hidden side effects, difficult debugging, and hard-to-test design.
+| Rule | Priority | Primary focus |
+|------|----------|---------------|
+| `simp-premature-abstraction` | HIGH | Single-use interfaces, speculative factories, unnecessary wrappers |
+| `simp-shallow-control-flow` | HIGH | Guard clauses, nesting, boolean flag control flow |
+| `simp-bounds-range-clarity` | CRITICAL | Collapsed bounds, dead ranges, tautological comparisons |
+| `simp-intention-revealing-naming` | MEDIUM | Domain verbs/nouns, affirmative booleans, noisy comments |
+| `simp-dead-code-elimination` | HIGH | Unused code and asymmetric sibling branches |
 
 ## Usage
 
-- "simplicity review"
-- "reduce complexity"
-- "readability review"
-- "Review this diff for simplicity and maintainability issues"
+Use this lens for simplicity, readability, complexity, duplication, maintainability, or dead-range review. Keep it focused: if security, performance, architecture, type safety, or error handling becomes the dominant concern, hand off to one focused review lens instead of broadening this pass.
 
 ## References
 
 - [Pi Ensemble simplicity lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-simplicity/SKILL.md)
-- [Refactoring Guru code smells](https://refactoring.guru/refactoring/smells)
+- [A Philosophy of Software Design](https://www.goodreads.com/book/show/39996759/a-philosophy-of-software-design)
