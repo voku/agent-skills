@@ -1,29 +1,25 @@
 # PHP Static Analysis — Agent Projection
 
-**Version:** 2.0.0  
-**Rules:** 5 consolidated rules  
-**License:** MIT
+Implementation guidance for making PHP code provably typed under a strict static analyzer.
 
-This file is a compact projection for agents. The canonical skill contract is `SKILL.md` plus the files under `rules/`. Do not add independent static-analysis semantics here.
+This file is a supporting agent projection. The canonical contract is `SKILL.md` plus `rules/`; do not infer the current rule inventory or independent semantics from this file.
 
-## Fast Path
+## Fast path
 
-1. Resolve analyzer failures by making the analyzer's claim untrue, not by hiding the diagnostic.
-2. Decide whether the problem is a wrong contract or missing proof before editing types.
-3. Fix the owning producer/boundary before adding repeated call-site assertions.
-4. Keep ignores narrow, identified, and justified; prefer teaching the analyzer when dynamic behavior is real and reusable.
-5. Verify with the target repository's actual analyzer command and report success only after observing its result.
+1. Read `SKILL.md` to decide whether this skill applies.
+2. Read only the relevant files under `rules/` for the current analyzer failure.
+3. Classify the cause as a wrong contract or a missing proof.
+4. Correct the owning boundary before adding local assertions or widening types.
+5. Keep ignores, baselines, and analyzer extensions narrowly scoped.
+6. Verify with the repository's configured analyzer command and report the observed result.
 
-## Canonical Rules
+## Evidence contract
 
-| Priority | Rule | Focus |
-|----------|------|-------|
-| CRITICAL | [`sa-native-types-first`](rules/sa-native-types-first.md) | Native PHP types and strict comparisons before PHPDoc workarounds |
-| CRITICAL | [`sa-shape-precision`](rules/sa-shape-precision.md) | Precise array shapes, lists, generics, class-strings, and refined strings |
-| HIGH | [`sa-contract-honesty`](rules/sa-contract-honesty.md) | Preserve correct strict contracts and prove boundary validity |
-| HIGH | [`sa-root-cause-typing`](rules/sa-root-cause-typing.md) | Type producers/factories instead of repeating inline assertions |
-| MEDIUM | [`sa-scoped-ignores-extensions`](rules/sa-scoped-ignores-extensions.md) | Narrow ignores, baselines, and analyzer extensions at the right boundary |
+- Do not silence a real defect to make analysis green.
+- Do not claim validation passed unless the analyzer result was actually observed.
+- Do not invent a validation command when the repository does not define one.
+- Preserve strict contracts when earlier boundary validation can provide the missing proof.
 
-## Projection boundary
+## Ownership boundary
 
-If this file disagrees with `SKILL.md` or a rule file, preserve the mismatch as evidence and follow the canonical source. Update this projection only when its routing/interface summary changes.
+`SKILL.md` owns scope, triggers, and routing. Files under `rules/` own detailed static-analysis semantics. This projection should stay compact and must not become a second compiled rule reference.
