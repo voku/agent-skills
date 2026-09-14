@@ -1,21 +1,23 @@
 ---
 name: laravel-database-optimization
-description: Laravel database optimization patterns. Use when writing Eloquent queries, creating migrations, configuring caching, debugging slow queries, or optimizing database performance. Triggers on tasks involving N+1 queries, indexing, Redis caching, pagination, or database transactions.
+description: Laravel database optimization patterns for queries, indexing, Redis caching, pagination, transactions, migrations, and debugging. 9 rules across 9 categories. Use when writing Eloquent queries, creating migrations, configuring caching, debugging slow queries, or optimizing database performance. Triggers on tasks involving N+1 queries, indexing, Redis caching, pagination, or database transactions.
 license: MIT
 metadata:
   author: agent-skills
-  version: "1.1.1"
+  version: "2.0.0"
 ---
 
 # Laravel Database Optimization
 
-Comprehensive database optimization guide for Laravel 13 applications. Contains 33 rules across 9 categories for writing performant database queries, proper indexing, efficient caching, naming conventions, and debugging slow queries in Laravel 13.
+High-performance database patterns for Laravel 11.x - 13.x applications. Contains **9 consolidated rules across 9 categories** for eliminating N+1 queries, architecting indexes, Redis caching, cursor streaming, deadlock-safe concurrency, zero-downtime migrations, and query profiling.
 
 ## Metadata
 
-- **Version:** 1.1.0
-- **Framework:** Laravel 13.x
-- **PHP:** 8.3+
+- **Version:** 2.0.0
+- **Framework:** Laravel 11.x - 13.x
+- **PHP:** 8.2+
+- **Rule Count:** 9 rules across 9 categories
+- **License:** MIT
 
 ## When to Apply
 
@@ -23,213 +25,55 @@ Reference these guidelines when:
 - Writing Eloquent queries or using the query builder
 - Diagnosing and fixing N+1 query problems
 - Adding database indexes to migrations
-- Implementing Redis or cache-based optimizations
-- Paginating or processing large datasets
-- Wrapping operations in database transactions
-- Creating or modifying migrations for production databases
-- Debugging slow queries with EXPLAIN or Laravel Debugbar
+- Implementing Redis caching and cache tags
+- Paginating or streaming large datasets
+- Wrapping operations in concurrency-safe database transactions
+- Creating production migrations for large tables
+- Debugging slow queries with EXPLAIN ANALYZE or query listeners
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Query Performance & N+1 | CRITICAL | `query-` |
-| 2 | Indexing Strategies | CRITICAL | `index-` |
-| 3 | Eloquent Optimization | HIGH | `eloquent-` |
-| 4 | Caching with Redis | HIGH | `cache-` |
-| 5 | Pagination & Large Datasets | HIGH | `data-` |
-| 6 | Transactions & Locking | HIGH | `lock-` |
-| 7 | Migrations | HIGH | `migrate-` |
-| 8 | Query Debugging | MEDIUM | `debug-` |
-| 9 | Naming & Structure | HIGH | `naming-` |
+| Priority | Category | Impact | Prefix | Rules |
+|----------|----------|--------|--------|-------|
+| 1 | Query Performance & N+1 | CRITICAL | `query-` | 1 |
+| 2 | Indexing Strategies | CRITICAL | `index-` | 1 |
+| 3 | Eloquent Optimization | HIGH | `eloquent-` | 1 |
+| 4 | Caching with Redis | HIGH | `cache-` | 1 |
+| 5 | Pagination & Large Datasets | HIGH | `data-` | 1 |
+| 6 | Transactions & Locking | HIGH | `lock-` | 1 |
+| 7 | Migrations | HIGH | `migrate-` | 1 |
+| 8 | Query Debugging | MEDIUM | `debug-` | 1 |
+| 9 | Naming Conventions | HIGH | `naming-` | 1 |
 
 ## Quick Reference
 
-### 1. Query Performance & N+1 (CRITICAL)
+### 1. Query Performance & N+1 (CRITICAL) — 1 rule
+- [query-n-plus-one.md](rules/query-n-plus-one.md) - Eliminate N+1 queries with eager loading (`with()`), disable lazy loading in local/CI (`Model::preventLazyLoading(!app()->isProduction())`), and select only required columns.
 
-- `query-eager-loading` - Use eager loading to eliminate N+1 queries
-- `query-prevent-lazy-loading` - Prevent lazy loading in development
-- `query-auto-eager-loading` - Configure automatic eager loading on models
-- `query-select-columns` - Select only needed columns instead of SELECT *
+### 2. Indexing Strategies (CRITICAL) — 1 rule
+- [index-strategies.md](rules/index-strategies.md) - Index all foreign keys, create composite indexes matching multi-column WHERE/ORDER BY query shapes following the leftmost prefix rule, and utilize covering indexes.
 
-### 2. Indexing Strategies (CRITICAL)
+### 3. Eloquent Optimization (HIGH) — 1 rule
+- [eloquent-subqueries.md](rules/eloquent-subqueries.md) - Avoid hydration overhead on read-heavy hot paths with Query Builder, load aggregate counts via `withCount()`, and replace slow `whereHas()` with subquery selects or `whereExists()`.
 
-- `index-foreign-keys` - Index all foreign key columns
-- `index-composite-indexes` - Create composite indexes for multi-column queries
-- `index-covering-indexes` - Use covering indexes for read-heavy queries
-- `index-full-text` - Use full-text indexes for search functionality
+### 4. Caching with Redis (HIGH) — 1 rule
+- [cache-redis-patterns.md](rules/cache-redis-patterns.md) - Cache expensive database queries with `Cache::remember()` using strict TTLs, and invalidate selectively via cache tags (`Cache::tags(['users'])`) or model event observers.
 
-### 3. Eloquent Optimization (HIGH)
+### 5. Pagination & Large Datasets (HIGH) — 1 rule
+- [data-chunking-pagination.md](rules/data-chunking-pagination.md) - Stream large result sets using `chunkById()` or lazy cursors (`cursor()`), ban unbounded `all()` queries, and implement cursor pagination (`cursorPaginate()`).
 
-- `eloquent-query-builder-hot-paths` - Use query builder for performance-critical paths
-- `eloquent-with-count-aggregates` - Use withCount instead of loading relations to count
-- `eloquent-subquery-selects` - Use subquery selects to avoid extra queries
-- `eloquent-where-has-optimization` - Optimize whereHas with whereIn subqueries
+### 6. Transactions & Locking (HIGH) — 1 rule
+- [lock-concurrency.md](rules/lock-concurrency.md) - Keep database transactions short to minimize lock contention, use pessimistic locks (`lockForUpdate()`) on balance/inventory updates, and wrap deadlock-prone writes in `DB::transaction(..., attempts: 3)`.
 
-### 4. Caching with Redis (HIGH)
+### 7. Migrations (HIGH) — 1 rule
+- [migrate-zero-downtime.md](rules/migrate-zero-downtime.md) - Execute schema changes without downtime by adding nullable/defaulted columns, creating large indexes concurrently/algorithmically (`ALGORITHM=INPLACE`), and separating schema additions from data backfills.
 
-- `cache-remember` - Use Cache::remember for expensive queries
-- `cache-invalidation` - Invalidate cache on model changes
-- `cache-tags` - Use cache tags for group invalidation
-- `cache-ttl` - Set appropriate TTL values for cached data
+### 8. Query Debugging (MEDIUM) — 1 rule
+- [debug-query-profiling.md](rules/debug-query-profiling.md) - Profile query execution plans with `EXPLAIN / EXPLAIN ANALYZE`, log queries exceeding 200ms using `DB::whenQueryingForLongerThan()`, and inspect query counts with Laravel Pulse or Debugbar.
 
-### 5. Pagination & Large Datasets (HIGH)
-
-- `data-cursor-pagination` - Use cursor pagination for large datasets
-- `data-chunk-by-id` - Process large datasets with chunkById
-- `data-cursor-iteration` - Use lazy cursors for memory-efficient iteration
-- `data-avoid-unbounded` - Never use unbounded queries on large tables
-
-### 6. Transactions & Locking (HIGH)
-
-- `lock-short-transactions` - Keep transactions short and focused
-- `lock-deadlock-retry` - Implement deadlock retry logic
-- `lock-pessimistic-locking` - Use pessimistic locking for critical updates
-
-### 7. Migrations (HIGH)
-
-- `migrate-zero-downtime` - Write zero-downtime migrations
-- `migrate-concurrent-indexes` - Create indexes concurrently in production
-- `migrate-safe-column-additions` - Add columns safely without locking tables
-
-### 8. Query Debugging (MEDIUM)
-
-- `debug-explain-analyze` - Use EXPLAIN ANALYZE to understand query plans
-- `debug-laravel-debugbar` - Use Laravel Debugbar to find query bottlenecks
-- `debug-slow-query-log` - Enable and monitor slow query logs
-
-### 9. Naming & Structure (HIGH)
-
-- `naming-tables` - Table naming conventions (plural snake_case, pivot alphabetical)
-- `naming-columns` - Column naming conventions (FKs, booleans, timestamps, polymorphic)
-- `naming-relationships` - Relationship method naming (singular/plural matching)
-- `naming-migrations` - Migration and index naming conventions
-
-## Essential Patterns
-
-### Prevent Lazy Loading in Development
-
-```php
-<?php
-
-namespace App\Providers;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\ServiceProvider;
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function boot(): void
-    {
-        Model::preventLazyLoading(!app()->isProduction());
-    }
-}
-```
-
-### Cache Expensive Queries with Redis
-
-```php
-<?php
-
-use Illuminate\Support\Facades\Cache;
-
-// Cache a query result for 1 hour (3600 seconds)
-$popularPosts = Cache::remember('posts:popular', 3600, fn () =>
-    Post::query()
-        ->withCount('comments')
-        ->orderByDesc('comments_count')
-        ->take(10)
-        ->get()
-);
-```
-
-### Cursor Pagination for Large Datasets
-
-```php
-<?php
-
-// Cursor pagination — efficient for infinite scroll and large tables
-$posts = Post::query()
-    ->where('published_at', '<=', now())
-    ->orderByDesc('published_at')
-    ->cursorPaginate(15);
-```
-
-### Aggregate Counts Without Loading Relations
-
-```php
-<?php
-
-// Instead of loading all posts just to count them
-$users = User::withCount('posts')->get();
-
-foreach ($users as $user) {
-    echo "{$user->name} has {$user->posts_count} posts";
-}
-```
-
-### Process Large Datasets with chunkById
-
-```php
-<?php
-
-// Memory-efficient processing of large tables
-User::query()
-    ->where('last_login_at', '<', now()->subYear())
-    ->chunkById(1000, function ($users) {
-        foreach ($users as $user) {
-            $user->update(['status' => 'inactive']);
-        }
-    });
-```
-
-### Short Database Transactions
-
-```php
-<?php
-
-use Illuminate\Support\Facades\DB;
-
-// Keep transactions short and focused
-DB::transaction(function () {
-    $order = Order::create([
-        'user_id' => auth()->id(),
-        'total' => $this->calculateTotal(),
-    ]);
-
-    $order->items()->createMany($this->cartItems());
-
-    $order->user->decrement('credits', $order->total);
-});
-```
+### 9. Naming Conventions (HIGH) — 1 rule
+- [naming-conventions.md](rules/naming-conventions.md) - Follow standard Eloquent naming conventions (snake_case plural tables, singular snake_case FKs `user_id`, camelCase relationships) to prevent silent query failure.
 
 ## How to Use
 
-Read individual rule files for detailed explanations and code examples:
-
-```
-rules/query-eager-loading.md
-rules/index-composite-indexes.md
-rules/cache-remember.md
-rules/_sections.md
-```
-
-Each rule file contains:
-- YAML frontmatter with metadata (title, impact, tags)
-- Brief explanation of why it matters
-- Bad Example with explanation
-- Good Example with explanation
-- Laravel 13 and PHP 8.3 specific context and references
-
-## References
-
-- [Laravel Eloquent](https://laravel.com/docs/13.x/eloquent)
-- [Laravel Queries](https://laravel.com/docs/13.x/queries)
-- [Laravel Cache](https://laravel.com/docs/13.x/cache)
-- [Laravel Pagination](https://laravel.com/docs/13.x/pagination)
-- [Laravel Migrations](https://laravel.com/docs/13.x/migrations)
-- [Laravel Redis](https://laravel.com/docs/13.x/redis)
-
-## Full Compiled Document
-
-For the complete guide with all rules expanded: `AGENTS.md`
+Read individual rule files in `rules/` for concise triggers, Bad vs Good code comparisons, and concrete SQL/Eloquent optimizations.
