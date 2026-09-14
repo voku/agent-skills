@@ -7,35 +7,35 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 
 ## 1. Test Structure (struct)
 
-**Impact:** CRITICAL
-**Description:** Fundamental patterns for organizing test code. AAA pattern for clear test flow, descriptive naming for test documentation, one assertion per test for precise failure messages, and proper setup/teardown for shared test context.
+**Impact:** CRITICAL  
+**Description:** Fundamental patterns for organizing test code: AAA pattern, scenario-focused descriptive naming, single logical assertions, and scoped lifecycle hooks (`beforeAll`/`beforeEach`/`afterEach`/`afterAll`).
 
 ## 2. Test Isolation (iso)
 
-**Impact:** CRITICAL
-**Description:** Tests must run independently without shared mutable state. Independent execution, deterministic results, no order dependency, proper cleanup, and strategic use of test doubles ensure reliable test suites that can run in any order and in parallel.
+**Impact:** CRITICAL  
+**Description:** Tests must run independently and deterministically without shared mutable state, order dependencies, or resource leaks, using test doubles to freeze time and isolate boundaries.
 
 ## 3. Assertions (assert)
 
-**Impact:** HIGH
-**Description:** Effective assertions catch bugs and communicate intent. Specific matchers (toBe, toEqual, toContain), meaningful failure messages, consistent expected-first ordering, named constants over magic numbers, and custom matchers for domain logic.
+**Impact:** HIGH  
+**Description:** Effective assertions expressing clear intent: specific matchers, standard `expect(actual).toBe(expected)` ordering, named domain constants, and reusable custom matchers.
 
 ## 4. Test Data (data)
 
-**Impact:** HIGH
-**Description:** Well-managed test data makes tests readable and maintainable. Factories for consistent object creation, builder pattern for complex objects, faker for realistic data, minimal data focused on what matters, and proper fixture management.
+**Impact:** HIGH  
+**Description:** Maintainable test data generation: factory functions with sensible defaults, fluent builders, seeded faker generation, minimal sufficient inputs, and realistic fixtures.
 
 ## 5. Mocking (mock)
 
-**Impact:** MEDIUM
-**Description:** Strategic mocking isolates code under test from external dependencies. Mock only at boundaries (APIs, databases, file system), verify important interactions, avoid over-mocking that tests implementation details, and use realistic mock behavior with tools like MSW.
+**Impact:** MEDIUM  
+**Description:** Mock only at external system boundaries (HTTP, DB, message queues), verify essential side effects, and simulate realistic contracts (e.g. MSW).
 
 ## 6. Coverage (cov)
 
-**Impact:** MEDIUM
-**Description:** Coverage strategy guides testing effort. Focus on meaningful coverage of business logic and decision branches, cover edge cases and boundary values, test error scenarios and unhappy paths, and treat 80% as a baseline guide not a rigid target.
+**Impact:** HIGH  
+**Description:** Evidence-driven coverage: regression-first reproduction before fixes, adversarial input probing, decision branch and error path testing, and avoiding vanity line coverage.
 
 ## 7. Performance (perf)
 
-**Impact:** LOW
-**Description:** Fast tests enable short feedback loops. Unit tests should run under 50ms each, parallel execution reduces total suite time, and organizing tests by speed tier (unit/integration/e2e) enables fast local feedback with comprehensive CI runs.
+**Impact:** LOW  
+**Description:** Fast developer feedback loops: sub-50ms unit tests using memory doubles, parallel test execution, and tiered test organization.

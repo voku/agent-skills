@@ -9,12 +9,12 @@ metadata:
 
 # Testing Best Practices
 
-Unit testing, integration testing, and TDD principles for reliable, maintainable test suites. Contains 34 rules across 7 categories using TypeScript with Jest/Vitest.
+Unit testing, integration testing, and TDD principles for reliable, maintainable test suites. Contains 11 rules across 7 categories using TypeScript with Jest/Vitest.
 
 ## Metadata
 
 - **Version:** 2.0.0
-- **Rule Count:** 34 rules across 7 categories
+- **Rule Count:** 11 rules across 7 categories
 - **License:** MIT
 
 ## When to Apply
@@ -29,79 +29,49 @@ Reference these guidelines when:
 ## Test Expansion Discipline
 
 - For bug fixes, start with the narrowest failing regression test before changing production code.
-- When asked for "more tests" or "more coverage", target a real branch, edge case, or defect-prone path instead of optimizing for the headline percentage first.
+- When asked for "more tests" or "more coverage", target a real branch, edge case, or defect-prone path instead of optimizing for headline line coverage.
 - Set up only the dependencies the code under test actually touches.
 - Follow the nearest existing repository test style before introducing a new test pattern.
 - Prefer small local test doubles or inline collaborators when they keep the setup obvious and avoid unnecessary fixture sprawl.
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Test Structure | CRITICAL | `struct-` |
-| 2 | Test Isolation | CRITICAL | `iso-` |
-| 3 | Assertions | HIGH | `assert-` |
-| 4 | Test Data | HIGH | `data-` |
-| 5 | Mocking | MEDIUM | `mock-` |
-| 6 | Coverage | MEDIUM | `cov-` |
-| 7 | Performance | LOW | `perf-` |
+| Priority | Category | Impact | Prefix | Rules |
+|----------|----------|--------|--------|-------|
+| 1 | Test Structure | CRITICAL | `struct-` | 2 |
+| 2 | Test Isolation | CRITICAL | `iso-` | 2 |
+| 3 | Assertions | HIGH | `assert-` | 1 |
+| 4 | Test Data | HIGH | `data-` | 2 |
+| 5 | Mocking | MEDIUM | `mock-` | 1 |
+| 6 | Coverage | HIGH | `cov-` | 2 |
+| 7 | Performance | LOW | `perf-` | 1 |
 
 ## Quick Reference
 
-### 1. Test Structure (CRITICAL)
+### 1. Test Structure (`struct-`, CRITICAL)
+- `struct-aaa-pattern` - Arrange-Act-Assert flow, single logical assertions, descriptive scenario naming, and BDD specifications
+- `struct-lifecycle` - Scoped setup and teardown hooks (`beforeAll`, `beforeEach`, `afterEach`, `afterAll`)
 
-- `struct-aaa-pattern` - Arrange, Act, Assert pattern
-- `struct-descriptive-names` - Descriptive test names
-- `struct-one-assertion` - One logical assertion per test
-- `struct-describe-it` - Organized test suites with describe/it
-- `struct-given-when-then` - BDD style when appropriate
-- `struct-setup-teardown` - Proper setup and teardown
+### 2. Test Isolation (`iso-`, CRITICAL)
+- `iso-independence` - Self-contained, deterministic tests with zero shared mutable state, order-independence, and controlled doubles
+- `iso-cleanup` - Explicit cleanup of files, database tables, environment variables, network servers, and event listeners
 
-### 2. Test Isolation (CRITICAL)
+### 3. Assertions (`assert-`, HIGH)
+- `assert-specific` - Specific matchers, `expect(actual).toBe(expected)` convention, domain constants over magic numbers, and custom matchers
 
-- `iso-independent-tests` - Tests run independently
-- `iso-no-shared-state` - No shared mutable state
-- `iso-deterministic` - Same result every run
-- `iso-no-order-dependency` - Run in any order
-- `iso-cleanup` - Clean up after tests
-- `iso-test-doubles` - Strategic use of test doubles
+### 4. Test Data (`data-`, HIGH)
+- `data-factories` - Factory functions with sensible defaults, fluent builders, and seeded faker generation
+- `data-minimal` - Minimal sufficient test data vs realistic edge-case fixtures (unicode, format validation, shared fixtures)
 
-### 3. Assertions (HIGH)
+### 5. Mocking (`mock-`, MEDIUM)
+- `mock-boundaries` - Mock only at external system boundaries (HTTP, DB), preserve real business logic, verify interactions, and use MSW contracts
 
-- `assert-specific` - Use specific assertions
-- `assert-meaningful-messages` - Helpful failure messages
-- `assert-expected-actual` - Expected value first
-- `assert-no-magic-numbers` - Use named constants
-- `assert-custom-matchers` - Custom matchers for domain logic
+### 6. Coverage (`cov-`, HIGH)
+- `cov-regression-first` - Narrowest failing reproduction test before code fixes, and adversarial probing before happy paths
+- `cov-edge-cases` - Focus coverage on decision branches, boundary values (null, empty, extremes), and error paths over vanity metrics
 
-### 4. Test Data (HIGH)
-
-- `data-factories` - Use factories for test data
-- `data-builders` - Builder pattern for complex objects
-- `data-faker` - Generate realistic fake data
-- `data-minimal` - Minimal test data
-- `data-realistic` - Realistic edge cases
-- `data-fixtures` - Manage test fixtures
-
-### 5. Mocking (MEDIUM)
-
-- `mock-boundaries` - Mock only at boundaries
-- `mock-verify-interactions` - Verify important mock calls
-- `mock-minimal` - Don't over-mock
-- `mock-realistic` - Realistic mock behavior with MSW
-
-### 6. Coverage (MEDIUM)
-
-- `cov-meaningful` - Focus on meaningful coverage
-- `cov-edge-cases` - Cover edge cases and boundary values
-- `cov-unhappy-paths` - Test error scenarios
-- `cov-not-100-percent` - 100% coverage isn't the goal
-
-### 7. Performance (LOW)
-
-- `perf-fast-unit` - Keep unit tests fast (<50ms each)
-- `perf-parallel` - Run tests in parallel
-- `perf-test-organization` - Organize tests for fast feedback
+### 7. Performance (`perf-`, LOW)
+- `perf-fast-unit` - Sub-50ms unit tests using in-memory doubles, parallel test execution, and tiered test organization
 
 ## Essential Guidelines
 
@@ -110,9 +80,9 @@ Reference these guidelines when:
 ```typescript
 // Prefer this sequence:
 // 1. isolate the bug in the smallest failing test
-// 2. confirm it fails for the right reason
+// 2. confirm it fails for the right reason (red)
 // 3. change production code
-// 4. rerun the same test until it passes
+// 4. rerun the same test until it passes (green)
 // 5. widen validation only if the change touches shared behavior
 ```
 
@@ -147,22 +117,11 @@ describe('UserService.register', () => {
 ### Test Isolation
 
 ```typescript
-// ✅ Each test sets up its own data
+// ✅ Each test sets up its own fresh instance
 beforeEach(() => {
   mockRepository = { save: vi.fn(), find: vi.fn() };
   service = new OrderService(mockRepository);
 });
-```
-
-## How to Use
-
-Read individual rule files for detailed explanations:
-
-```
-rules/struct-aaa-pattern.md
-rules/iso-independent-tests.md
-rules/mock-boundaries.md
-rules/cov-meaningful.md
 ```
 
 ## References

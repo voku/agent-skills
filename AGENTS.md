@@ -195,7 +195,7 @@ Before finalizing any response, verify:
 | seo-best-practices | 31 | Meta tags, structured data, Core Web Vitals, SEO audit |
 | state-management | 26 | React Query, Zustand |
 | tailwind-best-practices | 29 | Responsive, dark mode |
-| testing-best-practices | 34 | Unit tests, mocking, coverage |
+| testing-best-practices | 11 | Unit tests, mocking, coverage |
 | typescript-react-patterns | 33 | Type safety, generics |
 | web-design-guidelines | 23 | Accessibility, UX, WCAG audit |
 

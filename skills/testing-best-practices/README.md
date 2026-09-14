@@ -4,37 +4,37 @@ Unit testing, integration testing, and TDD principles for reliable, maintainable
 
 ## Overview
 
-- Test structure (AAA pattern, descriptive names, one assertion per test)
-- Test isolation (independent, deterministic, no shared state)
-- Assertions (specific matchers, meaningful messages, custom matchers)
-- Test data (factories, builders, faker, fixtures)
-- Mocking (boundaries only, verify interactions, MSW)
-- Coverage (meaningful coverage, edge cases, unhappy paths)
-- Performance (fast unit tests, parallel execution, test organization)
-- 34 rules across 7 categories
+- **Test structure:** AAA pattern, descriptive names, single logical assertion, scoped lifecycle hooks
+- **Test isolation:** Independent, deterministic, zero shared mutable state, guaranteed cleanup, test doubles
+- **Assertions:** Specific matchers, `expect(actual).toBe(expected)`, domain constants, custom matchers
+- **Test data:** Factories with defaults, fluent builders, seeded faker, minimal inputs, realistic fixtures
+- **Mocking:** Boundaries only, verify interactions, avoid over-mocking, MSW contract simulation
+- **Coverage:** Regression-first reproduction, adversarial probing, edge cases, error scenarios, meaningful coverage
+- **Performance:** Sub-50ms unit tests, parallel execution, tiered test organization
+- **Total Rules:** 11 rules across 7 categories
 
 ## Categories
 
 ### 1. Test Structure (Critical)
-AAA pattern, descriptive names, one assertion, describe/it, BDD, setup/teardown.
+AAA pattern, single logical assertions, descriptive scenario naming, and scoped setup/teardown hooks.
 
 ### 2. Test Isolation (Critical)
-Independent tests, no shared state, deterministic, cleanup, test doubles.
+Self-contained tests, zero shared mutable state, deterministic execution, explicit resource cleanup, and test doubles.
 
 ### 3. Assertions (High)
-Specific assertions, meaningful messages, expected-first, custom matchers.
+Specific matchers, expected-actual ordering, domain constants over magic numbers, and custom matchers.
 
 ### 4. Test Data (High)
-Factories, builders, faker, minimal data, realistic edge cases, fixtures.
+Factories, builders, seeded faker generation, minimal sufficient inputs, and realistic fixtures.
 
 ### 5. Mocking (Medium)
-Mock at boundaries, verify interactions, don't over-mock, realistic mocks.
+Mock at external system boundaries, preserve real internal logic, verify interactions, and use realistic MSW contracts.
 
-### 6. Coverage (Medium)
-Meaningful coverage, edge cases, error scenarios, 80% baseline not 100%.
+### 6. Coverage (High)
+Regression-first bug reproduction, adversarial probing, boundary values, error paths, and avoiding vanity metrics.
 
 ### 7. Performance (Low)
-Fast unit tests, parallel execution, organized test tiers.
+Sub-50ms unit tests, multi-threaded parallel execution, and organized speed tiers (unit/integration/e2e).
 
 ## Usage
 

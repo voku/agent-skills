@@ -18,7 +18,7 @@
     ]
   },
   "name": "Testing Best Practices",
-  "description": "Unit testing, integration testing, and TDD principles for reliable, maintainable test suites. Contains 34 rules across 7 categories using TypeScript with Jest/Vitest.",
+  "description": "Unit testing, integration testing, and TDD principles for reliable, maintainable test suites. Contains 11 rules across 7 categories using TypeScript with Jest/Vitest.",
   "license": "MIT",
   "author": {
     "name": "Agent Skills Contributors",
@@ -29,44 +29,43 @@
       "name": "Test Structure",
       "prefix": "struct",
       "impact": "CRITICAL",
-      "ruleCount": 6
+      "ruleCount": 2
     },
     {
       "name": "Test Isolation",
       "prefix": "iso",
       "impact": "CRITICAL",
-      "ruleCount": 6
+      "ruleCount": 2
     },
     {
       "name": "Assertions",
       "prefix": "assert",
       "impact": "HIGH",
-      "ruleCount": 5
+      "ruleCount": 1
     },
     {
       "name": "Test Data",
       "prefix": "data",
       "impact": "HIGH",
-      "ruleCount": 6
+      "ruleCount": 2
     },
     {
       "name": "Mocking",
       "prefix": "mock",
       "impact": "MEDIUM",
-      "ruleCount": 4
+      "ruleCount": 1
     },
     {
       "name": "Coverage",
       "prefix": "cov",
-      "impact": "MEDIUM",
-      "ruleCount": 4,
-      "count": 2
+      "impact": "HIGH",
+      "ruleCount": 2
     },
     {
       "name": "Performance",
       "prefix": "perf",
       "impact": "LOW",
-      "ruleCount": 3
+      "ruleCount": 1
     }
   ],
   "references": [
@@ -85,12 +84,12 @@
     "mocking",
     "coverage"
   ],
-  "rulesTotal": 34,
-  "lastUpdated": "2026-03-14",
+  "rulesTotal": 11,
+  "lastUpdated": "2026-09-14",
   "meta": {
     "created": "2026-03-14",
-    "last_updated": "2026-08-07",
-    "rule_count": 36,
+    "last_updated": "2026-09-14",
+    "rule_count": 11,
     "structure_version": "2.0",
     "compatibility": {
       "platforms": [
@@ -104,6 +103,10 @@
   },
   "tags": [
     "cov-adversarial-probe",
-    "cov-regression-first"
+    "cov-regression-first",
+    "test-structure",
+    "test-isolation",
+    "mocking",
+    "tdd"
   ]
 }

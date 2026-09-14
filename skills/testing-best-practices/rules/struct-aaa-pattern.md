@@ -1,73 +1,108 @@
 ---
-title: Arrange-Act-Assert Pattern
-impact: CRITICAL
-impactDescription: "test readability and maintainability"
-tags: test-structure, aaa, arrange-act-assert
+id: struct-aaa-pattern
+title: Arrange-Act-Assert and Specification Structure
+category: struct
+priority: CRITICAL
+triggers: [interleaved-setup-assertions, multi-behavior-test, vague-test-names, missing-describe-context, technical-test-names]
+tags: [test-structure, aaa, arrange-act-assert, describe-it, given-when-then, single-assertion]
 ---
 
-## Arrange-Act-Assert Pattern
+# Arrange-Act-Assert & Specification Structure
 
-**Impact: CRITICAL (test readability and maintainability)**
+**Trigger Anchor:** Structure tests around Arrange-Act-Assert (or Given-When-Then), using descriptive scenario-focused naming and verifying one logical concept per test.
 
-Structure every test using the AAA pattern to ensure clarity and consistency. The three phases — Arrange, Act, Assert — provide a clear narrative flow, making it immediately obvious what is being tested and what the expected behavior is.
+---
 
-## Incorrect
+## AAA Flow & Single Assertion
 
+### Bad
 ```typescript
-// ❌ Bad: Mixed arrangement and assertions — confusing
-test('calculates total price', () => {
+// ❌ Interleaved setup, execution, and multiple unrelated assertions
+test('cart operations', () => {
   const cart = new ShoppingCart();
   expect(cart.isEmpty()).toBe(true);
-  cart.addItem({ name: 'Apple', price: 1.50 });
-  cart.addItem({ name: 'Banana', price: 0.75 });
-  const discount = new Discount(10);
-  cart.applyDiscount(discount);
-  expect(cart.getTotal()).toBe(2.025);
-  expect(cart.getItemCount()).toBe(2);
+  cart.addItem({ name: 'Book', price: 20 });
+  cart.applyDiscount(0.1);
+  expect(cart.getTotal()).toBe(18);
+  expect(cart.getItemCount()).toBe(1);
+  expect(sendCartMetric).toHaveBeenCalledWith('item_added');
 });
 ```
 
-**Problems:**
-- Setup and assertions are interleaved, making it hard to follow
-- Multiple unrelated behaviors verified in a single test
-- No clear separation between setup, action, and verification
-- Difficult to identify the root cause when the test fails
-
-## Correct
-
+### Good
 ```typescript
-// ✅ Good: Clear AAA structure
-test('calculates total price with discount applied', () => {
-  // Arrange
-  const cart = new ShoppingCart();
-  const discount = new Discount(10);
-  cart.addItem({ name: 'Apple', price: 1.50 });
-  cart.addItem({ name: 'Banana', price: 0.75 });
+// ✅ Explicit AAA phases testing one logical concept per test
+describe('ShoppingCart.getTotal', () => {
+  it('applies percentage discount to cart total', () => {
+    // Arrange
+    const cart = new ShoppingCart();
+    cart.addItem({ name: 'Book', price: 20 });
+    cart.applyDiscount(0.1);
 
-  // Act
-  cart.applyDiscount(discount);
+    // Act
+    const total = cart.getTotal();
 
-  // Assert
-  expect(cart.getTotal()).toBe(2.025);
-});
-
-test('tracks item count correctly', () => {
-  // Arrange
-  const cart = new ShoppingCart();
-
-  // Act
-  cart.addItem({ name: 'Apple', price: 1.50 });
-  cart.addItem({ name: 'Banana', price: 0.75 });
-
-  // Assert
-  expect(cart.getItemCount()).toBe(2);
+    // Assert
+    expect(total).toBe(18);
+  });
 });
 ```
 
-**Benefits:**
-- Each phase is clearly separated with comments
-- Tests are focused on a single behavior
-- Easy to identify setup, action, and verification at a glance
-- When tests fail, the issue is quickly localized to one of the three phases
+---
 
-Reference: [Arrange-Act-Assert Pattern](https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/)
+## Hierarchical & Descriptive Specifications
+
+### Bad
+```typescript
+// ❌ Flat, cryptic test names without business scenario context
+test('test1', () => expect(validateEmail('test@test.com')).toBe(true));
+test('calc error', () => expect(() => divide(10, 0)).toThrow());
+```
+
+### Good
+```typescript
+// ✅ Hierarchical describe/it blocks acting as executable specifications
+describe('Calculator', () => {
+  describe('divide', () => {
+    it('returns quotient when dividing two positive numbers', () => {
+      expect(divide(10, 2)).toBe(5);
+    });
+
+    it('throws DivisionByZeroError when denominator is zero', () => {
+      expect(() => divide(10, 0)).toThrow(DivisionByZeroError);
+    });
+  });
+});
+```
+
+---
+
+## Behavior-Driven (Given-When-Then)
+
+### Bad
+```typescript
+// ❌ Technical, procedural test obscuring customer-facing outcome
+test('order submit', () => {
+  const order = new Order({ id: 1, total: 100 });
+  const res = order.submit();
+  expect(res.status).toBe('confirmed');
+  expect(emailService.send).toHaveBeenCalled();
+});
+```
+
+### Good
+```typescript
+// ✅ BDD structure mapping directly to acceptance criteria
+describe('Order Submission', () => {
+  describe('given an order with valid payment details', () => {
+    it('confirms the order and dispatches customer notification', () => {
+      const order = OrderFactory.createReadyToSubmit();
+
+      const result = order.submit();
+
+      expect(result.status).toBe('confirmed');
+      expect(emailService.sendConfirmation).toHaveBeenCalledWith(order.id);
+    });
+  });
+});
+```

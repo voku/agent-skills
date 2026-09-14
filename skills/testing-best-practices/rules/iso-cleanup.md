@@ -1,178 +1,52 @@
 ---
-title: Test Cleanup
-impact: CRITICAL
-impactDescription: "resource management and test isolation"
-tags: test-isolation, cleanup, resource-management
+id: iso-cleanup
+title: Test Resource and Side-Effect Cleanup
+category: iso
+priority: CRITICAL
+triggers: [leaked-temp-files, open-db-connections, lingering-http-servers, polluted-env-vars, dangling-event-listeners]
+tags: [test-isolation, cleanup, resource-management, side-effects]
 ---
 
-## Test Cleanup
+# Test Resource & Side-Effect Cleanup
 
-**Impact: CRITICAL (resource management and test isolation)**
+**Trigger Anchor:** Clean up all disk files, database mutations, network listeners, global environment variables, and event handlers after every test.
 
-Always clean up resources and side effects created during tests. Resources that commonly need cleanup include database connections, file system changes, network servers, timers, event listeners, environment variables, global state, and mocks.
+---
 
-## Incorrect
-
+### Bad
 ```typescript
-// ❌ Bad: Missing cleanup leads to resource leaks and test pollution
-describe('FileProcessor', () => {
-  test('creates output file', async () => {
-    const processor = new FileProcessor();
-    await processor.writeOutput('/tmp/test-output.txt', 'content');
-
-    const exists = await fs.pathExists('/tmp/test-output.txt');
-    expect(exists).toBe(true);
-    // File left on disk — pollutes filesystem
-  });
-
-  test('opens database connection', async () => {
-    const db = await Database.connect();
-    const users = await db.query('SELECT * FROM users');
-
-    expect(users).toBeDefined();
-    // Connection never closed — resource leak
-  });
-
-  test('starts server', async () => {
-    const server = await startServer({ port: 3000 });
-
-    const response = await fetch('http://localhost:3000/health');
-    expect(response.ok).toBe(true);
-    // Server never stopped — port remains occupied
-  });
-
-  test('modifies environment', () => {
-    process.env.API_KEY = 'test-key';
-    const config = loadConfig();
-
-    expect(config.apiKey).toBe('test-key');
-    // Environment variable persists to other tests
-  });
-
-  test('adds global event listener', () => {
-    const handler = jest.fn();
-    window.addEventListener('resize', handler);
-
-    window.dispatchEvent(new Event('resize'));
-    expect(handler).toHaveBeenCalled();
-    // Event listener accumulates across tests
+// ❌ Side effects mutate global environment and disk without teardown
+describe('Config & File Processor', () => {
+  test('modifies environment and writes scratch file', async () => {
+    process.env.API_KEY = 'temporary-test-key';
+    await fs.writeFile('/tmp/test-out.json', '{"status":"ok"}');
+    window.addEventListener('resize', onResize);
+    // Leaks: API_KEY stays set, /tmp file lingers, event listener triggers in later suites
   });
 });
 ```
 
-**Problems:**
-- Files left on disk pollute the filesystem
-- Database connections are leaked, exhausting the connection pool
-- Servers keep ports occupied, causing subsequent tests to fail
-- Environment variables and event listeners persist across tests
-
-## Correct
-
+### Good
 ```typescript
-// ✅ Good: Proper cleanup ensures isolation and prevents resource leaks
-describe('FileProcessor', () => {
-  const testFiles: string[] = [];
-
-  afterEach(async () => {
-    await Promise.all(testFiles.map(file => fs.remove(file)));
-    testFiles.length = 0;
-  });
-
-  test('creates output file', async () => {
-    const outputPath = '/tmp/test-output.txt';
-    testFiles.push(outputPath);
-
-    const processor = new FileProcessor();
-    await processor.writeOutput(outputPath, 'content');
-
-    const exists = await fs.pathExists(outputPath);
-    expect(exists).toBe(true);
-  });
-});
-
-describe('DatabaseOperations', () => {
-  let db: Database;
-
-  beforeAll(async () => {
-    db = await Database.connect();
-  });
-
-  afterAll(async () => {
-    await db.close();
-  });
-
-  afterEach(async () => {
-    await db.query('DELETE FROM users WHERE email LIKE $1', ['%@test.com']);
-  });
-
-  test('queries users', async () => {
-    await db.query('INSERT INTO users (email) VALUES ($1)', ['user@test.com']);
-
-    const users = await db.query('SELECT * FROM users WHERE email = $1', ['user@test.com']);
-
-    expect(users.rows).toHaveLength(1);
-  });
-});
-
-describe('ServerTests', () => {
-  let server: Server;
-
-  beforeEach(async () => {
-    server = await startServer({ port: 0 }); // Random port
-  });
-
-  afterEach(async () => {
-    await server.close();
-  });
-
-  test('responds to health check', async () => {
-    const address = server.address();
-    const response = await fetch(`http://localhost:${address.port}/health`);
-
-    expect(response.ok).toBe(true);
-  });
-});
-
-describe('Configuration', () => {
+// ✅ Explicit reset of environment, listeners, and filesystem in teardown
+describe('Config & File Processor', () => {
   const originalEnv = { ...process.env };
+  const trackedFiles: string[] = [];
 
-  afterEach(() => {
+  afterEach(async () => {
     process.env = { ...originalEnv };
+    window.removeEventListener('resize', onResize);
+    await Promise.all(trackedFiles.map(file => fs.rm(file, { force: true })));
+    trackedFiles.length = 0;
   });
 
-  test('reads API key from environment', () => {
-    process.env.API_KEY = 'test-key';
+  test('modifies environment and writes scratch file cleanly', async () => {
+    process.env.API_KEY = 'temporary-test-key';
+    const filePath = '/tmp/test-out.json';
+    trackedFiles.push(filePath);
 
-    const config = loadConfig();
-
-    expect(config.apiKey).toBe('test-key');
-  });
-});
-
-describe('EventHandling', () => {
-  let handler: jest.Mock;
-
-  beforeEach(() => {
-    handler = jest.fn();
-    window.addEventListener('resize', handler);
-  });
-
-  afterEach(() => {
-    window.removeEventListener('resize', handler);
-  });
-
-  test('handles resize event', () => {
-    window.dispatchEvent(new Event('resize'));
-
-    expect(handler).toHaveBeenCalled();
+    await fs.writeFile(filePath, '{"status":"ok"}');
+    expect(loadConfig().apiKey).toBe('temporary-test-key');
   });
 });
 ```
-
-**Benefits:**
-- Prevents memory leaks, file handle exhaustion, and connection pool depletion
-- Side effects do not leak between tests
-- Long-running CI test suites remain stable
-- Tests behave the same on clean and dirty environments
-
-Reference: [Jest Docs — Setup and Teardown](https://jestjs.io/docs/setup-teardown)

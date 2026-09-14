@@ -1,104 +1,77 @@
 ---
-title: Mock Only at Boundaries
-impact: MEDIUM
-impactDescription: "reduces brittle tests by 60%, improves refactoring confidence"
-tags: mocking, boundaries, dependencies, isolation
+id: mock-boundaries
+title: Mock at System Boundaries
+category: mock
+priority: MEDIUM
+triggers: [mocking-internal-utils, over-mocking-logic, unverified-mock-calls, incomplete-mock-payloads, mock-returns-true]
+tags: [mocking, boundaries, minimal-mocking, msw, verification]
 ---
 
-## Mock Only at Boundaries
+# Mock at System Boundaries
 
-**Impact: MEDIUM (reduces brittle tests by 60%, improves refactoring confidence)**
+**Trigger Anchor:** Mock only at external boundaries (HTTP, DB, message queues); preserve real internal logic, simulate realistic contracts (e.g. MSW), and verify critical side effects.
 
-Mock external dependencies at system boundaries — APIs, databases, file system — but keep business logic unmocked so tests verify real behavior.
+---
 
-## Incorrect
+## Boundary Mocking vs Internal Utility Mocking
 
+### Bad
 ```typescript
-// ❌ Bad: mocking internal functions and private methods
-import { calculateDiscount } from './pricing';
-import { formatCurrency } from './utils';
+// ❌ Mocking internal helpers couples test to file structure and skips real business logic
+vi.mock('./tax-calculator', () => ({ calculateTax: vi.fn().mockReturnValue(10) }));
+vi.mock('./format-currency', () => ({ formatCurrency: vi.fn().mockReturnValue('$110') }));
 
-vi.mock('./pricing', () => ({
-  calculateDiscount: vi.fn().mockReturnValue(10),
-}));
-
-vi.mock('./utils', () => ({
-  formatCurrency: vi.fn().mockReturnValue('$90.00'),
-}));
-
-describe('OrderService', () => {
-  test('applies discount to order', () => {
-    const order = new OrderService();
-    const result = order.processOrder({ price: 100, discountCode: 'SAVE10' });
-
-    // Testing wiring, not behavior
-    expect(calculateDiscount).toHaveBeenCalledWith('SAVE10', 100);
-    expect(formatCurrency).toHaveBeenCalledWith(90);
-    expect(result.formattedTotal).toBe('$90.00');
-  });
+test('processes order', () => {
+  const result = processOrder({ price: 100 });
+  expect(result.formatted).toBe('$110'); // Tests fake wiring, not real calculation!
 });
 ```
 
-**Problems:**
-- Mocking internal utility functions couples tests to implementation details
-- Refactoring internals (e.g., inlining `formatCurrency`) breaks the test even if behavior is unchanged
-- Tests verify wiring, not actual business logic
-- False confidence — mocks return what you told them to, not what the real code does
-
-## Correct
-
+### Good
 ```typescript
-// ✅ Good: mock only external boundaries, test real business logic
-import { OrderService } from './order-service';
+// ✅ Internal logic executes for real; only boundary clients (HTTP/DB) are mocked
+test('processes order and charges boundary gateway', async () => {
+  const mockGateway = { charge: vi.fn().mockResolvedValue({ id: 'txn_1', status: 'paid' }) };
+  const processor = new OrderProcessor(mockGateway); // Real tax and pricing logic run
 
-// Mock the external HTTP client (boundary)
-const mockPaymentGateway = {
-  charge: vi.fn(),
-};
+  const result = await processor.processOrder({ price: 100, taxRate: 0.1 });
 
-// Mock the external database (boundary)
-const mockOrderRepository = {
-  save: vi.fn(),
-};
-
-describe('OrderService', () => {
-  const service = new OrderService(mockPaymentGateway, mockOrderRepository);
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  test('applies discount and charges correct amount', async () => {
-    mockPaymentGateway.charge.mockResolvedValue({ id: 'txn_123', status: 'success' });
-    mockOrderRepository.save.mockResolvedValue({ id: 'order_456' });
-
-    const result = await service.processOrder({
-      price: 100,
-      discountCode: 'SAVE10',
-    });
-
-    // Real discount calculation and formatting run — only external calls are mocked
-    expect(result.total).toBe(90);
-    expect(result.formattedTotal).toBe('$90.00');
-    expect(mockPaymentGateway.charge).toHaveBeenCalledWith(90);
-  });
-
-  test('rejects order when payment fails', async () => {
-    mockPaymentGateway.charge.mockRejectedValue(new Error('Card declined'));
-
-    await expect(
-      service.processOrder({ price: 50, discountCode: '' })
-    ).rejects.toThrow('Card declined');
-
-    expect(mockOrderRepository.save).not.toHaveBeenCalled();
-  });
+  expect(result.total).toBe(110);
+  expect(mockGateway.charge).toHaveBeenCalledWith(110);
+  expect(mockGateway.charge).toHaveBeenCalledTimes(1);
 });
 ```
 
-**Benefits:**
-- Business logic (discount calculation, formatting) runs for real and is actually tested
-- Tests survive internal refactoring — only boundary contracts matter
-- Failures reveal genuine bugs, not outdated mock wiring
-- External side effects (payments, persistence) are safely isolated
+---
 
-Reference: [Mock Only What You Own](https://testing-library.com/docs/guiding-principles)
+## Realistic Contract Simulation with MSW
+
+### Bad
+```typescript
+// ❌ Primitive mock response ignores real API schema and missing field errors
+const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({ success: true }) });
+```
+
+### Good
+```typescript
+// ✅ MSW intercepts HTTP requests with realistic payloads and error codes
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+
+const server = setupServer(
+  http.get('/api/users/:id', ({ params }) => {
+    if (params.id === 'unknown') return HttpResponse.json({ error: 'User not found' }, { status: 404 });
+    return HttpResponse.json({ id: params.id, name: 'Alice', email: 'alice@test.com', role: 'member' });
+  })
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+test('loads complete user profile via real HTTP client', async () => {
+  const client = new UserApiClient();
+  const user = await client.getUser('123');
+  expect(user.role).toBe('member');
+});
+```
