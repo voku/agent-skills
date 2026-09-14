@@ -1,179 +1,35 @@
-# Code Review Security — Full Compiled Reference
+# Code Review Security — Agent Projection
 
-Security review lens for vulnerabilities, input validation, data protection, auth/authz, and secure defaults.
+**Version:** 2.0.0  
+**Rules:** 5 consolidated rules  
+**License:** MIT
 
-**Version:** 1.0.0 | **Rules:** 6 | **License:** MIT
+This file is a compact projection for agents. The canonical contract is `SKILL.md` plus the files under `rules/`. Do not add independent security-review semantics here.
 
----
+## Fast Path
 
-## Operational Contract
+1. Use this lens only when security is the dominant concern.
+2. Read `SKILL.md` first.
+3. Load only rule files relevant to the observed trust boundary, sink, or control.
+4. Trace untrusted input through validation, authorization, persistence, and output handling when those boundaries changed.
+5. Hand off to at most one focused review lens when another concern becomes dominant.
 
-When applying this skill, agents must:
-- Treat this skill as repo-owned guidance and defer to repository or task-specific instructions when they conflict.
-- Limit work to the smallest relevant file and rule set for the current request.
-- Stop and ask when the scope, validation command, or required context is missing or contradictory.
-- Prefer machine-readable evidence first, then summarize files reviewed, commands run, failures, and unresolved risks.
+## Rule Index
 
-## Validation & Evidence
+| Rule | Priority | Focus |
+|------|----------|-------|
+| [`sec-injection-defense`](rules/sec-injection-defense.md) | CRITICAL | SQL/process/path injection defense |
+| [`sec-auth-fail-closed`](rules/sec-auth-fail-closed.md) | CRITICAL | Identity, authorization, tenant isolation |
+| [`sec-sink-appropriate-escaping`](rules/sec-sink-appropriate-escaping.md) | HIGH | Context-aware escaping at output sinks |
+| [`sec-input-revalidation`](rules/sec-input-revalidation.md) | HIGH | Server-side re-validation and assignment boundaries |
+| [`sec-secrets-configuration`](rules/sec-secrets-configuration.md) | HIGH | Secret injection, password hashing, secure configuration |
 
-- Run the repository's existing validation commands in documented order when code changes are requested.
-- If the repository does not define validation for the task, say so instead of inventing one.
-- When the lens requires cross-file inspection, name the extra files reviewed.
+## Evidence Boundary
 
-## Trigger Phrases
+- Identify the concrete trust boundary and sink/control before claiming a vulnerability.
+- Keep sanitization, storage representation, and output escaping context-specific.
+- If required trust-boundary evidence cannot be inspected, report `blocked` rather than guessing.
 
-The skill activates on:
-- "security review"
-- "check for vulnerabilities"
-- "auth review"
-- "injection risks"
-- "secure code review"
+## Terminal Contract
 
-## Scope Discipline
-
-### In Scope
-- Review vulnerabilities, injection risks, auth/authz flaws, and unsafe data handling
-- Check input validation, sanitization, and bounds enforcement
-- Verify secrets, PII, and encrypted data stay protected
-- Assess dependency and configuration security relevant to the diff
-
-### Do Not Broaden Into
-- ❌ Primary type coverage analysis
-- ❌ Retry and timeout hygiene unless it affects security controls
-- ❌ Performance or architecture trade-offs as the main lens
-- ❌ Readability-only issues
-
-## Cross-Lens Handoff Discipline
-
-Use this as a targeted lens, not a generic review bundle.
-
-- Prove one dominant security issue first.
-- If another concern becomes primary, recommend exactly one next review lens instead of broadening into a vague multi-lens pass.
-- Keep the current pass focused on evidence this lens can actually prove.
-
-Smallest likely follow-up lenses:
-
-- `code-review-error-handling` when cleanup, timeout, retry, or partial-failure behavior weakens a security control
-- `code-review-type-safety` when the real issue is untrusted shape or validation proof rather than exploit logic
-- `code-review-architecture` when authz, trust boundaries, or state transitions are wrong by design
-- `code-review-performance` only when user-triggerable cost amplification or DoS-style resource pressure is the dominant risk
-
-## Output Format
-
-Use this exact structure:
-
-```markdown
-## Must Fix
-- [CRITICAL|HIGH] [path:line] Title
-  - Description: What is wrong and why it matters
-  - Suggestion: Specific fix with code example
-  - Metadata: cross_lens_candidate=true/false, tradeoff_required=true/false
-
-## Observations
-- [MEDIUM|LOW] [path:line] Title
-  - Description: Informational finding
-  - Metadata: cross_lens_candidate=true/false, tradeoff_required=true/false
-
-## Summary
-[One paragraph overall assessment]
-```
-
-## Severity Scale
-
-- **CRITICAL**: Exploitable vulnerabilities, privilege escalation paths, or material data exposure.
-- **HIGH**: Missing controls or weaknesses that could plausibly become vulnerabilities.
-- **MEDIUM**: Defense-in-depth gaps and hardening opportunities.
-- **LOW**: Minor hardening or hygiene improvements.
-
-## Metadata Guidance
-
-- **cross_lens_candidate** — true when the security issue should also trigger another review lens, otherwise false.
-- **tradeoff_required** — true when the fix affects usability, performance, or architecture trade-offs, otherwise false.
-
-## Adversarial Input Discipline
-
-- Construct one concrete adversarial input that exercises the primary code path changed in the diff.
-- Trace what the system does with that input, including validation, sanitization, authorization, persistence, and output behavior.
-- Check whether the diff mixes input sanitization, persistence formatting, and output escaping in the wrong order, especially by storing pre-escaped values or trusting one context's escaping in another sink.
-- If no adversarial input can be constructed, return BLOCKED.
-
----
-
-
-## Section 1: Injection Vulnerabilities — CRITICAL
-
-SQL, command, XSS, template, and path traversal injection risks.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to injection vulnerabilities.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 2: Authentication & Authorization — CRITICAL
-
-Identity checks, session handling, access control, and token safety.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to authentication & authorization.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 3: Data Protection — HIGH
-
-Secrets, PII, encryption, logs, and exposure boundaries.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to data protection.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 4: Input Validation — HIGH
-
-Whitelisting, bounds checks, sanitization, and schema validation.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to input validation.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 5: Dependency Security — MEDIUM
-
-Known vulnerable packages and supply-chain exposure.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to dependency security.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
----
-
-
-## Section 6: Configuration Security — HIGH
-
-Hardcoded secrets, insecure defaults, debug exposure, and CORS/security headers.
-
-### What to Review
-- Apply this rule when the diff touches logic, interfaces, data flow, or behavior related to configuration security.
-- Prefer concrete evidence from the changed code and any directly coupled files you must inspect to validate the finding.
-- Report a concrete fix suggestion instead of abstract criticism.
-
-
----
-
-## Integration Notes
-
-- Part of the six-pass review protocol. Precedence: SECURITY > ERROR_HANDLING > TYPE_SAFETY > PERFORMANCE > ARCHITECTURE > SIMPLICITY. Any CRITICAL finding blocks approval.
-- Findings merge deterministically across lenses by `(path, line, title)`.
-- CRITICAL and HIGH findings belong in `## Must Fix`; MEDIUM and LOW belong in `## Observations` unless repo-specific instructions say otherwise.
+Follow the exact `STATUS: findings|clean|blocked` contract in `SKILL.md`. The caller owns merge, dedupe, approval, persistence, and workflow progression.
