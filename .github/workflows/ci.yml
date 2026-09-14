@@ -194,79 +194,8 @@ jobs:
               if boundary not in normalized_root_agents:
                   errors.append(f"Root AGENTS.md lost projection ownership boundary: {boundary}")
 
-          simplicity_dir = os.path.join(skills_dir, "code-review-simplicity")
-          simplicity_skill = skill_contents.get("code-review-simplicity")
-          if simplicity_skill is None:
-              errors.append("Missing code-review-simplicity/SKILL.md")
-          else:
-              simplicity_projection_paths = [
-                  os.path.join(simplicity_dir, "README.md"),
-                  os.path.join(simplicity_dir, "AGENTS.md"),
-                  os.path.join(simplicity_dir, "metadata.json"),
-              ]
-              obsolete_simplicity_ids = [
-                  "simp-readability-clarity",
-                  "simp-cognitive-load",
-                  "simp-unnecessary-complexity",
-                  "simp-colliding-bounds",
-                  "simp-code-duplication",
-                  "simp-documentation-comments",
-                  "simp-naming-conventions",
-                  "simp-testing-debugging",
-              ]
-              for projection_path in simplicity_projection_paths:
-                  with open(projection_path, "r", encoding="utf-8") as f:
-                      projection = f.read()
-                  for obsolete in obsolete_simplicity_ids:
-                      if obsolete in projection:
-                          errors.append(f"{projection_path} still contains retired simplicity rule id: {obsolete}")
-
-              simplicity_metadata_path = os.path.join(simplicity_dir, "metadata.json")
-              with open(simplicity_metadata_path, "r", encoding="utf-8") as f:
-                  simplicity_metadata = json.load(f)
-              if simplicity_metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
-                  errors.append("code-review-simplicity metadata must identify SKILL.md + rules/ as canonical sources")
-
-          review_projection_contracts = {
-              "code-review-performance": [
-                  "perf-algorithmic-complexity",
-                  "perf-database-performance",
-                  "perf-network-io",
-                  "perf-memory-management",
-                  "perf-caching-strategy",
-                  "perf-concurrency",
-                  "perf-asset-optimization",
-              ],
-              "code-review-error-handling": [
-                  "err-signalling-discipline",
-                  "err-outcome-messaging",
-                  "err-exception-hygiene",
-                  "err-timeout-cancellation",
-                  "err-retry-semantics",
-                  "err-partial-failure",
-                  "err-observability",
-                  "err-resource-cleanup",
-                  "err-defensive-overreach",
-              ],
-          }
-          for skill_name, retired_rule_ids in review_projection_contracts.items():
-              skill_dir = os.path.join(skills_dir, skill_name)
-              if skill_contents.get(skill_name) is None:
-                  errors.append(f"Missing {skill_name}/SKILL.md")
-                  continue
-
-              for projection_name in ["README.md", "AGENTS.md", "metadata.json"]:
-                  projection_path = os.path.join(skill_dir, projection_name)
-                  with open(projection_path, "r", encoding="utf-8") as f:
-                      projection = f.read()
-                  for retired_id in retired_rule_ids:
-                      if retired_id in projection:
-                          errors.append(f"{skill_name}/{projection_name} still contains retired rule id: {retired_id}")
-
-              with open(os.path.join(skill_dir, "metadata.json"), "r", encoding="utf-8") as f:
-                  metadata = json.load(f)
-              if metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
-                  errors.append(f"{skill_name} metadata must identify SKILL.md + rules/ as canonical sources")
+          # Review-lens projection retirement is owned by
+          # tools/validate-review-projections.py and its focused workflow.
 
           if errors:
               print("Validation failed:")
