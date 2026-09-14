@@ -19,7 +19,7 @@
     ]
   },
   "name": "PRD Writing",
-  "description": "Step-by-step workflow for writing clear, actionable Product Requirements Documents. 6-step process with 25 rules across 7 categories as supporting knowledge.",
+  "description": "Step-by-step workflow for writing clear, actionable, engineering-grounded Product Requirements Documents.",
   "license": "MIT",
   "author": {
     "name": "Agent Skills Contributors",
@@ -28,45 +28,33 @@
   "categories": [
     {
       "name": "Discovery",
-      "prefix": "disc",
+      "prefix": "prd-discovery",
       "impact": "CRITICAL",
-      "ruleCount": 4
+      "ruleCount": 1
     },
     {
       "name": "Structure",
-      "prefix": "struct",
+      "prefix": "prd-structure",
       "impact": "CRITICAL",
-      "ruleCount": 5
+      "ruleCount": 1
     },
     {
       "name": "Requirements",
-      "prefix": "req",
+      "prefix": "prd-requirements",
       "impact": "HIGH",
-      "ruleCount": 4
+      "ruleCount": 1
     },
     {
-      "name": "Scope",
-      "prefix": "scope",
+      "name": "Scope & KPIs",
+      "prefix": "prd-scope",
       "impact": "HIGH",
-      "ruleCount": 3
+      "ruleCount": 1
     },
     {
-      "name": "Metrics",
-      "prefix": "metric",
-      "impact": "HIGH",
-      "ruleCount": 3
-    },
-    {
-      "name": "Technical",
-      "prefix": "tech",
+      "name": "Technical Specs",
+      "prefix": "prd-technical",
       "impact": "MEDIUM",
-      "ruleCount": 4
-    },
-    {
-      "name": "Quality",
-      "prefix": "quality",
-      "impact": "MEDIUM",
-      "ruleCount": 2
+      "ruleCount": 1
     }
   ],
   "references": [
@@ -87,13 +75,17 @@
     "product-management",
     "requirements-document"
   ],
-  "rulesTotal": 25,
-  "lastUpdated": "2026-03-24",
+  "rulesTotal": 5,
+  "lastUpdated": "2026-09-14",
   "meta": {
     "created": "2026-03-24",
-    "last_updated": "2026-03-24",
-    "rule_count": 25,
+    "last_updated": "2026-09-14",
+    "rule_count": 5,
     "structure_version": "2.0",
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ],
     "compatibility": {
       "platforms": [
         "GitHub Copilot",
