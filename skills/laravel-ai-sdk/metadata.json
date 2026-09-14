@@ -17,11 +17,11 @@
     ]
   },
   "organization": "Laravel Community",
-  "date": "March 2026",
+  "date": "September 2026",
   "laravelVersion": "13.x",
   "phpVersion": "8.3+",
-  "rulesTotal": 17,
-  "abstract": "Comprehensive Laravel AI SDK guide for AI agents and LLMs. Contains 17 rules across 7 categories covering agent creation and configuration, custom and provider tools, embeddings and vector search, image and audio generation, file and vector store management, and testing with fakes and assertions. All examples use PHP 8.3 syntax and Laravel 13 conventions.",
+  "rulesTotal": 5,
+  "abstract": "Laravel AI SDK guidance covering agent architecture, tool integration, embeddings/RAG, media/resilience, and deterministic testing. Verify package and provider behavior against the target repository before applying version-sensitive APIs.",
   "references": [
     "https://laravel.com/docs/13.x/ai-sdk",
     "https://laravel.com/docs/13.x/queries#vector-similarity-clauses",
@@ -29,67 +29,57 @@
   ],
   "categories": [
     {
-      "name": "Agents",
-      "prefix": "agent",
+      "name": "Agent Architecture",
+      "prefix": "ai-agent",
       "impact": "CRITICAL",
-      "description": "Creating, configuring, and prompting AI agents"
+      "ruleCount": 1,
+      "description": "Agent classes, provider/model configuration, structured output, and streaming"
     },
     {
-      "name": "Tools",
-      "prefix": "tool",
+      "name": "Tool Integration",
+      "prefix": "ai-tool",
       "impact": "HIGH",
-      "description": "Custom tools and provider tools for agents"
+      "ruleCount": 1,
+      "description": "Custom/provider tools, schemas, validation, and dependency injection"
     },
     {
-      "name": "Embeddings & Search",
-      "prefix": "embed",
+      "name": "Embeddings & RAG",
+      "prefix": "ai-embeddings",
       "impact": "HIGH",
-      "description": "Vector embeddings, similarity search, and reranking"
+      "ruleCount": 1,
+      "description": "Embeddings, vector retrieval, caching, and reranking"
     },
     {
-      "name": "Media Generation",
-      "prefix": "media",
+      "name": "Media & Resilience",
+      "prefix": "ai-media",
       "impact": "MEDIUM",
-      "description": "Image generation, text-to-speech, and transcription"
+      "ruleCount": 1,
+      "description": "Image/audio operations and explicit provider resilience"
     },
     {
-      "name": "Files & Storage",
-      "prefix": "files",
-      "impact": "MEDIUM",
-      "description": "File storage with providers and vector stores for RAG"
-    },
-    {
-      "name": "Infrastructure",
-      "prefix": "infra",
-      "impact": "MEDIUM",
-      "description": "Provider failover and resilience patterns"
-    },
-    {
-      "name": "Testing",
-      "prefix": "test",
+      "name": "Testing & Fakes",
+      "prefix": "ai-testing",
       "impact": "HIGH",
-      "description": "Faking AI responses and asserting prompts in tests"
+      "ruleCount": 1,
+      "description": "Deterministic fakes, assertions, and stray-prompt prevention"
     }
   ],
   "keyFeatures": [
-    "Agent classes with instructions, tools, and structured output",
-    "Conversation context with RemembersConversations",
-    "Streaming responses with SSE and Vercel AI SDK protocol",
-    "Custom tools with JSON schema validation",
-    "Provider tools: WebSearch, WebFetch, FileSearch, SimilaritySearch",
-    "Image generation with storage and queueing",
-    "Audio TTS and speech-to-text transcription",
-    "Vector embeddings with caching",
-    "Document reranking for search relevance",
-    "File and vector store management for RAG",
-    "Provider failover for resilience",
-    "Comprehensive faking and assertion API for testing"
+    "Agent architecture with explicit provider/model and structured-output contracts",
+    "Tool integration with typed schemas and validation",
+    "Embeddings and retrieval grounded in application storage/search paths",
+    "Media generation/transcription with observable resilience",
+    "Deterministic AI fakes and assertions for tests"
   ],
   "meta": {
     "created": "2026-03-01",
-    "last_updated": "2026-03-01",
-    "rule_count": 17,
+    "last_updated": "2026-09-14",
+    "rule_count": 5,
     "structure_version": "2.0",
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ],
     "compatibility": {
       "platforms": [
         "GitHub Copilot",
