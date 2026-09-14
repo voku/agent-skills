@@ -1,172 +1,64 @@
-# Agent Skills Repository — Operational Guide
+# Agent Skills Repository — Routing Guide
 
-This repository contains portable engineering skills for AI coding agents.
+This file is a repository-level router. It must not become a compiled copy of every skill, rule inventory, activation matrix, or tool-specific contract.
 
 ## Repository ownership boundary
 
-This repository owns **portable, tool-neutral engineering guidance**. It must not become a second canonical home for instructions whose correctness depends on a concrete tool's CLI, API, file layout, schema, generated artifacts, or lifecycle behavior.
+This repository owns **portable, tool-neutral engineering guidance**.
+
+If guidance is only correct for one concrete tool's CLI, API, schema, generated artifacts, file layout, or lifecycle behavior, the canonical form belongs with that tool. Keep only the transferable engineering principle here and route consumers to the semantic owner for executable details.
 
 For the `voku/agent-*` stack specifically:
 
-- `voku/agent-recall-compiler` owns machine-readable operating-prompt recipes, typed arguments, rendering/template identity, and recipe applicability.
+- `voku/agent-recall-compiler` owns operating-prompt recipes, typed recipe arguments, rendering/template identity, and recipe applicability.
 - `voku/agent-loop` owns governed Contract/Run lifecycle, approvals, canonical next actions, mutation authority, and workflow prompt envelopes.
-- This repository may teach reusable prompting, review, testing, and implementation heuristics, but must not keep a second canonical copy of tool-owned behavior.
-- When reusable guidance becomes coupled to one tool, move the executable/canonical form to that tool's repository and leave only the portable principle here.
+- `voku/agent-skills` may teach portable reasoning, review, testing, language, and prompting heuristics, but must not keep a second canonical copy of those package contracts.
 
-Before adding or materially changing guidance, follow `CONTRIBUTING.md` and check whether an existing semantic owner already exists.
+Before adding guidance, follow `CONTRIBUTING.md` and check whether a semantic owner already exists. Extend that owner rather than creating a differently named duplicate.
 
 ## Canonical skill contract
 
-For each skill, treat these as authoritative in this order:
+For each skill under `skills/<skill-name>/`:
 
-1. `skills/<skill>/SKILL.md` for scope, trigger, routing, and the compact skill contract.
-2. `skills/<skill>/rules/*.md` for detailed rule semantics where rule files exist.
-3. `README.md`, `AGENTS.md`, and `metadata.json` inside a skill directory are supporting projections only. They must not introduce independent rule semantics, counts, or tool contracts.
+1. `SKILL.md` is the canonical activation and high-level skill contract.
+2. `rules/` contains canonical detailed guidance when the skill uses rule files.
+3. `README.md`, `AGENTS.md`, and `metadata.json` are supporting projections only unless the skill explicitly establishes a narrower owner contract.
 
-Do not infer current rule inventory from this root file. Inspect the selected skill's canonical contract instead.
+Supporting projections must summarize or route to canonical guidance. They must not introduce independent rule semantics, inventories, counts, or tool contracts.
 
----
+Do not infer current rule inventory from this root file. This root file is **routing guidance only**. Do not add per-skill rule counts, copied rule inventories, hand-maintained skill activation tables, framework-version tables, or tool-specific execution recipes here.
 
-## Rule Priority Model
+## Routing workflow
 
-When guidance from different skills conflicts, resolve it in this order:
+1. **Ground the task first.** Inspect the target repository and task evidence needed to identify the actual language, framework, workflow, and dominant engineering concern. Do not infer a stack merely because this catalog contains a matching skill.
+2. **Discover candidates from canonical frontmatter.** Inspect `skills/*/SKILL.md` and use each skill's `name` and `description` to decide whether it applies.
+3. **Load the smallest useful set.** Prefer one primary skill. Add another only when the task genuinely spans a separate concern that the first skill does not own.
+4. **Follow canonical detail.** When a selected skill points to files under `rules/`, load only the rules relevant to the current task rather than compiling the whole catalog into context.
+5. **Respect stronger authority.** Current host/system/user/project instructions and the target repository's own workflow remain authoritative within their scope. A catalog skill is guidance, not a replacement lifecycle.
+6. **Route tool-coupled facts to their owner.** If correctness depends on a concrete command, API, schema, output, path, or runtime behavior, verify it in the owning tool repository instead of reconstructing it here.
 
-| Priority | Category | Examples |
-|----------|----------|---------|
-| 1 | **Safety / Security** | OWASP, injection, authentication, encryption |
-| 2 | **System / Developer constraints** | PHP version, framework version, detected stack |
-| 3 | **User request** | Explicit instructions from the user |
-| 4 | **Project workflow rules** | Git workflow, PR conventions, testing requirements |
-| 5 | **Style / Formatting preferences** | Naming, spacing, comment style |
+## Composition discipline
 
-When uncertainty is factual, investigate current source and configuration first. Ask the user only when the remaining gap requires human intent, domain authority, permission, or risk acceptance.
+- Prefer a focused specialist over a broad bundle when one skill can answer the task.
+- For `code-review-*` skills, start with the dominant review lens. Hand off to one narrower follow-up lens only when another concern becomes primary.
+- `engineering-codelight` may provide a workflow-neutral reasoning lens for non-trivial work, but it does not replace the target repository's workflow or specialist implementation guidance.
+- If two skills overlap, prefer the one that owns the more specific semantic boundary. Do not merge their prose into a new synthetic rule set.
 
----
+## Evidence and validation
 
-## Step 1 — Detect Context
+- Never claim a skill or rule is current because a projection file exists. Validate important operational claims against the canonical owner.
+- When a canonical skill changes, update only projections whose exposed interface actually changed.
+- If a projection repeatedly drifts, prefer thinning or deleting duplicated prose over adding another synchronization ritual.
+- Mechanically decidable invariants should move toward tests, static analysis, CI, types, owner APIs, or automation when evidence justifies it. Retire redundant prose after the structural owner is reliable.
 
-Before applying a skill, identify the relevant project stack from repository evidence rather than assumptions.
+## Contribution boundary
 
-### PHP / Laravel
+Use `CONTRIBUTING.md` as the contribution contract. New or materially changed guidance must establish:
 
-```bash
-grep '"php"' composer.json
-php -v
-grep '"laravel/framework"' composer.json
-grep '"pestphp/pest"' composer.json
-grep '"phpunit/phpunit"' composer.json
-```
+- that this repository is the right semantic owner;
+- the evidence for the guidance;
+- whether an existing skill already owns the principle;
+- whether code or another deterministic mechanism can own it instead;
+- what future condition would make the prose removable.
 
-### Frontend
-
-```bash
-grep '"react"' package.json
-grep '"vite"' package.json
-grep '"@inertiajs/react"' package.json
-grep 'inertia-laravel' composer.json
-grep '"@tanstack/react-query"' package.json
-grep '"zustand"' package.json
-```
-
-Use detected versions and installed tooling. Do not invent unavailable commands or framework capabilities.
-
----
-
-## Step 2 — Activate Relevant Skills
-
-Load only skills that match the task and detected stack.
-
-| Skill | Activate when... |
-|-------|-----------------|
-| `laravel-best-practices` | Writing or reviewing PHP / Laravel code |
-| `laravel-inertia-react` | Project has `@inertiajs/react` and Laravel |
-| `laravel-testing` | Writing tests in a Laravel project |
-| `laravel-owasp-security` | Security audit or auth/payment work |
-| `laravel-database-optimization` | Query performance, N+1, Eloquent optimization |
-| `laravel-ai-sdk` | Code uses `Laravel\Ai` namespace or AI SDK features |
-| `laravel-mcp` | Building or consuming MCP servers |
-| `php-best-practices` | PHP implementation guidance |
-| `php-static-analysis` | Strict PHPStan/Psalm typing and analyzer work |
-| `operational-prompting` | Designing repo-owned agent instructions, task contracts, or validation guidance |
-| `react-vite-best-practices` | React + Vite work |
-| `typescript-react-patterns` | TypeScript in React |
-| `tailwind-best-practices` | Tailwind CSS work |
-| `state-management` | React Query, Zustand, or complex client state |
-| `web-design-guidelines` | UI/UX, accessibility, responsive layout |
-| `api-design-patterns` | REST API design/review |
-| `clean-code-principles` | Architecture, refactoring, design decisions |
-| `code-review-architecture` | Targeted architecture review |
-| `code-review-error-handling` | Failure paths, retries, timeouts, resilience |
-| `code-review-performance` | Bottlenecks, scalability, resource-heavy diffs |
-| `code-review-security` | Vulnerabilities, validation, auth, secrets |
-| `code-review-simplicity` | Readability, complexity, duplication, bounds |
-| `code-review-type-safety` | Typing, schema alignment, unsafe coercions |
-| `testing-best-practices` | Language-agnostic test design |
-| `git-workflow` | Commits, branches, PRs |
-| `seo-best-practices` | Public pages, metadata, structured data |
-| `engineering-codelight` | Evidence-first reasoning for non-trivial engineering work |
-
-For `code-review-*`, prefer one dominant review lens first. Hand off to one smaller follow-up lens only when another concern becomes dominant.
-
----
-
-## Step 3 — Apply the Canonical Contract
-
-1. Read the selected skill's `SKILL.md`.
-2. Load only rule files relevant to the current task.
-3. Treat supporting `AGENTS.md`, README, and metadata as projections, not additional authorities.
-4. Apply higher-impact findings before lower-impact style concerns when the skill defines severities.
-5. If a projection disagrees with `SKILL.md` or `rules/`, preserve the mismatch as evidence and follow the canonical source.
-
----
-
-## Step 4 — Generate Verifiable Output
-
-- Use only features supported by the detected language/framework version.
-- Lead reviews with the highest-impact proven findings.
-- Provide a concrete correction for each defect.
-- Do not report a command, test, or CI result as successful unless its result was actually observed.
-- Preserve unknown or blocked states instead of turning missing evidence into success.
-
----
-
-## Skills Overview
-
-This table is intentionally count-free. Rule inventory belongs to each skill's canonical files and changes independently of this routing index.
-
-| Skill | Primary focus |
-|-------|---------------|
-| `api-design-patterns` | REST, error handling, pagination |
-| `clean-code-principles` | SOLID, DRY, design patterns |
-| `code-review-architecture` | Coupling, boundaries, rollback-safe design |
-| `code-review-error-handling` | Timeouts, retries, cleanup, observability |
-| `code-review-performance` | Cost, queries, caching, concurrency |
-| `code-review-security` | Injection, auth, validation, data protection |
-| `code-review-simplicity` | Readability, complexity, duplication, bounds |
-| `code-review-type-safety` | Typing, runtime validation, generics |
-| `engineering-codelight` | Evidence, authority, uncertainty, falsification, recovery |
-| `git-workflow` | Commits, branching, PRs |
-| `laravel-ai-sdk` | Agents, tools, embeddings, testing |
-| `laravel-best-practices` | Laravel architecture, Eloquent, security |
-| `laravel-database-optimization` | Eloquent queries, indexing, caching, N+1 |
-| `laravel-inertia-react` | Laravel + Inertia + React |
-| `laravel-mcp` | MCP servers, tools, prompts, resources |
-| `laravel-owasp-security` | OWASP, secure coding, auth |
-| `laravel-testing` | Laravel tests, Pest/PHPUnit, factories, fakes |
-| `operational-prompting` | Repo-owned instructions, scope, validation, portability |
-| `php-best-practices` | PHP 8.x implementation practices |
-| `php-static-analysis` | Strict analyzer-friendly PHP typing |
-| `prd-writing` | PRDs, feature specs, requirements |
-| `react-vite-best-practices` | Build optimization, code splitting |
-| `seo-best-practices` | Metadata, structured data, Core Web Vitals |
-| `state-management` | React Query, Zustand |
-| `tailwind-best-practices` | Responsive Tailwind usage |
-| `testing-best-practices` | Unit tests, mocking, coverage |
-| `typescript-react-patterns` | TypeScript, React, generics |
-| `web-design-guidelines` | Accessibility, UX, responsive design |
-
----
-
-## Contributing
-
-Use `CONTRIBUTING.md` as the contribution contract. New guidance must establish semantic ownership, evidence, non-duplication, whether structural enforcement is preferable, and what would make the prose removable later.
+A smaller catalog with sharper ownership is preferable to a comprehensive catalog whose copies quietly disagree.
