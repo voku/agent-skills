@@ -1,71 +1,37 @@
-# Laravel Database Optimization v1.1.1
+# Laravel Database Optimization
 
-Database optimization patterns and best practices for Laravel 13 applications.
+Portable guidance for evidence-backed Laravel database performance work across queries, indexes, Eloquent hot paths, caching, large datasets, locking, migrations, profiling, and naming.
 
-## Overview
+## Canonical Source
 
-This skill provides 33 rules across 9 categories for optimizing database performance in Laravel 13 applications. Covers query optimization, indexing, caching, pagination, transactions, migrations, naming conventions, and debugging.
+`SKILL.md` defines when this skill applies and the high-level routing contract. `rules/` contains the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, category count, framework-version table, benchmark catalog, or compiled examples.
 
-## Categories
+## When to Use
 
-### 1. Query Performance & N+1 (Critical)
-Eager loading, preventing lazy loading, and selecting only needed columns.
+Use this skill when database behavior is the dominant concern: N+1 queries, query plans, indexes, cache invalidation, pagination/streaming, transaction contention, production migrations, or slow-query diagnosis.
 
-### 2. Indexing Strategies (Critical)
-Foreign key indexes, composite indexes, covering indexes, and full-text search.
+For broader Laravel application structure, controllers, requests, resources, or model-write boundaries, prefer `laravel-best-practices`.
 
-### 3. Eloquent Optimization (High)
-Query builder for hot paths, withCount aggregates, subquery selects, and whereHas optimization.
+## Routing
 
-### 4. Caching with Redis (High)
-Cache::remember patterns, cache invalidation, cache tags, and TTL strategies.
+1. Ground the target database, schema, Laravel/PHP versions, and real query/workload evidence.
+2. Read `SKILL.md` to select the canonical rules matching the observed problem.
+3. Load only those rules instead of compiling the entire optimization catalog into context.
+4. Preserve target-database and production constraints rather than importing assumptions from generic examples.
+5. Validate through the repository/database tooling and report only observed results.
 
-### 5. Pagination & Large Datasets (High)
-Cursor pagination, chunkById processing, lazy cursors, and avoiding unbounded queries.
+## Stable Boundaries
 
-### 6. Transactions & Locking (High)
-Short transactions, deadlock retry logic, and pessimistic locking.
+- Measure before claiming an optimization improved cost or latency.
+- Design indexes from real query shapes and selectivity, not from column popularity.
+- Keep transactions bounded and make conflicting-write semantics explicit.
+- Treat cache invalidation as part of the data contract, not an afterthought.
+- Separate production schema changes from potentially long-running data backfills when needed.
+- Use query-plan evidence to distinguish database work from application-level speculation.
 
-### 7. Migrations (High)
-Zero-downtime migrations, concurrent index creation, and safe column additions.
+## Projection Boundary
 
-### 8. Query Debugging (Medium)
-EXPLAIN ANALYZE, Laravel Debugbar, and slow query log monitoring.
-
-### 9. Naming & Structure (High)
-Table, column, relationship, and migration naming conventions for Eloquent.
-
-## Quick Start
-
-```php
-// Prevent lazy loading in development
-Model::preventLazyLoading(!app()->isProduction());
-
-// Cache expensive queries
-$posts = Cache::remember('posts:popular', 3600, fn () =>
-    Post::withCount('comments')
-        ->orderByDesc('comments_count')
-        ->take(10)
-        ->get()
-);
-
-// Cursor pagination for large datasets
-$posts = Post::query()
-    ->orderByDesc('published_at')
-    ->cursorPaginate(15);
-
-// Aggregate counts without loading relations
-$users = User::withCount('posts')->get();
-```
-
-## Usage
-
-This skill triggers automatically when:
-- Writing Eloquent queries or using the query builder
-- Adding database indexes to migrations
-- Implementing caching strategies
-- Paginating or processing large datasets
-- Debugging slow queries
+Do not copy current rule IDs, counts, category totals, framework-version tables, or expanded examples into this file. If this projection disagrees with `SKILL.md` or a file under `rules/`, preserve the mismatch as evidence and follow the canonical source.
 
 ## References
 
@@ -74,4 +40,3 @@ This skill triggers automatically when:
 - [Laravel Cache](https://laravel.com/docs/13.x/cache)
 - [Laravel Pagination](https://laravel.com/docs/13.x/pagination)
 - [Laravel Migrations](https://laravel.com/docs/13.x/migrations)
-- [Laravel Redis](https://laravel.com/docs/13.x/redis)
