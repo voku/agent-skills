@@ -3,7 +3,7 @@
   "skill": {
     "name": "php-best-practices",
     "version": "4.0.0",
-    "description": "PHP 8.x strict typing, modern language features, explicit error handling, security, performance, architecture, PSR standards, and PHPStan/static-analysis guidance. 15 consolidated rules across 8 categories.",
+    "description": "PHP 8.x strict typing, modern language features, explicit error handling, security, performance, architecture, PSR standards, and PHPStan/static-analysis guidance.",
     "author": "php-community",
     "license": "MIT",
     "keywords": [
@@ -20,7 +20,7 @@
   "date": "September 2026",
   "phpVersion": "8.0 - 8.5",
   "rulesTotal": 15,
-  "abstract": "PHP 8.x best-practices guidance for AI coding agents. Contains 15 consolidated rules across 8 categories: types, modern PHP, error handling, security, performance, architecture/design, PSR standards, and quality tooling/static analysis. Detect the project's PHP version before suggesting features, prefer explicit analyzable contracts, and validate with the repository's configured toolchain.",
+  "abstract": "PHP 8.x best-practices guidance for AI coding agents covering types, modern PHP, error handling, security, performance, architecture/design, PSR standards, and quality tooling/static analysis. Detect the project's PHP version before suggesting features, prefer explicit analyzable contracts, and validate with the repository's configured toolchain.",
   "references": [
     "https://www.php.net/manual/en/",
     "https://www.php.net/manual/en/language.types.declarations.php",
@@ -99,7 +99,7 @@
   ],
   "keyFeatures": [
     "Detect the target PHP version before suggesting syntax or features",
-    "15 consolidated rules across 8 categories",
+    "Canonical rule inventory is owned by SKILL.md and rules/",
     "Strict native typing first; PHPDoc as a precision layer",
     "Immutable/value-oriented design where it models real invariants",
     "No magic-heavy APIs or silent diagnostic suppression",

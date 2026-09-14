@@ -163,13 +163,80 @@ jobs:
           else:
               with open(os.path.join(php_dir, "metadata.json"), "r", encoding="utf-8") as f:
                   php_metadata = json.load(f)
-              if php_metadata.get("version") != "4.0.0":
-                  errors.append("php-best-practices/metadata.json must match consolidated version 4.0.0")
-              if php_metadata.get("rulesTotal") != 15:
-                  errors.append("php-best-practices/metadata.json must report rulesTotal=15")
-              category_counts = [category.get("ruleCount") for category in php_metadata.get("categories", [])]
-              if len(category_counts) != 8 or sum(count for count in category_counts if isinstance(count, int)) != 15:
-                  errors.append("php-best-practices/metadata.json must describe 8 categories totaling 15 rules")
+
+              php_frontmatter = php_skill.split("---", 2)[1]
+              php_owner_metadata = {}
+              in_metadata = False
+              for raw_line in php_frontmatter.splitlines():
+                  if raw_line == "metadata:":
+                      in_metadata = True
+                      continue
+                  if in_metadata and raw_line and not raw_line.startswith("  "):
+                      break
+                  if in_metadata and raw_line.startswith("  ") and ":" in raw_line:
+                      key, value = raw_line.strip().split(":", 1)
+                      php_owner_metadata[key] = value.strip().strip('"').strip("'")
+
+              owner_version = php_owner_metadata.get("version")
+              metadata_versions = [
+                  php_metadata.get("version"),
+                  php_metadata.get("skill", {}).get("version"),
+              ]
+              if owner_version is None:
+                  errors.append("php-best-practices/SKILL.md metadata must declare a version")
+              elif any(version != owner_version for version in metadata_versions):
+                  errors.append("php-best-practices metadata versions must match SKILL.md metadata.version")
+
+              owner_php_version = php_owner_metadata.get("phpVersion")
+              if owner_php_version is None:
+                  errors.append("php-best-practices/SKILL.md metadata must declare phpVersion")
+              elif php_metadata.get("phpVersion") != owner_php_version:
+                  errors.append("php-best-practices metadata phpVersion must match SKILL.md metadata.phpVersion")
+
+              rules_dir = os.path.join(php_dir, "rules")
+              canonical_rule_ids = sorted(
+                  filename[:-3]
+                  for filename in os.listdir(rules_dir)
+                  if filename.endswith(".md") and not filename.startswith("_")
+              )
+              canonical_rule_count = len(canonical_rule_ids)
+              if php_metadata.get("rulesTotal") != canonical_rule_count:
+                  errors.append("php-best-practices metadata rulesTotal must match canonical rules/ inventory")
+
+              assignments = {rule_id: 0 for rule_id in canonical_rule_ids}
+              categories = php_metadata.get("categories", [])
+              if not isinstance(categories, list) or not categories:
+                  errors.append("php-best-practices metadata categories must be a non-empty list")
+              else:
+                  for category in categories:
+                      prefix_value = category.get("prefix")
+                      if not isinstance(prefix_value, str):
+                          errors.append("php-best-practices metadata category prefix must be a string")
+                          continue
+                      prefixes = [prefix.strip() for prefix in prefix_value.split(",") if prefix.strip()]
+                      matched_rule_ids = [
+                          rule_id
+                          for rule_id in canonical_rule_ids
+                          if any(rule_id == prefix or rule_id.startswith(prefix + "-") for prefix in prefixes)
+                      ]
+                      if category.get("ruleCount") != len(matched_rule_ids):
+                          errors.append(
+                              f"php-best-practices metadata category {category.get('name', '<unnamed>')} ruleCount must match canonical rules/ inventory"
+                          )
+                      for rule_id in matched_rule_ids:
+                          assignments[rule_id] += 1
+
+                  invalid_assignments = [
+                      rule_id
+                      for rule_id, assignment_count in assignments.items()
+                      if assignment_count != 1
+                  ]
+                  if invalid_assignments:
+                      errors.append(
+                          "php-best-practices metadata categories must cover each canonical rule exactly once: "
+                          + ", ".join(invalid_assignments)
+                      )
+
               if php_metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
                   errors.append("php-best-practices metadata must identify SKILL.md + rules/ as canonical sources")
 
