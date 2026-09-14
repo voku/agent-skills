@@ -4,30 +4,24 @@ description: Simplicity-focused review lens for identifying unnecessary complexi
 license: MIT
 metadata:
   author: Agent Skills Team
-  version: "1.1.0"
+  version: "2.0.0"
 ---
 
 # Code Review Simplicity
 
-Targeted simplicity lens for readability, cognitive load, unnecessary abstraction, duplication, and dead logic.
+Targeted simplicity review lens for readability, cognitive load, premature abstraction, dead logic, and bounds clarity.
 
-## Review Focus
+## Quick Reference
 
-| Priority | Category | Prefix |
-|----------|----------|--------|
-| HIGH | Readability & clarity | `simp-readability-clarity` |
-| HIGH | Cognitive load | `simp-cognitive-load` |
-| CRITICAL | Unnecessary complexity | `simp-unnecessary-complexity` |
-| CRITICAL | Colliding/redundant bounds | `simp-colliding-bounds` |
-| MEDIUM | Duplication | `simp-code-duplication` |
-| HIGH | Premature abstraction | `simp-premature-abstraction` |
-| LOW | Documentation/comments | `simp-documentation-comments` |
-| MEDIUM | Naming | `simp-naming-conventions` |
-| LOW | Testing/debugging simplicity | `simp-testing-debugging` |
+| Category | Priority | Rule File | Primary Focus |
+|----------|----------|-----------|---------------|
+| **Premature Abstraction** | HIGH | [`simp-premature-abstraction`](rules/simp-premature-abstraction.md) | Single-use interfaces, speculative factories, avoiding bespoke wrappers purely for mocking |
+| **Control Flow** | HIGH | [`simp-shallow-control-flow`](rules/simp-shallow-control-flow.md) | Guard clauses over nested arrow if/else pyramids, avoiding boolean flag parameters |
+| **Bounds & Range** | CRITICAL | [`simp-bounds-range-clarity`](rules/simp-bounds-range-clarity.md) | Collapsed clamp bounds, dead range conditions, tautological comparisons |
+| **Naming & Clarity** | MEDIUM | [`simp-intention-revealing-naming`](rules/simp-intention-revealing-naming.md) | Domain verbs and nouns, affirmative booleans, eliminating noisy comments |
+| **Dead Code & Symmetry** | HIGH | [`simp-dead-code-elimination`](rules/simp-dead-code-elimination.md) | Deleting unused methods/parameters and commented code, symmetric branch rigor |
 
-Prefer, in order: delete code, reuse an existing owner, use the language/platform, inline a needless abstraction, then add new structure only when the verified behavior requires it.
-
-Clean-code checks are concrete: intention-revealing names, small cohesive units with one reason to change, narrow interfaces, shallow control flow, and no helper/manager/configuration dumping ground created merely to move complexity elsewhere.
+---
 
 ## Scope
 
@@ -58,7 +52,7 @@ When another concern becomes dominant, emit **at most one** focused handoff with
 
 ```text
 STATUS: findings
-<path>:<line>: <CRITICAL|HIGH|MEDIUM|LOW> <problem>. <smaller replacement>.
+<path>:<line>: <CRITICAL|HIGH|MEDIUM|LOW> <problem>. <concrete fix>.
 HANDOFF: <code-review-* lens> <path>:<line> <why this concern is dominant>   # optional, at most one
 ```
 
@@ -75,12 +69,12 @@ UNKNOWN: <exact missing evidence>.
 
 ## Severity
 
-- **CRITICAL**: dead/collapsed logic or complexity that obscures correctness.
-- **HIGH**: material cognitive or abstraction overhead that increases bug risk.
-- **MEDIUM**: concrete maintainability drag.
-- **LOW**: minor readability/documentation issue.
+- **CRITICAL**: collapsed bounds, dead ranges causing inverted behavior, or broken logic masking severe bugs.
+- **HIGH**: high-cyclomatic arrow nesting, single-implementation abstraction sprawl, or dead methods.
+- **MEDIUM**: misleading names, redundant noise comments, or asymmetric branch handling.
+- **LOW**: minor local readability or formatting improvements.
 
 ## References
 
 - [Pi Ensemble simplicity lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-simplicity/SKILL.md)
-- [Refactoring Guru code smells](https://refactoring.guru/refactoring/smells)
+- [A Philosophy of Software Design](https://www.goodreads.com/book/show/39996759-a-philosophy-of-software-design)

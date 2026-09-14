@@ -1,38 +1,67 @@
+---
+id: simp-premature-abstraction
+title: "Guarding Against Premature Abstraction and Speculative Generality"
+category: abstraction
+priority: HIGH
+triggers: [single-implementation-interface, speculative-factory, wrapper-purely-for-mocking, unnecessary-indirection]
+tags: [simplicity, premature-abstraction, yagni, clean-code, indirection]
+---
+
+# Guarding Against Premature Abstraction and Speculative Generality
+
+**Trigger Anchor:** Inline single-use helpers, interfaces, or factories with only one real implementation; never introduce bespoke wrappers or helper classes purely to mock a single call in a test when surrounding code calls it directly.
 
 ---
-title: Premature Abstraction
-impact: HIGH
-impactDescription: Abstractions introduced for a second caller that never arrived, and extractions that only add a navigation hop
-tags: review, code-review, code-review-simplicity, simp-premature-abstraction
----
 
-## Rule
+### Bad
+```php
+// ❌ Creating an interface, factory, and service layer for a single trivial operation
+interface CsvExportFormatStrategyInterface
+{
+    public function formatRow(array $data): string;
+}
 
-Duplication is not automatically a finding. Review whether an introduced abstraction has a demonstrated second use, and whether an extraction expresses a real concept or merely moves code one indirection away.
+class StandardCsvExportFormatStrategy implements CsvExportFormatStrategyInterface
+{
+    public function formatRow(array $data): string { return implode(',', $data); }
+}
 
-## What to Review
+class CsvExportStrategyFactory
+{
+    public function create(): CsvExportFormatStrategyInterface {
+        return new StandardCsvExportFormatStrategy(); // Only ever one strategy!
+    }
+}
 
-- Flag an interface, factory, generic manager, configuration switch, or base class with exactly one real implementation or caller.
-- Flag an extracted helper that has one call site, no independently testable behavior, and no domain meaning - the reader now has to jump to read a fragment.
-- Do not flag two similar blocks in different modules as duplication when merging them would require runtime branching on which caller is active; two straight-line versions can be cheaper to read and safer to change than one parameterized version.
-- Distinguish a genuine shared seam - an existing framework boundary, a real domain operation, a reused contract - from a helper created only to avoid repeating four lines.
-- When flagging duplication, name the concrete existing seam that already owns the behavior; "this repeats" without a target is not an actionable finding.
-
-## Incorrect
-
-```text
-The review demands that two similar handlers in unrelated modules be merged into a shared
-base class, which then needs a flag to tell the two callers apart.
+// ❌ Bespoke wrapper class introduced solely to mock a global in a unit test
+class CurrentTimeProviderWrapper
+{
+    public function getMicrotime(): float { return microtime(true); }
+}
 ```
 
-## Correct
+### Good
+```php
+// ✅ Direct, straightforward implementation without premature indirection
+class CsvExporter
+{
+    public function export(array $rows): string
+    {
+        $fp = fopen('php://temp', 'r+');
+        foreach ($rows as $row) {
+            fputcsv($fp, $row);
+        }
+        rewind($fp);
+        return stream_get_contents($fp);
+    }
+}
 
-```text
-The review flags a new interface with one implementation and one caller, and proposes using the
-concrete class directly until a second implementation exists.
+// ✅ Use standard library / framework primitives directly; inject clock interface only when multi-timezone / test time travel is genuinely needed
+class JobMetrics
+{
+    public function recordExecutionTime(float $startMicrotime): float
+    {
+        return microtime(true) - $startMicrotime;
+    }
+}
 ```
-
-## Notes
-
-- The question is "what does this abstraction let us change more cheaply?" - if the answer is hypothetical, it is premature.
-- Mark `tradeoff_required=true` when removing the abstraction changes a published API or an extension point others rely on.

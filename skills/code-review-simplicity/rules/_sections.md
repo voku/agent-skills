@@ -1,45 +1,36 @@
-# Sections
+# Rule Sections
 
-This file defines the section ordering, severity, and summary used by this review lens.
+## Priority Levels
 
----
+| Level | Description | When to Apply |
+|-------|-------------|---------------|
+| CRITICAL | Bounds, clamping logic, and mathematical invariants | Range transformations, clamps, and threshold comparisons |
+| HIGH | Abstraction level, control flow nesting, and dead code | Method extractions, branching, and refactor cleanups |
+| MEDIUM | Naming precision and comment hygiene | Code clarity and self-documentation |
 
-## 1. Readability & Clarity (simp-readability-clarity)
+## Section Overview
 
-**Impact:** HIGH
-**Description:** Naming, magic values, nesting, boolean complexity, and long functions.
+### 1. Premature Abstraction (`abstraction`)
+- **Impact:** HIGH
+- **Rules:** `simp-premature-abstraction`
+- **Description:** Avoiding single-implementation interfaces, speculative factories, and bespoke wrappers built solely for unit test mocking.
 
-## 2. Cognitive Load (simp-cognitive-load)
+### 2. Shallow Control Flow (`cognitive-load`)
+- **Impact:** HIGH
+- **Rules:** `simp-shallow-control-flow`
+- **Description:** Early return guard clauses flattening nested if/else pyramids; eliminating boolean flag parameter anti-patterns.
 
-**Impact:** HIGH
-**Description:** Parameter count, responsibility load, inheritance depth, and mental model cost.
+### 3. Bounds & Range Clarity (`complexity`)
+- **Impact:** CRITICAL
+- **Rules:** `simp-bounds-range-clarity`
+- **Description:** Verifying mathematical bounds to prevent collapsed clamp ranges, dead branches, and tautological conditions.
 
-## 3. Unnecessary Complexity (simp-unnecessary-complexity)
+### 4. Intention-Revealing Naming (`readability`)
+- **Impact:** MEDIUM
+- **Rules:** `simp-intention-revealing-naming`
+- **Description:** Replacing cryptic or manager-style names with precise domain verbs; removing comments that merely restate code.
 
-**Impact:** CRITICAL
-**Description:** Over-engineering, premature abstraction, and patterns without value.
-
-## 4. Colliding or Redundant Bounds (simp-colliding-bounds)
-
-**Impact:** CRITICAL
-**Description:** Bound-range collapse, dead-range logic, and constant-output paths.
-
-## 5. Code Duplication (simp-code-duplication)
-
-**Impact:** MEDIUM
-**Description:** Copy-paste logic and repeated structures that should converge.
-
-## 6. Documentation & Comments (simp-documentation-comments)
-
-**Impact:** LOW
-**Description:** Missing, outdated, or contradictory explanation.
-
-## 7. Naming Conventions (simp-naming-conventions)
-
-**Impact:** MEDIUM
-**Description:** Non-descriptive, inconsistent, or misleading names.
-
-## 8. Testing & Debugging Simplicity (simp-testing-debugging)
-
-**Impact:** LOW
-**Description:** Hidden side effects, difficult debugging, and hard-to-test design.
+### 5. Dead Code & Symmetry (`maintainability`)
+- **Impact:** HIGH
+- **Rules:** `simp-dead-code-elimination`
+- **Description:** Removing unreferenced methods, unused parameters, and commented-out code; enforcing symmetric handling across branches.
