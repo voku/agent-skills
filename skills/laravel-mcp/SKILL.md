@@ -25,37 +25,26 @@ Reference these guidelines when:
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Servers | CRITICAL | `server-` |
-| 2 | Tools | HIGH | `tool-` |
-| 3 | Prompts & Resources | MEDIUM | `prompt-`, `resource-` |
-| 4 | Authentication | HIGH | `auth-` |
-| 5 | Testing | HIGH | `test-` |
+| Priority | Category | Impact | Rule File |
+|----------|----------|--------|-----------|
+| 1 | Servers & Auth | CRITICAL | [`mcp-servers-registration-auth`](rules/mcp-servers-registration-auth.md) |
+| 2 | Tool Schemas | CRITICAL | [`mcp-tool-definition-schemas`](rules/mcp-tool-definition-schemas.md) |
+| 3 | Tool Responses | HIGH | [`mcp-tool-responses-error-handling`](rules/mcp-tool-responses-error-handling.md) |
+| 4 | Resources & Testing | HIGH | [`mcp-resources-prompts-testing`](rules/mcp-resources-prompts-testing.md) |
 
 ## Quick Reference
 
-### 1. Servers (CRITICAL)
+### 1. Servers & Authentication (CRITICAL)
+- [`mcp-servers-registration-auth`](rules/mcp-servers-registration-auth.md) — Register protected web endpoints with Sanctum / OAuth authentication
 
-- `server-create-register` - Create and register web or local MCP servers
+### 2. Tools & Schemas (CRITICAL)
+- [`mcp-tool-definition-schemas`](rules/mcp-tool-definition-schemas.md) — Descriptive tool names, strongly-typed JSON schemas, dependency injection
 
-### 2. Tools (HIGH)
+### 3. Responses & Error Handling (HIGH)
+- [`mcp-tool-responses-error-handling`](rules/mcp-tool-responses-error-handling.md) — Structured TextContent payloads, catching exceptions to return error objects
 
-- `tool-create` - Create tools with input/output schemas, DI, and annotations
-- `tool-responses` - Text, error, structured, streaming, and multi-content responses
-
-### 3. Prompts & Resources (MEDIUM)
-
-- `prompt-create` - Create prompts with arguments, validation, and responses
-- `resource-create` - Create resources and resource templates with URI patterns
-
-### 4. Authentication (HIGH)
-
-- `auth-protect` - Protect servers with OAuth 2.1, Sanctum, or custom auth
-
-### 5. Testing (HIGH)
-
-- `test-unit` - Test with MCP Inspector and unit tests
+### 4. Resources & Testing (HIGH)
+- [`mcp-resources-prompts-testing`](rules/mcp-resources-prompts-testing.md) — Dynamic URI resources, prompt templates, and Pest/PHPUnit tool test suites
 
 ## Essential Patterns
 
