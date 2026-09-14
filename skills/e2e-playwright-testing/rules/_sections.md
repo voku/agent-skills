@@ -1,36 +1,30 @@
-# Sections
+# Rule Sections
 
-This file defines all sections, their ordering, impact levels, and descriptions.
-The section ID (in parentheses) is the filename prefix used to group rules.
+## Priority Levels
 
----
+| Level | Description | When to Apply |
+|-------|-------------|---------------|
+| CRITICAL | Role-based locators, strict-mode disambiguation, and web-first assertions | Every spec, locator, and assertion |
+| HIGH | Global authentication state and controlled form/input interactions | Auth setup, forms, checkboxes, and date pickers |
 
-## 1. Locators (loc)
+## Section Overview
 
-**Impact:** CRITICAL
-**Description:** Choosing the right locators is the foundation of reliable E2E tests. Prefer user-facing attributes (role, label, text) over implementation details (CSS classes, IDs). Use `getByRole` as the primary strategy, `getByLabel`/`getByText` as secondary, and CSS/XPath only as a last resort. Handle strict mode violations with `{ exact: true }` or scoped locators.
+### 1. Accessible Locators (`locators`)
+- **Impact:** CRITICAL
+- **Rules:** `pw-locators-strict-mode`
+- **Description:** Role and label locators matching user perception; resolving strict-mode multi-match errors.
 
-## 2. Authentication (auth)
+### 2. Web-First Assertions (`assertions`)
+- **Impact:** CRITICAL
+- **Rules:** `pw-web-first-assertions`
+- **Description:** Auto-retrying assertions (`await expect(locator).toBeVisible()`); zero arbitrary `waitForTimeout` sleeps.
 
-**Impact:** CRITICAL
-**Description:** Authentication is the most common E2E bottleneck. Log in once per role using the setup project pattern, save browser state (cookies + localStorage) to JSON files, and reuse via `storageState` in test contexts. Never log in per-test — it wastes time and creates flaky rate-limit failures.
+### 3. Authenticated Sessions (`authentication`)
+- **Impact:** HIGH
+- **Rules:** `pw-auth-storage-state`
+- **Description:** Single authentication setup saving storageState JSON; instant authenticated contexts across test workers.
 
-## 3. Assertions (assert)
-
-**Impact:** HIGH
-**Description:** Use Playwright's web-first assertions (`expect(locator)`) which auto-retry until the condition is met or timeout. Never use `page.$(selector)` + manual checks. Assert on user-visible state (text content, visibility, enabled/disabled), not internal implementation.
-
-## 4. Forms & Inputs (form)
-
-**Impact:** HIGH
-**Description:** Form testing catches the most real bugs in web apps. Handle React controlled inputs correctly — `fill()` works for text but `keyboard.type()` is needed for date/time pickers. Custom checkbox components using `sr-only` patterns need special click handling to avoid double-toggle bugs.
-
-## 5. Test Organization (org)
-
-**Impact:** MEDIUM
-**Description:** Organize tests by feature area mirroring your route structure. Use custom fixtures for role-based authentication. Keep test files focused — one `describe` block per page or feature.
-
-## 6. Reliability (rel)
-
-**Impact:** MEDIUM
-**Description:** Flaky tests destroy CI confidence. Never use arbitrary `waitForTimeout` — use auto-waiting locators and web-first assertions instead. Run tests sequentially when they share mutable database state.
+### 4. Controlled Forms & Inputs (`forms`)
+- **Impact:** HIGH
+- **Rules:** `pw-form-interactions-custom-inputs`
+- **Description:** Controlled React inputs, custom hidden checkboxes, and reliable date picker entry.

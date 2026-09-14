@@ -88,42 +88,26 @@ Comprehensive E2E testing guide for web applications. Contains 8 rules across 6 
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Locators | CRITICAL | `loc` |
-| 2 | Authentication | CRITICAL | `auth` |
-| 3 | Assertions | HIGH | `assert` |
-| 4 | Forms & Inputs | HIGH | `form` |
-| 5 | Test Organization | MEDIUM | `org` |
-| 6 | Reliability | MEDIUM | `rel` |
+| Priority | Category | Impact | Rule File |
+|----------|----------|--------|-----------|
+| 1 | Locators | CRITICAL | [`pw-locators-strict-mode`](rules/pw-locators-strict-mode.md) |
+| 2 | Assertions | CRITICAL | [`pw-web-first-assertions`](rules/pw-web-first-assertions.md) |
+| 3 | Authentication | HIGH | [`pw-auth-storage-state`](rules/pw-auth-storage-state.md) |
+| 4 | Forms & Inputs | HIGH | [`pw-form-interactions-custom-inputs`](rules/pw-form-interactions-custom-inputs.md) |
 
 ## Quick Reference
 
 ### 1. Locators (CRITICAL)
+- [`pw-locators-strict-mode`](rules/pw-locators-strict-mode.md) — Accessible role/label locators, strict-mode disambiguation, scoping
 
-- `loc-prefer-role-locators` - Use getByRole/getByLabel over CSS selectors
-- `loc-strict-mode` - Handle strict mode violations with exact/first/scoped
+### 2. Assertions (CRITICAL)
+- [`pw-web-first-assertions`](rules/pw-web-first-assertions.md) — Auto-retrying web-first expect assertions, eliminating arbitrary timeouts
 
-### 2. Authentication (CRITICAL)
-
-- `auth-storage-state` - Reuse login state via setup project pattern
-
-### 3. Assertions (HIGH)
-
-- `assert-web-first` - Use auto-retrying expect(locator) assertions
+### 3. Authentication (HIGH)
+- [`pw-auth-storage-state`](rules/pw-auth-storage-state.md) — Single auth setup, storageState JSON reuse across test workers
 
 ### 4. Forms & Inputs (HIGH)
-
-- `form-react-date-inputs` - Use keyboard.type() for date/time in React apps
-- `form-custom-checkboxes` - Handle sr-only checkbox components
-
-### 5. Test Organization (MEDIUM)
-
-- `org-mirror-routes` - Directory structure mirrors route groups
-
-### 6. Reliability (MEDIUM)
-
-- `rel-no-wait-for-timeout` - Never use arbitrary waitForTimeout
+- [`pw-form-interactions-custom-inputs`](rules/pw-form-interactions-custom-inputs.md) — Controlled React inputs, custom hidden checkboxes, date picker entry
 
 ## Essential Patterns
 
