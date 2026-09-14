@@ -1,54 +1,23 @@
 # Project Documentation
 
-End-to-end documentation lifecycle for **PHP/Laravel and Node/TypeScript/React** projects. Covers folder structure, naming conventions, essential files, freshness, and cleanup of AI-generated junk. Supports bootstrap, audit, and reference modes.
+Portable guidance for documentation structure, baseline files, content quality, cleanup, and lifecycle management.
 
-**Version:** 1.0.0
+## Canonical Source
 
-## Overview
+`SKILL.md` defines when this skill applies and the bootstrap/audit operating modes. The files under `rules/` contain the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, count, stack matrix, or compiled example set.
 
-- Bootstrap a new project's docs (what's needed + scaffolded templates)
-- Audit existing markdown files: keep / update / archive / delete / move
-- Detect AI-generated plan/summary junk (PLAN.md, IMPLEMENTATION-SUMMARY.md, etc.)
-- Enforce folder structure (`docs/architecture/`, `docs/adr/`, `docs/guides/`, `docs/runbooks/`, `docs/archive/`)
-- Enforce naming (`UPPERCASE.md` for root files, `kebab-case.md` for docs, numbered ADRs)
-- 25 rules across 6 categories
+## When to Use
 
-## Categories
+Use this skill when bootstrapping project documentation, auditing Markdown files, cleaning up stale or duplicate docs, deciding what to keep/archive/delete, or organizing ADRs and documentation structure.
 
-### 1. Structure (CRITICAL)
-Where docs live: root vs `docs/`; recommended sub-folder layout.
+## Routing
 
-### 2. Naming (CRITICAL)
-`UPPERCASE.md` for root, `kebab-case.md` for `docs/*`, numbered ADRs, no dates / no draft markers.
+1. Inspect the target repository and identify whether the task is bootstrap, audit, or focused reference work.
+2. Read `SKILL.md` first.
+3. Load only the relevant rule files for structure/naming, essential baseline, Markdown quality, hygiene/cleanup, or lifecycle/freshness.
+4. Base KEEP / UPDATE / ARCHIVE / DELETE decisions on repository evidence.
+5. Surface deletion candidates for human approval rather than silently removing documentation.
 
-### 3. Essential Files (HIGH)
-The minimum every project needs: README, CHANGELOG, LICENSE — plus CONTRIBUTING and SECURITY for projects that warrant them.
+## Projection Boundary
 
-### 4. Quality (HIGH)
-Conciseness over bloat, AI-slop fingerprints in prose, heading hierarchy, copy-pasteable code blocks, descriptive non-broken links.
-
-### 5. Cleanup (HIGH)
-Detect AI junk files, duplicates, orphans, and empty stubs; surface for triage without auto-deleting.
-
-### 6. Lifecycle (MEDIUM)
-Freshness dates, archive workflow, ADR process, CHANGELOG-on-PR discipline.
-
-## Usage
-
-```
-Set up docs for this Laravel project
-Audit the markdown files in this repo
-Clean up the docs folder
-What docs does this project need?
-Where should this architecture diagram go?
-How should I name this ADR?
-Find stale documentation
-```
-
-## References
-
-- [Keep a Changelog](https://keepachangelog.com/)
-- [Architecture Decision Records (ADR)](https://adr.github.io/)
-- [Diátaxis — documentation framework](https://diataxis.fr/)
-- [Choose a License](https://choosealicense.com/)
-- [Markdownlint](https://github.com/DavidAnson/markdownlint)
+Do not copy current rule IDs, counts, tool-version tables, or long worked examples into this file. If this projection disagrees with `SKILL.md` or `rules/`, follow the canonical source and repair the projection.
