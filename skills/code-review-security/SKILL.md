@@ -4,25 +4,24 @@ description: Security-focused review lens for identifying injection risks, auth 
 license: MIT
 metadata:
   author: Agent Skills Team
-  version: "1.1.0"
+  version: "2.0.0"
 ---
 
 # Code Review Security
 
-Targeted security lens for vulnerabilities, validation, data protection, auth/authz, and secure defaults.
+Targeted security review lens for vulnerabilities, input validation, data protection, authentication/authorization, and secure defaults.
 
-## Review Focus
+## Quick Reference
 
-| Priority | Category | Prefix |
-|----------|----------|--------|
-| CRITICAL | Injection vulnerabilities | `sec-injection-vulnerabilities` |
-| CRITICAL | Authentication & authorization | `sec-auth-authorization` |
-| HIGH | Data protection | `sec-data-protection` |
-| HIGH | Input validation | `sec-input-validation` |
-| MEDIUM | Dependency security | `sec-dependency-security` |
-| HIGH | Configuration security | `sec-configuration-security` |
+| Category | Priority | Rule File | Primary Focus |
+|----------|----------|-----------|---------------|
+| **Injection Defense** | CRITICAL | [`sec-injection-defense`](rules/sec-injection-defense.md) | Parameterized SQL queries, process execution without shell strings, path traversal checks |
+| **Auth & Authorization** | CRITICAL | [`sec-auth-fail-closed`](rules/sec-auth-fail-closed.md) | Fail-closed user identity, tenant query scoping (IDOR prevention), policy gate enforcement |
+| **Context Escaping** | HIGH | [`sec-sink-appropriate-escaping`](rules/sec-sink-appropriate-escaping.md) | Clean raw storage in DB/LDAP, context-aware escaping strictly at template output sinks |
+| **Input Re-validation** | HIGH | [`sec-input-revalidation`](rules/sec-input-revalidation.md) | Server-side FK/status re-validation for dropdown choices, mass-assignment protection |
+| **Secrets & Config** | HIGH | [`sec-secrets-configuration`](rules/sec-secrets-configuration.md) | Environment secret injection, Argon2id password hashing, secure cookie flags |
 
-Look for SQL/command/template/path injection, authorization gaps, unsafe session/token handling, secret or PII exposure, missing validation, vulnerable dependencies, and insecure defaults.
+---
 
 ## Scope
 
@@ -68,12 +67,12 @@ UNKNOWN: <exact missing evidence>.
 
 ## Severity
 
-- **CRITICAL**: exploitable vulnerability, privilege escalation, or material data exposure.
-- **HIGH**: missing control with plausible security impact.
-- **MEDIUM**: defense-in-depth gap with concrete value.
-- **LOW**: minor hardening or hygiene.
+- **CRITICAL**: direct exploitable RCE, SQL injection, authentication bypass, IDOR, or credential leak.
+- **HIGH**: missing authorization gate, unescaped XSS sink, missing server-side input re-validation, or insecure cookies.
+- **MEDIUM**: defense-in-depth gaps, verbose error disclosure, or weak cryptographic parameters.
+- **LOW**: minor configuration hygiene or suboptimal header flags.
 
 ## References
 
-- [Pi Ensemble security lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-security/SKILL.md)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [Pi Ensemble security lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-security/SKILL.md)

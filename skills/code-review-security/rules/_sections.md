@@ -1,35 +1,35 @@
-# Sections
+# Rule Sections
 
-This file defines the section ordering, severity, and summary used by this review lens.
+## Priority Levels
 
----
+| Level | Description | When to Apply |
+|-------|-------------|---------------|
+| CRITICAL | Injection prevention and fail-closed authentication/authorization | Every untrusted input, persistence call, and identity lookup |
+| HIGH | Contextual escaping, server-side selection re-validation, and secrets configuration | Rendering templates, dropdown forms, and infrastructure wiring |
 
-## 1. Injection Vulnerabilities (sec-injection-vulnerabilities)
+## Section Overview
 
-**Impact:** CRITICAL
-**Description:** SQL, command, XSS, template, and path traversal injection risks.
+### 1. Injection Defense (`injection`)
+- **Impact:** CRITICAL
+- **Rules:** `sec-injection-defense`
+- **Description:** Parameterized queries, process execution without shell interpolation, and path traversal boundary checks.
 
-## 2. Authentication & Authorization (sec-auth-authorization)
+### 2. Authorization & Identity (`authorization`)
+- **Impact:** CRITICAL
+- **Rules:** `sec-auth-fail-closed`
+- **Description:** Fail-closed authenticated user retrieval, tenant/organization query scoping, and server-side policy gate enforcement.
 
-**Impact:** CRITICAL
-**Description:** Identity checks, session handling, access control, and token safety.
+### 3. Escaping & Encoding (`data-protection`)
+- **Impact:** HIGH
+- **Rules:** `sec-sink-appropriate-escaping`
+- **Description:** Storing clean raw strings in storage sinks; context-aware HTML escaping strictly at template output sinks.
 
-## 3. Data Protection (sec-data-protection)
+### 4. Input Re-validation (`validation`)
+- **Impact:** HIGH
+- **Rules:** `sec-input-revalidation`
+- **Description:** Server-side FK and status re-validation on dropdown submissions; mass-assignment guardrails.
 
-**Impact:** HIGH
-**Description:** Secrets, PII, encryption, logs, and exposure boundaries.
-
-## 4. Input Validation (sec-input-validation)
-
-**Impact:** HIGH
-**Description:** Whitelisting, bounds checks, sanitization, and schema validation.
-
-## 5. Dependency Security (sec-dependency-security)
-
-**Impact:** MEDIUM
-**Description:** Known vulnerable packages and supply-chain exposure.
-
-## 6. Configuration Security (sec-configuration-security)
-
-**Impact:** HIGH
-**Description:** Hardcoded secrets, insecure defaults, debug exposure, and CORS/security headers.
+### 5. Secrets & Configuration (`configuration`)
+- **Impact:** HIGH
+- **Rules:** `sec-secrets-configuration`
+- **Description:** Environment-injected credentials, modern password hashing (Argon2id), and secure cookie flags (HttpOnly, Secure, SameSite).
