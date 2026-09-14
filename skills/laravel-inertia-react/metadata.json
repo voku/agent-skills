@@ -1,9 +1,9 @@
 {
-  "version": "1.0.2",
+  "version": "2.0.0",
   "skill": {
     "name": "laravel-inertia-react",
-    "version": "1.0.2",
-    "description": "Laravel + Inertia.js + React integration patterns. Use when building Inertia page components, handling forms with useForm, managing shared data, or implementing persistent layouts. Triggers on tasks involving Inertia.js, page props, form handling, or Laravel React integration.",
+    "version": "2.0.0",
+    "description": "Laravel + Inertia.js + React integration patterns covering page props, useForm lifecycle, Link and router navigation, shared middleware props, and persistent layouts. Triggers on tasks involving Inertia.js, page props, form handling, or Laravel React integration.",
     "author": "Asyraf Hussin",
     "license": "MIT",
     "keywords": [
@@ -22,156 +22,83 @@
   },
   "name": "laravel-inertia-react",
   "displayName": "Laravel + Inertia.js + React",
-  "phpVersion": "8.3+",
-  "laravelVersion": "13.x",
-  "description": "Comprehensive patterns for building modern monolithic applications with Laravel, Inertia.js, and React. Covers page components, forms, navigation, shared data, and persistent layouts.",
+  "phpVersion": "8.2+",
+  "laravelVersion": "11.x - 13.x",
+  "description": "Laravel/Inertia/React integration guidance for typed page props, form lifecycle, navigation, shared middleware props, and persistent layouts. Verify version-sensitive behavior against the target repository before applying APIs.",
   "author": "Asyraf Hussin",
   "license": "MIT",
-  "keywords": [
-    "laravel",
-    "inertia",
-    "inertiajs",
-    "react",
-    "typescript",
-    "fullstack",
-    "spa",
-    "forms",
-    "validation",
-    "routing",
-    "ziggy"
-  ],
+  "rulesTotal": 5,
   "categories": [
-    "page-components",
-    "forms",
-    "navigation",
-    "shared-data",
-    "layouts",
-    "advanced-patterns"
+    {
+      "name": "Page Components",
+      "prefix": "page",
+      "impact": "CRITICAL",
+      "ruleCount": 1,
+      "description": "Typed page props, document metadata, partial reloads, and state/scroll preservation"
+    },
+    {
+      "name": "Forms & Validation",
+      "prefix": "form",
+      "impact": "CRITICAL",
+      "ruleCount": 1,
+      "description": "useForm lifecycle, server validation errors, processing state, and uploads"
+    },
+    {
+      "name": "Navigation & Routing",
+      "prefix": "nav",
+      "impact": "HIGH",
+      "ruleCount": 1,
+      "description": "Internal Inertia links, programmatic routing, and explicit state preservation"
+    },
+    {
+      "name": "Shared Data",
+      "prefix": "shared",
+      "impact": "HIGH",
+      "ruleCount": 1,
+      "description": "Middleware-owned cross-page props and typed client access"
+    },
+    {
+      "name": "Layouts",
+      "prefix": "layout",
+      "impact": "MEDIUM",
+      "ruleCount": 1,
+      "description": "Persistent React layout trees across Inertia navigation"
+    }
   ],
-  "priority": {
-    "critical": [
-      "page-components",
-      "forms",
-      "navigation",
-      "shared-data",
-      "layouts"
-    ],
-    "high": [
-      "navigation",
-      "shared-data"
-    ],
-    "medium": [
-      "layouts",
-      "advanced-patterns"
-    ]
-  },
   "references": [
     {
       "name": "Inertia.js Documentation",
-      "url": "https://inertiajs.com/",
-      "description": "Official Inertia.js documentation covering React adapter, routing, forms, and more"
+      "url": "https://inertiajs.com/"
     },
     {
       "name": "Laravel Documentation",
-      "url": "https://laravel.com/docs",
-      "description": "Laravel framework documentation for backend API and routing"
+      "url": "https://laravel.com/docs"
     },
     {
       "name": "React Documentation",
-      "url": "https://react.dev/",
-      "description": "Official React documentation for hooks, components, and TypeScript"
+      "url": "https://react.dev/"
     },
     {
-      "name": "Ziggy Documentation",
-      "url": "https://github.com/tighten/ziggy",
-      "description": "Use Laravel named routes in JavaScript with type safety"
+      "name": "Ziggy Repository",
+      "url": "https://github.com/tighten/ziggy"
     }
   ],
-  "dependencies": {
-    "php": ">=8.3",
-    "laravel": ">=12.0",
-    "inertiajs/inertia-laravel": ">=2.0",
-    "@inertiajs/react": ">=2.0",
-    "react": ">=19.0",
-    "typescript": ">=5.0"
-  },
-  "sections": {
-    "page-components": {
-      "title": "Page Components",
-      "description": "Standard structure for Inertia page components with TypeScript typing and layout assignment",
-      "priority": "critical",
-      "rules": [
-        "page-component-structure",
-        "page-props-typing",
-        "page-head-management",
-        "page-default-layout",
-        "page-scroll-preservation",
-        "page-partial-reloads"
-      ]
-    },
-    "forms": {
-      "title": "Forms & Validation",
-      "description": "Complete form handling with useForm hook, validation, file uploads, and state management",
-      "priority": "critical",
-      "rules": [
-        "form-useform-basic",
-        "form-useform-hook",
-        "form-validation-errors",
-        "form-file-uploads",
-        "form-progress-indicator",
-        "form-transform-data",
-        "form-reset-handling",
-        "form-dirty-tracking"
-      ]
-    },
-    "navigation": {
-      "title": "Navigation",
-      "description": "SPA-like navigation with Link component and router for programmatic navigation",
-      "priority": "critical",
-      "rules": [
-        "nav-link-component",
-        "nav-programmatic",
-        "nav-external-links",
-        "nav-preserve-state",
-        "nav-replace-history"
-      ]
-    },
-    "shared-data": {
-      "title": "Shared Data",
-      "description": "Global props shared across all pages including auth, flash messages, and config",
-      "priority": "critical",
-      "rules": [
-        "shared-auth-user",
-        "shared-flash-messages",
-        "shared-ziggy-routes",
-        "shared-app-config"
-      ]
-    },
-    "layouts": {
-      "title": "Layouts",
-      "description": "Persistent layouts that maintain state across navigation for better performance",
-      "priority": "critical",
-      "rules": [
-        "layout-persistent"
-      ]
-    }
-  },
-  "tags": [
-    "fullstack",
-    "monolith",
-    "spa",
-    "typescript",
-    "forms",
-    "validation",
-    "routing",
-    "authentication"
+  "keyFeatures": [
+    "Typed Inertia page props and deliberate partial reload/state behavior",
+    "Explicit useForm lifecycle and server-side validation feedback",
+    "Separated internal Inertia navigation from external/download links",
+    "Middleware-owned shared props with typed client access",
+    "Persistent layouts when state should survive page navigation"
   ],
-  "updatedAt": "2026-01-17",
   "meta": {
     "created": "2026-01-17",
-    "last_updated": "2026-01-17",
-    "rule_count": 24,
+    "last_updated": "2026-09-14",
+    "rule_count": 5,
     "structure_version": "2.0",
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ],
     "compatibility": {
       "platforms": [
         "GitHub Copilot",
