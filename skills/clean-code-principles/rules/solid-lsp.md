@@ -1,109 +1,64 @@
 ---
 id: solid-lsp
-title: SOLID - Liskov Substitution Principle (LSP)
+title: Liskov Substitution Principle (LSP)
 category: solid-principles
 priority: critical
-tags: [SOLID, LSP, liskov-substitution, contracts, preconditions, postconditions]
-related: [solid-ocp, solid-isp, core-composition]
+triggers: [subclass-throws-unsupported, unexpected-null-return, strengthened-precondition, weakened-postcondition, instanceof-branching]
+tags: [SOLID, LSP, liskov-substitution, contracts, invariants]
 ---
 
 # Liskov Substitution Principle (LSP)
 
-Subtypes must be substitutable for their base types without altering the correctness of the program. A caller holding a reference to a base class or interface must be able to use any implementer without knowing its concrete class and without encountering unexpected errors or side effects.
+**Trigger Anchor:** Subtypes must be substitutable for base types without altering program correctness. Do not strengthen preconditions, weaken postconditions, or change invariants.
 
 ---
 
-## 1. Contract & Invariant Violations (The Rectangle / Square Trap)
-
-Subclasses must preserve the behavioral invariants of the base class.
-
-### Bad Example
-
+### Bad (Behavioral Invariant Violation)
 ```typescript
-// ❌ Subclass changes the behavior of setters, breaking parent assumptions
+// ❌ Subtype changes setter contract, breaking caller invariants
 class Rectangle {
-  constructor(protected width: number, protected height: number) {}
-
-  setWidth(w: number) { this.width = w; }
-  setHeight(h: number) { this.height = h; }
-  getArea(): number { return this.width * this.height; }
+  constructor(protected w: number, protected h: number) {}
+  setWidth(w: number) { this.w = w; }
+  setHeight(h: number) { this.h = h; }
+  area() { return this.w * this.h; }
 }
 
 class Square extends Rectangle {
-  // Violates LSP: setting width secretly mutates height!
-  setWidth(w: number) { this.width = w; this.height = w; }
-  setHeight(h: number) { this.width = h; this.height = h; }
-}
-
-function resizeGeometry(rect: Rectangle) {
-  rect.setWidth(5);
-  rect.setHeight(4);
-  // Caller expects 20, but with a Square it returns 16!
-  assert(rect.getArea() === 20);
+  // Secretly mutates both dimensions: breaks callers expecting independent width/height
+  setWidth(w: number) { this.w = w; this.h = w; }
+  setHeight(h: number) { this.w = h; this.h = h; }
 }
 ```
 
-### Good Example
-
+### Bad (Strengthened Precondition / Unexpected Throw)
 ```typescript
-// ✅ Model shapes by shared capabilities, not flawed inheritance
-interface Shape {
-  getArea(): number;
-}
-
-class Rectangle implements Shape {
-  constructor(public readonly width: number, public readonly height: number) {}
-  getArea(): number { return this.width * this.height; }
-}
-
-class Square implements Shape {
-  constructor(public readonly size: number) {}
-  getArea(): number { return this.size * this.size; }
-}
-```
-
----
-
-## 2. Preconditions and Postconditions Rules
-
-1. **Cannot strengthen preconditions**: A derived class cannot require more from the caller than the base type (e.g. arbitrarily refusing valid inputs or demanding new state).
-2. **Cannot weaken postconditions**: A derived class cannot guarantee less than the base contract promises (e.g. returning `null` when a non-null result is promised).
-3. **Cannot introduce unexpected exception types**: Subclasses must not throw checked or unhandled exceptions that callers of the base contract cannot anticipate.
-
-### Bad Example
-
-```typescript
+// ❌ Subtype refuses valid inputs accepted by base contract
 interface PaymentGateway {
-  // Base contract: accepts any positive amount, returns transaction ID string
   charge(amount: number): Promise<string>;
 }
 
 class StrictGateway implements PaymentGateway {
   async charge(amount: number): Promise<string> {
-    // ❌ Strengthens preconditions: callers of PaymentGateway cannot anticipate this restriction
-    if (amount < 50) {
-      throw new Error('Minimum order is $50');
-    }
-    // ❌ Weakens postconditions: returns empty string instead of valid transaction ID
-    return '';
+    if (amount < 50) throw new Error('Minimum $50 required'); // ❌ Surprise precondition!
+    return 'txn_123';
   }
 }
 ```
 
-### Good Example
-
+### Good
 ```typescript
-// ✅ Derived implementations honor or widen the contract
-class StandardGateway implements PaymentGateway {
-  async charge(amount: number): Promise<string> {
-    if (amount <= 0) throw new InvalidAmountError();
-    return `TXN_${Date.now()}`;
-  }
+// ✅ Model by capability interfaces rather than leaky subclassing
+interface Shape {
+  area(): number;
+}
+
+class Rectangle implements Shape {
+  constructor(private w: number, private h: number) {}
+  area() { return this.w * this.h; }
+}
+
+class Square implements Shape {
+  constructor(private size: number) {}
+  area() { return this.size * this.size; }
 }
 ```
-
-## Why it Matters
-
-1. **Polymorphic Safety**: Any implementation can be substituted into existing workflows with zero special casing.
-2. **Eliminates `instanceof` Checks**: Violating LSP forces callers to check concrete types (`if (obj instanceof X)`), destroying polymorphism.
-3. **Predictable Composition**: Components rely on predictable contracts across tests, mocks, and production drivers.

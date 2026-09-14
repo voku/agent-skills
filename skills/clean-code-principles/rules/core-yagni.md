@@ -3,89 +3,49 @@ id: core-yagni
 title: You Aren't Gonna Need It (YAGNI)
 category: core-principles
 priority: critical
-tags: [YAGNI, speculative-features, premature-abstraction, simplicity, lean]
-related: [core-kiss, core-dry, solid-ocp]
+triggers: [speculative-features, unused-config-fields, premature-abstractions-single-impl, just-in-case-code]
+tags: [YAGNI, simplicity, lean, minimal-change]
 ---
 
 # You Aren't Gonna Need It (YAGNI)
 
-Do not implement code, features, or architectural abstractions based on speculative future requirements. Implement only what is required to satisfy current, verified needs.
-
-Anticipated needs rarely match the real future, and speculative code incurs immediate maintenance, testing, and cognitive overhead.
+**Trigger Anchor:** Implement only verified, current requirements. Do not build speculative features, parameters, or abstractions "just in case."
 
 ---
 
-## 1. Avoid Speculative Features
-
-Building unused parameters, extra database columns, or unrequested features "just in case" bloats the codebase and creates dead range logic.
-
-### Bad Example
-
+### Bad (Speculative Fields & Anticipated Variance)
 ```typescript
-// ❌ Building features and configurations that were not requested
+// ❌ Adding speculative options and fields nobody asked for
 interface UserRegistration {
   email: string;
   password: string;
-  // Speculative fields added "in case we need them later":
-  middleName?: string;
+  // Speculative bloat:
   faxNumber?: string;
-  pagerNumber?: string;
-  preferredCommunicationChannel?: 'sms' | 'email' | 'push' | 'carrier_pigeon';
-  customMetadata?: Record<string, any>;
+  preferredChannel?: 'email' | 'sms' | 'push';
+  customMetadata?: Record<string, unknown>;
 }
+
+// ❌ Multi-channel router when the app only sends emails
+class NotificationChannelFactory { /* ... */ }
+class ChannelRouter { /* ... */ }
 ```
 
-### Good Example
-
+### Good (Minimal Sufficient Implementation)
 ```typescript
-// ✅ Implement only what current requirements demand
+// ✅ Implement strictly what current verified requirements demand
 interface UserRegistration {
   email: string;
   password: string;
 }
-```
 
----
-
-## 2. Avoid Premature Abstractions
-
-Do not create plugin systems, multi-tiered factory hierarchies, or generic adapters when there is only one concrete implementation.
-
-### Bad Example
-
-```typescript
-// ❌ Creating a multi-channel notification engine when the project only sends emails
-interface NotificationPayload { /* ... */ }
-interface NotificationChannel {
-  send(payload: NotificationPayload): Promise<void>;
-  supports(type: string): boolean;
-}
-
-class NotificationChannelRegistry { /* ... */ }
-class ChannelRouter { /* ... */ }
-class DynamicNotificationDispatcher { /* ... */ }
-```
-
-### Good Example
-
-```typescript
-// ✅ Simple, direct implementation until variance is proven
 class EmailService {
-  async sendWelcomeEmail(to: string, userName: string): Promise<void> {
-    await mailClient.send({ to, subject: 'Welcome!', template: 'welcome' });
+  async sendWelcome(email: string) {
+    await mailClient.send({ to: email, template: 'welcome' });
   }
 }
 ```
 
-## When to Introduce Abstractions
-
+### Abstraction Gate
 Extract an abstraction only when:
-1. You have **at least two real, active implementations** that must vary at runtime.
-2. An abstraction is strictly required to decouple a boundary for unit testing (e.g., isolating an external payment gateway).
-3. The requirement is explicit and authorized, not assumed.
-
-## Why it Matters
-
-1. **Faster Delivery**: Less code to write, review, test, and document.
-2. **Right Abstractions Later**: When requirements actually change, you have real evidence of the variance, allowing you to design the right abstraction rather than fighting an incorrect speculative one.
-3. **Less Dead Code**: Prevents untested, unmaintained code paths from lurking in production.
+1. You have **at least two real, active implementations** in the repository.
+2. It is strictly required to decouple external infrastructure for unit testing.
