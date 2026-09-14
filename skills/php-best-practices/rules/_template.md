@@ -51,7 +51,16 @@ Where the rule does not apply, with concrete limits. Keep this honest — not ev
 
 ## Static-analysis notes
 
-What PHPStan / Psalm / IDEs can verify automatically with this pattern in place.
+What PHPStan / Psalm / IDEs can verify automatically with this pattern in place. Distinguish analyzer support from project-specific configuration or custom rules; do not claim a diagnostic exists unless current evidence supports it.
+
+## Ownership / retirement check
+
+Before publishing the rule, verify:
+
+- the guidance is portable and does not duplicate a concrete tool owner's CLI/API/schema/lifecycle semantics;
+- the rule still requires useful agent judgment, or explicitly record why structural enforcement is not yet sufficient;
+- any existing owner API, type, test, static-analysis rule, formatter rule, or automation that already enforces the behavior is referenced instead of restated as canonical prose;
+- the prose can be shrunk or removed when equivalent structural enforcement becomes the reliable source of truth.
 
 ## Version notes
 
