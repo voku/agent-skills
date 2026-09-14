@@ -1,52 +1,30 @@
 # Laravel Queues & Jobs
 
-Production-grade queue patterns for **Laravel 13 (MySQL + Redis)**. Covers driver choice, job design, retry/failure, worker scaling, batching/chaining, and testing. 20 rules across 6 categories.
+Portable guidance for production Laravel queue and background-job work.
 
-**Version:** 1.0.0
+## Canonical Source
 
-## Overview
+`SKILL.md` defines when this skill applies and the high-level routing contract. `rules/` contains the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, count, framework-version table, worker cookbook, or compiled set of examples.
 
-- Driver choice: when `database` is enough, when to move to `redis`
-- Job design: `ShouldQueue`, IDs-not-models, idempotency, constructor vs `handle()`
-- Retry & failure: `#[Backoff]`, `#[FailOnTimeout]`, `failed()`, transient vs permanent
-- Scaling: Supervisor config, multi-queue priority lanes, worker recycling
-- Batching & chaining: `Bus::batch` vs `Bus::chain`, failure handling, chunking
-- Testing & ops: `Queue::fake()`, `Bus::fake()`, scheduling, when to adopt Horizon
+## When to Use
 
-## Categories
+Use this skill for work involving queue-driver configuration, queued job design and idempotency, retries/failures, worker scaling, Bus batching/chaining, Horizon, or queue testing/operations.
 
-### 1. Driver & Config (CRITICAL)
-Driver choice (database/redis/sqs), `after_commit`, failed-jobs storage.
+## Routing
 
-### 2. Job Design (CRITICAL)
-`ShouldQueue`, pass IDs not models, idempotency on payment/external-API jobs, constructor vs handle.
+1. Ground the target repository's Laravel version, queue connection, persistence backend, worker/supervisor configuration, and monitoring.
+2. Read `SKILL.md` to select the canonical rules matching the observed problem.
+3. Load only those rule files instead of compiling the whole queue guide into context.
+4. Preserve application transaction boundaries, failure semantics, and operational constraints unless evidence supports changing them.
+5. Validate through the target repository's configured toolchain and report only observed results.
 
-### 3. Retry & Failure (HIGH)
-Tries + backoff (incl. `#[Backoff]` attribute), `failed()` method, transient vs permanent, `#[FailOnTimeout]`.
+## Stable Boundaries
 
-### 4. Scaling & Workers (HIGH)
-Supervisor config, multi-queue priority, worker recycling to avoid memory leaks.
+- Queued work must make retry/idempotency behavior explicit.
+- Transaction dispatch, attempts, backoff, timeouts, worker flags, and failed-job retention are runtime contracts, not style preferences.
+- Batch and chain semantics differ and should match the dependency/failure model of the work.
+- Production worker and Horizon changes require target-environment evidence.
 
-### 5. Batching & Chaining (HIGH)
-`Bus::batch` vs `Bus::chain`, failure handling with `allowFailures()`, chunking large sets.
+## Projection Boundary
 
-### 6. Testing & Operations (MEDIUM)
-`Queue::fake()`, scheduled jobs with `withoutOverlapping`, when Horizon is warranted.
-
-## Usage
-
-```
-Audit our queue setup
-Review this job class
-Should this be queued or run sync?
-Why is this job retrying forever?
-Set up Supervisor for queue workers
-When should we adopt Horizon?
-```
-
-## References
-
-- [Laravel 13 — Queues](https://laravel.com/docs/13.x/queues)
-- [Laravel 13 — Horizon](https://laravel.com/docs/13.x/horizon)
-- [Laravel 13 — Task Scheduling](https://laravel.com/docs/13.x/scheduling)
-- [Supervisor — A Process Control System](http://supervisord.org/)
+Do not copy current rule IDs, counts, version tables, or operational recipes into this file. If this projection disagrees with `SKILL.md` or a file under `rules/`, follow the canonical source and repair the projection.
