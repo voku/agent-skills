@@ -4,26 +4,24 @@ description: Performance-focused review lens for identifying inefficiencies, hig
 license: MIT
 metadata:
   author: Agent Skills Team
-  version: "1.1.0"
+  version: "2.0.0"
 ---
 
 # Code Review Performance
 
-Targeted performance lens for algorithmic cost, data access, caching, concurrency, and worst-case resource usage.
+Targeted performance review lens for query shape, algorithmic complexity, memory management, caching, and network I/O.
 
-## Review Focus
+## Quick Reference
 
-| Priority | Category | Prefix |
-|----------|----------|--------|
-| CRITICAL | Algorithmic complexity | `perf-algorithmic-complexity` |
-| CRITICAL | Database performance | `perf-database-performance` |
-| HIGH | Network I/O | `perf-network-io` |
-| HIGH | Memory management | `perf-memory-management` |
-| MEDIUM | Caching strategy | `perf-caching-strategy` |
-| HIGH | Concurrency | `perf-concurrency` |
-| LOW | Asset & payload optimization | `perf-asset-optimization` |
+| Category | Priority | Rule File | Primary Focus |
+|----------|----------|-----------|---------------|
+| **Database Performance** | CRITICAL | [`perf-database-nplusone`](rules/perf-database-nplusone.md) | Eliminating N+1 queries, eager loading, index alignment, typed count queries |
+| **Algorithmic Complexity** | CRITICAL | [`perf-algorithmic-collections`](rules/perf-algorithmic-collections.md) | O(1) hash maps / lookup sets over O(N^2) nested scans and linear in-array searches |
+| **Memory Management** | HIGH | [`perf-memory-streaming`](rules/perf-memory-streaming.md) | Generators (`yield`), chunked iteration, constant memory streaming for files/data |
+| **Caching Strategy** | HIGH | [`perf-caching-invalidation`](rules/perf-caching-invalidation.md) | Explicit TTLs, versioned cache keys, stampede / thundering-herd lock guards |
+| **Network I/O & Batching** | HIGH | [`perf-network-batching`](rules/perf-network-batching.md) | Batching remote API / LDAP calls, avoiding over-fetching with narrow selects |
 
-Look for complexity growth, N+1 queries, missing indexes, redundant round trips, unbounded collections, bad cache invalidation, blocking work, pool pressure, and user-visible payload waste.
+---
 
 ## Scope
 
@@ -68,12 +66,12 @@ UNKNOWN: <exact missing evidence>.
 
 ## Severity
 
-- **CRITICAL**: likely timeout, outage, or severe user-facing slowdown.
-- **HIGH**: measurable inefficiency or scalability problem with meaningful impact.
-- **MEDIUM**: clear optimization with moderate savings.
-- **LOW**: minor optimization or payload polish.
+- **CRITICAL**: N+1 queries in high-traffic endpoints, quadratic O(N^2) loops on unbounded collections, or memory exhaustion.
+- **HIGH**: missing cache TTLs causing stale data drift, chatty remote API calls in loops, or missing database indexes on join keys.
+- **MEDIUM**: over-fetching unused columns or missing chunking on moderate batch operations.
+- **LOW**: minor local collection allocation efficiency.
 
 ## References
 
 - [Pi Ensemble performance lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-performance/SKILL.md)
-- [Google Web Performance](https://web.dev/explore/fast)
+- [High Performance MySQL](https://www.oreilly.com/library/view/high-performance-mysql/9781492080503/)
