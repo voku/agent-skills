@@ -1,6 +1,6 @@
 ---
 name: laravel-queues
-description: Laravel queue and job patterns — driver choice, job design (idempotency, ShouldQueue, model serialisation), retry and failure handling, worker scaling, Bus batching and chaining, Horizon, and testing. 6 rules across 6 categories. Triggers on "Laravel queue", "Laravel job", "background job", "Horizon setup", "failed jobs", "Bus batch", "queue worker tuning".
+description: Laravel queue and job patterns for driver choice, job idempotency, retry/failure handling, worker scaling, Bus batching/chaining, Horizon, and testing. Triggers on "Laravel queue", "Laravel job", "background job", "Horizon setup", "failed jobs", "Bus batch", "queue worker tuning".
 license: MIT
 metadata:
   author: agent-skills
@@ -9,56 +9,49 @@ metadata:
 
 # Laravel Queues & Jobs
 
-Production-grade queue and background job patterns for Laravel applications (MySQL + Redis). Contains **6 consolidated rules across 6 categories** covering driver configuration, job idempotency, retry/failure lifecycle, worker scaling, Bus batching/chaining, and testing/monitoring.
-
-## Metadata
-
-- **Version:** 2.0.0
-- **Scope:** PHP / Laravel 11.x - 13.x + MySQL + Redis (optional Horizon)
-- **Rule Count:** 6 rules across 6 categories
-- **License:** MIT
+Production-grade queue and background job patterns for Laravel applications using database/Redis-backed queues and optional Horizon.
 
 ## When to Apply
 
 Reference these guidelines when:
 - Designing background jobs (`php artisan make:job`)
-- Configuring `config/queue.php` and `after_commit` settings
-- Handling job retries, backoff, and terminal `failed()` hooks
+- Configuring `config/queue.php` and commit/dispatch behavior
+- Handling job retries, backoff, and terminal failure hooks
 - Configuring worker processes via Supervisor, systemd, or Horizon
-- Executing parallel jobs via `Bus::batch()` or sequential `Bus::chain()`
-- Writing unit and feature tests with `Queue::fake()` or `Bus::fake()`
+- Executing parallel work via `Bus::batch()` or sequential work via `Bus::chain()`
+- Writing tests with `Queue::fake()` or `Bus::fake()`
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix | Rules |
-|----------|----------|--------|--------|-------|
-| 1 | Driver & Config | CRITICAL | `config-` | 1 |
-| 2 | Job Design | CRITICAL | `design-` | 1 |
-| 3 | Retry & Failure | HIGH | `retry-` | 1 |
-| 4 | Scaling & Workers | HIGH | `scaling-` | 1 |
-| 5 | Batching & Chaining | HIGH | `bus-` | 1 |
-| 6 | Testing & Operations | MEDIUM | `ops-` | 1 |
+| Priority | Category | Impact | Prefix |
+|----------|----------|--------|--------|
+| 1 | Driver & Config | CRITICAL | `config-` |
+| 2 | Job Design | CRITICAL | `design-` |
+| 3 | Retry & Failure | HIGH | `retry-` |
+| 4 | Scaling & Workers | HIGH | `scaling-` |
+| 5 | Batching & Chaining | HIGH | `bus-` |
+| 6 | Testing & Operations | MEDIUM | `ops-` |
 
 ## Quick Reference
 
-### 1. Driver & Config (CRITICAL) — 1 rule
-- [config-drivers-commits.md](rules/config-drivers-commits.md) - Set `after_commit => true` across queue connections to eliminate race conditions with uncommitted database rows, use Redis for high-throughput production, and ensure persistent failed job storage.
+### Driver & Config
+- [config-drivers-commits.md](rules/config-drivers-commits.md) - Choose the queue driver deliberately, make dispatch/transaction behavior explicit, and keep failed-job evidence durable.
 
-### 2. Job Design (CRITICAL) — 1 rule
-- [design-job-idempotency.md](rules/design-job-idempotency.md) - Always implement `ShouldQueue`, keep constructors pure (pass IDs rather than stale models), and guarantee idempotency using atomic state checks or `ShouldBeUnique`.
+### Job Design
+- [design-job-idempotency.md](rules/design-job-idempotency.md) - Use explicit queued-job contracts, keep constructors safe to serialize, and make retried work idempotent.
 
-### 3. Retry & Failure (HIGH) — 1 rule
-- [retry-failure-handling.md](rules/retry-failure-handling.md) - Configure explicit `$tries` and exponential `$backoff`, use `#[FailOnTimeout]` to prevent hung jobs from exhausting attempts, implement `failed(Throwable $e)` for terminal recovery, and distinguish transient network retries from permanent data errors.
+### Retry & Failure
+- [retry-failure-handling.md](rules/retry-failure-handling.md) - Configure explicit attempts/backoff/timeout behavior and distinguish transient retry from terminal failure.
 
-### 4. Scaling & Workers (HIGH) — 1 rule
-- [scaling-worker-management.md](rules/scaling-worker-management.md) - Configure multi-queue priority lanes (`--queue=high,default,low`), ensure supervisor `stopwaitsecs` exceeds worker `timeout`, and recycle processes (`--max-jobs=1000 --max-time=3600`) to prevent PHP memory exhaustion.
+### Scaling & Workers
+- [scaling-worker-management.md](rules/scaling-worker-management.md) - Configure queue priorities and worker lifecycles so process supervision matches job timeout and memory behavior.
 
-### 5. Batching & Chaining (HIGH) — 1 rule
-- [bus-batching-chaining.md](rules/bus-batching-chaining.md) - Choose parallel `Bus::batch()` for independent progress-tracked jobs, `Bus::chain()` for strict sequential steps where failure aborts subsequent tasks, and dispatch large sets in chunked sub-batches.
+### Batching & Chaining
+- [bus-batching-chaining.md](rules/bus-batching-chaining.md) - Use batching for independent parallel work and chaining for ordered failure-coupled work.
 
-### 6. Testing & Operations (MEDIUM) — 1 rule
-- [ops-testing-monitoring.md](rules/ops-testing-monitoring.md) - Fake queues in tests (`Queue::fake()`, `Bus::fake()`), prevent overlapping scheduled jobs with `withoutOverlapping()`, and monitor throughput and queue wait times with Laravel Horizon.
+### Testing & Operations
+- [ops-testing-monitoring.md](rules/ops-testing-monitoring.md) - Fake queues/buses in tests and keep production queue throughput, failures, and overlap behavior observable.
 
 ## How to Use
 
-Read individual rule files in `rules/` for concise triggers, Bad vs Good code comparisons, and concrete queue recipes.
+Read only the rule files relevant to the current task. Ground driver capabilities, Laravel APIs, worker flags, and Horizon behavior in the target repository and supported framework version. `README.md`, `AGENTS.md`, and `metadata.json` are supporting projections; if they disagree with this file or `rules/`, follow the canonical source and repair the projection.
