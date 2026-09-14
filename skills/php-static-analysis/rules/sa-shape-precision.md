@@ -1,49 +1,65 @@
+---
+id: sa-shape-precision
+title: "Array Shape Precision, Lists, and Advanced Type Narrowing"
+category: shapes
+priority: CRITICAL
+triggers: [untyped-array-parameter, missing-array-shape, mixed-collection, non-empty-string-proof, class-string-generic]
+tags: [phpstan, static-analysis, array-shapes, generics, lists, type-narrowing]
+---
+
+# Array Shape Precision, Lists, and Advanced Type Narrowing
+
+**Trigger Anchor:** Replace bare `array` and `mixed` with precise array shapes (`array{id: int, name: string}`), `list<T>`, `class-string<T>`, and `non-empty-string` to document and prove data structure contracts to the analyzer.
 
 ---
-title: Shape & Generic Precision
-impact: CRITICAL
-impactDescription: Loose array and mixed types that force every caller to re-validate a structure the producer already knows
-tags: php, static-analysis, php-static-analysis, sa-shape-precision
----
 
-## Rule
-
-An array with a known key set is a shape, not an `array`. Declare `array{...}`, `list<T>`, `non-empty-list<T>`, `class-string<T>`, and template parameters wherever the code already knows more than `array` or `mixed`.
-
-## What to Do
-
-- Replace `array` with an explicit `array{key: type, optional?: type}` when the key set is fixed.
-- Use `list<T>` for sequential arrays and `non-empty-string` / `non-empty-list<T>` when emptiness is already excluded.
-- Use `class-string<T>` instead of `string` when the value is a class name that gets instantiated or compared.
-- Build a known-key array with explicit conditional assignments so the flow reads top to bottom, instead of splicing keys in with `array_merge` and hiding which keys can exist.
-- Introduce `@template` only when a reusable generic abstraction genuinely exists; a single implementation does not need one.
-
-## Incorrect
-
+### Bad
 ```php
-/** @return array<string, string> */
-function options(): array
+// ❌ Bare array obscures required structure and allows missing key bugs
+class UserExporter
 {
-    return array_merge($extra, ['mode' => 'fast']);
+    /**
+     * @param array $users
+     * @return array
+     */
+    public function formatExport(array $users): array
+    {
+        $result = [];
+        foreach ($users as $u) {
+            // Analyzer cannot verify if 'id' or 'email' exist!
+            $result[] = $u['id'] . ':' . $u['email'];
+        }
+        return $result;
+    }
 }
 ```
 
-## Correct
-
+### Good
 ```php
-/** @return array{mode: 'fast'|'safe', label?: non-empty-string} */
-function options(): array
+// ✅ Precise PHPDoc shapes and lists proving key existence and element types
+class UserExporter
 {
-    $options = ['mode' => 'fast'];
-    if ($label !== '') {
-        $options['label'] = $label;
+    /**
+     * @param list<array{id: int, email: non-empty-string, name?: string}> $users
+     * @return list<string>
+     */
+    public function formatExport(array $users): array
+    {
+        $result = [];
+        foreach ($users as $u) {
+            $result[] = $u['id'] . ':' . $u['email'];
+        }
+        return $result;
     }
 
-    return $options;
+    /**
+     * @template T of object
+     * @param class-string<T> $className
+     * @return T
+     */
+    public function instantiate(string $className): object
+    {
+        return new $className();
+    }
 }
 ```
-
-## Notes
-
-- Avoid over-annotating private implementation details the analyzer already infers.
-- `mixed` at a boundary is acceptable only when it is validated once, immediately, into a precise type.

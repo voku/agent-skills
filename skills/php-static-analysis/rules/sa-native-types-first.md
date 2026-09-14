@@ -1,38 +1,50 @@
+---
+id: sa-native-types-first
+title: "Native Types First and Strict Comparison Invariants"
+category: native-types
+priority: CRITICAL
+triggers: [missing-property-type, unsafe-strict-comparison, loose-equality-downgrade, redundant-phpdoc-type]
+tags: [phpstan, static-analysis, native-types, strict-comparison, active-row, php]
+---
+
+# Native Types First and Strict Comparison Invariants
+
+**Trigger Anchor:** Declare native PHP types on properties, parameters, and returns before reaching for PHPDoc annotations; never downgrade `===` to `==` to bypass untyped property comparisons—declare the native property type on the owning class instead.
 
 ---
-title: Native Types First
-impact: CRITICAL
-impactDescription: PHPDoc used where a real PHP type would have made the contract enforceable at runtime
-tags: php, static-analysis, php-static-analysis, sa-native-types-first
----
 
-## Rule
-
-Express a type with PHP itself before writing an annotation. PHPDoc is for what the language cannot say - shapes, generics, ranges, conditional returns - not for repeating what a parameter, property, or return type could declare.
-
-## What to Do
-
-- Add the native parameter, property, and return types first, including nullability.
-- Reach for PHPDoc only when the remaining precision is inexpressible in PHP.
-- When a property has no native type and comparisons on it are flagged, add the type it should have had; do not loosen the comparison to make the message disappear.
-- Give a typed property on a readonly class an explicit default when the analyzer reports it as uninitialized.
-
-## Incorrect
-
+### Bad
 ```php
+// ❌ Untyped property leads to static analysis warning on strict comparison;
+// downgrading to loose equality hides type drift and introduces subtle bugs
+class AccountActiveRow
+{
+    public $is_active; // Untyped property
+}
+
+// Bypassing itportal.activerow.unsafeStrictComparison by loosening to ==:
+if ($row->is_active == 1) { ... } // ❌ Loose equality bypasses analyzer but introduces coercion bugs!
+
+// ❌ Using inline @var instead of declaring the property type
 /** @var int $count */
-$count = (int) $row->count;
+$count = (int)$row->count;
 ```
 
-## Correct
-
+### Good
 ```php
-public int $count;   // declared on the source, so every reader inherits it
+// ✅ Explicit native property types enable safe, strict comparisons
+class AccountActiveRow
+{
+    public int $id;
+    public int $is_active;
+    public ?string $email = null;
+}
 
-$count = $row->count;
+// Strict comparison succeeds cleanly without analyzer error or runtime coercion risk
+if ($row->is_active === 1) {
+    // Exact integer match guaranteed
+}
+
+// ✅ Declared on source, so every reader inherits the type without inline casting
+$count = $row->id;
 ```
-
-## Notes
-
-- A cast paired with an inline `@var` widens a precise type and then re-narrows it; the reader loses the information that the source was already typed.
-- Keep an explicit conversion where the source really is untyped: request input, environment values, or a driver that genuinely returns strings.
