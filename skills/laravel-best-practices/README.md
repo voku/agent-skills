@@ -1,83 +1,36 @@
-# Laravel 13 Best Practices
+# Laravel Best Practices
 
-Comprehensive best practices for Laravel 13 applications.
+Portable guidance for Laravel application architecture, Eloquent, controllers/resources, validation, events/queues, and security boundaries.
 
-## Overview
+## Canonical Source
 
-This skill provides guidance for:
-- Application architecture and structure
-- Eloquent ORM and database patterns
-- Controller and routing conventions
-- Validation and form requests
-- Security best practices
-- Performance optimization
-- API design patterns
+`SKILL.md` defines when this skill applies and the high-level routing contract. `rules/` contains the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, category count, framework-version table, or compiled set of examples.
 
-## Categories
+## When to Use
 
-### 1. Architecture & Structure (Critical)
-Service classes, actions, repositories, and folder organization.
+Use this skill for general Laravel implementation or review work involving application structure, Eloquent/model behavior, controllers and API resources, validation, events/queues, or mass-assignment safety.
 
-### 2. Eloquent & Database (Critical)
-Eager loading, query scopes, migrations, and indexing.
+For database-performance work where query plans, indexes, locks, pagination, or zero-downtime migrations are the dominant concern, prefer the focused `laravel-database-optimization` skill.
 
-### 3. Controllers & Routing (High)
-Resource controllers, route model binding, and API resources.
+## Routing
 
-### 4. Validation & Requests (High)
-Form request classes, custom rules, and authorization.
+1. Ground the target project's Laravel/PHP versions and existing project conventions.
+2. Read `SKILL.md` to select the canonical rules matching the observed problem.
+3. Load only those rules instead of compiling the whole Laravel catalog into context.
+4. Preserve project-local architecture and framework conventions unless evidence supports changing them.
+5. Validate through the target repository's configured toolchain and report only observed results.
 
-### 5. Security (High)
-Mass assignment, SQL injection, XSS, and authentication.
+## Stable Boundaries
 
-### 6. Performance (Medium)
-Caching, queues, and database optimization.
+- Keep controllers thin and explicit; domain/application behavior belongs with focused owners.
+- Make request validation, API transformation, and persistence boundaries visible and testable.
+- Avoid N+1 and unsafe bulk persistence patterns, but route deep database optimization to its specialist skill.
+- Keep queued side effects idempotent and failure behavior observable.
+- Never pass untrusted request payloads directly into model mass assignment.
 
-### 7. API Design (Medium)
-Versioning, resources, pagination, and error handling.
+## Projection Boundary
 
-### 8. Testing (Low-Medium)
-Feature tests, unit tests, factories, and mocking.
-
-## Quick Start
-
-```php
-// Form Request
-class StorePostRequest extends FormRequest
-{
-    public function authorize(): bool
-    {
-        return $this->user()->can('create', Post::class);
-    }
-
-    public function rules(): array
-    {
-        return [
-            'title' => ['required', 'string', 'max:255'],
-            'body' => ['required', 'string'],
-        ];
-    }
-}
-
-// Controller
-class PostController extends Controller
-{
-    public function store(StorePostRequest $request): RedirectResponse
-    {
-        $post = Post::create($request->validated());
-
-        return redirect()->route('posts.show', $post);
-    }
-}
-```
-
-## Usage
-
-This skill triggers automatically when:
-- Creating Laravel controllers and models
-- Writing migrations and queries
-- Implementing validation
-- Building APIs
+Do not copy current rule IDs, counts, category totals, or framework-version tables into this file. If this projection disagrees with `SKILL.md` or a file under `rules/`, preserve the mismatch as evidence and follow the canonical source.
 
 ## References
 

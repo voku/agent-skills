@@ -1,6 +1,6 @@
 ---
 name: laravel-best-practices
-description: Laravel conventions and best practices for architecture, Eloquent, controllers, APIs, validation, and security. 8 rules across 5 categories. Use when creating controllers, models, migrations, validation, services, or structuring Laravel applications. Triggers on tasks involving Laravel architecture, Eloquent, database, API development, or PHP patterns.
+description: Laravel conventions and best practices for architecture, Eloquent, controllers, APIs, validation, and security. Use when creating controllers, models, migrations, validation, services, or structuring Laravel applications. Triggers on tasks involving Laravel architecture, Eloquent, database, API development, or PHP patterns.
 license: MIT
 metadata:
   author: Laravel Community
@@ -11,15 +11,7 @@ metadata:
 
 # Laravel Best Practices
 
-Modern Laravel patterns, RESTful conventions, Eloquent ORM optimization, single-purpose actions, and security standards. Contains **8 consolidated rules across 5 categories** for building scalable, maintainable Laravel applications.
-
-## Metadata
-
-- **Version:** 3.0.0
-- **Laravel Version:** 11.x - 13.x
-- **PHP Version:** 8.2+
-- **Rule Count:** 8 rules across 5 categories
-- **License:** MIT
+Modern Laravel patterns for application boundaries, Eloquent, controllers/API resources, validation, events/queues, and mass-assignment safety.
 
 ## When to Apply
 
@@ -27,40 +19,40 @@ Reference these guidelines when:
 - Creating controllers, models, and service/action layers
 - Writing database queries, relationships, and migrations
 - Implementing input validation and form requests
-- Building and versioning RESTful JSON APIs
-- Hardening model mass-assignment and authorization
+- Building RESTful JSON APIs
+- Hardening model mass-assignment and authorization boundaries
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix | Rules |
-|----------|----------|--------|--------|-------|
-| 1 | Architecture & Structure | CRITICAL | `arch-` | 2 |
-| 2 | Eloquent & Database | CRITICAL | `eloquent-` | 2 |
-| 3 | Controllers & API Design | HIGH | `controller-` | 2 |
-| 4 | Validation & Requests | HIGH | `validation-` | 1 |
-| 5 | Security | HIGH | `sec-` | 1 |
+| Priority | Category | Impact | Prefix |
+|----------|----------|--------|--------|
+| 1 | Architecture & Structure | CRITICAL | `arch-` |
+| 2 | Eloquent & Database | CRITICAL | `eloquent-` |
+| 3 | Controllers & API Design | HIGH | `controller-` |
+| 4 | Validation & Requests | HIGH | `validation-` |
+| 5 | Security | HIGH | `sec-` |
 
 ## Quick Reference
 
-### 1. Architecture & Structure (CRITICAL) — 2 rules
-- [arch-layers-actions.md](rules/arch-layers-actions.md) - Extract business logic from controllers into invokable single-purpose Action classes or Services, transport structured request data via typed readonly DTOs, and encapsulate domain rules inside immutable Value Objects.
-- [arch-events-queues.md](rules/arch-events-queues.md) - Decouple domain side effects using domain events and queued listeners, configure explicit queue routing, and ensure all queue jobs are idempotent.
+### Architecture & Structure (CRITICAL)
+- [arch-layers-actions.md](rules/arch-layers-actions.md) - Extract business logic from controllers into focused application/domain boundaries, transport structured request data through typed DTOs, and keep domain invariants explicit.
+- [arch-events-queues.md](rules/arch-events-queues.md) - Decouple side effects with events/queued listeners where appropriate, route queues explicitly, and make jobs idempotent.
 
-### 2. Eloquent & Database (CRITICAL) — 2 rules
-- [eloquent-querying.md](rules/eloquent-querying.md) - Prevent N+1 queries with eager loading (`with()`), process large record sets via cursor/chunking (`lazy()`, `chunkById()`), and encapsulate reusable query constraints in dedicated local query scopes.
-- [eloquent-modeling.md](rules/eloquent-modeling.md) - Define model attribute casts via the modern `casts()` method returning typed cast arrays/enums, use `Attribute::make()` closures for accessors/mutators, and automate record lifecycles using the `Prunable` trait.
+### Eloquent & Database (CRITICAL)
+- [eloquent-querying.md](rules/eloquent-querying.md) - Prevent N+1 queries, process large record sets safely, and encapsulate reusable query constraints.
+- [eloquent-modeling.md](rules/eloquent-modeling.md) - Use explicit casts, accessors/mutators, relationships, and lifecycle behavior with analyzable model contracts.
 
-### 3. Controllers & API Design (HIGH) — 2 rules
-- [controller-conventions.md](rules/controller-conventions.md) - Keep controllers thin and declarative by adhering to standard RESTful resource methods or single-action invokables (`__invoke`), leveraging route model binding, and delegating all business logic to dedicated actions.
-- [controller-api-resources.md](rules/controller-api-resources.md) - Always transform HTTP API responses using `JsonResource` or `ResourceCollection` classes; never serialize Eloquent models directly to JSON.
+### Controllers & API Design (HIGH)
+- [controller-conventions.md](rules/controller-conventions.md) - Keep controllers thin and declarative, use route model binding, and delegate business behavior to focused owners.
+- [controller-api-resources.md](rules/controller-api-resources.md) - Transform HTTP API responses through explicit Resource/Collection contracts instead of exposing models directly.
 
-### 4. Validation & Requests (HIGH) — 1 rule
-- [validation-rules.md](rules/validation-rules.md) - Encapsulate validation in dedicated FormRequest classes, validate complex nested arrays using wildcard notation (`items.*.id`), leverage `Rule::when()` for conditional constraints, and create invokable `ValidationRule` classes.
+### Validation & Requests (HIGH)
+- [validation-rules.md](rules/validation-rules.md) - Encapsulate request validation and authorization, including nested/conditional constraints and reusable rules.
 
-### 5. Security (HIGH) — 1 rule
-- [sec-mass-assignment.md](rules/sec-mass-assignment.md) - Protect models from mass-assignment privilege escalation by explicitly declaring `$fillable` attributes or using `Model::shouldBeStrict()`, and never pass raw `$request->all()` to model creation or updates.
+### Security (HIGH)
+- [sec-mass-assignment.md](rules/sec-mass-assignment.md) - Keep model write boundaries explicit and never feed untrusted request payloads directly into persistence.
 
-## Key Patterns (Quick Reference)
+## Key Pattern
 
 ```php
 <?php
@@ -92,4 +84,4 @@ final class StoreOrderController
 
 ## How to Use
 
-Read individual rule files in `rules/` for concise triggers, Bad vs Good code comparisons, and concrete Laravel patterns.
+Read only the rule files relevant to the current task. `README.md`, `AGENTS.md`, and `metadata.json` are supporting projections; if they disagree with this file or `rules/`, follow the canonical source and repair the projection.

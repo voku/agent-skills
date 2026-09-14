@@ -1,9 +1,9 @@
 {
-  "version": "2.1.0",
+  "version": "3.0.0",
   "skill": {
     "name": "laravel-best-practices",
-    "version": "2.1.0",
-    "description": "Laravel 13 conventions and best practices. Use when creating controllers, models, migrations, validation, services, or structuring Laravel applications. Triggers on tasks involving Laravel architecture, Eloquent, database, API development, or PHP patterns.",
+    "version": "3.0.0",
+    "description": "Laravel conventions and best practices for architecture, Eloquent, controllers, APIs, validation, and security. Use when creating controllers, models, migrations, validation, services, or structuring Laravel applications. Triggers on tasks involving Laravel architecture, Eloquent, database, API development, or PHP patterns.",
     "author": "Laravel Community",
     "license": "MIT",
     "keywords": [
@@ -17,11 +17,11 @@
     ]
   },
   "organization": "Laravel Community",
-  "date": "March 2026",
-  "laravelVersion": "13.x",
-  "phpVersion": "8.3+",
-  "rulesTotal": 31,
-  "abstract": "Comprehensive Laravel 13 best practices guide designed for AI agents and LLMs. Contains 31 rules across 7 categories, prioritized by impact from critical (architecture and database patterns) to incremental (performance optimization). Each rule includes detailed explanations, real-world examples with bad and good implementations using PHP 8.3 and Laravel 13 features, and specific impact metrics to guide automated refactoring and code generation. Focuses on modern Laravel patterns including typed properties, constructor property promotion, enums, readonly properties, PHP attributes, and vector search.",
+  "date": "September 2026",
+  "laravelVersion": "11.x - 13.x",
+  "phpVersion": "8.2+",
+  "rulesTotal": 8,
+  "abstract": "Laravel best-practices guidance covering application architecture, Eloquent/model behavior, controllers/API resources, validation, events/queues, and mass-assignment safety. Verify framework behavior and project conventions against the target repository before applying version-sensitive patterns.",
   "references": [
     "https://laravel.com",
     "https://laravel.com/docs/13.x",
@@ -40,64 +40,55 @@
       "name": "Architecture & Structure",
       "prefix": "arch",
       "impact": "CRITICAL",
-      "description": "Foundational patterns for organizing Laravel applications"
+      "ruleCount": 2,
+      "description": "Application boundaries, actions/services, events, and queued side effects"
     },
     {
       "name": "Eloquent & Database",
       "prefix": "eloquent",
       "impact": "CRITICAL",
-      "description": "Efficient database operations and ORM usage"
+      "ruleCount": 2,
+      "description": "Explicit model contracts and safe query patterns"
     },
     {
-      "name": "Controllers & Routing",
-      "prefix": "controller, ctrl",
+      "name": "Controllers & API Design",
+      "prefix": "controller",
       "impact": "HIGH",
-      "description": "RESTful conventions and proper request handling"
+      "ruleCount": 2,
+      "description": "Thin controllers and explicit API resource transformation"
     },
     {
       "name": "Validation & Requests",
-      "prefix": "validation, valid",
+      "prefix": "validation",
       "impact": "HIGH",
-      "description": "Form request classes and validation patterns"
+      "ruleCount": 1,
+      "description": "Form requests, conditional/nested validation, and reusable rules"
     },
     {
       "name": "Security",
       "prefix": "sec",
       "impact": "HIGH",
-      "description": "Protection against common vulnerabilities"
-    },
-    {
-      "name": "Performance",
-      "prefix": "perf",
-      "impact": "MEDIUM",
-      "description": "Caching strategies and optimization techniques"
-    },
-    {
-      "name": "API Design",
-      "prefix": "api",
-      "impact": "MEDIUM",
-      "description": "RESTful API patterns and resource transformers"
+      "ruleCount": 1,
+      "description": "Explicit model write boundaries and mass-assignment safety"
     }
   ],
   "keyFeatures": [
-    "Service classes for business logic separation",
-    "Eager loading to prevent N+1 queries",
-    "Form request classes for validation",
-    "Resource controllers following REST conventions",
-    "Eloquent relationships and query scopes",
-    "Mass assignment protection",
-    "API resources for response transformation",
-    "Modern PHP 8.3 syntax (readonly properties, constructor promotion)",
-    "Laravel 13 patterns and conventions",
-    "PHP attributes for middleware and authorization (Laravel 13)",
-    "Vector / semantic search with pgvector (Laravel 13)",
-    "Centralized queue routing (Laravel 13)"
+    "Explicit application/domain boundaries",
+    "Eloquent modeling and query discipline",
+    "Thin controllers and API resources",
+    "Dedicated request validation",
+    "Idempotent event/queue side effects",
+    "Explicit mass-assignment boundaries"
   ],
   "meta": {
     "created": "2026-03-01",
-    "last_updated": "2026-03-01",
-    "rule_count": 31,
+    "last_updated": "2026-09-14",
+    "rule_count": 8,
     "structure_version": "2.0",
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ],
     "compatibility": {
       "platforms": [
         "GitHub Copilot",
