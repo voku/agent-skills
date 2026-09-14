@@ -2,32 +2,28 @@
 
 Implementation guidance for making PHP code provably typed under a strict static analyzer.
 
-**Version:** 2.0.0  
-**Rules:** 5 consolidated rules
+This README is a supporting projection. The canonical contract is `SKILL.md` plus `rules/`; use those files for the current rule inventory and detailed semantics.
 
-## Canonical source
+## When to use
 
-`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce independent analyzer semantics.
+Apply this skill when:
 
-## Overview
+- PHPStan or Psalm reports a typing problem that should be fixed rather than hidden;
+- an API, collection, factory, or dynamic helper needs a more precise analyzable contract;
+- repeated inline assertions suggest the producer or owner boundary is under-typed;
+- an ignore, baseline entry, or analyzer extension needs to be scoped deliberately.
 
-This skill provides:
-- An order of attack for analyzer errors: native type, then shape/precision, then proof
-- The distinction between a wrong contract and a proof gap
-- Root-cause typing instead of per-call-site assertions
-- Scoped ignores and baselines when suppression is genuinely required
-- Analyzer extensions when dynamic behavior is real and reusable
+## Fast path
 
-## Rules
+1. Detect the project's PHP and analyzer configuration.
+2. Decide whether the defect is a wrong contract or a missing proof.
+3. Fix the owning boundary before adding caller-side assertions.
+4. Prefer native PHP types, then precise PHPDoc shapes/generics where native types are insufficient.
+5. Keep suppressions narrow and explain why they remain necessary.
+6. Verify with the repository's own analyzer command and report only observed results.
 
-| Rule | Impact |
-|------|--------|
-| `sa-native-types-first` | CRITICAL |
-| `sa-shape-precision` | CRITICAL |
-| `sa-contract-honesty` | HIGH |
-| `sa-root-cause-typing` | HIGH |
-| `sa-scoped-ignores-extensions` | MEDIUM |
+## Ownership boundary
 
-## Relationship to the review lenses
+`SKILL.md` owns the compact scope, triggers, and routing. Files under `rules/` own the detailed static-analysis guidance. This README must not become a second rule catalog or carry independent rule counts.
 
-`code-review-type-safety` is the review counterpart: it finds the weak contract in a diff. This skill is what you apply while writing the fix.
+`code-review-type-safety` is the review counterpart: it identifies weak contracts in a diff. `php-static-analysis` is the implementation guidance for correcting them.
