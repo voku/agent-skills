@@ -1,45 +1,36 @@
-# Sections
+# Rule Sections
 
-This file defines the section ordering, severity, and summary used by this review lens.
+## Priority Levels
 
----
+| Level | Description | When to Apply |
+|-------|-------------|---------------|
+| CRITICAL | Transaction boundaries and domain vs controller separation | Database writes, side-effect flows, and MVC layer design |
+| HIGH | Loose coupling, dependency inversion, and unidirectional data flow | Cross-module calls, DTO contracts, and repository design |
+| MEDIUM | Contract rigor and resisting deep inheritance sprawl | Class design, interface segregation, and plugin architectures |
 
-## 1. Coupling & Cohesion (arch-coupling-cohesion)
+## Section Overview
 
-**Impact:** CRITICAL
-**Description:** Tight coupling, low cohesion, circular dependencies, dependency inversion issues.
+### 1. Transaction Boundaries (`transactions`)
+- **Impact:** CRITICAL
+- **Rules:** `arch-transaction-side-effects`
+- **Description:** Preventing irreversible external network calls inside database transactions; using outbox patterns and post-commit events.
 
-## 2. Separation of Concerns (arch-separation-concerns)
+### 2. Separation of Concerns (`boundaries`)
+- **Impact:** CRITICAL
+- **Rules:** `arch-separation-domain-presentation`
+- **Description:** Thin HTTP controllers, pure view templates, and dedicated domain services owning calculation and persistence.
 
-**Impact:** CRITICAL
-**Description:** Business logic placement, layering, and single-responsibility boundaries.
+### 3. Coupling & Cohesion (`coupling`)
+- **Impact:** HIGH
+- **Rules:** `arch-coupling-cohesion`
+- **Description:** Dependency inversion, avoiding direct instantiation of database clients in domain code, and preventing leaky abstractions.
 
-## 3. Abstraction & Interfaces (arch-abstraction-interfaces)
+### 4. Data Flow & Immutability (`data-flow`)
+- **Impact:** HIGH
+- **Rules:** `arch-unidirectional-data-flow`
+- **Description:** Unidirectional data flow using immutable DTOs; eliminating global mutable state and action-at-a-distance.
 
-**Impact:** HIGH
-**Description:** Abstraction levels, interface quality, and leaky boundaries.
-
-## 4. Module Boundaries (arch-module-boundaries)
-
-**Impact:** HIGH
-**Description:** API contracts, visibility, and boundary enforcement.
-
-## 5. Design Patterns (arch-design-patterns)
-
-**Impact:** MEDIUM
-**Description:** Appropriate pattern use, anti-patterns, and consistency.
-
-## 6. Data Flow (arch-data-flow)
-
-**Impact:** MEDIUM
-**Description:** Clear data movement, state handling, and persistence separation.
-
-## 7. Extensibility & Maintainability (arch-extensibility-maintainability)
-
-**Impact:** MEDIUM
-**Description:** Configurability, duplication, and future change safety.
-
-## 8. Transaction Boundary Invariants (arch-transaction-boundaries)
-
-**Impact:** CRITICAL
-**Description:** Transactional writes versus external side effects and lifecycle-hook safety.
+### 5. Contract Rigor & Simplicity (`maintainability`)
+- **Impact:** MEDIUM
+- **Rules:** `arch-contract-rigor-extensibility`
+- **Description:** Composition over deep inheritance hierarchies; small role-focused interfaces over sprawling god-classes.

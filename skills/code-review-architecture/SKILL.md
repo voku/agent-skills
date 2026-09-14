@@ -4,27 +4,24 @@ description: Architecture-focused review lens for assessing coupling, module bou
 license: MIT
 metadata:
   author: Agent Skills Team
-  version: "1.1.0"
+  version: "2.0.0"
 ---
 
 # Code Review Architecture
 
-Targeted architecture lens for design quality, coupling, cohesion, boundaries, and rollback-safe side effects.
+Targeted architecture review lens for design quality, coupling, cohesion, boundaries, and rollback-safe side effects.
 
-## Review Focus
+## Quick Reference
 
-| Priority | Category | Prefix |
-|----------|----------|--------|
-| CRITICAL | Coupling & cohesion | `arch-coupling-cohesion` |
-| CRITICAL | Separation of concerns | `arch-separation-concerns` |
-| HIGH | Abstraction & interfaces | `arch-abstraction-interfaces` |
-| HIGH | Module boundaries | `arch-module-boundaries` |
-| MEDIUM | Design patterns | `arch-design-patterns` |
-| MEDIUM | Data flow | `arch-data-flow` |
-| MEDIUM | Extensibility & maintainability | `arch-extensibility-maintainability` |
-| CRITICAL | Transaction boundaries | `arch-transaction-boundaries` |
+| Category | Priority | Rule File | Primary Focus |
+|----------|----------|-----------|---------------|
+| **Transactions & Rollback** | CRITICAL | [`arch-transaction-side-effects`](rules/arch-transaction-side-effects.md) | External side effects strictly outside DB transactions, outbox pattern |
+| **Separation of Concerns** | CRITICAL | [`arch-separation-domain-presentation`](rules/arch-separation-domain-presentation.md) | Thin controllers, pure presentation templates, encapsulated domain logic |
+| **Coupling & Cohesion** | HIGH | [`arch-coupling-cohesion`](rules/arch-coupling-cohesion.md) | Dependency inversion, avoiding direct database driver leaks in domain services |
+| **Data Flow** | HIGH | [`arch-unidirectional-data-flow`](rules/arch-unidirectional-data-flow.md) | Unidirectional flow, immutable DTOs, eliminating ambient mutable globals |
+| **Contract Rigor** | MEDIUM | [`arch-contract-rigor-extensibility`](rules/arch-contract-rigor-extensibility.md) | Composition over deep inheritance trees, narrow role interfaces |
 
-Look for circular dependencies, misplaced business logic, leaky interfaces, unnecessary indirection, boundary violations, unclear data ownership, and durable writes mixed unsafely with external side effects.
+---
 
 ## Scope
 
@@ -71,12 +68,12 @@ UNKNOWN: <exact missing evidence>.
 
 ## Severity
 
-- **CRITICAL**: rollback inconsistency, cascading failure, or a broken architectural boundary.
-- **HIGH**: design flaw that materially hinders safe change.
-- **MEDIUM**: structural improvement with clear maintenance value.
-- **LOW**: minor architectural suggestion.
+- **CRITICAL**: external side effects in DB transaction causing unrecoverable data drift, or direct database queries in UI templates.
+- **HIGH**: circular dependencies, leaky infrastructure abstractions, or god-classes mixing business and transport.
+- **MEDIUM**: brittle inheritance hierarchies or excessive parameter passing lacking DTO structure.
+- **LOW**: minor boundary misalignment or local interface granularity issues.
 
 ## References
 
 - [Pi Ensemble architecture lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-architecture/SKILL.md)
-- [Martin Fowler on refactoring](https://refactoring.com/)
+- [Clean Architecture (Robert C. Martin)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
