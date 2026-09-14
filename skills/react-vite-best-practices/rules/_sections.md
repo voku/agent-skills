@@ -1,36 +1,41 @@
-# Sections
+# Rule Sections
 
-This file defines all sections, their ordering, impact levels, and descriptions.
-The section ID (in parentheses) is the filename prefix used to group rules.
+## Priority Levels
 
----
+| Level | Description | When to Apply |
+|-------|-------------|---------------|
+| CRITICAL | Essential for production performance & caching | Always |
+| HIGH | Key patterns for development speed and assets | Most projects |
+| MEDIUM | Governance, bundle budgeting, and security | When scaling |
 
-## 1. Build Optimization (build)
+## Section Overview
 
-**Impact:** CRITICAL
-**Description:** Vite build configuration for production. Manual chunk splitting, minification (OXC default, Terser for max compression), modern browser targets, sourcemap configuration, tree shaking, gzip/Brotli compression, and content-based asset hashing.
+### 1. Build Optimization (`build`)
+- **Impact:** CRITICAL
+- **Rules:** `build-production-tuning`
+- **Description:** Vite build configuration for production: manual vendor chunking, modern target selection (`baseline-widely-available`), tree shaking, compression (Gzip/Brotli), and secure sourcemap handling.
 
-## 2. Code Splitting (split)
+### 2. Code Splitting (`split`)
+- **Impact:** CRITICAL
+- **Rules:** `code-splitting-lazy`
+- **Description:** Route and component level code splitting with `React.lazy()` and granular `<Suspense>` boundaries, dynamic `import()` for heavy client libraries, and link/idle chunk prefetching.
 
-**Impact:** CRITICAL
-**Description:** Route-based and component-level code splitting with React.lazy() and Suspense. Dynamic imports for heavy libraries, strategic Suspense boundary placement, and prefetch hints for anticipated navigation.
+### 3. Development Server (`dev`)
+- **Impact:** HIGH
+- **Rules:** `dev-server-fast-refresh`
+- **Description:** Vite development server tuning, dependency pre-bundling with `optimizeDeps`, server warmup, and component structure constraints for reliable Fast Refresh.
 
-## 3. Development (dev)
+### 4. Asset Handling (`asset`)
+- **Impact:** HIGH
+- **Rules:** `asset-pipeline-optimization`
+- **Description:** Static asset pipeline: ESM asset imports with automated hashing, SVGR icon components, preloaded self-hosted fonts, modern image formats (`<picture>` with AVIF/WebP), and `/public` directory separation.
 
-**Impact:** HIGH
-**Description:** Development server performance. Dependency pre-bundling with optimizeDeps, React Fast Refresh patterns for reliable HMR, and server configuration for HMR overlay, Docker, and proxy setups.
+### 5. Environment Config (`env`)
+- **Impact:** HIGH
+- **Rules:** `env-management-security`
+- **Description:** Strongly-typed environment variables via `src/vite-env.d.ts`, `VITE_` prefix enforcement, mode file cascading, and zero client-side secret exposure.
 
-## 4. Asset Handling (asset)
-
-**Impact:** HIGH
-**Description:** Static asset optimization. Image lazy loading and responsive formats, SVG-as-React-components with SVGR, self-hosted web fonts with preloading, and correct usage of the public directory vs JavaScript imports.
-
-## 5. Environment Config (env)
-
-**Impact:** MEDIUM
-**Description:** Environment variable management. The VITE_ prefix for client-side exposure, mode-specific env files (.env.production, .env.staging), and protecting sensitive data from being embedded in the client bundle.
-
-## 6. Bundle Analysis (bundle)
-
-**Impact:** MEDIUM
-**Description:** Bundle size analysis and monitoring. Using rollup-plugin-visualizer to identify large dependencies and optimization opportunities.
+### 6. Bundle Analysis (`bundle`)
+- **Impact:** MEDIUM
+- **Rules:** `bundle-analysis-budget`
+- **Description:** Bundle inspection and auditing with `rollup-plugin-visualizer`, chunk size budgets (`chunkSizeWarningLimit`), and eliminating legacy bloated dependencies.

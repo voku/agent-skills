@@ -9,174 +9,60 @@ metadata:
 
 # React + Vite Best Practices
 
-Comprehensive performance optimization guide for React applications built with Vite. Contains 23 rules across 6 categories for build optimization, code splitting, development performance, asset handling, environment configuration, and bundle analysis.
-
-## Metadata
-
-- **Version:** 2.0.0
-- **Framework:** React + Vite
-- **Rule Count:** 23 rules across 6 categories
-- **License:** MIT
-
-## When to Apply
-
-Reference these guidelines when:
-- Configuring Vite for React projects
-- Implementing code splitting and lazy loading
-- Optimizing build output and bundle size
-- Setting up development environment and HMR
-- Handling images, fonts, SVGs, and static assets
-- Managing environment variables across environments
-- Analyzing bundle size and dependencies
-
-## Rule Categories by Priority
-
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Build Optimization | CRITICAL | `build-` |
-| 2 | Code Splitting | CRITICAL | `split-` |
-| 3 | Development | HIGH | `dev-` |
-| 4 | Asset Handling | HIGH | `asset-` |
-| 5 | Environment Config | MEDIUM | `env-` |
-| 6 | Bundle Analysis | MEDIUM | `bundle-` |
+Curated, high-density performance optimization guide for React applications built with Vite. Focuses on production build tuning, route/component code splitting, dev server Fast Refresh, static asset pipelines, type-safe environments, and bundle budgeting.
 
 ## Quick Reference
 
-### 1. Build Optimization (CRITICAL)
+| Category | Impact | Rule File | Primary Focus |
+|----------|--------|-----------|---------------|
+| **Build Optimization** | CRITICAL | [`build-production-tuning`](rules/build-production-tuning.md) | Manual chunks, modern targets (`baseline-widely-available`), tree shaking, Brotli/Gzip compression |
+| **Code Splitting** | CRITICAL | [`code-splitting-lazy`](rules/code-splitting-lazy.md) | `React.lazy()`, granular `<Suspense>` skeletons, dynamic `import()`, intent/idle prefetching |
+| **Development** | HIGH | [`dev-server-fast-refresh`](rules/dev-server-fast-refresh.md) | `optimizeDeps.include`, server warmup, pure component files for reliable Fast Refresh |
+| **Asset Handling** | HIGH | [`asset-pipeline-optimization`](rules/asset-pipeline-optimization.md) | ESM imports, SVGR icons, self-hosted font preloading, AVIF/WebP pictures, `/public` separation |
+| **Environment Config** | HIGH | [`env-management-security`](rules/env-management-security.md) | Strongly-typed `vite-env.d.ts`, `VITE_` prefix enforcement, zero client-secret leakage |
+| **Bundle Analysis** | MEDIUM | [`bundle-analysis-budget`](rules/bundle-analysis-budget.md) | `rollup-plugin-visualizer`, chunk size limits, eliminating legacy package bloat |
 
-- `build-manual-chunks` - Configure manual chunks for vendor separation
-- `build-minification` - Minification with OXC (default) or Terser
-- `build-target-modern` - Target modern browsers (baseline-widely-available)
-- `build-sourcemaps` - Configure sourcemaps per environment
-- `build-tree-shaking` - Ensure proper tree shaking with ESM
-- `build-compression` - Gzip and Brotli compression
-- `build-asset-hashing` - Content-based hashing for cache busting
+## Core Configuration Reference
 
-### 2. Code Splitting (CRITICAL)
-
-- `split-route-lazy` - Route-based splitting with React.lazy()
-- `split-suspense-boundaries` - Strategic Suspense boundary placement
-- `split-dynamic-imports` - Dynamic import() for heavy components
-- `split-component-lazy` - Lazy load non-critical components
-- `split-prefetch-hints` - Prefetch chunks on hover/idle/viewport
-
-### 3. Development (HIGH)
-
-- `dev-dependency-prebundling` - Configure optimizeDeps for faster starts
-- `dev-fast-refresh` - React Fast Refresh patterns
-- `dev-hmr-config` - HMR server configuration
-
-### 4. Asset Handling (HIGH)
-
-- `asset-image-optimization` - Image optimization and lazy loading
-- `asset-svg-components` - SVGs as React components with SVGR
-- `asset-fonts` - Web font loading strategy
-- `asset-public-dir` - Public directory vs JavaScript imports
-
-### 5. Environment Config (MEDIUM)
-
-- `env-vite-prefix` - VITE_ prefix for client variables
-- `env-modes` - Mode-specific environment files
-- `env-sensitive-data` - Never expose secrets in client code
-
-### 6. Bundle Analysis (MEDIUM)
-
-- `bundle-visualizer` - Analyze bundles with rollup-plugin-visualizer
-
-## Essential Configurations
-
-### Recommended vite.config.ts
+### Production Vite Configuration (`vite.config.ts`)
 
 ```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import compression from 'vite-plugin-compression';
+import svgr from 'vite-plugin-svgr';
+import path from 'path';
 
 export default defineConfig({
-  plugins: [react()],
-
+  plugins: [
+    react(),
+    svgr({ svgrOptions: { icon: true } }),
+    compression({ algorithm: 'brotliCompress', ext: '.br' }),
+  ],
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
+    alias: { '@': path.resolve(__dirname, './src') },
   },
-
   build: {
     target: 'baseline-widely-available',
-    sourcemap: false,
-    chunkSizeWarningLimit: 500,
+    sourcemap: 'hidden',
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) return 'vendor-react';
+            if (id.includes('@tanstack') || id.includes('zustand')) return 'vendor-core';
+            return 'vendor-libs';
+          }
         },
       },
     },
   },
-
   optimizeDeps: {
-    include: ['react', 'react-dom'],
+    include: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query', 'zustand'],
   },
-
-  server: {
-    port: 3000,
-    hmr: {
-      overlay: true,
-    },
-  },
-})
+});
 ```
-
-### Route-Based Code Splitting
-
-```typescript
-import { lazy, Suspense } from 'react'
-
-const Home = lazy(() => import('./pages/Home'))
-const Dashboard = lazy(() => import('./pages/Dashboard'))
-const Settings = lazy(() => import('./pages/Settings'))
-
-function App() {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      {/* Routes here */}
-    </Suspense>
-  )
-}
-```
-
-### Environment Variables
-
-```typescript
-// src/vite-env.d.ts
-/// <reference types="vite/client" />
-
-interface ImportMetaEnv {
-  readonly VITE_API_URL: string
-  readonly VITE_APP_TITLE: string
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv
-}
-```
-
-## How to Use
-
-Read individual rule files for detailed explanations and code examples:
-
-```
-rules/build-manual-chunks.md
-rules/split-route-lazy.md
-rules/env-vite-prefix.md
-```
-
-## References
-
-- [Vite Documentation](https://vite.dev)
-- [React Documentation](https://react.dev)
-- [Rollup Documentation](https://rollupjs.org)
-
-## Full Compiled Document
-
-For the complete guide with all rules expanded: `AGENTS.md`
