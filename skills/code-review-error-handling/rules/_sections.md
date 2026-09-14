@@ -1,45 +1,35 @@
-# Sections
+# Rule Sections
 
-This file defines the section ordering, severity, and summary used by this review lens.
+## Priority Levels
 
----
+| Level | Description | When to Apply |
+|-------|-------------|---------------|
+| CRITICAL | Core exception hygiene, explicit signalling, and bounded execution | Every fallible path and external call |
+| HIGH | Honest outcome messaging, safe retry backoff, and resource cleanup | Batch operations, network clients, and audit trails |
 
-## 1. Error Signalling Discipline (err-signalling-discipline)
+## Section Overview
 
-**Impact:** CRITICAL
-**Description:** Ignored return codes, unchecked fallible operations, and silent partial-success paths.
+### 1. Error Signalling (`signalling`)
+- **Impact:** CRITICAL
+- **Rules:** `err-signalling-hygiene`
+- **Description:** Specific typed exceptions, cause chaining (`$previous`), and eliminating swallowed errors or ambiguous null returns.
 
-## 2. Exception & Error Hygiene (err-exception-hygiene)
+### 2. Outcome Messaging (`messaging`)
+- **Impact:** HIGH
+- **Rules:** `err-outcome-batch-discipline`
+- **Description:** Accurate outcome messaging per reachable branch, accumulated batch status flags, and eliminating silent else traps.
 
-**Impact:** CRITICAL
-**Description:** Overbroad catches, swallowed errors, and lost causal context.
+### 3. Timeouts & Cancellation (`resilience`)
+- **Impact:** CRITICAL
+- **Rules:** `err-timeouts-cancellation`
+- **Description:** Explicit connect and transfer timeouts, bounded polling loops, and cancellation handling on external I/O.
 
-## 3. Timeout & Cancellation Discipline (err-timeout-cancellation)
+### 4. Retries & Idempotency (`retries`)
+- **Impact:** HIGH
+- **Rules:** `err-retry-idempotency`
+- **Description:** Restricting retries to transient failures with exponential backoff and jitter; enforcing idempotency keys on mutations.
 
-**Impact:** CRITICAL
-**Description:** Explicit timeouts, cancellation propagation, and bounded waits.
-
-## 4. Retry Semantics (err-retry-semantics)
-
-**Impact:** HIGH
-**Description:** Max attempts, backoff, idempotency, and retryable error classes.
-
-## 5. Partial-Failure Handling (err-partial-failure)
-
-**Impact:** HIGH
-**Description:** Batch safety, compensation, and caller-visible partial-success contracts.
-
-## 6. Error-Context Observability (err-observability)
-
-**Impact:** MEDIUM
-**Description:** Logs, trackers, correlation IDs, and actionable context.
-
-## 7. Resource Cleanup on Error Paths (err-resource-cleanup)
-
-**Impact:** HIGH
-**Description:** Scoped release patterns for files, locks, sockets, and transactions.
-
-## 8. Defensive-Programming Overreach (err-defensive-overreach)
-
-**Impact:** LOW
-**Description:** Unnecessary guards and catches that add noise without resilience value.
+### 5. Cleanup & Observability (`observability`)
+- **Impact:** HIGH
+- **Rules:** `err-cleanup-observability`
+- **Description:** Deterministic `finally` resource release, logging handles instantiated outside loops, and external mutation audit ordering.

@@ -4,28 +4,24 @@ description: Error-handling and resilience review lens for catching swallowed fa
 license: MIT
 metadata:
   author: Agent Skills Team
-  version: "1.1.0"
+  version: "2.0.0"
 ---
 
 # Code Review Error Handling
 
-Targeted resilience lens for signalling, propagation, retries, cleanup, and observable failure behavior.
+Targeted resilience review lens for signalling, propagation, timeouts, retries, cleanup, and observable failure behavior.
 
-## Review Focus
+## Quick Reference
 
-| Priority | Category | Prefix |
-|----------|----------|--------|
-| CRITICAL | Error signalling | `err-signalling-discipline` |
-| HIGH | Outcome messaging | `err-outcome-messaging` |
-| CRITICAL | Exception hygiene | `err-exception-hygiene` |
-| CRITICAL | Timeout & cancellation | `err-timeout-cancellation` |
-| HIGH | Retry semantics | `err-retry-semantics` |
-| HIGH | Partial failure | `err-partial-failure` |
-| MEDIUM | Observability | `err-observability` |
-| HIGH | Resource cleanup | `err-resource-cleanup` |
-| LOW | Defensive overreach | `err-defensive-overreach` |
+| Category | Priority | Rule File | Primary Focus |
+|----------|----------|-----------|---------------|
+| **Signalling** | CRITICAL | [`err-signalling-hygiene`](rules/err-signalling-hygiene.md) | Specific typed exceptions, cause chaining (`$previous`), no empty catches or swallowed errors |
+| **Outcome Messaging** | HIGH | [`err-outcome-batch-discipline`](rules/err-outcome-batch-discipline.md) | Exact outcome per branch, accumulated batch status (`$allSuccess`), silent else trap prevention |
+| **Timeouts & Limits** | CRITICAL | [`err-timeouts-cancellation`](rules/err-timeouts-cancellation.md) | Explicit connect/read timeouts, bounded loops, and cancellation token propagation on I/O |
+| **Retries & Idempotency** | HIGH | [`err-retry-idempotency`](rules/err-retry-idempotency.md) | Idempotent mutations, transient error filtering, exponential backoff, and random jitter |
+| **Cleanup & Logging** | HIGH | [`err-cleanup-observability`](rules/err-cleanup-observability.md) | Scoped `finally` cleanup, audit ordering on external mutations, loggers outside loops |
 
-Look for ignored results, swallowed exceptions, missing causal context, unbounded waits, unsafe retries, caller-invisible partial success, leaked resources, and guards that add noise without recovery value.
+---
 
 ## Scope
 
