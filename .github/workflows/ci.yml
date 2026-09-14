@@ -169,6 +169,57 @@ jobs:
               if "portable_skills" in operational_metadata.get("configurations", {}):
                   errors.append("operational-prompting/metadata.json must not own a private portable_skills manifest schema")
 
+          php_dir = os.path.join(skills_dir, "php-best-practices")
+          php_skill = skill_contents.get("php-best-practices")
+          expected_php_rules = [
+              "type-strict-declarations",
+              "type-composition",
+              "modern-enums",
+              "modern-readonly",
+              "modern-property-hooks",
+              "modern-constructor-arguments",
+              "modern-expressions",
+              "modern-attributes",
+              "error-handling",
+              "sec-core-security",
+              "perf-efficiency",
+              "design-value-objects",
+              "solid-principles",
+              "psr-standards",
+              "tooling-static-analysis",
+          ]
+          if php_skill is None:
+              errors.append("Missing php-best-practices/SKILL.md")
+          else:
+              for rule_id in expected_php_rules:
+                  if rule_id not in php_skill:
+                      errors.append(f"php-best-practices/SKILL.md is missing consolidated rule: {rule_id}")
+                  rule_path = os.path.join(php_dir, "rules", f"{rule_id}.md")
+                  if not os.path.isfile(rule_path):
+                      errors.append(f"php-best-practices is missing rule file: {rule_path}")
+
+              with open(os.path.join(php_dir, "metadata.json"), "r", encoding="utf-8") as f:
+                  php_metadata = json.load(f)
+              if php_metadata.get("version") != "4.0.0":
+                  errors.append("php-best-practices/metadata.json must match consolidated version 4.0.0")
+              if php_metadata.get("rulesTotal") != 15:
+                  errors.append("php-best-practices/metadata.json must report rulesTotal=15")
+              if php_metadata.get("meta", {}).get("rule_count") != 15:
+                  errors.append("php-best-practices/metadata.json must report meta.rule_count=15")
+              category_counts = [category.get("ruleCount") for category in php_metadata.get("categories", [])]
+              if len(category_counts) != 8 or sum(count for count in category_counts if isinstance(count, int)) != 15:
+                  errors.append("php-best-practices/metadata.json must describe 8 categories totaling 15 rules")
+
+              for projection_name in ["README.md", "AGENTS.md"]:
+                  projection_path = os.path.join(php_dir, projection_name)
+                  with open(projection_path, "r", encoding="utf-8") as f:
+                      projection = f.read()
+                  if "15 consolidated rules" not in projection:
+                      errors.append(f"php-best-practices/{projection_name} must identify the 15-rule consolidated contract")
+                  for stale_count in ["56 rules", "51 (", "9 sections"]:
+                      if stale_count in projection:
+                          errors.append(f"php-best-practices/{projection_name} still contains stale pre-consolidation count: {stale_count}")
+
           if errors:
               print("Validation failed:")
               for err in errors:
