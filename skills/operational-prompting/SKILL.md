@@ -43,34 +43,26 @@ Examples:
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Repo-Owned Control | CRITICAL | `repo-`, `hierarchy-` |
-| 2 | Task Contracts | CRITICAL | `scope-`, `stop-` |
-| 3 | Validation & Evidence | HIGH | `validation-`, `evidence-`, `machine-` |
-| 4 | Portability | MEDIUM | `portable-` |
+| Priority | Category | Impact | Rule File |
+|----------|----------|--------|-----------|
+| 1 | Instruction Hierarchy | CRITICAL | [`op-repo-owned-hierarchy`](rules/op-repo-owned-hierarchy.md) |
+| 2 | Task Scope & Stopping | CRITICAL | [`op-scope-stopping-contracts`](rules/op-scope-stopping-contracts.md) |
+| 3 | Validation & Evidence | HIGH | [`op-validation-evidence-loops`](rules/op-validation-evidence-loops.md) |
+| 4 | Portability | MEDIUM | [`op-portable-skill-manifests`](rules/op-portable-skill-manifests.md) |
 
 ## Quick Reference
 
-### 1. Repo-Owned Control (CRITICAL)
+### 1. Instruction Hierarchy (CRITICAL)
+- [`op-repo-owned-hierarchy`](rules/op-repo-owned-hierarchy.md) — Durable repo-owned instructions in AGENTS.md, layered provenance
 
-- `repo-owned-instructions` - Put durable agent rules in repository files, not persona-heavy chat prompts
-- `instruction-hierarchy` - Split rules across global, repo, path, and task layers with conflict resolution
-
-### 2. Task Contracts (CRITICAL)
-
-- `scope-minimal-diff` - Define the smallest affected file set and prohibit unrelated edits
-- `stop-ask-conditions` - Stop when ambiguity, missing facts, or unsafe assumptions appear
+### 2. Task Scope & Stopping (CRITICAL)
+- [`op-scope-stopping-contracts`](rules/op-scope-stopping-contracts.md) — Minimal surgical diffs, no drive-by refactoring, clear stopping conditions
 
 ### 3. Validation & Evidence (HIGH)
-
-- `validation-contracts` - Bind work to exact repo commands, order, and stop-on-failure behavior
-- `evidence-output` - Report files changed, commands run, failures, and unresolved risks
-- `machine-readable-first` - Prefer JSON, lint, or other deterministic output before prose summaries
+- [`op-validation-evidence-loops`](rules/op-validation-evidence-loops.md) — Closed-loop verification with CLI exit codes and falsifiable terminal evidence
 
 ### 4. Portability (MEDIUM)
-
-- `portable-skill-manifests` - Publish vendor-neutral skill manifests and task recipes in repo-owned YAML
+- [`op-portable-skill-manifests`](rules/op-portable-skill-manifests.md) — Vendor-neutral skill manifests, separating heuristics from tool mechanics
 
 ## Essential Patterns
 
