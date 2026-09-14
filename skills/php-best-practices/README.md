@@ -1,102 +1,69 @@
 # PHP Best Practices
 
-Modern PHP 8.x patterns, PSR standards, SOLID principles, PHPStan-style PHPDoc, value objects, and a mandatory static-analysis tooling loop for clean, maintainable code.
+Modern PHP 8.x guidance for strict typing, modern language features, explicit error handling, security, performance, architecture, PSR standards, and static analysis.
 
-## Overview
+**Version:** 4.0.0  
+**Rules:** 15 consolidated rules across 8 categories  
+**PHP:** 8.0 - 8.5
 
-**Important:** Always detect the project's PHP version (`composer.json` or `php -v`) before giving advice. Only suggest features available in the detected version.
+## Canonical source
 
-This skill provides guidance for:
-- PHP 8.0 - 8.5 modern features (version-annotated)
-- Type system best practices
-- PSR standards compliance
-- SOLID principles
-- PHPStan-style PHPDoc (generics, array shapes, class-strings, int-ranges)
-- Value objects and no-magic design
-- Legacy code migration strategy
-- Mandatory PHPStan + php-cs-fixer validation loop
+`SKILL.md` and `rules/` are the canonical contract for this skill. This README is a summary projection and must not introduce independent operational semantics.
 
-## Workflow
+## Before applying the skill
 
-Every PHP coding task follows three phases:
+Detect the project's supported PHP version from `composer.json` and, when relevant, the runtime. Do not recommend syntax newer than the project can execute.
 
-1. **DEFINE / SCOPE** — confirm PHP version, state the problem, run RCA for bugs
-2. **DESIGN / PLANNING** — class boundaries, value objects, PHPDoc shapes, modifiers
-3. **CODING / FEEDBACK** — implement, run `php-cs-fixer fix && phpstan analyse`, iterate
+Prefer explicit, analyzable code with strict contracts and safe defaults. Native types come first; PHPDoc adds precision only where PHP cannot express enough. Use `final`/`readonly` deliberately, avoid magic-heavy design, and make failure observable instead of suppressing it.
 
-## Categories (56 rules across 9 sections)
+## Categories
 
-### 1. Types (Critical) — 9 rules
-Strict types, return types, union/intersection types, nullable handling, void/never.
+| Category | Impact | Rules |
+|---|---|---:|
+| Types | CRITICAL | 2 |
+| Modern PHP | CRITICAL | 6 |
+| Error Handling | HIGH | 1 |
+| Security | CRITICAL | 1 |
+| Performance | MEDIUM | 1 |
+| Architecture & Design | HIGH | 2 |
+| PSR Standards | HIGH | 1 |
+| Quality Tooling & Analysis | CRITICAL | 1 |
 
-### 2. Modern PHP (Critical) — 16 rules
-8.0: constructor promotion, match, named args. 8.1: enums, readonly. 8.2: readonly classes. 8.3: typed constants, #[\Override]. 8.4: property hooks, asymmetric visibility. 8.5: pipe operator.
+## Rule index
 
-### 3. Error Handling (High) — 5 rules
-Custom exceptions, exception hierarchy, specific catches, finally cleanup, never suppress errors.
+### Types
+- `type-strict-declarations`
+- `type-composition`
 
-### 4. Security (Critical) — 5 rules
-Input validation, output escaping, password hashing, prepared statements, file upload security.
+### Modern PHP
+- `modern-enums`
+- `modern-readonly`
+- `modern-property-hooks`
+- `modern-constructor-arguments`
+- `modern-expressions`
+- `modern-attributes`
 
-### 5. Performance (Medium) — 5 rules
-Generators, lazy loading, native array/string functions, avoiding globals.
+### Error Handling
+- `error-handling`
 
-### 6. SOLID / Design (High) — 7 rules
-Single responsibility, open/closed, Liskov substitution, interface segregation, dependency inversion, value objects over primitives, and no-magic design.
+### Security
+- `sec-core-security`
 
-### 7. PSR / Structure (High) — 6 rules
-PSR-4 autoloading, PSR-12 coding style, naming conventions, file structure, and namespaces.
+### Performance
+- `perf-efficiency`
 
-### 8. Tooling / Static Analysis (Critical) — 2 rules
-Generics (`@template`), array shapes (`array{key: type}`), `class-string<T>`, `int<min, max>`, conditional return types, plus the mandatory PHPStan + php-cs-fixer loop and CI integration.
+### Architecture & Design
+- `design-value-objects`
+- `solid-principles`
 
-### 9. Legacy Migration (High) — 1 rule
-Incremental modernisation: PHPStan baseline → Rector transforms → type coverage → Strangler Fig isolation.
+### PSR Standards
+- `psr-standards`
 
-## Usage
+### Quality Tooling & Analysis
+- `tooling-static-analysis`
 
-Ask Claude to:
-- "Review my PHP code"
-- "Check PHP types"
-- "Audit PHP for SOLID"
-- "Check PHP best practices"
-- "Run PHPStan analysis on this code"
-- "Migrate this legacy PHP class"
+## Validation principle
 
-## Key Guidelines
+Use the repository's own test/static-analysis/style commands and report observed results. For PHP projects, prefer the strictest configured PHPStan level and the repository's configured formatter/fixer. Do not claim a check passed merely because the command was suggested.
 
-### Always Use
-- `declare(strict_types=1)` at file start
-- Constructor property promotion
-- Readonly properties for immutable data
-- Enums instead of class constants
-- Match expressions over switch
-- Named arguments for clarity
-- Type declarations everywhere
-- PHPStan `@template` / array-shape annotations on public APIs
-- Value objects for domain primitives (UserId, Email, Money)
-- `final` by default; open only when extension is intentional
-
-### Avoid
-- Mixed type when specific type possible
-- Hard-coded dependencies
-- Fat interfaces
-- Suppressing errors with @
-- Global variables
-- God classes
-- Magic `__get` / `__set` / `__call` outside framework infrastructure
-- Bare primitives where value objects express domain constraints
-
-### Tooling Loop (mandatory)
-```bash
-vendor/bin/php-cs-fixer fix && vendor/bin/phpstan analyse
-```
-
-## References
-
-- [PHP Manual](https://www.php.net/manual/)
-- [PHP-FIG PSR Standards](https://www.php-fig.org/psr/)
-- [PHP The Right Way](https://phptherightway.com/)
-- [PHPStan](https://phpstan.org/)
-- [php-cs-fixer](https://cs.symfony.com/)
-- [Rector](https://getrector.com/)
+Read the canonical rule files for trigger-specific guidance and concrete examples.

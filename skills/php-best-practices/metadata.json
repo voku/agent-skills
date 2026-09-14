@@ -1,9 +1,9 @@
 {
-  "version": "3.0.0",
+  "version": "4.0.0",
   "skill": {
     "name": "php-best-practices",
-    "version": "3.0.0",
-    "description": "PHP 8.x strict typing, modern language features, type safety, RCA + Kanban workflow, PHPStan + php-cs-fixer validation, value objects, no-magic design, and legacy migration. 56 rules across 9 sections. Use when reviewing PHP code, checking type safety, auditing code quality, or ensuring PHP best practices. Triggers on \"review PHP\", \"check PHP code\", \"audit PHP\", \"PHP best practices\", or \"PHP static analysis\".",
+    "version": "4.0.0",
+    "description": "PHP 8.x strict typing, modern language features, explicit error handling, security, performance, architecture, PSR standards, and PHPStan/static-analysis guidance. 15 consolidated rules across 8 categories.",
     "author": "php-community",
     "license": "MIT",
     "keywords": [
@@ -17,10 +17,10 @@
     ]
   },
   "organization": "PHP Community",
-  "date": "March 2026",
+  "date": "September 2026",
   "phpVersion": "8.0 - 8.5",
-  "rulesTotal": 56,
-  "abstract": "PHP 8.x best practices guide for AI agents and LLMs. Contains 56 rules across 9 sections (types, modern PHP, error handling, security, performance, SOLID/design, PSR/structure, tooling/static analysis, legacy migration). Emphasises strict typing, native types first, PHPDoc as a precision layer only when native PHP cannot express enough, value objects over primitives, no magic-heavy design, analyzable code, and explicit error handling. Includes first-principles Problem Definition, RCA workflow, Kanban phases, and mandatory PHPStan + php-cs-fixer validation loop. Always detect the project's PHP version before suggesting features.",
+  "rulesTotal": 15,
+  "abstract": "PHP 8.x best-practices guidance for AI coding agents. Contains 15 consolidated rules across 8 categories: types, modern PHP, error handling, security, performance, architecture/design, PSR standards, and quality tooling/static analysis. Detect the project's PHP version before suggesting features, prefer explicit analyzable contracts, and validate with the repository's configured toolchain.",
   "references": [
     "https://www.php.net/manual/en/",
     "https://www.php.net/manual/en/language.types.declarations.php",
@@ -44,92 +44,76 @@
       "name": "Types",
       "prefix": "type",
       "impact": "CRITICAL",
-      "ruleCount": 9,
-      "description": "declare(strict_types=1), parameter types, return types, property types, nullable discipline, union/intersection types, void/never, avoiding mixed"
+      "ruleCount": 2,
+      "description": "Strict declarations, explicit native types, composition types, never/void, and explicit nullability"
     },
     {
       "name": "Modern PHP",
       "prefix": "modern",
       "impact": "CRITICAL",
-      "ruleCount": 16,
-      "description": "Constructor promotion (8.0+), enums (8.1+), readonly (8.1+/8.2+), typed constants and #[Override] (8.3+), property hooks and asymmetric visibility (8.4+), pipe operator (8.5+, deployment-dependent)"
+      "ruleCount": 6,
+      "description": "Enums, readonly, property hooks, constructor arguments, modern expressions, and attributes with version-aware use"
     },
     {
       "name": "Error Handling",
       "prefix": "error",
       "impact": "HIGH",
-      "ruleCount": 5,
-      "description": "Catch specific exceptions, custom exceptions when callers react differently, shallow exception hierarchies, finally for cleanup only, never suppress errors"
+      "ruleCount": 1,
+      "description": "Typed/contextual exceptions, narrow catches, cleanup, and no diagnostic suppression"
     },
     {
       "name": "Security",
       "prefix": "sec",
       "impact": "CRITICAL",
-      "ruleCount": 5,
-      "description": "Input validation at boundaries, context-aware output escaping, prepared statements always, password_hash/verify, file upload validation"
+      "ruleCount": 1,
+      "description": "Parameterized SQL, context-aware escaping, password hashing, and safe upload boundaries"
     },
     {
       "name": "Performance",
       "prefix": "perf",
       "impact": "MEDIUM",
-      "ruleCount": 5,
-      "description": "Native string functions over regex, native array functions with readability first, generators for streaming, lazy loading for genuinely expensive deps, no globals"
+      "ruleCount": 1,
+      "description": "Generators/streaming, native operations, and avoiding global state"
     },
     {
-      "name": "SOLID / Design",
-      "prefix": "solid, design",
+      "name": "Architecture & Design",
+      "prefix": "design, solid",
       "impact": "HIGH",
-      "ruleCount": 7,
-      "description": "SRP, OCP, LSP, ISP, DIP — applied pragmatically. Value objects over primitives (design-value-objects). No magic-heavy design — prefer explicit typed methods over __get/__call (design-no-magic)."
+      "ruleCount": 2,
+      "description": "Value objects and pragmatic SOLID principles with explicit typed APIs"
     },
     {
-      "name": "PSR / Structure",
+      "name": "PSR Standards",
       "prefix": "psr",
       "impact": "HIGH",
-      "ruleCount": 6,
-      "description": "PSR-4 autoloading, PSR-12 style via tooling, file structure discipline, domain-reflecting namespaces, intent-revealing class and method names"
-    },
-    {
-      "name": "Tooling / Static Analysis",
-      "prefix": "tooling, phpstan",
-      "impact": "CRITICAL",
-      "ruleCount": 2,
-      "description": "PHPStan + php-cs-fixer before every commit, enforced in CI (tooling-phpstan-cs-fixer). PHPDoc precision layer — @template, array shapes, class-string, int-ranges only when native types cannot express enough (phpstan-phpdoc). Inline @var is a last resort."
-    },
-    {
-      "name": "Legacy Migration",
-      "prefix": "legacy",
-      "impact": "HIGH",
       "ruleCount": 1,
-      "description": "Incremental modernisation: PHPStan baseline → Rector syntax transforms → type coverage file-by-file → Strangler Fig isolation of legacy modules. Never rewrite everything at once."
+      "description": "PSR-4 autoloading, PSR-12 style, and naming/structure conventions"
+    },
+    {
+      "name": "Quality Tooling & Analysis",
+      "prefix": "tooling",
+      "impact": "CRITICAL",
+      "ruleCount": 1,
+      "description": "Precise PHPDoc plus repository-configured PHPStan and formatting/style validation"
     }
   ],
   "keyFeatures": [
-    "First-principles Problem Definition checklist before coding",
-    "RCA (Root Cause Analysis) workflow for bugs and quality violations",
-    "Kanban phases: DEFINE/SCOPE → DESIGN/PLANNING → CODING/FEEDBACK",
-    "Version detection: always check composer.json before suggesting features",
-    "9-section structure ordered by impact: Types first, then Modern PHP, Error Handling, Security, Performance, SOLID/Design, PSR/Structure, Tooling, Legacy Migration",
-    "56 rules using Bad / Better / Best three-tier examples",
-    "declare(strict_types=1) in every code example",
-    "final and readonly by default where applicable",
-    "Native types first; PHPDoc only when native PHP cannot express enough",
-    "Per-rule PHP version annotations (8.0+ through 8.5+)",
-    "Pipe operator (8.5+) explicitly marked as deployment-dependent",
-    "Property hooks (8.4+) and asymmetric visibility (8.4+) accurately version-gated",
-    "Typed class constants (8.3+) accurately version-gated",
-    "Value objects over primitives: self-validating, immutable domain types (design-value-objects)",
-    "No-magic-heavy design: explicit typed methods over __get/__call (design-no-magic)",
-    "PHPStan-style PHPDoc: generics, array shapes, class-string, int-ranges (phpstan-phpdoc)",
-    "Legacy migration: PHPStan baseline, Rector transforms, Strangler Fig pattern (legacy-migration)",
-    "Mandatory PHPStan + php-cs-fixer validation loop with CI integration (tooling-phpstan-cs-fixer)",
-    "Response Template for structured PHP task responses"
+    "Detect the target PHP version before suggesting syntax or features",
+    "15 consolidated rules across 8 categories",
+    "Strict native typing first; PHPDoc as a precision layer",
+    "Immutable/value-oriented design where it models real invariants",
+    "No magic-heavy APIs or silent diagnostic suppression",
+    "PHPStan/static-analysis and formatter/fixer validation through the repository toolchain"
   ],
   "meta": {
     "created": "2026-03-01",
-    "last_updated": "2026-03-01",
-    "rule_count": 56,
+    "last_updated": "2026-09-14",
+    "rule_count": 15,
     "structure_version": "2.0",
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ],
     "compatibility": {
       "platforms": [
         "GitHub Copilot",
