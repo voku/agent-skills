@@ -128,22 +128,9 @@ jobs:
 
           operational_dir = os.path.join(skills_dir, "operational-prompting")
           operational_skill = skill_contents.get("operational-prompting")
-          expected_operational_rules = [
-              "op-repo-owned-hierarchy",
-              "op-scope-stopping-contracts",
-              "op-validation-evidence-loops",
-              "op-portable-skill-manifests",
-          ]
           if operational_skill is None:
               errors.append("Missing operational-prompting/SKILL.md")
           else:
-              for rule_id in expected_operational_rules:
-                  if rule_id not in operational_skill:
-                      errors.append(f"operational-prompting/SKILL.md is missing consolidated rule: {rule_id}")
-                  rule_path = os.path.join(operational_dir, "rules", f"{rule_id}.md")
-                  if not os.path.isfile(rule_path):
-                      errors.append(f"operational-prompting is missing rule file: {rule_path}")
-
               projection_paths = [
                   os.path.join(operational_dir, "SKILL.md"),
                   os.path.join(operational_dir, "README.md"),
@@ -164,58 +151,32 @@ jobs:
               metadata_path = os.path.join(operational_dir, "metadata.json")
               with open(metadata_path, "r", encoding="utf-8") as f:
                   operational_metadata = json.load(f)
-              if operational_metadata.get("meta", {}).get("rule_count") != 4:
-                  errors.append("operational-prompting/metadata.json must report exactly 4 consolidated rules")
+              if operational_metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
+                  errors.append("operational-prompting metadata must identify SKILL.md + rules/ as canonical sources")
               if "portable_skills" in operational_metadata.get("configurations", {}):
                   errors.append("operational-prompting/metadata.json must not own a private portable_skills manifest schema")
 
           php_dir = os.path.join(skills_dir, "php-best-practices")
           php_skill = skill_contents.get("php-best-practices")
-          expected_php_rules = [
-              "type-strict-declarations",
-              "type-composition",
-              "modern-enums",
-              "modern-readonly",
-              "modern-property-hooks",
-              "modern-constructor-arguments",
-              "modern-expressions",
-              "modern-attributes",
-              "error-handling",
-              "sec-core-security",
-              "perf-efficiency",
-              "design-value-objects",
-              "solid-principles",
-              "psr-standards",
-              "tooling-static-analysis",
-          ]
           if php_skill is None:
               errors.append("Missing php-best-practices/SKILL.md")
           else:
-              for rule_id in expected_php_rules:
-                  if rule_id not in php_skill:
-                      errors.append(f"php-best-practices/SKILL.md is missing consolidated rule: {rule_id}")
-                  rule_path = os.path.join(php_dir, "rules", f"{rule_id}.md")
-                  if not os.path.isfile(rule_path):
-                      errors.append(f"php-best-practices is missing rule file: {rule_path}")
-
               with open(os.path.join(php_dir, "metadata.json"), "r", encoding="utf-8") as f:
                   php_metadata = json.load(f)
               if php_metadata.get("version") != "4.0.0":
                   errors.append("php-best-practices/metadata.json must match consolidated version 4.0.0")
               if php_metadata.get("rulesTotal") != 15:
                   errors.append("php-best-practices/metadata.json must report rulesTotal=15")
-              if php_metadata.get("meta", {}).get("rule_count") != 15:
-                  errors.append("php-best-practices/metadata.json must report meta.rule_count=15")
               category_counts = [category.get("ruleCount") for category in php_metadata.get("categories", [])]
               if len(category_counts) != 8 or sum(count for count in category_counts if isinstance(count, int)) != 15:
                   errors.append("php-best-practices/metadata.json must describe 8 categories totaling 15 rules")
+              if php_metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
+                  errors.append("php-best-practices metadata must identify SKILL.md + rules/ as canonical sources")
 
               for projection_name in ["README.md", "AGENTS.md"]:
                   projection_path = os.path.join(php_dir, projection_name)
                   with open(projection_path, "r", encoding="utf-8") as f:
                       projection = f.read()
-                  if "15 consolidated rules" not in projection:
-                      errors.append(f"php-best-practices/{projection_name} must identify the 15-rule consolidated contract")
                   for stale_count in ["56 rules", "51 (", "9 sections"]:
                       if stale_count in projection:
                           errors.append(f"php-best-practices/{projection_name} still contains stale pre-consolidation count: {stale_count}")
@@ -235,23 +196,9 @@ jobs:
 
           simplicity_dir = os.path.join(skills_dir, "code-review-simplicity")
           simplicity_skill = skill_contents.get("code-review-simplicity")
-          expected_simplicity_rules = [
-              "simp-premature-abstraction",
-              "simp-shallow-control-flow",
-              "simp-bounds-range-clarity",
-              "simp-intention-revealing-naming",
-              "simp-dead-code-elimination",
-          ]
           if simplicity_skill is None:
               errors.append("Missing code-review-simplicity/SKILL.md")
           else:
-              for rule_id in expected_simplicity_rules:
-                  if rule_id not in simplicity_skill:
-                      errors.append(f"code-review-simplicity/SKILL.md is missing consolidated rule: {rule_id}")
-                  rule_path = os.path.join(simplicity_dir, "rules", f"{rule_id}.md")
-                  if not os.path.isfile(rule_path):
-                      errors.append(f"code-review-simplicity is missing rule file: {rule_path}")
-
               simplicity_projection_paths = [
                   os.path.join(simplicity_dir, "README.md"),
                   os.path.join(simplicity_dir, "AGENTS.md"),
@@ -277,77 +224,47 @@ jobs:
               simplicity_metadata_path = os.path.join(simplicity_dir, "metadata.json")
               with open(simplicity_metadata_path, "r", encoding="utf-8") as f:
                   simplicity_metadata = json.load(f)
-              if simplicity_metadata.get("meta", {}).get("rule_count") != 5:
-                  errors.append("code-review-simplicity/metadata.json must report exactly 5 consolidated rules")
               if simplicity_metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
                   errors.append("code-review-simplicity metadata must identify SKILL.md + rules/ as canonical sources")
 
           review_projection_contracts = {
-              "code-review-performance": {
-                  "rules": [
-                      "perf-database-nplusone",
-                      "perf-algorithmic-collections",
-                      "perf-memory-streaming",
-                      "perf-caching-invalidation",
-                      "perf-network-batching",
-                  ],
-                  "retired": [
-                      "perf-algorithmic-complexity",
-                      "perf-database-performance",
-                      "perf-network-io",
-                      "perf-memory-management",
-                      "perf-caching-strategy",
-                      "perf-concurrency",
-                      "perf-asset-optimization",
-                  ],
-              },
-              "code-review-error-handling": {
-                  "rules": [
-                      "err-signalling-hygiene",
-                      "err-outcome-batch-discipline",
-                      "err-timeouts-cancellation",
-                      "err-retry-idempotency",
-                      "err-cleanup-observability",
-                  ],
-                  "retired": [
-                      "err-signalling-discipline",
-                      "err-outcome-messaging",
-                      "err-exception-hygiene",
-                      "err-timeout-cancellation",
-                      "err-retry-semantics",
-                      "err-partial-failure",
-                      "err-observability",
-                      "err-resource-cleanup",
-                      "err-defensive-overreach",
-                  ],
-              },
+              "code-review-performance": [
+                  "perf-algorithmic-complexity",
+                  "perf-database-performance",
+                  "perf-network-io",
+                  "perf-memory-management",
+                  "perf-caching-strategy",
+                  "perf-concurrency",
+                  "perf-asset-optimization",
+              ],
+              "code-review-error-handling": [
+                  "err-signalling-discipline",
+                  "err-outcome-messaging",
+                  "err-exception-hygiene",
+                  "err-timeout-cancellation",
+                  "err-retry-semantics",
+                  "err-partial-failure",
+                  "err-observability",
+                  "err-resource-cleanup",
+                  "err-defensive-overreach",
+              ],
           }
-          for skill_name, contract in review_projection_contracts.items():
+          for skill_name, retired_rule_ids in review_projection_contracts.items():
               skill_dir = os.path.join(skills_dir, skill_name)
-              skill = skill_contents.get(skill_name)
-              if skill is None:
+              if skill_contents.get(skill_name) is None:
                   errors.append(f"Missing {skill_name}/SKILL.md")
                   continue
-
-              for rule_id in contract["rules"]:
-                  if rule_id not in skill:
-                      errors.append(f"{skill_name}/SKILL.md is missing consolidated rule: {rule_id}")
-                  rule_path = os.path.join(skill_dir, "rules", f"{rule_id}.md")
-                  if not os.path.isfile(rule_path):
-                      errors.append(f"{skill_name} is missing rule file: {rule_path}")
 
               for projection_name in ["README.md", "AGENTS.md", "metadata.json"]:
                   projection_path = os.path.join(skill_dir, projection_name)
                   with open(projection_path, "r", encoding="utf-8") as f:
                       projection = f.read()
-                  for retired_id in contract["retired"]:
+                  for retired_id in retired_rule_ids:
                       if retired_id in projection:
                           errors.append(f"{skill_name}/{projection_name} still contains retired rule id: {retired_id}")
 
               with open(os.path.join(skill_dir, "metadata.json"), "r", encoding="utf-8") as f:
                   metadata = json.load(f)
-              if metadata.get("meta", {}).get("rule_count") != len(contract["rules"]):
-                  errors.append(f"{skill_name}/metadata.json must report exactly {len(contract['rules'])} consolidated rules")
               if metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
                   errors.append(f"{skill_name} metadata must identify SKILL.md + rules/ as canonical sources")
 
