@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate declared canonical rule contracts
+      - name: Validate rule-based skill contracts
         run: |
           python3 - << 'PYEOF'
           import json
@@ -24,6 +24,7 @@ jobs:
           skills_dir = "skills"
           errors = []
           validated = []
+          legacy = []
 
           for skill_name in sorted(os.listdir(skills_dir)):
               skill_dir = os.path.join(skills_dir, skill_name)
@@ -35,19 +36,18 @@ jobs:
               rules_dir = os.path.join(skill_dir, "rules")
               if not os.path.isfile(metadata_path) or not os.path.isfile(skill_path):
                   continue
+              if not os.path.isdir(rules_dir):
+                  continue
 
               with open(metadata_path, "r", encoding="utf-8") as f:
                   metadata = json.load(f)
 
               meta = metadata.get("meta", {})
               if meta.get("canonical_sources") != ["SKILL.md", "rules/"]:
-                  continue
-
-              validated.append(skill_name)
-
-              if not os.path.isdir(rules_dir):
-                  errors.append(f"{skill_name}: canonical rules/ directory is missing")
-                  continue
+                  legacy.append(skill_name)
+                  errors.append(
+                      f"{skill_name}: rule-based skill must declare meta.canonical_sources=['SKILL.md', 'rules/']"
+                  )
 
               rule_ids = sorted(
                   filename[:-3]
@@ -70,14 +70,20 @@ jobs:
                           f"{skill_name}: SKILL.md does not reference canonical rule file rules/{rule_id}.md"
                       )
 
+              validated.append(skill_name)
+
           if errors:
-              print("Canonical skill contract validation failed:")
+              print("Canonical skill contract census failed:")
               for error in errors:
                   print(" - " + error)
+              if legacy:
+                  print("Legacy rule-based skills outside the canonical contract:")
+                  for skill_name in legacy:
+                      print(" - " + skill_name)
               sys.exit(1)
 
           print(
-              f"Validated {len(validated)} canonical skill contracts: "
+              f"Validated {len(validated)} rule-based skill contracts: "
               + ", ".join(validated)
           )
           PYEOF
