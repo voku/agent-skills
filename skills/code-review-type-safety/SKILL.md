@@ -4,26 +4,23 @@ description: Type-safety review lens for catching schema mismatches, unsafe coer
 license: MIT
 metadata:
   author: Agent Skills Team
-  version: "1.1.0"
+  version: "2.0.0"
 ---
 
 # Code Review Type Safety
 
-Targeted type-safety lens for honest contracts, runtime validation, unsafe casts, and generic discipline.
+Targeted type-safety review lens for honest contracts, native types, shape validation, symmetric rigor, and truthful nullability.
 
-## Review Focus
+## Quick Reference
 
-| Priority | Category | Prefix |
-|----------|----------|--------|
-| HIGH | Type coverage | `type-type-coverage` |
-| CRITICAL | Type correctness | `type-type-correctness` |
-| HIGH | Asymmetric rigor | `type-asymmetric-rigor` |
-| CRITICAL | Type safety | `type-type-safety` |
-| MEDIUM | Generic discipline | `type-generic-discipline` |
+| Category | Priority | Rule File | Primary Focus |
+|----------|----------|-----------|---------------|
+| **Native Declarations** | CRITICAL | [`type-strict-native-declarations`](rules/type-strict-native-declarations.md) | Native property types, strict comparisons (`===`), eliminating false-folded returns |
+| **Shape Validation** | CRITICAL | [`type-shape-validation-boundaries`](rules/type-shape-validation-boundaries.md) | Typed DTOs over loose arrays at trust boundaries, shape validation |
+| **Symmetric Rigor** | HIGH | [`type-symmetric-rigor`](rules/type-symmetric-rigor.md) | Symmetric type contracts across branches, consistent normalization |
+| **Honest Nullability** | HIGH | [`type-nullability-truthfulness`](rules/type-nullability-truthfulness.md) | Truthful nullable returns (`?Type`), avoiding false non-null assertions |
 
-Look for untyped public contracts, annotations that disagree with behavior, unsafe casts, unvalidated external shapes, weak nullability, and generic machinery that hides rather than proves constraints.
-
-Do not relax an honest contract merely to satisfy current inference. Prove the stricter type or add the missing validation when it still reflects reality.
+---
 
 ## Scope
 
@@ -68,12 +65,12 @@ UNKNOWN: <exact missing evidence>.
 
 ## Severity
 
-- **CRITICAL**: contract likely to break runtime behavior or key invariants.
-- **HIGH**: significant unsafe assertion, unvalidated shape, or misleading public type.
-- **MEDIUM**: concrete precision/generic-discipline improvement.
-- **LOW**: minor type verbosity or style feedback.
+- **CRITICAL**: loose equality comparisons causing security/data drift, untyped active-row properties, or runtime TypeErrors on valid input.
+- **HIGH**: unvalidated arrays across trust boundaries or asymmetric return types causing caller branching bugs.
+- **MEDIUM**: missing PHPDoc array shape annotations or unnecessary mixed parameters.
+- **LOW**: minor annotation formatting or redundant docblocks.
 
 ## References
 
 - [Pi Ensemble type-safety lens](https://raw.githubusercontent.com/randomm/pi-ensemble/main/skill/code-review-type-safety/SKILL.md)
-- [TypeScript handbook](https://www.typescriptlang.org/docs/)
+- [PHPStan Documentation](https://phpstan.org/user-guide/getting-started)
