@@ -1,44 +1,37 @@
 # Laravel MCP
 
-Comprehensive guide for building MCP (Model Context Protocol) servers with Laravel. 7 rules across 5 categories.
+Portable guidance for building and reviewing Laravel MCP servers, tools, prompts, resources, authentication boundaries, and tests.
 
-**Version:** 1.0.0
+## Canonical Source
 
-## Overview
+`SKILL.md` defines when this skill applies and the high-level routing contract. `rules/` contains the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, category count, version table, or compiled set of examples.
 
-This skill provides guidance for:
-- Creating and registering MCP servers (web and local)
-- Building tools with input/output schemas and responses
-- Defining prompts with arguments and validation
-- Exposing resources and resource templates
-- Protecting servers with OAuth 2.1, Sanctum, or custom auth
-- Testing with MCP Inspector and unit tests
+## When to Use
 
-## Categories
+Use this skill when a Laravel project integrates `laravel/mcp` or when the task is primarily about MCP server registration, callable tools, prompt/resource exposure, auth boundaries, or MCP-focused tests.
 
-### 1. Servers (Critical)
-Create and register MCP servers for web (HTTP) and local (Artisan CLI) transports.
+## Routing
 
-### 2. Tools (High)
-Build tools with JSON schemas, validation, dependency injection, annotations, and multiple response types.
+1. Ground the installed Laravel, PHP, and MCP package versions from the target repository.
+2. Read `SKILL.md` to identify the relevant canonical rule files.
+3. Load only the rule guidance needed for the current change or review.
+4. Follow project-local auth, validation, routing, and testing conventions where they are stronger or more specific.
+5. Validate with the target repository's configured test/toolchain and report only observed results.
 
-### 3. Prompts & Resources (Medium)
-Define reusable prompt templates and expose data resources for AI client context.
+## Stable Boundaries
 
-### 4. Authentication (High)
-Protect MCP servers with OAuth 2.1 (Passport), Sanctum tokens, or custom middleware.
+- Treat tool schemas and responses as public executable contracts.
+- Keep auth fail-closed and reuse established middleware/authentication patterns where possible.
+- Keep prompts/resources explicit and testable instead of hiding behavior in ambient application state.
+- Prefer focused tests around MCP inputs, outputs, errors, and authorization boundaries.
+- Verify framework/package behavior against the installed version before recommending an API.
 
-### 5. Testing (High)
-Test servers with MCP Inspector and write unit tests with assertions.
+## Projection Boundary
 
-## Rules
+Do not copy current rule IDs, counts, category totals, or expanded examples into this file. If this projection disagrees with `SKILL.md` or a file under `rules/`, preserve the mismatch as evidence and follow the canonical source.
 
-| Rule | Category | Impact |
-|------|----------|--------|
-| `server-create-register` | Servers | CRITICAL |
-| `tool-create` | Tools | HIGH |
-| `tool-responses` | Tools | HIGH |
-| `prompt-create` | Prompts & Resources | MEDIUM |
-| `resource-create` | Prompts & Resources | MEDIUM |
-| `auth-protect` | Authentication | HIGH |
-| `test-unit` | Testing | HIGH |
+## References
+
+- [Laravel MCP Documentation](https://laravel.com/docs/13.x/mcp)
+- [Model Context Protocol](https://modelcontextprotocol.io/docs/getting-started/intro)
+- [Laravel MCP Repository](https://github.com/laravel/mcp)
