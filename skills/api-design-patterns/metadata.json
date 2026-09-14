@@ -20,7 +20,7 @@
     ]
   },
   "name": "API Design Patterns",
-  "description": "RESTful API design principles for building consistent, developer-friendly APIs. Contains 38 rules across 7 categories covering resource design, error handling, security, pagination, versioning, response format, and documentation.",
+  "description": "RESTful API design principles for building consistent, developer-friendly APIs. Contains 10 rules across 7 categories covering resource design, error handling, security, pagination, versioning, response format, and documentation.",
   "license": "MIT",
   "author": {
     "name": "Agent Skills Contributors",
@@ -31,43 +31,43 @@
       "name": "Resource Design",
       "prefix": "rest",
       "impact": "CRITICAL",
-      "ruleCount": 8
+      "ruleCount": 2
     },
     {
       "name": "Error Handling",
       "prefix": "error",
       "impact": "CRITICAL",
-      "ruleCount": 6
+      "ruleCount": 1
     },
     {
       "name": "Security",
       "prefix": "sec",
       "impact": "CRITICAL",
-      "ruleCount": 7
+      "ruleCount": 2
     },
     {
-      "name": "Pagination & Filtering",
-      "prefix": "page/filter/sort",
+      "name": "Pagination & Querying",
+      "prefix": "query",
       "impact": "HIGH",
-      "ruleCount": 6
+      "ruleCount": 2
     },
     {
       "name": "Versioning",
       "prefix": "ver",
       "impact": "HIGH",
-      "ruleCount": 4
+      "ruleCount": 1
     },
     {
       "name": "Response Format",
       "prefix": "resp",
       "impact": "MEDIUM",
-      "ruleCount": 4
+      "ruleCount": 1
     },
     {
       "name": "Documentation",
       "prefix": "doc",
       "impact": "MEDIUM",
-      "ruleCount": 3
+      "ruleCount": 1
     }
   ],
   "references": [
@@ -89,12 +89,12 @@
     "openapi",
     "swagger"
   ],
-  "rulesTotal": 38,
-  "lastUpdated": "2026-03-14",
+  "rulesTotal": 10,
+  "lastUpdated": "2026-09-14",
   "meta": {
     "created": "2026-03-14",
-    "last_updated": "2026-03-14",
-    "rule_count": 38,
+    "last_updated": "2026-09-14",
+    "rule_count": 10,
     "structure_version": "2.0",
     "compatibility": {
       "platforms": [

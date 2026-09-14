@@ -7,35 +7,35 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 
 ## 1. Resource Design (rest)
 
-**Impact:** CRITICAL
-**Description:** Foundational REST principles for API endpoint design. Proper resource naming with nouns, plural collections, correct HTTP method semantics, appropriate status codes, idempotency, and HATEOAS links ensure APIs are intuitive, predictable, and follow industry standards.
+**Impact:** CRITICAL  
+**Description:** Foundational REST principles: resource modeling with plural nouns, shallow hierarchy, standard HTTP method and status semantics, and idempotent mutations with Idempotency-Key protection.
 
 ## 2. Error Handling (error)
 
-**Impact:** CRITICAL
-**Description:** Consistent error response format across all endpoints. Machine-readable error codes, field-level validation details, meaningful messages, request IDs for debugging, and never exposing stack traces in production enable clients to handle errors programmatically.
+**Impact:** CRITICAL  
+**Description:** Standardized error responses using RFC 7807 Problem Details (`application/problem+json`) with machine-readable error codes, correlation trace IDs, field validation pointers, and zero exposed stack traces.
 
 ## 3. Security (sec)
 
-**Impact:** CRITICAL
-**Description:** API security fundamentals. Authentication (OAuth2/JWT), authorization (RBAC), rate limiting, input validation and sanitization, CORS configuration with whitelists, HTTPS enforcement, and sensitive data protection prevent unauthorized access and common attack vectors.
+**Impact:** CRITICAL  
+**Description:** Core API security controls: Bearer token authentication, scoped authorization (RBAC), standard rate limiting (`429` with `Retry-After`), explicit CORS allowlists, HTTPS enforcement with HSTS, and sensitive data masking.
 
-## 4. Pagination & Filtering (page, filter, sort)
+## 4. Pagination & Querying (query)
 
-**Impact:** HIGH
-**Description:** Efficient data retrieval for collections. Cursor pagination for large datasets, offset pagination for simple cases, consistent parameter naming, pagination metadata in responses, query parameter filtering, and flexible sorting enable clients to efficiently navigate large datasets.
+**Impact:** HIGH  
+**Description:** Efficient collection retrieval: cursor-based and offset pagination with structured metadata, standard filtering, multi-field sorting (`-field`), and sparse fieldsets.
 
 ## 5. Versioning (ver)
 
-**Impact:** HIGH
-**Description:** API versioning strategies for evolving APIs without breaking existing consumers. URL path versioning, header-based versioning, backward compatibility rules, and deprecation strategy with Sunset headers ensure smooth API evolution.
+**Impact:** HIGH  
+**Description:** Additive, backward-compatible API evolution with explicit URL version prefixes (`/v1/`) and deprecation lifecycle signaling via `Sunset` and `Deprecation` headers.
 
 ## 6. Response Format (resp)
 
-**Impact:** MEDIUM
-**Description:** Consistent response structure and conventions. Response envelopes, JSON naming conventions (camelCase vs snake_case), sparse fieldsets for bandwidth optimization, and response compression reduce payload sizes and improve developer experience.
+**Impact:** MEDIUM  
+**Description:** Consistent top-level JSON objects, uniform key casing, ISO 8601 UTC dates, and HTTP payload compression (gzip, brotli).
 
 ## 7. Documentation (doc)
 
-**Impact:** MEDIUM
-**Description:** API documentation standards. OpenAPI/Swagger specifications, complete request/response examples, and API changelogs ensure consumers can discover, understand, and track changes to your API.
+**Impact:** MEDIUM  
+**Description:** Contract-first OpenAPI 3.1 specifications with complete request/response examples across all status codes, and semantic changelogs.

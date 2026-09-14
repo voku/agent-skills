@@ -4,37 +4,37 @@ RESTful API design principles for building consistent, developer-friendly APIs.
 
 ## Overview
 
-- Resource design with proper HTTP methods and status codes
-- Consistent error handling with machine-readable codes
-- Security (authentication, authorization, rate limiting, CORS)
-- Cursor and offset pagination with filtering and sorting
-- API versioning strategies and deprecation
-- Response format conventions and compression
-- OpenAPI documentation and changelog
-- 38 rules across 7 categories
+- **Resource design:** Plural nouns, canonical HTTP methods, status codes, idempotent mutations
+- **Error handling:** RFC 7807 Problem Details (`application/problem+json`) with trace IDs
+- **Security:** Bearer token authentication, scoped RBAC, rate limiting (`429`), HTTPS with HSTS, data masking
+- **Pagination & querying:** Cursor and offset pagination, structured metadata, multi-field sorting (`-field`), sparse fieldsets
+- **Versioning:** Explicit `/v1/` URL versioning, additive backward compatibility, `Sunset` and `Deprecation` headers
+- **Response format:** Consistent top-level JSON objects, uniform casing, ISO 8601 UTC dates, brotli/gzip compression
+- **Documentation:** Contract-first OpenAPI 3.1 specifications with complete request/response examples, changelog
+- **Total Rules:** 10 rules across 7 categories
 
 ## Categories
 
 ### 1. Resource Design (Critical)
-Nouns over verbs, plural resources, proper nesting, HTTP methods, status codes, idempotency, HATEOAS.
+Plural noun modeling, shallow hierarchy (max 2 levels), standard HTTP method semantics, status codes, and idempotency keys.
 
 ### 2. Error Handling (Critical)
-Consistent error format, meaningful messages, validation details, error codes, request IDs.
+RFC 7807 Problem Details with machine-readable error codes, correlation trace IDs, field validation details, and zero leaked stack traces.
 
 ### 3. Security (Critical)
-Authentication (OAuth2/JWT), authorization (RBAC), rate limiting, input validation, CORS, HTTPS.
+Bearer token authentication, RBAC authorization, rate limiting (`429` with `Retry-After`), explicit CORS allowlists, HTTPS with HSTS, and sensitive data masking.
 
-### 4. Pagination & Filtering (High)
-Cursor-based and offset pagination, consistent parameters, filtering, sorting.
+### 4. Pagination & Querying (High)
+Cursor and offset pagination, standardized attribute filtering, multi-field sorting, and sparse fieldsets.
 
 ### 5. Versioning (High)
-URL path versioning, header versioning, backward compatibility, deprecation strategy.
+Additive non-breaking evolution, explicit URL version prefixes, and deprecation communication with `Sunset` and `Deprecation` headers.
 
 ### 6. Response Format (Medium)
-Consistent envelope, JSON naming conventions, sparse fieldsets, compression.
+Consistent top-level JSON objects, uniform key casing, ISO 8601 UTC dates, and HTTP payload compression.
 
 ### 7. Documentation (Medium)
-OpenAPI/Swagger specification, request/response examples, API changelog.
+Contract-first OpenAPI 3.1 specifications with complete examples across all status codes, and semantic changelogs.
 
 ## Usage
 
@@ -51,3 +51,4 @@ Set up pagination for this endpoint
 - [Zalando RESTful API Guidelines](https://zalando.github.io/restful-api-guidelines)
 - [Microsoft API Guidelines](https://github.com/microsoft/api-guidelines)
 - [OpenAPI Specification](https://swagger.io/specification)
+- [RFC 7807: Problem Details](https://datatracker.ietf.org/doc/html/rfc7807)

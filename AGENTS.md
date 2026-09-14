@@ -172,7 +172,7 @@ Before finalizing any response, verify:
 
 | Skill | Rules | Priority Focus |
 |-------|-------|----------------|
-| api-design-patterns | 38 | REST, error handling, pagination |
+| api-design-patterns | 10 | REST, error handling, pagination |
 | clean-code-principles | 14 | SOLID, DRY, design patterns |
 | code-review-architecture | 8 | Coupling, boundaries, rollback-safe design |
 | code-review-error-handling | 8 | Timeouts, retries, cleanup, observability |

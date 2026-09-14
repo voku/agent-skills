@@ -9,175 +9,105 @@ metadata:
 
 # API Design Patterns
 
-RESTful API design principles for building consistent, developer-friendly APIs. Contains 38 rules across 7 categories covering resource design, error handling, security, pagination, versioning, response format, and documentation.
+RESTful API design principles for building consistent, developer-friendly APIs. Contains 10 rules across 7 categories covering resource design, error handling, security, pagination, versioning, response format, and documentation.
 
 ## Metadata
 
 - **Version:** 2.0.0
-- **Rule Count:** 38 rules across 7 categories
+- **Rule Count:** 10 rules across 7 categories
 - **License:** MIT
 
 ## When to Apply
 
 Reference these guidelines when:
-- Designing new API endpoints
-- Reviewing existing API structure
-- Implementing error handling and validation
-- Setting up pagination, filtering, and sorting
-- Planning API versioning strategy
-- Configuring API security (auth, CORS, rate limiting)
-- Writing API documentation (OpenAPI/Swagger)
+- Designing new API endpoints and resources
+- Reviewing existing API structure and method semantics
+- Implementing error handling with RFC 7807 Problem Details
+- Setting up pagination, filtering, and sorting query parameters
+- Planning API versioning and deprecation schedules
+- Configuring API security (Bearer auth, CORS, rate limiting, data masking)
+- Writing OpenAPI/Swagger contracts and changelogs
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Resource Design | CRITICAL | `rest-` |
-| 2 | Error Handling | CRITICAL | `error-` |
-| 3 | Security | CRITICAL | `sec-` |
-| 4 | Pagination & Filtering | HIGH | `page-`, `filter-`, `sort-` |
-| 5 | Versioning | HIGH | `ver-` |
-| 6 | Response Format | MEDIUM | `resp-` |
-| 7 | Documentation | MEDIUM | `doc-` |
+| Priority | Category | Impact | Prefix | Rules |
+|----------|----------|--------|--------|-------|
+| 1 | Resource Design | CRITICAL | `rest-` | 2 |
+| 2 | Error Handling | CRITICAL | `error-` | 1 |
+| 3 | Security | CRITICAL | `sec-` | 2 |
+| 4 | Pagination & Querying | HIGH | `query-` | 2 |
+| 5 | Versioning | HIGH | `ver-` | 1 |
+| 6 | Response Format | MEDIUM | `resp-` | 1 |
+| 7 | Documentation | MEDIUM | `doc-` | 1 |
 
 ## Quick Reference
 
-### 1. Resource Design (CRITICAL)
+### 1. Resource Design (`rest-`, CRITICAL)
+- `rest-endpoints` - Plural noun modeling, shallow hierarchy (max 2 levels), canonical HTTP methods, and status codes
+- `rest-idempotency` - Safe methods, PUT vs PATCH semantics, and `Idempotency-Key` headers on mutating operations
 
-- `rest-nouns-not-verbs` - Use nouns for endpoints, not verbs
-- `rest-plural-resources` - Use plural resource names
-- `rest-http-methods` - Correct HTTP method usage (GET, POST, PUT, PATCH, DELETE)
-- `rest-nested-resources` - Proper resource nesting (max 2 levels)
-- `rest-status-codes` - Appropriate HTTP status codes
-- `rest-idempotency` - Idempotent operations with idempotency keys
-- `rest-hateoas` - Hypermedia links for discoverability
-- `rest-resource-actions` - Non-CRUD actions as sub-resources
+### 2. Error Handling (`error-`, CRITICAL)
+- `error-problem-details` - RFC 7807 Problem Details (`application/problem+json`) with machine-readable codes, trace IDs, and zero leaked stack traces
 
-### 2. Error Handling (CRITICAL)
+### 3. Security (`sec-`, CRITICAL)
+- `sec-auth-protection` - Bearer tokens, scoped RBAC authorization, rate limiting (`429` with `Retry-After`), and strict CORS allowlists
+- `sec-data-exposure` - HTTPS enforcement with HSTS, and scrubbing sensitive credentials (passwords, payment cards, PII) from payloads and logs
 
-- `error-consistent-format` - Consistent error response structure
-- `error-meaningful-messages` - Helpful, actionable error messages
-- `error-validation-details` - Field-level validation errors
-- `error-error-codes` - Machine-readable error codes
-- `error-no-stack-traces` - Never expose stack traces in production
-- `error-request-id` - Include request IDs for debugging
+### 4. Pagination & Querying (`query-`, HIGH)
+- `query-pagination` - Cursor-based vs offset pagination with structured pagination metadata envelopes
+- `query-filters-sorting` - Standardized attribute filtering, multi-field sorting (`-field`), and sparse fieldsets (`fields=`)
 
-### 3. Security (CRITICAL)
+### 5. Versioning (`ver-`, HIGH)
+- `ver-lifecycle` - Explicit `/v1/` URL versioning, additive backward compatibility, and RFC 8594 `Sunset` and `Deprecation` headers
 
-- `sec-authentication` - Proper auth implementation (OAuth2/JWT)
-- `sec-authorization` - Resource-level permissions (RBAC)
-- `sec-rate-limiting` - Prevent abuse with rate limiting
-- `sec-input-validation` - Validate and sanitize all input
-- `sec-cors-config` - CORS configuration with whitelists
-- `sec-https-only` - Enforce HTTPS for all traffic
-- `sec-sensitive-data` - Protect passwords, tokens, PII
+### 6. Response Format (`resp-`, MEDIUM)
+- `resp-conventions` - Consistent top-level JSON objects, uniform key casing, ISO 8601 UTC dates, and brotli/gzip compression
 
-### 4. Pagination & Filtering (HIGH)
-
-- `page-cursor-based` - Cursor pagination for large datasets
-- `page-offset-based` - Offset pagination for simple cases
-- `page-consistent-params` - Consistent parameter naming
-- `page-metadata` - Include pagination metadata in responses
-- `filter-query-params` - Filter via query parameters
-- `sort-flexible` - Flexible sorting with `-` prefix for descending
-
-### 5. Versioning (HIGH)
-
-- `ver-url-path` - Version in URL path (/api/v1/)
-- `ver-header-based` - Version via Accept header
-- `ver-backward-compatible` - Maintain backward compatibility
-- `ver-deprecation` - Deprecation strategy with Sunset header
-
-### 6. Response Format (MEDIUM)
-
-- `resp-consistent-structure` - Consistent response envelope
-- `resp-json-conventions` - JSON naming conventions
-- `resp-partial-responses` - Field selection (sparse fieldsets)
-- `resp-compression` - Response compression (gzip/Brotli)
-
-### 7. Documentation (MEDIUM)
-
-- `doc-openapi` - OpenAPI/Swagger specification
-- `doc-examples` - Request/response examples
-- `doc-changelog` - API changelog
+### 7. Documentation (`doc-`, MEDIUM)
+- `doc-openapi` - Contract-first OpenAPI 3.1 specifications with complete request/response examples across all status codes, and semantic changelogs
 
 ## Essential Guidelines
 
-### Resource Naming
+### Resource Naming & Methods
 
 ```
-# ❌ Verbs in URLs
-GET    /getUsers
-POST   /createUser
-
 # ✅ Nouns with HTTP methods
 GET    /users          # List users
 POST   /users          # Create user
 GET    /users/123      # Get user
-PUT    /users/123      # Update user (full)
-PATCH  /users/123      # Update user (partial)
+PUT    /users/123      # Replace user (full)
+PATCH  /users/123      # Update user (partial delta)
 DELETE /users/123      # Delete user
 ```
 
-### Error Response Format
+### RFC 7807 Error Response Format
 
 ```json
 {
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "The request contains invalid data",
-    "details": [
-      {
-        "field": "email",
-        "code": "INVALID_FORMAT",
-        "message": "Please provide a valid email address"
-      }
-    ],
-    "request_id": "req_abc123"
-  }
+  "type": "https://api.example.com/errors/validation-failed",
+  "title": "Validation Failed",
+  "status": 422,
+  "detail": "The email provided is invalid.",
+  "code": "VALIDATION_FAILED",
+  "trace_id": "req_abc123",
+  "invalid_params": [
+    { "name": "email", "reason": "Must be a valid email address" }
+  ]
 }
 ```
 
-### Pagination
+### Pagination Envelope
 
 ```json
 {
   "data": [...],
-  "meta": {
-    "current_page": 2,
-    "per_page": 20,
-    "total_pages": 10,
+  "pagination": {
+    "limit": 25,
+    "has_more": true,
+    "next_cursor": "eyJpZCI6MTAwfQ==",
     "total_count": 195
-  },
-  "links": {
-    "first": "/users?page=1&per_page=20",
-    "prev": "/users?page=1&per_page=20",
-    "next": "/users?page=3&per_page=20",
-    "last": "/users?page=10&per_page=20"
   }
 }
-```
-
-### Rate Limiting Headers
-
-```
-HTTP/1.1 200 OK
-X-RateLimit-Limit: 1000
-X-RateLimit-Remaining: 998
-X-RateLimit-Reset: 1640995200
-```
-
-## How to Use
-
-Read individual rule files for detailed explanations:
-
-```
-rules/rest-http-methods.md
-rules/error-consistent-format.md
-rules/page-cursor-based.md
-rules/sec-authentication.md
-rules/ver-url-path.md
-rules/doc-openapi.md
 ```
 
 ## References
@@ -187,6 +117,7 @@ rules/doc-openapi.md
 - [Microsoft API Guidelines](https://github.com/microsoft/api-guidelines)
 - [Google API Design Guide](https://cloud.google.com/apis/design)
 - [OpenAPI Specification](https://swagger.io/specification)
+- [RFC 7807: Problem Details](https://datatracker.ietf.org/doc/html/rfc7807)
 
 ## Full Compiled Document
 
