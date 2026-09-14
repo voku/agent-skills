@@ -125,9 +125,13 @@
   ],
   "meta": {
     "created": "2026-03-01",
-    "last_updated": "2026-03-01",
-    "rule_count": 8,
+    "last_updated": "2026-09-14",
+    "rule_count": 5,
     "structure_version": "2.0",
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ],
     "compatibility": {
       "platforms": [
         "GitHub Copilot",
