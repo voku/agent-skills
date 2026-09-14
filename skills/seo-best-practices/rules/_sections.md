@@ -1,46 +1,41 @@
-# Sections
+# Rule Sections
 
-This file defines all sections, their ordering, impact levels, and descriptions.
-The section ID (in parentheses) is the filename prefix used to group rules.
+## Priority Levels
 
----
+| Level | Description | When to Apply |
+|-------|-------------|---------------|
+| CRITICAL | Technical crawling foundation & Core Web Vitals | Always |
+| HIGH | Schema structured data, on-page, and SPA SEO | Most web projects |
+| MEDIUM | Social previews and cross-platform sharing | Public pages |
 
-## 1. Core Web Vitals (cwv)
+## Section Overview
 
-**Impact:** CRITICAL
-**Description:** Google uses Core Web Vitals (LCP, INP, CLS) as ranking signals. Pages that fail these thresholds rank lower and provide poor user experience. Optimizing CWV is the highest-impact technical SEO work.
+### 1. Technical SEO & Crawling (`tech`)
+- **Impact:** CRITICAL
+- **Rules:** `tech-metadata-canonical`
+- **Description:** Complete indexing foundations: `<title>`, meta description, `<link rel="canonical">`, clean URL routing, `robots.txt`, and XML sitemap generation.
 
-## 2. Technical SEO (tech)
+### 2. Structured Data (`schema`)
+- **Impact:** HIGH
+- **Rules:** `schema-structured-data`
+- **Description:** JSON-LD structured data implementation (Article, Product, BreadcrumbList, Organization) using `@graph` composition and Google Rich Results validation.
 
-**Impact:** CRITICAL
-**Description:** Foundational SEO elements that search engines need to discover, crawl, and index pages correctly. Without proper meta tags, canonical URLs, sitemaps, and robots.txt, content cannot rank regardless of quality.
+### 3. Social Sharing Cards (`social`)
+- **Impact:** HIGH
+- **Rules:** `social-meta-tags`
+- **Description:** Open Graph (`og:*`) and Twitter Card (`twitter:*`) tags with standardized 1200x630 preview images and secure absolute HTTPS URLs.
 
-## 3. On-Page SEO (onpage)
+### 4. Core Web Vitals & Performance (`perf`)
+- **Impact:** CRITICAL
+- **Rules:** `core-web-vitals-perf`
+- **Description:** Meeting Google CWV thresholds: LCP (<2.5s) via hero preloading and `fetchpriority="high"`, INP (<200ms) with `scheduler.yield()`, and CLS (<0.1) with aspect ratios.
 
-**Impact:** HIGH
-**Description:** Content structure and HTML semantics that help search engines understand page topics and relevance. Proper headings, semantic markup, internal linking, and image optimization directly affect rankings.
+### 5. On-Page Content & Mobile-First (`onpage`)
+- **Impact:** HIGH
+- **Rules:** `onpage-content-mobile`
+- **Description:** On-page semantic structure: single primary `h1`, descriptive anchor text for internal link equity, alt descriptions, and 100% mobile-desktop content parity.
 
-## 4. Structured Data (schema)
-
-**Impact:** HIGH
-**Description:** JSON-LD markup using Schema.org vocabulary that enables rich results in search (star ratings, FAQ accordions, breadcrumb trails, product prices). Structured data does not directly boost rankings but significantly improves click-through rates.
-
-## 5. Performance SEO (perf)
-
-**Impact:** HIGH
-**Description:** Page speed and loading optimization that affects both Core Web Vitals scores and user experience. Modern image formats, lazy loading, font strategies, and resource hints reduce load times and improve search ranking.
-
-## 6. Social Sharing (social)
-
-**Impact:** HIGH
-**Description:** Open Graph and Twitter Card meta tags that control how pages appear when shared on social media. Proper social meta tags increase click-through rates from social platforms and drive organic traffic.
-
-## 7. React/SPA SEO (spa)
-
-**Impact:** HIGH
-**Description:** SEO patterns specific to single-page applications built with React. SPAs require special attention to rendering strategy, meta tag management, and routing to be crawlable by search engines.
-
-## 8. Mobile-First (mobile)
-
-**Impact:** MEDIUM
-**Description:** Google uses mobile-first indexing, meaning it primarily crawls and indexes the mobile version of pages. Mobile viewport configuration, content parity, and UX requirements directly affect how pages are indexed and ranked.
+### 6. React SPA & Inertia.js SEO (`spa`)
+- **Impact:** HIGH
+- **Rules:** `spa-ssr-inertia-seo`
+- **Description:** Server-Side Rendering (SSR) configuration for SPAs, `@inertiaHead` layout integration, and Inertia `<Head>` component with `head-key` deduplication.
