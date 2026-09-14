@@ -1,9 +1,9 @@
 {
-  "version": "1.1.1",
+  "version": "2.0.0",
   "skill": {
     "name": "laravel-database-optimization",
-    "version": "1.1.1",
-    "description": "Laravel database optimization patterns. Use when writing Eloquent queries, creating migrations, configuring caching, debugging slow queries, or optimizing database performance. Triggers on tasks involving N+1 queries, indexing, Redis caching, pagination, or database transactions.",
+    "version": "2.0.0",
+    "description": "Laravel database optimization patterns for queries, indexing, Redis caching, pagination, transactions, migrations, and debugging. Use when writing Eloquent queries, creating migrations, configuring caching, debugging slow queries, or optimizing database performance. Triggers on tasks involving N+1 queries, indexing, Redis caching, pagination, or database transactions.",
     "author": "agent-skills",
     "license": "MIT",
     "keywords": [
@@ -23,75 +23,21 @@
     ]
   },
   "name": "laravel-database-optimization",
-  "description": "Comprehensive Laravel 13 database optimization guide designed for AI agents and LLMs. Contains 33 rules across 9 categories covering query performance, indexing strategies, Eloquent optimization, Redis caching, pagination, transactions, migrations, naming conventions, and query debugging.",
-  "framework": "Laravel 13.x",
-  "phpVersion": "8.3+",
-  "rulesTotal": 33,
-  "lastUpdated": "2026-03-26",
+  "description": "Evidence-backed Laravel database optimization guidance for query shape, indexing, Eloquent hot paths, caching, large datasets, concurrency, migrations, naming, and profiling.",
+  "framework": "Laravel 11.x - 13.x",
+  "phpVersion": "8.2+",
+  "rulesTotal": 9,
+  "lastUpdated": "2026-09-14",
   "categories": [
-    {
-      "name": "Query Performance & N+1",
-      "prefix": "query",
-      "impact": "CRITICAL",
-      "ruleCount": 4,
-      "description": "Eliminate N+1 queries, enforce eager loading, and select only needed columns"
-    },
-    {
-      "name": "Indexing Strategies",
-      "prefix": "index",
-      "impact": "CRITICAL",
-      "ruleCount": 4,
-      "description": "Foreign key indexes, composite indexes, covering indexes, and full-text search"
-    },
-    {
-      "name": "Eloquent Optimization",
-      "prefix": "eloquent",
-      "impact": "HIGH",
-      "ruleCount": 4,
-      "description": "Query builder for hot paths, withCount aggregates, subquery selects, and whereHas optimization"
-    },
-    {
-      "name": "Caching with Redis",
-      "prefix": "cache",
-      "impact": "HIGH",
-      "ruleCount": 4,
-      "description": "Cache::remember patterns, cache invalidation, cache tags, and TTL strategies"
-    },
-    {
-      "name": "Pagination & Large Datasets",
-      "prefix": "data",
-      "impact": "HIGH",
-      "ruleCount": 4,
-      "description": "Cursor pagination, chunkById processing, lazy cursors, and avoiding unbounded queries"
-    },
-    {
-      "name": "Transactions & Locking",
-      "prefix": "lock",
-      "impact": "HIGH",
-      "ruleCount": 3,
-      "description": "Short transactions, deadlock retry logic, and pessimistic locking for critical updates"
-    },
-    {
-      "name": "Migrations",
-      "prefix": "migrate",
-      "impact": "HIGH",
-      "ruleCount": 3,
-      "description": "Zero-downtime migrations, concurrent index creation, and safe column additions"
-    },
-    {
-      "name": "Query Debugging",
-      "prefix": "debug",
-      "impact": "MEDIUM",
-      "ruleCount": 3,
-      "description": "EXPLAIN ANALYZE, Laravel Debugbar integration, and slow query log monitoring"
-    },
-    {
-      "name": "Naming & Structure",
-      "prefix": "naming",
-      "impact": "HIGH",
-      "ruleCount": 4,
-      "description": "Table, column, relationship, and migration naming conventions for Eloquent"
-    }
+    {"name":"Query Performance & N+1","prefix":"query","impact":"CRITICAL","ruleCount":1,"description":"N+1 prevention and bounded query data access"},
+    {"name":"Indexing Strategies","prefix":"index","impact":"CRITICAL","ruleCount":1,"description":"Indexes derived from real query shapes and access patterns"},
+    {"name":"Eloquent Optimization","prefix":"eloquent","impact":"HIGH","ruleCount":1,"description":"Lower-overhead Eloquent/query-builder patterns for measured hot paths"},
+    {"name":"Caching with Redis","prefix":"cache","impact":"HIGH","ruleCount":1,"description":"Explicit cache lifetime and invalidation contracts"},
+    {"name":"Pagination & Large Datasets","prefix":"data","impact":"HIGH","ruleCount":1,"description":"Bounded iteration, chunking, cursors, and pagination"},
+    {"name":"Transactions & Locking","prefix":"lock","impact":"HIGH","ruleCount":1,"description":"Short transactions, conflicts, locks, retries, and deadlocks"},
+    {"name":"Migrations","prefix":"migrate","impact":"HIGH","ruleCount":1,"description":"Production-safe schema change and backfill boundaries"},
+    {"name":"Query Debugging","prefix":"debug","impact":"MEDIUM","ruleCount":1,"description":"Query plans and measured slow-query evidence"},
+    {"name":"Naming & Structure","prefix":"naming","impact":"HIGH","ruleCount":1,"description":"Predictable Eloquent/table/relationship naming"}
   ],
   "references": [
     "https://laravel.com/docs/13.x/eloquent",
@@ -102,46 +48,16 @@
     "https://laravel.com/docs/13.x/redis",
     "https://laravel.com/docs/13.x/eloquent-relationships"
   ],
-  "keywords": [
-    "database",
-    "optimization",
-    "N+1",
-    "eager loading",
-    "indexing",
-    "caching",
-    "Redis",
-    "pagination",
-    "transactions",
-    "migrations",
-    "query builder",
-    "Eloquent",
-    "performance"
-  ],
-  "tags": [
-    "laravel",
-    "database",
-    "performance",
-    "optimization",
-    "eloquent",
-    "redis",
-    "caching",
-    "indexing",
-    "queries",
-    "migrations"
-  ],
+  "keywords": ["database","optimization","N+1","eager loading","indexing","caching","Redis","pagination","transactions","migrations","query builder","Eloquent","performance"],
+  "tags": ["laravel","database","performance","optimization","eloquent","redis","caching","indexing","queries","migrations"],
   "meta": {
     "created": "2026-03-26",
-    "last_updated": "2026-03-26",
-    "rule_count": 33,
+    "last_updated": "2026-09-14",
+    "rule_count": 9,
     "structure_version": "2.0",
+    "canonical_sources": ["SKILL.md", "rules/"],
     "compatibility": {
-      "platforms": [
-        "GitHub Copilot",
-        "Codex",
-        "Claude Code",
-        "Cursor",
-        "Gemini CLI"
-      ]
+      "platforms": ["GitHub Copilot","Codex","Claude Code","Cursor","Gemini CLI"]
     }
   }
 }
