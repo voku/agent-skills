@@ -220,6 +220,68 @@ jobs:
                       if stale_count in projection:
                           errors.append(f"php-best-practices/{projection_name} still contains stale pre-consolidation count: {stale_count}")
 
+          with open("AGENTS.md", "r", encoding="utf-8") as f:
+              root_agents = f.read()
+          if "| Skill | Rules |" in root_agents:
+              errors.append("Root AGENTS.md must not own mutable per-skill rule counts")
+          required_root_projection_boundaries = [
+              "supporting projections only",
+              "do not infer current rule inventory from this root file",
+          ]
+          normalized_root_agents = root_agents.lower()
+          for boundary in required_root_projection_boundaries:
+              if boundary not in normalized_root_agents:
+                  errors.append(f"Root AGENTS.md lost projection ownership boundary: {boundary}")
+
+          simplicity_dir = os.path.join(skills_dir, "code-review-simplicity")
+          simplicity_skill = skill_contents.get("code-review-simplicity")
+          expected_simplicity_rules = [
+              "simp-premature-abstraction",
+              "simp-shallow-control-flow",
+              "simp-bounds-range-clarity",
+              "simp-intention-revealing-naming",
+              "simp-dead-code-elimination",
+          ]
+          if simplicity_skill is None:
+              errors.append("Missing code-review-simplicity/SKILL.md")
+          else:
+              for rule_id in expected_simplicity_rules:
+                  if rule_id not in simplicity_skill:
+                      errors.append(f"code-review-simplicity/SKILL.md is missing consolidated rule: {rule_id}")
+                  rule_path = os.path.join(simplicity_dir, "rules", f"{rule_id}.md")
+                  if not os.path.isfile(rule_path):
+                      errors.append(f"code-review-simplicity is missing rule file: {rule_path}")
+
+              simplicity_projection_paths = [
+                  os.path.join(simplicity_dir, "README.md"),
+                  os.path.join(simplicity_dir, "AGENTS.md"),
+                  os.path.join(simplicity_dir, "metadata.json"),
+              ]
+              obsolete_simplicity_ids = [
+                  "simp-readability-clarity",
+                  "simp-cognitive-load",
+                  "simp-unnecessary-complexity",
+                  "simp-colliding-bounds",
+                  "simp-code-duplication",
+                  "simp-documentation-comments",
+                  "simp-naming-conventions",
+                  "simp-testing-debugging",
+              ]
+              for projection_path in simplicity_projection_paths:
+                  with open(projection_path, "r", encoding="utf-8") as f:
+                      projection = f.read()
+                  for obsolete in obsolete_simplicity_ids:
+                      if obsolete in projection:
+                          errors.append(f"{projection_path} still contains retired simplicity rule id: {obsolete}")
+
+              simplicity_metadata_path = os.path.join(simplicity_dir, "metadata.json")
+              with open(simplicity_metadata_path, "r", encoding="utf-8") as f:
+                  simplicity_metadata = json.load(f)
+              if simplicity_metadata.get("meta", {}).get("rule_count") != 5:
+                  errors.append("code-review-simplicity/metadata.json must report exactly 5 consolidated rules")
+              if simplicity_metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
+                  errors.append("code-review-simplicity metadata must identify SKILL.md + rules/ as canonical sources")
+
           if errors:
               print("Validation failed:")
               for err in errors:

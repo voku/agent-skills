@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "skill": {
     "name": "code-review-simplicity",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Simplicity-focused review lens for identifying unnecessary complexity, dead logic, unclear naming, duplicated behavior, and maintainability drag during code review.",
     "author": "Agent Skills Team",
     "license": "MIT",
@@ -18,97 +18,42 @@
     ]
   },
   "name": "code-review-simplicity",
-  "description": "Simplicity review lens for readability, cognitive load, unnecessary abstraction, duplication, and dead-range logic.",
+  "description": "Targeted simplicity review lens for readability, cognitive load, premature abstraction, dead logic, naming, and bounds clarity.",
   "license": "MIT",
   "author": {
     "name": "Agent Skills Team",
     "url": "https://github.com/AsyrafHussin/agent-skills"
   },
-  "tags": [
-    "code-review",
-    "review-lens",
-    "simp-code-duplication",
-    "simp-cognitive-load",
-    "simp-colliding-bounds",
-    "simp-documentation-comments",
-    "simp-naming-conventions",
-    "simp-premature-abstraction",
-    "simp-readability-clarity",
-    "simp-testing-debugging",
-    "simp-unnecessary-complexity"
-  ],
   "categories": [
-    {
-      "id": "simp-readability-clarity",
-      "name": "Readability & Clarity",
-      "priority": "high",
-      "prefix": "simp-readability-clarity",
-      "count": 1,
-      "description": "Naming, magic values, nesting, boolean complexity, and long functions"
-    },
-    {
-      "id": "simp-cognitive-load",
-      "name": "Cognitive Load",
-      "priority": "high",
-      "prefix": "simp-cognitive-load",
-      "count": 1,
-      "description": "Parameter count, responsibility load, inheritance depth, and mental model cost"
-    },
-    {
-      "id": "simp-unnecessary-complexity",
-      "name": "Unnecessary Complexity",
-      "priority": "critical",
-      "prefix": "simp-unnecessary-complexity",
-      "count": 1,
-      "description": "Over-engineering, premature abstraction, and patterns without value"
-    },
-    {
-      "id": "simp-colliding-bounds",
-      "name": "Colliding or Redundant Bounds",
-      "priority": "critical",
-      "prefix": "simp-colliding-bounds",
-      "count": 1,
-      "description": "Bound-range collapse, dead-range logic, and constant-output paths"
-    },
-    {
-      "id": "simp-code-duplication",
-      "name": "Code Duplication",
-      "priority": "medium",
-      "prefix": "simp-code-duplication",
-      "count": 1,
-      "description": "Copy-paste logic and repeated structures that should converge"
-    },
     {
       "id": "simp-premature-abstraction",
       "name": "Premature Abstraction",
       "priority": "high",
-      "prefix": "simp-premature-abstraction",
-      "count": 1,
-      "description": "One-implementation abstractions, one-call-site extractions, and duplication that is cheaper than a parameterized merge"
+      "rule_count": 1
     },
     {
-      "id": "simp-documentation-comments",
-      "name": "Documentation & Comments",
-      "priority": "low",
-      "prefix": "simp-documentation-comments",
-      "count": 1,
-      "description": "Missing, outdated, or contradictory explanation"
+      "id": "simp-shallow-control-flow",
+      "name": "Control Flow",
+      "priority": "high",
+      "rule_count": 1
     },
     {
-      "id": "simp-naming-conventions",
-      "name": "Naming Conventions",
+      "id": "simp-bounds-range-clarity",
+      "name": "Bounds & Range",
+      "priority": "critical",
+      "rule_count": 1
+    },
+    {
+      "id": "simp-intention-revealing-naming",
+      "name": "Naming & Clarity",
       "priority": "medium",
-      "prefix": "simp-naming-conventions",
-      "count": 1,
-      "description": "Non-descriptive, inconsistent, or misleading names"
+      "rule_count": 1
     },
     {
-      "id": "simp-testing-debugging",
-      "name": "Testing & Debugging Simplicity",
-      "priority": "low",
-      "prefix": "simp-testing-debugging",
-      "count": 1,
-      "description": "Hidden side effects, difficult debugging, and hard-to-test design"
+      "id": "simp-dead-code-elimination",
+      "name": "Dead Code & Symmetry",
+      "priority": "high",
+      "rule_count": 1
     }
   ],
   "references": [
@@ -118,16 +63,20 @@
       "type": "source"
     },
     {
-      "title": "Refactoring Guru code smells",
-      "url": "https://refactoring.guru/refactoring/smells",
+      "title": "A Philosophy of Software Design",
+      "url": "https://www.goodreads.com/book/show/39996759-a-philosophy-of-software-design",
       "type": "reference"
     }
   ],
   "meta": {
     "created": "2026-05-26",
-    "last_updated": "2026-08-07",
-    "rule_count": 9,
+    "last_updated": "2026-09-14",
+    "rule_count": 5,
     "structure_version": "2.0",
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ],
     "compatibility": {
       "platforms": [
         "GitHub Copilot",
