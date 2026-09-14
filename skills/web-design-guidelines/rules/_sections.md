@@ -1,26 +1,36 @@
-# Sections
+# Rule Sections
 
-This file defines all sections, their ordering, impact levels, and descriptions.
-The section ID (in parentheses) is the filename prefix used to group rules.
+## Priority Levels
 
----
+| Level | Description | When to Apply |
+|-------|-------------|---------------|
+| CRITICAL | Fundamental WCAG compliance & layout stability | Always |
+| HIGH | Form interactions & input validation UX | Most interfaces |
+| MEDIUM | Polish & responsive media loading | Scaling apps |
 
-## 1. Accessibility (a11y)
+## Section Overview
 
-**Impact:** CRITICAL
-**Description:** WCAG 2.2 compliance patterns for inclusive web interfaces. Semantic HTML structure, heading hierarchy, keyboard navigation, focus management, ARIA labels, color contrast ratios, meaningful alt text, accessible error messages, form label associations, live regions for dynamic content, skip links, and screen reader optimization.
+### 1. Semantic Structure & Navigation (`a11y`)
+- **Impact:** CRITICAL
+- **Rules:** `a11y-semantic-structure`
+- **Description:** Native HTML5 landmarks (`<header>`, `<nav>`, `<main>`, `<footer>`), sequential heading hierarchy (`h1` -> `h2` -> `h3`), top-level skip links, and contextual image `alt` descriptions.
 
-## 2. Forms (form)
+### 2. Keyboard Navigation & Focus (`a11y`)
+- **Impact:** CRITICAL
+- **Rules:** `a11y-keyboard-focus`
+- **Description:** Complete keyboard navigability without positive `tabindex`, modal focus trapping with return-on-close restoration, and prominent visible focus indicators.
 
-**Impact:** HIGH
-**Description:** Accessible and user-friendly form patterns. Autocomplete attributes for autofill, correct input types for mobile keyboards, clear error display with ARIA associations, user-friendly validation timing, inline validation with debounce, multi-step form progression, appropriate placeholder usage, and clear submission feedback.
+### 3. Contrast, Labels, & Live Regions (`a11y`)
+- **Impact:** CRITICAL
+- **Rules:** `a11y-aria-contrast`
+- **Description:** WCAG AA color contrast (4.5:1 / 3:1), redundant non-color status cues, accessible `aria-label` tags for icon buttons, and polite/assertive dynamic screen reader announcements via `aria-live`.
 
-## 3. Animation & Motion (motion)
+### 4. Form UX & Validation (`form`)
+- **Impact:** HIGH
+- **Rules:** `form-accessible-ux`
+- **Description:** Explicit `<label>` associations, input type optimization (`email`, `tel`), browser `autoComplete` attributes, `aria-describedby` error linkages, and blur/submit validation timing.
 
-**Impact:** CRITICAL
-**Description:** Respecting user motion preferences. The prefers-reduced-motion media query detects users with vestibular disorders who need reduced or eliminated animations. WCAG 2.1 SC 2.3.3 (Level AAA) requires providing controls to disable non-essential animations.
-
-## 4. Performance & UX (perf)
-
-**Impact:** MEDIUM
-**Description:** Image loading optimization and layout stability. Preventing Cumulative Layout Shift (CLS) with explicit dimensions, lazy loading below-fold images, responsive images with modern formats, skeleton placeholders, and font loading strategies that minimize visual disruption.
+### 5. Motion & Layout Stability (`motion`)
+- **Impact:** CRITICAL
+- **Rules:** `ux-motion-layout-stability`
+- **Description:** Respecting `prefers-reduced-motion` media queries, eliminating Cumulative Layout Shift (CLS) with explicit dimensions / aspect ratios, and performant image loading.
