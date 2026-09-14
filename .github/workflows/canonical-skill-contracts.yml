@@ -77,7 +77,7 @@ jobs:
               for error in errors:
                   print(" - " + error)
               if legacy:
-                  print("Legacy rule-based skills outside the canonical contract:")
+                  print("Remaining legacy rule-based skills outside the canonical contract:")
                   for skill_name in legacy:
                       print(" - " + skill_name)
               sys.exit(1)
