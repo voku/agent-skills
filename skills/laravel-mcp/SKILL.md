@@ -11,7 +11,7 @@ metadata:
 
 # Laravel MCP
 
-Comprehensive guide for building MCP (Model Context Protocol) servers with Laravel. Contains 7 rules across 5 categories for exposing tools, prompts, and resources to AI clients.
+Comprehensive guide for building MCP (Model Context Protocol) servers with Laravel, covering server registration/authentication, tool schemas and responses, resources/prompts, and testing.
 
 ## When to Apply
 
@@ -130,6 +130,4 @@ Each rule file contains:
 - Good Example with explanation
 - Laravel 13 and PHP 8.3 specific context and references
 
-## Full Compiled Document
-
-For the complete guide with all rules expanded: `AGENTS.md`
+`AGENTS.md` and `README.md` are supporting routing projections only. If either disagrees with this file or a rule under `rules/`, follow the canonical source and repair the projection.
