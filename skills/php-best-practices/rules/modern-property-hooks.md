@@ -1,109 +1,78 @@
 ---
-title: Property Hooks
-impact: CRITICAL
-impactDescription: Modern PHP 8.x language features
-tags: php, modern-php, php8
+id: modern-property-hooks
+title: Property Hooks and Asymmetric Visibility (PHP 8.4+)
+category: modern
+priority: HIGH
+triggers: [boilerplate-getter-setter, asymmetric-visibility, property-hooks, php84-features]
+tags: [property-hooks, asymmetric-visibility, modern-php, php84]
 ---
 
-# Property Hooks
+# Property Hooks and Asymmetric Visibility
 
-## Why it matters
-Separate getter and setter methods scatter access logic away from the property definition, making it harder to see what a property actually does at a glance. PHP 8.4 property hooks co-locate that logic directly with the property declaration, reducing boilerplate without hiding behaviour — as long as hooks stay pure.
+**Trigger Anchor:** In PHP 8.4+, replace repetitive boilerplate getters/setters with property hooks. Use asymmetric visibility (`public private(set)`) for properties read publicly but written only internally.
 
-## Rule
-Use property hooks for focused, pure access logic (normalisation, formatting, computed values) co-located with the property. Never put side effects inside a hook.
+---
 
-## Bad
+### Bad
 ```php
 <?php
 
 declare(strict_types=1);
 
-final class User
+// ❌ Verbose getters/setters for simple mutations or validation
+class BankAccount
 {
-    private string $email;
-    private string $firstName;
-    private string $lastName;
+    private int $balanceInCents;
 
-    public function getEmail(): string        { return $this->email; }
-    public function setEmail(string $email): void
+    public function __construct(int $initial)
     {
-        $this->email = strtolower(trim($email));
+        $this->balanceInCents = $initial;
     }
 
-    public function getFirstName(): string    { return $this->firstName; }
-    public function getLastName(): string     { return $this->lastName; }
-    public function getFullName(): string     { return "{$this->firstName} {$this->lastName}"; }
+    public function getBalanceInCents(): int
+    {
+        return $this->balanceInCents;
+    }
+
+    public function getBalanceInEur(): float
+    {
+        return $this->balanceInCents / 100;
+    }
+
+    private function setBalance(int $amount): void
+    {
+        $this->balanceInCents = max(0, $amount);
+    }
 }
 ```
 
-## Better
+### Good
 ```php
 <?php
 
 declare(strict_types=1);
 
-final class User
+// ✅ PHP 8.4+ asymmetric visibility and property hooks
+class BankAccount
 {
-    public string $email {
-        set(string $value) {
-            $this->email = strtolower(trim($value));
-        }
+    // Publicly readable, privately writable
+    public private(set) int $balanceInCents {
+        set => max(0, $value);
     }
 
-    public function __construct(
-        public readonly string $firstName,
-        public readonly string $lastName,
-    ) {}
+    // Virtual computed property hook
+    public float $balanceInEur {
+        get => $this->balanceInCents / 100;
+    }
+
+    public function __construct(int $initial)
+    {
+        $this->balanceInCents = $initial;
+    }
+
+    public function deposit(int $amount): void
+    {
+        $this->balanceInCents += $amount;
+    }
 }
-
-$user = new User('Alice', 'Smith');
-$user->email = '  ALICE@EXAMPLE.COM  ';
-echo $user->email;  // alice@example.com
 ```
-
-## Best
-```php
-<?php
-
-declare(strict_types=1);
-
-final class User
-{
-    // set hook normalises input; get hook is implicit (returns stored value)
-    public string $email {
-        set(string $value) {
-            $this->email = strtolower(trim($value));
-        }
-    }
-
-    // Virtual computed property — no backing storage, no setter
-    public string $fullName {
-        get => "{$this->firstName} {$this->lastName}";
-    }
-
-    public function __construct(
-        public readonly string $firstName,
-        public readonly string $lastName,
-    ) {}
-}
-
-$user = new User('Alice', 'Smith');
-$user->email = '  ALICE@EXAMPLE.COM  ';
-
-echo $user->email;    // alice@example.com
-echo $user->fullName; // Alice Smith  (computed, no stored field)
-```
-
-## Exceptions / trade-offs
-Do **not** put side effects inside hooks — no database queries, HTTP requests, event dispatching, or logging. Hooks fire on every property access, and hidden I/O in a property access is a debugging and performance trap. For side effects, use explicit methods. Property hooks also cannot be used on `readonly` properties.
-
-## Static-analysis notes
-PHPStan and Psalm 8.4+ understand property hooks, infer the type of virtual (get-only) properties, and report type mismatches in hook bodies. IDEs provide navigation directly into hook bodies and show hook presence in property tooltips.
-
-## Version notes
-`PHP 8.4+`
-
-## Related topics
-- [modern-asymmetric-visibility.md](modern-asymmetric-visibility.md) — for read-public / write-private without logic
-- [modern-readonly-properties.md](modern-readonly-properties.md) — for fully immutable properties
