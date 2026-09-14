@@ -22,11 +22,11 @@ For each skill under `skills/<skill-name>/`:
 
 1. `SKILL.md` is the canonical activation and high-level skill contract.
 2. `rules/` contains canonical detailed guidance when the skill uses rule files.
-3. `README.md`, `AGENTS.md`, and `metadata.json` are supporting projections or metadata unless the skill explicitly establishes a narrower owner contract.
+3. `README.md`, `AGENTS.md`, and `metadata.json` are supporting projections only unless the skill explicitly establishes a narrower owner contract.
 
 Supporting projections must summarize or route to canonical guidance. They must not introduce independent rule semantics, inventories, counts, or tool contracts.
 
-This root file is **routing guidance only**. Do not add per-skill rule counts, copied rule inventories, hand-maintained skill activation tables, framework-version tables, or tool-specific execution recipes here.
+Do not infer current rule inventory from this root file. This root file is **routing guidance only**. Do not add per-skill rule counts, copied rule inventories, hand-maintained skill activation tables, framework-version tables, or tool-specific execution recipes here.
 
 ## Routing workflow
 
