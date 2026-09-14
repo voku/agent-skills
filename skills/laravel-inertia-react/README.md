@@ -1,76 +1,41 @@
 # Laravel + Inertia.js + React
 
-Patterns for building modern monolithic applications with Laravel, Inertia.js, and React.
+Portable guidance for Laravel applications that use Inertia.js with React.
 
-## Overview
+## Canonical Source
 
-This skill provides guidance for:
-- Page component structure and typing
-- Form handling with useForm
-- Navigation and partial reloads
-- Shared data and authentication
-- Persistent layouts
-- File uploads
+`SKILL.md` defines when this skill applies and the high-level routing contract. `rules/` contains the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, category count, dependency/version matrix, or compiled set of examples.
 
-## Categories
+## When to Use
 
-### 1. Page Components (Critical)
-Structure, typing, and best practices for Inertia pages.
+Use this skill for work involving:
+- typed Inertia page props and partial reload/state preservation;
+- `useForm` lifecycle, validation errors, uploads, and processing state;
+- `<Link>` / router navigation;
+- middleware-provided shared props;
+- persistent React layouts across Inertia navigation.
 
-### 2. Forms & Validation (Critical)
-useForm hook, error handling, and form state management.
+## Routing
 
-### 3. Navigation & Links (High)
-Link component, preserve state, and partial reloads.
+1. Ground the target repository's Laravel, Inertia, React, TypeScript, Ziggy, and PHP versions.
+2. Read `SKILL.md` to select the canonical rules matching the observed problem.
+3. Load only those rule files instead of compiling the whole integration guide into context.
+4. Preserve target-project route names, types, middleware contracts, and validation/authorization boundaries.
+5. Validate through the target repository's configured toolchain and report only observed results.
 
-### 4. Shared Data (High)
-Authentication, flash messages, and global props.
+## Stable Boundaries
 
-### 5. Layouts (Medium)
-Persistent layouts for better UX and performance.
+- Server-side validation and authorization remain authoritative for writes.
+- Shared props belong at the Inertia middleware/application boundary, not in duplicated client globals.
+- Internal SPA navigation and external/download navigation are different contracts.
+- State/scroll preservation and persistent layouts should be explicit behavioral choices.
 
-### 6. File Uploads (Medium)
-Handling file uploads with progress tracking.
+## Projection Boundary
 
-## Quick Start
-
-```tsx
-// Page component with form
-import { useForm } from '@inertiajs/react'
-
-export default function Create() {
-  const { data, setData, post, processing, errors } = useForm({
-    title: '',
-    body: '',
-  })
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    post(route('posts.store'))
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        value={data.title}
-        onChange={(e) => setData('title', e.target.value)}
-      />
-      {errors.title && <span>{errors.title}</span>}
-      <button disabled={processing}>Submit</button>
-    </form>
-  )
-}
-```
-
-## Usage
-
-This skill triggers automatically when:
-- Building Inertia.js pages
-- Handling forms with useForm
-- Managing shared data
-- Implementing layouts
+Do not copy current rule IDs, counts, dependency versions, or framework-version tables into this file. If this projection disagrees with `SKILL.md` or a file under `rules/`, follow the canonical source and repair the projection.
 
 ## References
 
-- [Inertia.js Documentation](https://inertiajs.com/)
-- [Laravel Documentation](https://laravel.com/docs)
+- Inertia.js documentation: https://inertiajs.com/
+- Laravel documentation: https://laravel.com/docs
+- React documentation: https://react.dev/
