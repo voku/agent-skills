@@ -1,77 +1,67 @@
 ---
 id: mock-boundaries
-title: Mock at System Boundaries
+title: Use Test Doubles at Stable Seams
 category: mock
 priority: MEDIUM
 triggers: [mocking-internal-utils, over-mocking-logic, unverified-mock-calls, incomplete-mock-payloads, mock-returns-true]
-tags: [mocking, boundaries, minimal-mocking, msw, verification]
+tags: [mocking, seams, boundaries, minimal-mocking, contracts, verification]
 ---
 
-# Mock at System Boundaries
+# Use Test Doubles at Stable Seams
 
-**Trigger Anchor:** Mock only at external boundaries (HTTP, DB, message queues); preserve real internal logic, simulate realistic contracts (e.g. MSW), and verify critical side effects.
+**Trigger Anchor:** Prefer behavior-focused tests that exercise real application logic. Introduce mocks, fakes, stubs, or spies at stable seams when the real collaborator would make the test nondeterministic, destructive, unavailable, prohibitively slow, or unable to isolate the behavior under test. Avoid mocking implementation details merely because they are easy to replace.
+
+External systems such as HTTP services, databases, queues, clocks, filesystems, and process boundaries are common seams, but they are not the only legitimate ones. The target repository's architecture determines where an owned seam actually exists.
 
 ---
 
-## Boundary Mocking vs Internal Utility Mocking
+## Behavior vs Implementation Coupling
 
 ### Bad
 ```typescript
-// ❌ Mocking internal helpers couples test to file structure and skips real business logic
+// ❌ Internal helpers are mocked only to mirror today's file decomposition.
 vi.mock('./tax-calculator', () => ({ calculateTax: vi.fn().mockReturnValue(10) }));
 vi.mock('./format-currency', () => ({ formatCurrency: vi.fn().mockReturnValue('$110') }));
 
 test('processes order', () => {
   const result = processOrder({ price: 100 });
-  expect(result.formatted).toBe('$110'); // Tests fake wiring, not real calculation!
+  expect(result.formatted).toBe('$110');
 });
 ```
 
-### Good
+The test can stay green while the real calculation is broken, and harmless refactoring of helper boundaries now breaks the test.
+
+### Better
 ```typescript
-// ✅ Internal logic executes for real; only boundary clients (HTTP/DB) are mocked
-test('processes order and charges boundary gateway', async () => {
-  const mockGateway = { charge: vi.fn().mockResolvedValue({ id: 'txn_1', status: 'paid' }) };
-  const processor = new OrderProcessor(mockGateway); // Real tax and pricing logic run
+// ✅ Real domain logic runs; only the owned payment seam is replaced.
+test('calculates total and charges the payment gateway', async () => {
+  const gateway = { charge: vi.fn().mockResolvedValue({ id: 'txn_1', status: 'paid' }) };
+  const processor = new OrderProcessor(gateway);
 
   const result = await processor.processOrder({ price: 100, taxRate: 0.1 });
 
   expect(result.total).toBe(110);
-  expect(mockGateway.charge).toHaveBeenCalledWith(110);
-  expect(mockGateway.charge).toHaveBeenCalledTimes(1);
+  expect(gateway.charge).toHaveBeenCalledWith(110);
 });
 ```
+
+Mock interactions only when the interaction itself is part of the contract. Prefer asserting observable results when call order/count is merely an implementation detail.
 
 ---
 
-## Realistic Contract Simulation with MSW
+## Realistic Boundary Simulation
 
-### Bad
-```typescript
-// ❌ Primitive mock response ignores real API schema and missing field errors
-const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({ success: true }) });
-```
+When replacing an HTTP or message boundary, keep the fake contract realistic enough to catch schema/status/error assumptions. A protocol-level tool such as MSW can be useful for frontend/HTTP-client tests, but it is an option rather than a required library.
 
-### Good
-```typescript
-// ✅ MSW intercepts HTTP requests with realistic payloads and error codes
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
+For database behavior, use an integration test with the real supported database when SQL semantics, constraints, transactions, migrations, or mapping are the behavior under test. A repository fake is appropriate when the application decision is the subject and persistence behavior is deliberately outside that test's scope.
 
-const server = setupServer(
-  http.get('/api/users/:id', ({ params }) => {
-    if (params.id === 'unknown') return HttpResponse.json({ error: 'User not found' }, { status: 404 });
-    return HttpResponse.json({ id: params.id, name: 'Alice', email: 'alice@test.com', role: 'member' });
-  })
-);
+## Selection Rule
 
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+Choose the cheapest test double that preserves the evidence needed by the test:
 
-test('loads complete user profile via real HTTP client', async () => {
-  const client = new UserApiClient();
-  const user = await client.getUser('123');
-  expect(user.role).toBe('member');
-});
-```
+- **fake** for a lightweight working implementation;
+- **stub** for controlled inputs/results;
+- **spy/mock** when an interaction is an observable contract;
+- **real collaborator** when substituting it would hide the behavior being verified.
+
+Do not make a test more isolated than its claim can support.
