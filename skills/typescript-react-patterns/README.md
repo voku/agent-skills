@@ -1,52 +1,23 @@
-# TypeScript React Patterns v2.0.0
+# TypeScript React Patterns
 
-Type-safe React with TypeScript.
+Portable type-safety guidance for modern React applications written in TypeScript.
 
-## Overview
+## Canonical Source
 
-- Component typing (props interface, children, forwardRef, polymorphic, rest props)
-- Hook typing (useState, useRef, useReducer, useCallback, useMemo, custom hooks)
-- Event handling (form, click, keyboard events)
-- Ref typing (DOM elements, callback refs, useImperativeHandle)
-- Generic components (list, select, table, constraints)
-- Context & state (typed provider, useReducer with discriminated unions)
-- Utility types (ComponentProps, Pick/Omit, discriminated unions)
-- 33 rules across 7 categories
+`SKILL.md` defines activation and the high-level contract. The files under `rules/` contain the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, count, compatibility table, or compiled example set.
 
-## Categories
+## When to Use
 
-### 1. Component Typing (Critical)
-Props interface, children types, default props, forwardRef, polymorphic, FC vs function, display name, rest props.
+Use this skill when typing component props, hooks, DOM events, refs, generic components, React Context, or discriminated UI state.
 
-### 2. Hook Typing (Critical)
-useState, useRef, useReducer, useCallback, useMemo, useContext, custom hooks, generic hooks.
+## Routing
 
-### 3. Event Handling (High)
-Handler types, click events, form events, keyboard events.
+1. Inspect the target repository's React/TypeScript versions and compiler/linter conventions.
+2. Read `SKILL.md` first.
+3. Load only the canonical rule files relevant to the current typing problem.
+4. Preserve useful inference and reuse existing repository types where possible.
+5. Verify with the repository's configured TypeScript/lint/test tooling.
 
-### 4. Ref Typing (High)
-DOM element refs, callback refs, useImperativeHandle.
+## Projection Boundary
 
-### 5. Generic Components (Medium)
-Generic list, select, table, constraints with extends/keyof.
-
-### 6. Context & State (Medium)
-Typed context creation, provider pattern, context with useReducer.
-
-### 7. Utility Types (Low)
-ComponentPropsWithoutRef, Pick/Omit/Partial, discriminated unions.
-
-## Usage
-
-```
-Type this React component properly
-Fix TypeScript errors in my React code
-Create a generic table component
-Set up typed Context with useReducer
-```
-
-## References
-
-- [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app)
-- [React + TypeScript Guide](https://react.dev/learn/typescript)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/)
+If this projection disagrees with `SKILL.md` or `rules/`, follow the canonical source and repair the projection. Do not copy current rule IDs, counts, framework versions, or long examples into this file.
