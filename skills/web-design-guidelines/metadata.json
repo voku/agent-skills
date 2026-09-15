@@ -3,7 +3,7 @@
   "skill": {
     "name": "web-design-guidelines",
     "version": "2.1.0",
-    "description": "UI/UX best practices and accessibility audit. Use when reviewing UI code, checking accessibility, running accessibility audits, auditing forms, or ensuring web interface best practices. Triggers on \"audit accessibility\", \"check WCAG\", \"review UI\", \"check accessibility\", \"audit design\", \"review UX\", or \"check best practices\".",
+    "description": "Focused UI/UX and accessibility review guidance for semantic structure, keyboard/focus behavior, ARIA and contrast, forms, motion, and layout stability.",
     "author": "Agent Skills Contributors",
     "license": "MIT",
     "keywords": [
@@ -14,78 +14,51 @@
       "keyboard-navigation",
       "aria",
       "semantic-html",
-      "performance",
       "ui-ux",
       "audit"
     ]
   },
   "name": "Web Design Guidelines",
-  "description": "WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance patterns for inclusive web interfaces. Contains 23 rules across 4 categories. Supports accessibility audit mode with PASS/FAIL checklist output.",
   "license": "MIT",
-  "author": {
-    "name": "Agent Skills Contributors",
-    "url": "https://github.com/AsyrafHussin/agent-skills"
-  },
   "categories": [
     {
-      "name": "Accessibility",
-      "prefix": "a11y",
-      "impact": "CRITICAL",
-      "ruleCount": 12
+      "id": "a11y-semantic-structure",
+      "name": "Semantic Structure",
+      "impact": "CRITICAL"
     },
     {
-      "name": "Forms",
-      "prefix": "form",
-      "impact": "HIGH",
-      "ruleCount": 8
+      "id": "a11y-keyboard-focus",
+      "name": "Keyboard and Focus",
+      "impact": "CRITICAL"
     },
     {
-      "name": "Animation & Motion",
-      "prefix": "motion",
-      "impact": "CRITICAL",
-      "ruleCount": 1
+      "id": "a11y-aria-contrast",
+      "name": "ARIA and Contrast",
+      "impact": "CRITICAL"
     },
     {
-      "name": "Performance & UX",
-      "prefix": "perf",
-      "impact": "MEDIUM",
-      "ruleCount": 2
+      "id": "form-accessible-ux",
+      "name": "Accessible Forms",
+      "impact": "HIGH"
+    },
+    {
+      "id": "ux-motion-layout-stability",
+      "name": "Motion and Layout Stability",
+      "impact": "CRITICAL"
     }
   ],
   "references": [
-    "https://www.w3.org/WAI/WCAG22/quickref/",
-    "https://www.w3.org/WAI/ARIA/apg/",
-    "https://web.dev/accessibility/",
-    "https://developer.mozilla.org/en-US/docs/Web/Accessibility",
-    "https://a11yproject.com/"
+    "https://www.w3.org/WAI/standards-guidelines/wcag/",
+    "https://www.w3.org/WAI/ARIA/apg/"
   ],
-  "keywords": [
-    "accessibility",
-    "wcag",
-    "a11y",
-    "forms",
-    "keyboard-navigation",
-    "aria",
-    "semantic-html",
-    "performance",
-    "ui-ux",
-    "audit"
-  ],
-  "rulesTotal": 23,
-  "lastUpdated": "2026-03-26",
   "meta": {
     "created": "2026-03-26",
-    "last_updated": "2026-03-26",
-    "rule_count": 23,
+    "last_updated": "2026-09-15",
+    "rule_count": 5,
     "structure_version": "2.0",
-    "compatibility": {
-      "platforms": [
-        "GitHub Copilot",
-        "Codex",
-        "Claude Code",
-        "Cursor",
-        "Gemini CLI"
-      ]
-    }
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ]
   }
 }
