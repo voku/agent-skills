@@ -1,109 +1,38 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "skill": {
     "name": "api-design-patterns",
-    "version": "2.0.0",
-    "description": "RESTful API design, error handling, versioning, and best practices. Use when designing APIs, reviewing endpoints, implementing error responses, or setting up API structure. Triggers on \"design API\", \"review API\", \"REST best practices\", or \"API patterns\".",
+    "version": "2.1.0",
+    "description": "Portable HTTP API design guidance for resource contracts, error handling, security, querying, lifecycle evolution, response conventions, and OpenAPI documentation.",
     "author": "Agent Skills Contributors",
     "license": "MIT",
     "keywords": [
       "api",
-      "rest",
-      "restful",
       "http",
+      "rest",
       "error-handling",
       "pagination",
       "versioning",
       "security",
-      "openapi",
-      "swagger"
+      "openapi"
     ]
   },
   "name": "API Design Patterns",
-  "description": "RESTful API design principles for building consistent, developer-friendly APIs. Contains 10 rules across 7 categories covering resource design, error handling, security, pagination, versioning, response format, and documentation.",
   "license": "MIT",
-  "author": {
-    "name": "Agent Skills Contributors",
-    "url": "https://github.com/AsyrafHussin/agent-skills"
-  },
-  "categories": [
-    {
-      "name": "Resource Design",
-      "prefix": "rest",
-      "impact": "CRITICAL",
-      "ruleCount": 2
-    },
-    {
-      "name": "Error Handling",
-      "prefix": "error",
-      "impact": "CRITICAL",
-      "ruleCount": 1
-    },
-    {
-      "name": "Security",
-      "prefix": "sec",
-      "impact": "CRITICAL",
-      "ruleCount": 2
-    },
-    {
-      "name": "Pagination & Querying",
-      "prefix": "query",
-      "impact": "HIGH",
-      "ruleCount": 2
-    },
-    {
-      "name": "Versioning",
-      "prefix": "ver",
-      "impact": "HIGH",
-      "ruleCount": 1
-    },
-    {
-      "name": "Response Format",
-      "prefix": "resp",
-      "impact": "MEDIUM",
-      "ruleCount": 1
-    },
-    {
-      "name": "Documentation",
-      "prefix": "doc",
-      "impact": "MEDIUM",
-      "ruleCount": 1
-    }
-  ],
   "references": [
-    "https://restfulapi.net",
-    "https://zalando.github.io/restful-api-guidelines",
-    "https://github.com/microsoft/api-guidelines",
-    "https://cloud.google.com/apis/design",
-    "https://swagger.io/specification"
+    "https://www.rfc-editor.org/rfc/rfc9457.html",
+    "https://www.rfc-editor.org/rfc/rfc9745.html",
+    "https://www.rfc-editor.org/rfc/rfc8594.html",
+    "https://spec.openapis.org/oas/latest.html"
   ],
-  "keywords": [
-    "api",
-    "rest",
-    "restful",
-    "http",
-    "error-handling",
-    "pagination",
-    "versioning",
-    "security",
-    "openapi",
-    "swagger"
-  ],
-  "rulesTotal": 10,
-  "lastUpdated": "2026-09-14",
   "meta": {
     "created": "2026-03-14",
-    "last_updated": "2026-09-14",
+    "last_updated": "2026-09-15",
     "rule_count": 10,
     "structure_version": "2.0",
-    "compatibility": {
-      "platforms": [
-        "GitHub Copilot",
-        "Codex",
-        "Claude Code",
-        "Cursor",
-        "Gemini CLI"
-      ]
-    }
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ]
   }
 }
