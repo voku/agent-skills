@@ -1,112 +1,36 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "skill": {
     "name": "testing-best-practices",
-    "version": "2.0.0",
-    "description": "Unit testing, integration testing, and test-driven development principles. Use when writing tests, reviewing test code, improving test coverage, or setting up testing strategy. Triggers on \"write tests\", \"review tests\", \"testing best practices\", or \"TDD\".",
+    "version": "2.1.0",
+    "description": "Portable testing guidance for regression evidence, test structure, isolation, assertions, test data, test doubles, coverage strategy, and feedback speed.",
     "author": "Agent Skills Contributors",
     "license": "MIT",
     "keywords": [
       "testing",
       "unit-tests",
       "integration-tests",
-      "tdd",
-      "vitest",
-      "jest",
-      "mocking",
-      "coverage"
+      "regression-tests",
+      "test-doubles",
+      "coverage",
+      "flaky-tests"
     ]
   },
   "name": "Testing Best Practices",
-  "description": "Unit testing, integration testing, and TDD principles for reliable, maintainable test suites. Contains 11 rules across 7 categories using TypeScript with Jest/Vitest.",
   "license": "MIT",
-  "author": {
-    "name": "Agent Skills Contributors",
-    "url": "https://github.com/AsyrafHussin/agent-skills"
-  },
-  "categories": [
-    {
-      "name": "Test Structure",
-      "prefix": "struct",
-      "impact": "CRITICAL",
-      "ruleCount": 2
-    },
-    {
-      "name": "Test Isolation",
-      "prefix": "iso",
-      "impact": "CRITICAL",
-      "ruleCount": 2
-    },
-    {
-      "name": "Assertions",
-      "prefix": "assert",
-      "impact": "HIGH",
-      "ruleCount": 1
-    },
-    {
-      "name": "Test Data",
-      "prefix": "data",
-      "impact": "HIGH",
-      "ruleCount": 2
-    },
-    {
-      "name": "Mocking",
-      "prefix": "mock",
-      "impact": "MEDIUM",
-      "ruleCount": 1
-    },
-    {
-      "name": "Coverage",
-      "prefix": "cov",
-      "impact": "HIGH",
-      "ruleCount": 2
-    },
-    {
-      "name": "Performance",
-      "prefix": "perf",
-      "impact": "LOW",
-      "ruleCount": 1
-    }
-  ],
   "references": [
     "https://vitest.dev",
     "https://jestjs.io",
-    "https://testing-library.com",
-    "https://mswjs.io"
+    "https://testing-library.com"
   ],
-  "keywords": [
-    "testing",
-    "unit-tests",
-    "integration-tests",
-    "tdd",
-    "vitest",
-    "jest",
-    "mocking",
-    "coverage"
-  ],
-  "rulesTotal": 11,
-  "lastUpdated": "2026-09-14",
   "meta": {
     "created": "2026-03-14",
-    "last_updated": "2026-09-14",
+    "last_updated": "2026-09-15",
     "rule_count": 11,
     "structure_version": "2.0",
-    "compatibility": {
-      "platforms": [
-        "GitHub Copilot",
-        "Codex",
-        "Claude Code",
-        "Cursor",
-        "Gemini CLI"
-      ]
-    }
-  },
-  "tags": [
-    "cov-adversarial-probe",
-    "cov-regression-first",
-    "test-structure",
-    "test-isolation",
-    "mocking",
-    "tdd"
-  ]
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ]
+  }
 }
