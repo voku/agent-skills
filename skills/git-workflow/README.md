@@ -1,84 +1,27 @@
 # Git Workflow
 
-Git best practices, commit conventions, and branching strategies for clean, maintainable repositories.
+Portable Git workflow guidance for commit quality, branch lifecycle, pull requests, history hygiene, and collaboration.
 
-**Version:** 1.2.0 | **Rules:** 31 | **License:** MIT
+## Canonical Source
 
----
+`SKILL.md` defines activation and the high-level contract. The files under `rules/` contain the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, count, branching-strategy matrix, or command cookbook.
 
-## Overview
+## When to Use
 
-This skill provides guidance for:
-- Commit message conventions and enforcement
-- Branch naming, management, and workflow strategies
-- Pull request workflows
-- History management and git worktree
-- Team collaboration and .gitignore
+Use this skill when reviewing commit history, shaping commits or branches, preparing pull requests, cleaning private branch history, or evaluating repository collaboration practices.
 
-## Categories
+## Routing
 
-### 1. Commit Messages (Critical) — 8 rules
-Conventional commits, atomic changes, meaningful messages, git hooks enforcement.
+1. Ground the target repository's current Git and contribution policy.
+2. Read `SKILL.md` first.
+3. Load only the relevant rule files for commits, branches, PRs, history, or collaboration.
+4. Preserve repository-specific merge/release policy and required CI checks.
+5. Prefer observable repository state over generic tool or workflow assumptions.
 
-### 2. Branching Strategy (High) — 8 rules
-Branch naming, feature branches, protected main, GitFlow vs GitHub Flow vs Trunk-Based, monorepo workflows.
+## Safety Boundary
 
-### 3. Pull Requests (High) — 6 rules
-Small PRs, descriptions, reviews, CI checks, squash merge, draft PRs.
+Shared history must not be rewritten; failing CI must not be bypassed to force a merge; repository-wide workflow settings are changed only when the task authorizes that scope. Tooling such as commitlint, Husky, semantic-release, or a particular Git-flow model must be discovered from the target repository rather than assumed from this skill.
 
-### 4. History Management (Medium) — 5 rules
-Rebase vs merge, no force push, clean history, tags, git worktree.
+## Projection Boundary
 
-### 5. Collaboration (Medium) — 4 rules
-Code reviews, conflict resolution, communication, .gitignore best practices.
-
-## Usage
-
-Ask Claude to:
-- "Review commit message"
-- "Suggest branch name"
-- "Check PR description"
-- "Set up git workflow for new project"
-- "Which workflow strategy should I use?"
-- "How to use git worktree?"
-
-## Quick Reference
-
-### Commit Types
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `refactor`: Code restructure
-- `test`: Tests
-- `chore`: Maintenance
-- `ci`: CI/CD changes
-
-### Branch Prefixes
-- `feature/`: New features
-- `fix/`: Bug fixes
-- `hotfix/`: Production fixes
-- `docs/`: Documentation
-- `refactor/`: Refactoring
-
-### Workflow Strategy Guide
-| Strategy | Best For | Complexity |
-|----------|----------|------------|
-| GitHub Flow | Small teams, continuous deploy | Low |
-| GitFlow | Scheduled releases, versioned apps | High |
-| Trunk-Based | Large teams, multiple deploys/day | Medium |
-
-### Example Commits
-```
-feat(auth): add OAuth login
-fix(cart): resolve total calculation
-docs(api): update endpoint documentation
-chore(deps): upgrade React to v19
-```
-
-## References
-
-- [Conventional Commits](https://www.conventionalcommits.org/)
-- [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/)
-- [GitHub Flow](https://guides.github.com/introduction/flow/)
-- [Trunk Based Development](https://trunkbaseddevelopment.com/)
-- [Pro Git Book](https://git-scm.com/book/en/v2)
+If this projection disagrees with `SKILL.md` or `rules/`, follow the canonical source and repair the projection. Do not copy current rule IDs, counts, version tables, or long examples into this file.
