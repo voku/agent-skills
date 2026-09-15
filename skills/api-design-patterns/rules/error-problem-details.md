@@ -1,45 +1,54 @@
 ---
 id: error-problem-details
-title: RFC 7807 Problem Details and Error Consistency
+title: RFC 9457 Problem Details and Error Consistency
 category: error
 priority: CRITICAL
 triggers: [custom-inconsistent-error-format, leaked-stack-trace, sql-error-in-response, missing-trace-id, string-only-error]
-tags: [error-handling, rfc-7807, problem-details, status-codes, trace-id, validation-errors]
+tags: [error-handling, rfc-9457, problem-details, status-codes, trace-id, validation-errors]
 ---
 
-# RFC 7807 Problem Details & Error Consistency
+# RFC 9457 Problem Details & Error Consistency
 
-**Trigger Anchor:** Use RFC 7807 (`application/problem+json`) for all error responses; include machine-readable error codes, correlation trace IDs, field-level validation pointers, and never expose internal stack traces.
+**Trigger Anchor:** When an HTTP API needs a structured error representation, use RFC 9457 Problem Details (`application/problem+json`) instead of inventing an incompatible envelope. Keep the standard members semantically correct, use problem-type-specific extension members only when useful, and never expose internal stack traces or sensitive implementation details.
+
+RFC 9457 obsoletes RFC 7807. Existing APIs using the older format remain recognizable, but new guidance and references should target RFC 9457.
 
 ---
 
 ### Bad
-```json
-// ❌ Inconsistent, unparsed string with leaked database stack trace
+```text
 HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
   "success": false,
-  "error": "QueryFailedError: syntax error at or near 'SELECT' at PostgresDriver.query (/app/db.ts:42)\n    at processTicksAndRejections"
+  "error": "QueryFailedError: syntax error at or near SELECT at /app/db.ts:42"
 }
 ```
 
+Problems:
+- transport status contradicts the failure;
+- the shape is application-specific without a stable problem type;
+- internal database/runtime details are leaked.
+
 ### Good
-```json
-// ✅ Standard RFC 7807 Problem Details with trace ID and field pointers
-HTTP/1.1 422 Unprocessable Entity
+```text
+HTTP/1.1 422 Unprocessable Content
 Content-Type: application/problem+json
 
 {
-  "type": "https://api.example.com/errors/validation-failed",
-  "title": "Validation Failed",
+  "type": "https://api.example.com/problems/validation-failed",
+  "title": "Validation failed",
   "status": 422,
-  "detail": "The request payload failed 2 validation rules.",
+  "detail": "The request payload contains invalid values.",
   "instance": "/orders/checkout",
   "code": "VALIDATION_FAILED",
   "trace_id": "req_01HPX7K9Y1V5",
   "invalid_params": [
-    { "name": "email", "reason": "Must be a valid RFC 5322 email address" },
-    { "name": "items[0].quantity", "reason": "Must be an integer greater than 0" }
+    { "name": "email", "reason": "Must be a valid email address" },
+    { "name": "items[0].quantity", "reason": "Must be greater than 0" }
   ]
 }
 ```
+
+`code`, `trace_id`, and `invalid_params` in this example are application/problem-type extensions, not universal RFC 9457 members. Define and document extension semantics consistently for the API instead of implying that every Problem Details consumer understands them.
