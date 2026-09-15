@@ -1,9 +1,9 @@
 {
-  "version": "2.0.0",
+  "version": "3.0.0",
   "skill": {
     "name": "typescript-react-patterns",
-    "version": "2.0.0",
-    "description": "TypeScript best practices for React development. Use when writing typed React components, hooks, events, refs, or generic components. Triggers on tasks involving TypeScript errors, type definitions, props typing, or type-safe React patterns.",
+    "version": "3.0.0",
+    "description": "TypeScript guidance for type-safe React components, hooks, events, refs, generics, context, and utility types.",
     "author": "Agent Skills Contributors",
     "license": "MIT",
     "keywords": [
@@ -18,86 +18,56 @@
     ]
   },
   "name": "TypeScript React Patterns",
-  "description": "Type-safe React with TypeScript. Contains 33 rules across 7 categories covering component typing, hooks, event handling, refs, generics, context, and utility types.",
   "license": "MIT",
-  "author": {
-    "name": "Agent Skills Contributors",
-    "url": "https://github.com/AsyrafHussin/agent-skills"
-  },
   "categories": [
     {
+      "id": "comp-props-polymorphic",
       "name": "Component Typing",
-      "prefix": "comp",
-      "impact": "CRITICAL",
-      "ruleCount": 8
+      "impact": "CRITICAL"
     },
     {
+      "id": "hook-types-generics",
       "name": "Hook Typing",
-      "prefix": "hook",
-      "impact": "CRITICAL",
-      "ruleCount": 8
+      "impact": "CRITICAL"
     },
     {
+      "id": "event-handler-types",
       "name": "Event Handling",
-      "prefix": "event",
-      "impact": "HIGH",
-      "ruleCount": 4
+      "impact": "HIGH"
     },
     {
+      "id": "ref-dom-imperative",
       "name": "Ref Typing",
-      "prefix": "ref",
-      "impact": "HIGH",
-      "ruleCount": 3
+      "impact": "HIGH"
     },
     {
+      "id": "generic-components",
       "name": "Generic Components",
-      "prefix": "generic",
-      "impact": "MEDIUM",
-      "ruleCount": 4
+      "impact": "MEDIUM"
     },
     {
-      "name": "Context & State",
-      "prefix": "ctx",
-      "impact": "MEDIUM",
-      "ruleCount": 3
+      "id": "ctx-patterns",
+      "name": "Context and State",
+      "impact": "MEDIUM"
     },
     {
+      "id": "util-discriminated-types",
       "name": "Utility Types",
-      "prefix": "util",
-      "impact": "LOW",
-      "ruleCount": 3
+      "impact": "LOW"
     }
   ],
   "references": [
-    "https://react-typescript-cheatsheet.netlify.app",
     "https://react.dev/learn/typescript",
     "https://www.typescriptlang.org/docs/handbook/"
   ],
-  "keywords": [
-    "typescript",
-    "react",
-    "typed-components",
-    "hooks",
-    "generics",
-    "events",
-    "refs",
-    "context"
-  ],
-  "rulesTotal": 33,
-  "lastUpdated": "2026-03-14",
   "meta": {
     "created": "2026-03-14",
-    "last_updated": "2026-03-14",
-    "rule_count": 33,
+    "last_updated": "2026-09-15",
+    "rule_count": 7,
     "structure_version": "2.0",
-    "compatibility": {
-      "platforms": [
-        "GitHub Copilot",
-        "Codex",
-        "Claude Code",
-        "Cursor",
-        "Gemini CLI"
-      ]
-    }
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ]
   }
 }
