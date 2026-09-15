@@ -3,7 +3,7 @@
   "skill": {
     "name": "react-vite-best-practices",
     "version": "2.0.0",
-    "description": "React and Vite performance optimization guidelines. Use when writing, reviewing, or optimizing React components built with Vite. Triggers on tasks involving Vite configuration, build optimization, code splitting, lazy loading, HMR, bundle size, or React performance.",
+    "description": "React and Vite performance guidance for production builds, code splitting, development behavior, assets, environment exposure, and bundle analysis.",
     "author": "Agent Skills Contributors",
     "license": "MIT",
     "keywords": [
@@ -12,87 +12,59 @@
       "performance",
       "build-optimization",
       "code-splitting",
-      "lazy-loading",
-      "hmr",
-      "bundle-size"
+      "fast-refresh",
+      "assets",
+      "environment",
+      "bundle-analysis"
     ]
   },
   "name": "React + Vite Best Practices",
-  "description": "Performance optimization guide for React applications built with Vite. Contains 23 rules across 6 categories covering build optimization, code splitting, development, asset handling, environment config, and bundle analysis.",
   "framework": "React + Vite",
   "license": "MIT",
-  "author": {
-    "name": "Agent Skills Contributors",
-    "url": "https://github.com/AsyrafHussin/agent-skills"
-  },
   "categories": [
     {
+      "id": "build-production-tuning",
       "name": "Build Optimization",
-      "prefix": "build",
-      "impact": "CRITICAL",
-      "ruleCount": 7
+      "impact": "CRITICAL"
     },
     {
+      "id": "code-splitting-lazy",
       "name": "Code Splitting",
-      "prefix": "split",
-      "impact": "CRITICAL",
-      "ruleCount": 5
+      "impact": "CRITICAL"
     },
     {
-      "name": "Development",
-      "prefix": "dev",
-      "impact": "HIGH",
-      "ruleCount": 3
+      "id": "dev-server-fast-refresh",
+      "name": "Development Server",
+      "impact": "HIGH"
     },
     {
+      "id": "asset-pipeline-optimization",
       "name": "Asset Handling",
-      "prefix": "asset",
-      "impact": "HIGH",
-      "ruleCount": 4
+      "impact": "HIGH"
     },
     {
+      "id": "env-management-security",
       "name": "Environment Config",
-      "prefix": "env",
-      "impact": "MEDIUM",
-      "ruleCount": 3
+      "impact": "HIGH"
     },
     {
+      "id": "bundle-analysis-budget",
       "name": "Bundle Analysis",
-      "prefix": "bundle",
-      "impact": "MEDIUM",
-      "ruleCount": 1
+      "impact": "MEDIUM"
     }
   ],
   "references": [
     "https://vite.dev",
-    "https://react.dev",
-    "https://rollupjs.org"
+    "https://react.dev"
   ],
-  "keywords": [
-    "react",
-    "vite",
-    "performance",
-    "build-optimization",
-    "code-splitting",
-    "lazy-loading",
-    "hmr",
-    "bundle-size"
-  ],
-  "rulesTotal": 23,
-  "lastUpdated": "2026-03-14",
   "meta": {
     "created": "2026-03-14",
-    "last_updated": "2026-03-14",
-    "rule_count": 23,
+    "last_updated": "2026-09-15",
+    "rule_count": 6,
     "structure_version": "2.0",
-    "compatibility": {
-      "platforms": [
-        "GitHub Copilot",
-        "Codex",
-        "Claude Code",
-        "Cursor",
-        "Gemini CLI"
-      ]
-    }
+    "canonical_sources": [
+      "SKILL.md",
+      "rules/"
+    ]
   }
 }
