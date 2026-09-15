@@ -1,6 +1,6 @@
 ---
 name: react-vite-best-practices
-description: React and Vite performance optimization guidelines. Use when writing, reviewing, or optimizing React components built with Vite. Triggers on tasks involving Vite configuration, build optimization, code splitting, lazy loading, HMR, bundle size, or React performance.
+description: React and Vite performance optimization guidelines. Use when writing, reviewing, or optimizing React components built with Vite. Triggers on tasks involving Vite configuration, build optimization, code splitting, lazy loading, HMR, bundle size, assets, or environment exposure.
 license: MIT
 metadata:
   author: agent-skills
@@ -9,60 +9,54 @@ metadata:
 
 # React + Vite Best Practices
 
-Curated, high-density performance optimization guide for React applications built with Vite. Focuses on production build tuning, route/component code splitting, dev server Fast Refresh, static asset pipelines, type-safe environments, and bundle budgeting.
+Portable performance guidance for React applications built with Vite. The detailed owner rules cover production builds, code splitting, development-server behavior, assets, environment exposure, and bundle analysis.
 
-## Quick Reference
+## Grounding and Ownership
 
-| Category | Impact | Rule File | Primary Focus |
-|----------|--------|-----------|---------------|
-| **Build Optimization** | CRITICAL | [`build-production-tuning`](rules/build-production-tuning.md) | Manual chunks, modern targets (`baseline-widely-available`), tree shaking, Brotli/Gzip compression |
-| **Code Splitting** | CRITICAL | [`code-splitting-lazy`](rules/code-splitting-lazy.md) | `React.lazy()`, granular `<Suspense>` skeletons, dynamic `import()`, intent/idle prefetching |
-| **Development** | HIGH | [`dev-server-fast-refresh`](rules/dev-server-fast-refresh.md) | `optimizeDeps.include`, server warmup, pure component files for reliable Fast Refresh |
-| **Asset Handling** | HIGH | [`asset-pipeline-optimization`](rules/asset-pipeline-optimization.md) | ESM imports, SVGR icons, self-hosted font preloading, AVIF/WebP pictures, `/public` separation |
-| **Environment Config** | HIGH | [`env-management-security`](rules/env-management-security.md) | Strongly-typed `vite-env.d.ts`, `VITE_` prefix enforcement, zero client-secret leakage |
-| **Bundle Analysis** | MEDIUM | [`bundle-analysis-budget`](rules/bundle-analysis-budget.md) | `rollup-plugin-visualizer`, chunk size limits, eliminating legacy package bloat |
+Before changing configuration or adding dependencies, inspect the target repository's `package.json`, Vite config, routes/components, existing plugins, browser/support target, deployment pipeline, and current build or bundle evidence.
 
-## Core Configuration Reference
+- The target repository owns installed React/Vite versions, plugins, browser support, aliases, routing, hosting/CDN behavior, compression strategy, environment names, and validation commands.
+- React and Vite upstream own version-sensitive framework and build-tool behavior.
+- This skill owns portable review heuristics and decision boundaries, not a universal `vite.config.ts` template.
+- Do not add compression, SVGR, bundle-visualizer, pre-bundling entries, manual chunks, or other dependencies/configuration merely because an example exists in a rule. Establish the repository need first.
+- Never treat `VITE_` variables as a secret boundary; anything exposed to client code must be safe to ship to the browser.
 
-### Production Vite Configuration (`vite.config.ts`)
+## When to Apply
 
-```typescript
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import compression from 'vite-plugin-compression';
-import svgr from 'vite-plugin-svgr';
-import path from 'path';
+Use this skill when:
+- build output or initial-load size needs investigation;
+- route/component loading should be split or deferred;
+- Vite development startup or Fast Refresh behavior is problematic;
+- asset delivery needs optimization;
+- environment variables or client-side configuration need review;
+- bundle composition needs measurement and a budget.
 
-export default defineConfig({
-  plugins: [
-    react(),
-    svgr({ svgrOptions: { icon: true } }),
-    compression({ algorithm: 'brotliCompress', ext: '.br' }),
-  ],
-  resolve: {
-    alias: { '@': path.resolve(__dirname, './src') },
-  },
-  build: {
-    target: 'baseline-widely-available',
-    sourcemap: 'hidden',
-    chunkSizeWarningLimit: 600,
-    rollupOptions: {
-      output: {
-        chunkFileNames: 'assets/js/[name]-[hash].js',
-        entryFileNames: 'assets/js/[name]-[hash].js',
-        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) return 'vendor-react';
-            if (id.includes('@tanstack') || id.includes('zustand')) return 'vendor-core';
-            return 'vendor-libs';
-          }
-        },
-      },
-    },
-  },
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query', 'zustand'],
-  },
-});
-```
+## Canonical Rule Boundaries
+
+### Production Build
+- [build-production-tuning.md](rules/build-production-tuning.md) — production build tuning, targets, chunks, sourcemaps, tree shaking, and compression decisions.
+
+### Code Splitting
+- [code-splitting-lazy.md](rules/code-splitting-lazy.md) — route/component lazy loading, Suspense boundaries, dynamic imports, and prefetching.
+
+### Development Server
+- [dev-server-fast-refresh.md](rules/dev-server-fast-refresh.md) — Fast Refresh boundaries, dependency pre-bundling, and server warmup.
+
+### Asset Pipeline
+- [asset-pipeline-optimization.md](rules/asset-pipeline-optimization.md) — imported/public assets, images, SVGs, and fonts.
+
+### Environment Security
+- [env-management-security.md](rules/env-management-security.md) — typed environment variables, modes, `VITE_` exposure, and secret boundaries.
+
+### Bundle Analysis
+- [bundle-analysis-budget.md](rules/bundle-analysis-budget.md) — bundle inspection, dependency weight, chunk budgets, and regression evidence.
+
+## Decision Discipline
+
+1. Establish the observed problem and the repository's current configuration.
+2. Load only the rule files relevant to that problem.
+3. Prefer the smallest change supported by measurements or concrete repository evidence.
+4. Avoid cargo-cult configuration and new plugin dependencies without a demonstrated need.
+5. Validate with the repository's configured build, tests, type checking, and relevant bundle/performance evidence.
+
+`README.md`, `AGENTS.md`, and `metadata.json` are supporting projections. If they disagree with this file or `rules/`, follow the canonical source and repair the projection.
