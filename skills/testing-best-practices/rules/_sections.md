@@ -1,41 +1,45 @@
 # Sections
 
-This file defines all sections, their ordering, impact levels, and descriptions.
-The section ID (in parentheses) is the filename prefix used to group rules.
+This file groups the canonical testing rules by concern. The individual non-underscore files in this directory own the detailed rule semantics.
 
----
+## Test Structure (`struct`)
 
-## 1. Test Structure (struct)
+**Impact:** CRITICAL
 
-**Impact:** CRITICAL  
-**Description:** Fundamental patterns for organizing test code: AAA pattern, scenario-focused descriptive naming, single logical assertions, and scoped lifecycle hooks (`beforeAll`/`beforeEach`/`afterEach`/`afterAll`).
+Scenario-focused organization, readable Arrange-Act-Assert or Given-When-Then flow, and scoped lifecycle setup/teardown.
 
-## 2. Test Isolation (iso)
+## Test Isolation (`iso`)
 
-**Impact:** CRITICAL  
-**Description:** Tests must run independently and deterministically without shared mutable state, order dependencies, or resource leaks, using test doubles to freeze time and isolate boundaries.
+**Impact:** CRITICAL
 
-## 3. Assertions (assert)
+Deterministic, order-independent tests without unintended shared mutable state or leaked resources.
 
-**Impact:** HIGH  
-**Description:** Effective assertions expressing clear intent: specific matchers, standard `expect(actual).toBe(expected)` ordering, named domain constants, and reusable custom matchers.
+## Assertions (`assert`)
 
-## 4. Test Data (data)
+**Impact:** HIGH
 
-**Impact:** HIGH  
-**Description:** Maintainable test data generation: factory functions with sensible defaults, fluent builders, seeded faker generation, minimal sufficient inputs, and realistic fixtures.
+Specific assertions that express the behavior under test clearly and fail with useful diagnostics.
 
-## 5. Mocking (mock)
+## Test Data (`data`)
 
-**Impact:** MEDIUM  
-**Description:** Mock only at external system boundaries (HTTP, DB, message queues), verify essential side effects, and simulate realistic contracts (e.g. MSW).
+**Impact:** HIGH
 
-## 6. Coverage (cov)
+Minimal sufficient inputs, reusable factories/builders where they reduce noise, and realistic edge-case data when the behavior requires it.
 
-**Impact:** HIGH  
-**Description:** Evidence-driven coverage: regression-first reproduction before fixes, adversarial input probing, decision branch and error path testing, and avoiding vanity line coverage.
+## Test Doubles (`mock`)
 
-## 7. Performance (perf)
+**Impact:** MEDIUM
 
-**Impact:** LOW  
-**Description:** Fast developer feedback loops: sub-50ms unit tests using memory doubles, parallel test execution, and tiered test organization.
+Mocks, fakes, stubs, spies, and real collaborators chosen according to stable seams, determinism, cost, and the evidence the test must preserve. Avoid coupling tests to incidental implementation decomposition.
+
+## Coverage and Regression Evidence (`cov`)
+
+**Impact:** HIGH
+
+Regression-first reproduction for bugs, decision branches, edge/error paths, and meaningful behavioral coverage rather than vanity line percentages.
+
+## Feedback Speed (`perf`)
+
+**Impact:** LOW
+
+Measured feedback-loop performance, removal of accidental waits/overhead, safe concurrency when isolation permits, and useful separation of slower test tiers where it improves workflow or CI control.
