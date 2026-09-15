@@ -1,48 +1,27 @@
-# React + Vite Best Practices v2.0.0
+# React + Vite Best Practices
 
-Performance optimization guide for React applications built with Vite.
+Portable performance guidance for React applications built with Vite.
 
-## Overview
+## Canonical Source
 
-- Build optimization (manual chunks, minification with OXC, tree shaking, compression)
-- Code splitting (React.lazy, Suspense, dynamic imports, prefetch hints)
-- Development performance (dependency prebundling, HMR, Fast Refresh)
-- Asset handling (images, SVGs, fonts, public directory)
-- Environment configuration (VITE_ prefix, modes, secrets)
-- Bundle analysis (rollup-plugin-visualizer)
-- 23 rules across 6 categories
+`SKILL.md` defines activation, grounding, ownership, and decision discipline. The files under `rules/` contain the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, count, plugin matrix, or compiled Vite configuration.
 
-## Categories
+## When to Use
 
-### 1. Build Optimization (Critical)
-Manual chunks, minification, build targets, sourcemaps, tree shaking, compression, asset hashing.
+Use this skill for production-build tuning, code splitting, Vite development/Fast Refresh issues, asset delivery, environment exposure, or bundle analysis.
 
-### 2. Code Splitting (Critical)
-Route-based lazy loading, Suspense boundaries, dynamic imports, component lazy loading, prefetch hints.
+## Routing
 
-### 3. Development (High)
-Dependency prebundling, React Fast Refresh, HMR configuration.
+1. Inspect the target repository's dependencies and Vite configuration.
+2. Establish the concrete build/runtime/development problem with observable evidence.
+3. Read `SKILL.md` and load only the relevant rule files.
+4. Prefer the repository's existing plugins, browser support, deployment, and validation conventions.
+5. Add configuration or dependencies only when they solve the demonstrated problem.
 
-### 4. Asset Handling (High)
-Image optimization, SVG components, font loading, public directory usage.
+## Security Boundary
 
-### 5. Environment Config (Medium)
-VITE_ prefix, mode-specific env files, sensitive data protection.
+Client-exposed environment variables are public. Do not put secrets behind `VITE_` or assume a copied Vite example matches the target repository.
 
-### 6. Bundle Analysis (Medium)
-Bundle visualization with rollup-plugin-visualizer.
+## Projection Boundary
 
-## Usage
-
-```
-Optimize this Vite build config
-Review code splitting in my React app
-Set up lazy loading for routes
-Analyze my bundle size
-```
-
-## References
-
-- [Vite Documentation](https://vite.dev)
-- [React Documentation](https://react.dev)
-- [Rollup Documentation](https://rollupjs.org)
+If this projection disagrees with `SKILL.md` or `rules/`, follow the canonical source and repair the projection. Do not copy current rule IDs, counts, framework/plugin versions, or long examples into this file.
