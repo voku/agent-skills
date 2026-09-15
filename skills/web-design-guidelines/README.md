@@ -1,42 +1,27 @@
-# Web Design Guidelines v2.1.0
+# Web Design Guidelines & Accessibility Audit
 
-WCAG accessibility, semantic HTML, keyboard navigation, forms, and performance patterns. Supports both coding reference and accessibility audit mode with PASS/FAIL output.
+Portable UI/UX and accessibility review guidance for semantic structure, keyboard/focus behavior, ARIA and contrast, forms, motion, and layout stability.
 
-## Overview
+## Canonical Source
 
-- Accessibility audit with PASS/FAIL/N/A checklist output
-- Accessibility (semantic HTML, headings, keyboard nav, focus management, ARIA, color contrast, alt text, live regions)
-- Forms (autocomplete, input types, error display, validation, multi-step, placeholders, submit feedback)
-- Animation (prefers-reduced-motion)
-- Performance (image loading, layout stability/CLS)
-- 23 rules across 4 categories
+`SKILL.md` defines activation, focused-audit semantics, evidence boundaries, and the limit against unsupported WCAG conformance claims. The files under `rules/` contain the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, count, WCAG checklist, or compiled example set.
 
-## Categories
+## When to Use
 
-### 1. Accessibility (Critical)
-Semantic HTML, heading hierarchy, keyboard navigation, focus management, ARIA labels, color contrast, alt text, error messages, form labels, live regions, skip links, screen reader optimization.
+Use this skill for focused accessibility reviews, UI audits, keyboard/focus checks, accessible forms, contrast/ARIA issues, reduced-motion handling, or layout-stability concerns.
 
-### 2. Forms (High)
-Autocomplete, input types, error display, validation UX, inline validation, multi-step forms, placeholder usage, submit feedback.
+## Routing
 
-### 3. Animation & Motion (Critical)
-Respect prefers-reduced-motion preference (WCAG AAA).
+1. Establish the actual pages/components and behavior in scope.
+2. Read `SKILL.md` first.
+3. Load only relevant canonical rule files.
+4. Combine source inspection with rendered/runtime evidence where required.
+5. Report evaluated checks and unresolved evidence explicitly.
 
-### 4. Performance & UX (Medium)
-Image loading optimization, layout stability (CLS prevention).
+## Conformance Boundary
 
-## Usage
+This focused audit does not establish WCAG A/AA/AAA conformance. Formal conformance requires evaluating the applicable WCAG success criteria across the claimed scope. Do not convert a partial checklist or automated scan into a conformance claim.
 
-```
-Audit my page for accessibility
-Review my UI for accessibility issues
-Check WCAG compliance on this component
-Audit this form for UX best practices
-```
+## Projection Boundary
 
-## References
-
-- [WCAG 2.2 Quick Reference](https://www.w3.org/WAI/WCAG22/quickref/)
-- [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
-- [web.dev Accessibility](https://web.dev/accessibility/)
-- [The A11Y Project](https://a11yproject.com/)
+If this projection disagrees with `SKILL.md` or `rules/`, follow the canonical source and repair the projection. Do not copy current rule IDs, counts, WCAG tables, or long examples into this file.
