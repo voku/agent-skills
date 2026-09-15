@@ -1,23 +1,25 @@
 ---
 id: perf-fast-unit
-title: Fast Execution, Parallelism, and Test Tiers
+title: Feedback Speed, Concurrency, and Test Tiers
 category: perf
 priority: LOW
 triggers: [slow-unit-tests, sequential-test-suite, flat-test-directory, sleep-in-tests]
-tags: [performance, fast-unit, parallel, concurrency, tiers]
+tags: [performance, feedback-loop, parallel, concurrency, tiers]
 ---
 
-# Fast Execution, Parallelism & Test Tiers
+# Feedback Speed, Concurrency & Test Tiers
 
-**Trigger Anchor:** Keep unit tests sub-50ms using pure logic and memory doubles; run test suites concurrently across cores, and separate fast unit suites from slower integration/e2e tiers.
+**Trigger Anchor:** Keep the relevant test feedback loop fast enough for the repository's workflow. Measure actual cost before optimizing, remove avoidable sleeps/network/process overhead, parallelize only when isolation permits it, and separate slower test tiers when that materially improves feedback or CI control.
+
+There is no universal per-test millisecond budget. A useful unit test is usually cheap because it exercises a small deterministic boundary, but correctness and useful evidence outrank an arbitrary timing threshold.
 
 ---
 
-## In-Memory Speed vs Network/DB Delays
+## Avoid Accidental External Cost in Unit-Level Tests
 
 ### Bad
 ```typescript
-// ❌ Connecting to real databases and third-party APIs in unit tests (adds seconds)
+// ❌ A unit-level behavior test pays for a real database even though persistence is not under test.
 test('creates user', async () => {
   const pool = new Pool({ connectionString: 'postgres://localhost/test' });
   const res = await pool.query('INSERT INTO users(name) VALUES ($1) RETURNING *', ['Alice']);
@@ -25,48 +27,33 @@ test('creates user', async () => {
 });
 ```
 
-### Good
+### Better
 ```typescript
-// ✅ In-memory doubles and pure logic execute in <2ms
-test('creates user with in-memory double', async () => {
-  const memoryRepo = { users: new Map(), save: vi.fn(async (u) => memoryRepo.users.set(u.id, u)) };
-  const service = new UserService(memoryRepo);
+// ✅ Use a cheap collaborator when the behavior under test is service logic, not database integration.
+test('passes the created user to persistence', async () => {
+  const repository = { save: vi.fn(async (user) => user) };
+  const service = new UserService(repository);
 
   const user = await service.create({ id: 'u-1', name: 'Alice' });
 
-  expect(memoryRepo.save).toHaveBeenCalledWith(user);
+  expect(repository.save).toHaveBeenCalledWith(user);
 });
 ```
+
+Use a real database in an integration test when database behavior, schema constraints, transactions, queries, or mapping are the thing that needs evidence.
 
 ---
 
-## Parallel Execution & Tiered Test Organization
+## Concurrency and Test Tiers
 
-### Bad
-```typescript
-// ❌ Monolithic test directory running all unit, integration, and slow browser tests together
-// vitest.config.ts
-export default defineConfig({
-  test: {
-    include: ['tests/**/*.test.ts'], // Single 45-second run on every file save!
-    pool: 'forks',
-    poolOptions: { forks: { singleFork: true } } // Forced sequential execution
-  }
-});
-```
+Parallel execution is useful only when the tests are isolated enough to run safely. Shared ports, databases, files, rate limits, global process state, or resource contention may require explicit isolation or selective serialization.
 
-### Good
-```typescript
-// ✅ Tiered execution: unit tests in watch mode (<1s feedback), integration/e2e in CI
-// vitest.config.ts (unit default: multi-threaded, parallel)
-export default defineConfig({
-  test: {
-    include: ['src/**/*.unit.test.ts'],
-    pool: 'threads',
-    poolOptions: { threads: { minThreads: 2, maxThreads: 8 } }
-  }
-});
+Split unit/integration/e2e suites when the distinction improves developer feedback, CI scheduling, ownership, or failure diagnosis. Do not create tiers merely to satisfy a naming convention.
 
-// Separate config for integration tests needing isolated database schemas:
-// vitest.config.integration.ts -> include: ['src/**/*.integration.test.ts']
-```
+When a suite is slow:
+
+1. measure which tests or setup phases dominate runtime;
+2. remove accidental waits, repeated expensive setup, or unnecessary external dependencies;
+3. fix isolation before enabling more concurrency;
+4. parallelize where the repository and runner can safely benefit;
+5. keep slower high-value integration/e2e evidence rather than deleting it just to make a timing number look better.
