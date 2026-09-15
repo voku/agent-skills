@@ -1,52 +1,23 @@
-# Testing Best Practices v2.0.0
+# Testing Best Practices
 
-Unit testing, integration testing, and TDD principles for reliable, maintainable test suites.
+Portable testing guidance for regression evidence, test structure, isolation, assertions, test data, test doubles, coverage strategy, and feedback speed.
 
-## Overview
+## Canonical Source
 
-- **Test structure:** AAA pattern, descriptive names, single logical assertion, scoped lifecycle hooks
-- **Test isolation:** Independent, deterministic, zero shared mutable state, guaranteed cleanup, test doubles
-- **Assertions:** Specific matchers, `expect(actual).toBe(expected)`, domain constants, custom matchers
-- **Test data:** Factories with defaults, fluent builders, seeded faker, minimal inputs, realistic fixtures
-- **Mocking:** Boundaries only, verify interactions, avoid over-mocking, MSW contract simulation
-- **Coverage:** Regression-first reproduction, adversarial probing, edge cases, error scenarios, meaningful coverage
-- **Performance:** Sub-50ms unit tests, parallel execution, tiered test organization
-- **Total Rules:** 11 rules across 7 categories
+`SKILL.md` defines activation, decision discipline, evidence boundaries, and rule routing. The non-underscore files under `rules/` contain the canonical detailed guidance. This README is a routing projection only; it must not own a second rule inventory, count, timing budget, framework recipe, or compiled example set.
 
-## Categories
+## When to Use
 
-### 1. Test Structure (Critical)
-AAA pattern, single logical assertions, descriptive scenario naming, and scoped setup/teardown hooks.
+Use this skill when writing or reviewing tests, fixing bugs, investigating flaky suites, improving meaningful coverage, or planning test strategy.
 
-### 2. Test Isolation (Critical)
-Self-contained tests, zero shared mutable state, deterministic execution, explicit resource cleanup, and test doubles.
+## Routing
 
-### 3. Assertions (High)
-Specific matchers, expected-actual ordering, domain constants over magic numbers, and custom matchers.
+1. Inspect the target repository's existing framework, test layout, fixtures/factories, CI tiers, and validation commands.
+2. Read `SKILL.md` first.
+3. Load only the canonical rule files relevant to the behavior under test.
+4. Prefer observable behavior and the smallest test scope that still provides the needed evidence.
+5. Run the repository-owned validation commands and report only evidence actually observed.
 
-### 4. Test Data (High)
-Factories, builders, seeded faker generation, minimal sufficient inputs, and realistic fixtures.
+## Projection Boundary
 
-### 5. Mocking (Medium)
-Mock at external system boundaries, preserve real internal logic, verify interactions, and use realistic MSW contracts.
-
-### 6. Coverage (High)
-Regression-first bug reproduction, adversarial probing, boundary values, error paths, and avoiding vanity metrics.
-
-### 7. Performance (Low)
-Sub-50ms unit tests, multi-threaded parallel execution, and organized speed tiers (unit/integration/e2e).
-
-## Usage
-
-```
-Write tests for this service class
-Review my test code for best practices
-Set up testing strategy for this project
-```
-
-## References
-
-- [Vitest Documentation](https://vitest.dev)
-- [Jest Documentation](https://jestjs.io)
-- [Testing Library](https://testing-library.com)
-- [MSW (Mock Service Worker)](https://mswjs.io)
+If this file disagrees with `SKILL.md` or `rules/`, follow the canonical source and repair this projection. Do not copy current rule IDs, counts, framework-specific recipes, fixed performance targets, or long examples back into this file.
