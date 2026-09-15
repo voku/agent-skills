@@ -22,9 +22,9 @@ jobs:
           import sys
 
           skills_dir = "skills"
+          expected_sources = ["SKILL.md", "rules/"]
           errors = []
           validated = []
-          legacy = []
 
           for skill_name in sorted(os.listdir(skills_dir)):
               skill_dir = os.path.join(skills_dir, skill_name)
@@ -34,19 +34,35 @@ jobs:
               metadata_path = os.path.join(skill_dir, "metadata.json")
               skill_path = os.path.join(skill_dir, "SKILL.md")
               rules_dir = os.path.join(skill_dir, "rules")
-              if not os.path.isfile(metadata_path) or not os.path.isfile(skill_path):
-                  continue
-              if not os.path.isdir(rules_dir):
+
+              metadata_exists = os.path.isfile(metadata_path)
+              skill_exists = os.path.isfile(skill_path)
+              rules_exist = os.path.isdir(rules_dir)
+
+              metadata = None
+              meta = {}
+              if metadata_exists:
+                  with open(metadata_path, "r", encoding="utf-8") as f:
+                      metadata = json.load(f)
+                  meta = metadata.get("meta", {})
+
+              canonical_sources_present = "canonical_sources" in meta
+              if not rules_exist and not canonical_sources_present:
                   continue
 
-              with open(metadata_path, "r", encoding="utf-8") as f:
-                  metadata = json.load(f)
+              if not skill_exists:
+                  errors.append(f"{skill_name}: rule-based skill is missing SKILL.md")
+                  continue
+              if not metadata_exists:
+                  errors.append(f"{skill_name}: rule-based skill is missing metadata.json")
+                  continue
+              if not rules_exist:
+                  errors.append(f"{skill_name}: rule-based skill is missing rules/ directory")
+                  continue
 
-              meta = metadata.get("meta", {})
-              if meta.get("canonical_sources") != ["SKILL.md", "rules/"]:
-                  legacy.append(skill_name)
+              if meta.get("canonical_sources") != expected_sources:
                   errors.append(
-                      f"{skill_name}: rule-based skill must declare meta.canonical_sources=['SKILL.md', 'rules/']"
+                      f"{skill_name}: rule-based skill must declare meta.canonical_sources={expected_sources!r}"
                   )
 
               rule_ids = sorted(
@@ -73,13 +89,9 @@ jobs:
               validated.append(skill_name)
 
           if errors:
-              print("Canonical skill contract census failed:")
+              print("Canonical skill contract validation failed:")
               for error in errors:
                   print(" - " + error)
-              if legacy:
-                  print(f"Remaining legacy rule-based skills outside the canonical contract ({len(legacy)}):")
-                  for skill_name in legacy:
-                      print(" - " + skill_name)
               sys.exit(1)
 
           print(
