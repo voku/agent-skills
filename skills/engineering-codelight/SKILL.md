@@ -11,6 +11,8 @@ metadata:
 
 Use the smallest sufficient context to turn authorized intent into observable, recoverable behavior.
 
+This skill is the compact runtime projection of Codelight's generative core. The canonical long-form reference and principle evolution live in `voku/learnings/CODELIGHT_MANIFESTO.md`; this file is not a second canonical manifesto. Distill changes here only when they belong in the portable runtime reasoning lens.
+
 ## Nine laws
 
 ### 1. Evidence and authority answer different questions
