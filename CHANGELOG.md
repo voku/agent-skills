@@ -6,6 +6,15 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-09-20 - First-party compact Git message guidance
+
+### Changed
+
+- Extended `git-workflow` commit guidance with a concise subject preference,
+  rationale-only body rules, and an explicit no-mutation boundary for message
+  formatting. This keeps the useful compact-message behavior in the canonical
+  portable skill without requiring an external commit helper.
+
 ## 2026-09-11 - Fresh review and read-only role boundaries
 
 ### Changed

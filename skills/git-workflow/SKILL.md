@@ -4,7 +4,7 @@ description: Git best practices, branching strategies, conventional commits, PR 
 license: MIT
 metadata:
   author: agent-skills
-  version: "2.0.0"
+  version: "2.1.0"
 ---
 
 # Git Workflow
@@ -13,7 +13,7 @@ Git best practices, conventional commit standards, branching strategies, pull re
 
 ## Metadata
 
-- **Version:** 2.0.0
+- **Version:** 2.1.0
 - **Rule Count:** 5 rules across 5 categories
 - **License:** MIT
 
@@ -39,7 +39,7 @@ Reference these guidelines when:
 ## Quick Reference
 
 ### 1. Commit Messages (CRITICAL) — 1 rule
-- [commit-conventions.md](rules/commit-conventions.md) - Write atomic, imperative conventional commits (`feat:`, `fix:`, `refactor:`, `BREAKING CHANGE:`) with explanatory body context and ticket references; enforce with commitlint hooks.
+- [commit-conventions.md](rules/commit-conventions.md) - Write atomic, imperative conventional commits (`feat:`, `fix:`, `refactor:`, `BREAKING CHANGE:`) with a concise subject, rationale-only body context, and ticket references; enforce with repository-owned checks when available.
 
 ### 2. Branching Strategy (HIGH) — 1 rule
 - [branch-lifecycle.md](rules/branch-lifecycle.md) - Use short-lived typed branches (`feat/`, `fix/`, `chore/`), keep `main` protected from direct pushes, delete branches upon merge, and branch per-feature/package in monorepos.
@@ -64,7 +64,9 @@ Reference these guidelines when:
 ```
 
 - **Types:** `feat` (new feature), `fix` (bug fix), `refactor` (code restructuring), `perf` (performance), `test` (test coverage), `chore` (maintenance, build).
-- **Rule:** Write in the imperative mood (*"add feature"* not *"added feature"*). Limit subject line to 72 characters.
+- **Rule:** Write in the imperative mood (*"add feature"* not *"added feature"*). Prefer a subject at or below 50 characters; never exceed 72 characters.
+- **Body:** Add a body only when the subject does not make the reason or risk clear. Explain the problem and why this change is the smallest truthful fix; do not narrate routine implementation steps.
+- **Side effects:** This guidance formats a message only. It does not stage files, create commits, rewrite history, or bypass repository approval and validation rules.
 
 ## How to Use
 
