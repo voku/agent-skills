@@ -67,7 +67,14 @@ Tracing can expose:
 - tokens or credentials;
 - user data.
 
-Treat trace output as sensitive. Prefer short captures, local reproduction, narrow syscall filters, and a dedicated output file with restrictive permissions.
+Treat trace output as sensitive. Prefer short captures, local reproduction, narrow syscall filters, and a unique private output file. For detailed traces, create the destination first:
+
+```bash
+umask 077
+trace_file="$(mktemp "${TMPDIR:-/tmp}/strace.XXXXXX")"
+```
+
+Reuse that variable only for the current capture and remove the file after the evidence has been extracted. Do not use predictable shared paths for sensitive traces.
 
 `strace` is intrusive: ptrace stops/resumes tracees around syscalls and can perturb syscall-heavy workloads. Treat call shapes, endpoints, repetition, and obvious blocking as diagnostic evidence; validate any performance improvement again without `strace`.
 
@@ -122,14 +129,16 @@ Capture timestamps, syscall duration, child processes, and decoded file descript
 
 ```bash
 umask 077
-strace -f -ttt -T -yy -s 256 -o /tmp/trace.log -p <PID>
+trace_file="$(mktemp "${TMPDIR:-/tmp}/strace.XXXXXX")"
+strace -f -ttt -T -yy -s 256 -o "$trace_file" -p <PID>
 ```
 
 For a command:
 
 ```bash
 umask 077
-strace -f -ttt -T -yy -s 256 -o /tmp/trace.log -- php path/to/script.php
+trace_file="$(mktemp "${TMPDIR:-/tmp}/strace.XXXXXX")"
+strace -f -ttt -T -yy -s 256 -o "$trace_file" -- php path/to/script.php
 ```
 
 Interpret:
@@ -148,7 +157,10 @@ First locate the database connection in a short `-yy` trace. Look for Unix socke
 Then narrow to the descriptor when supported:
 
 ```bash
+umask 077
+trace_file="$(mktemp "${TMPDIR:-/tmp}/strace.XXXXXX")"
 strace -f -ttt -T -yy --trace-fds=<FD> \
+  -o "$trace_file" \
   -e trace=read,write,readv,writev,recvfrom,recvmsg,sendto,sendmsg \
   -p <PID>
 ```
@@ -156,7 +168,10 @@ strace -f -ttt -T -yy --trace-fds=<FD> \
 To inspect payload bytes for a known descriptor:
 
 ```bash
+umask 077
+trace_file="$(mktemp "${TMPDIR:-/tmp}/strace.XXXXXX")"
 strace -f -ttt -T -yy -s 4096 \
+  -o "$trace_file" \
   -e trace=read,write,recvfrom,sendto \
   -e read=<FD> -e write=<FD> \
   -p <PID>
@@ -177,7 +192,10 @@ When SQL text is not visible, correlate with application query logs, DB general/
 Trace file-related activity:
 
 ```bash
+umask 077
+trace_file="$(mktemp "${TMPDIR:-/tmp}/strace.XXXXXX")"
 strace -f -ttt -T -yy \
+  -o "$trace_file" \
   -e trace=%file,read,readlink,getdents64 \
   -p <PID>
 ```
@@ -197,7 +215,9 @@ A high count alone is not enough. Correlate repeated paths with measured duratio
 For a worker that appears stuck:
 
 ```bash
-strace -f -tt -T -yy -p <PID>
+umask 077
+trace_file="$(mktemp "${TMPDIR:-/tmp}/strace.XXXXXX")"
+strace -f -tt -T -yy -o "$trace_file" -p <PID>
 ```
 
 Common interpretations:
@@ -219,7 +239,9 @@ If the process is CPU-bound and making few syscalls, `strace` is the wrong prima
 Prefer a reproducible request plus an external timeout:
 
 ```bash
-timeout --signal=INT 15s strace -f -ttt -T -yy -s 256 -o /tmp/trace.log -p <PID>
+umask 077
+trace_file="$(mktemp "${TMPDIR:-/tmp}/strace.XXXXXX")"
+timeout --signal=INT 15s strace -f -ttt -T -yy -s 256 -o "$trace_file" -p <PID>
 ```
 
 On newer `strace` versions, `--syscall-limit=<N>` is another useful guard.
@@ -242,7 +264,7 @@ Useful questions:
 For large captures, use ordinary text tooling to group evidence:
 
 ```bash
-grep -E 'connect|recvfrom|sendto|read\(|write\(|openat|newfstatat|futex|poll|wait4' /tmp/trace.log
+grep -E 'connect|recvfrom|sendto|read\(|write\(|openat|newfstatat|futex|poll|wait4' "$trace_file"
 ```
 
 Do not claim userspace CPU hotspots from the absence of slow syscalls. The correct conclusion is only that syscall evidence does not explain the time.
