@@ -6,14 +6,15 @@
 [![GitHub Stars](https://img.shields.io/github/stars/voku/agent-skills?style=flat-square)](https://github.com/voku/agent-skills/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/voku/agent-skills?style=flat-square)](https://github.com/voku/agent-skills/network/members)
 
-A repository of portable skills for coding agents. This fork keeps the broader
-upstream skill catalog and adds voku's evidence-driven engineering skills used by
-the `voku/agent-*` workflow.
+A curated repository of high-signal skills for coding agents. The catalog favors
+behavior-changing engineering guidance over framework encyclopedias, version
+snapshots, and material a capable model or current owner documentation already
+provides.
 
 Skills follow the [Agent Skills](https://agentskills.io/) specification and can
 be installed by clients supported by the `skills` CLI.
 
-See [CHANGELOG.md](CHANGELOG.md) for recently added skills, review lenses, Laravel 13 updates, and operational-prompting guidance.
+See [CHANGELOG.md](CHANGELOG.md) for recent additions, removals, and ownership decisions.
 
 ## Installation
 
@@ -28,7 +29,8 @@ Install one skill:
 ```bash
 npx skills add voku/agent-skills --skill operational-prompting
 npx skills add voku/agent-skills --skill coding-simplicity
-npx skills add voku/agent-skills --skill php-best-practices
+npx skills add voku/agent-skills --skill php-static-analysis
+npx skills add voku/agent-skills --skill linux-strace
 ```
 
 Install globally or for a specific agent:
@@ -121,17 +123,24 @@ another concern becomes primary, hand off to at most one smaller follow-up lens.
 Available lenses include architecture, error handling, performance, security,
 simplicity, and type safety.
 
-### `php-best-practices`
+### `php-static-analysis`
 
-Modern PHP engineering guidance covering typing, static analysis, maintainable
-object design, legacy migration, and repository-native verification.
+Focused PHP static-analysis guidance for preserving strict contracts, precise
+array shapes and generics, root-cause typing, and scoped analyzer exceptions.
+It deliberately avoids duplicating general PHP syntax and framework knowledge.
 
 ## Full catalog
 
-The repository contains the complete catalog under [`skills/`](skills/),
-including the Laravel, React/TypeScript, testing, security, database, API, Git,
-SEO, accessibility, technical-debt, and documentation skills inherited from and
-extended beyond the upstream project.
+The repository intentionally keeps a small catalog under [`skills/`](skills/).
+A skill should earn its context cost by changing agent behavior: evidence
+discipline, review focus, scoped execution, static-analysis rigor, runtime
+diagnosis, or another reusable reasoning constraint.
+
+Framework and library cookbooks do not belong here when current owner
+documentation, package-aware tooling, or the model's baseline knowledge is the
+better source. In particular, version-sensitive Laravel, React, Tailwind,
+Playwright, state-management, SEO, and similar reference material should be
+looked up from its semantic owner when needed.
 
 Use the repository itself as the source of truth:
 
@@ -170,11 +179,10 @@ See [CHANGELOG.md](CHANGELOG.md) for voku-specific catalog changes.
 ## Provenance
 
 This repository is derived from the public `AsyrafHussin/agent-skills` catalog
-and retains upstream skill material where useful. voku-specific changes focus on
-governed agentic coding, operational prompting, simplicity, review routing, and
-integration with the `voku/agent-*` packages.
-
-Individual adapted skills retain their own provenance where applicable.
+but retains upstream material only where it still earns its context cost.
+voku-specific changes focus on evidence-driven engineering, operational prompting,
+simplicity, review routing, static analysis, runtime diagnosis, and integration
+with the `voku/agent-*` packages.
 
 ## License
 

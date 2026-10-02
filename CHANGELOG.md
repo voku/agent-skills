@@ -6,6 +6,32 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-02 - High-signal catalog cleanup
+
+### Removed
+
+- Removed 21 broad or version-sensitive cookbook skills whose primary value was
+  static reference knowledge rather than durable agent behavior:
+  `api-design-patterns`, `clean-code-principles`, `e2e-playwright-testing`,
+  all `laravel-*` skills, `php-best-practices`, `prd-writing`,
+  `project-docs`, `react-vite-best-practices`, `seo-best-practices`,
+  `state-management`, `tailwind-best-practices`, `technical-debt`,
+  `typescript-react-patterns`, and `web-design-guidelines`.
+- Removed static framework snapshots where current semantic owners are more
+  reliable. Laravel, for example, now provides package-aware Boost documentation
+  and guidelines for coding agents.
+- Removed stale or misleading duplicated guidance rather than refreshing it in
+  place. The retired catalog included an OWASP 2021 checklist after OWASP 2025
+  was current, plus an API example that treated PATCH as inherently idempotent.
+
+### Changed
+
+- The catalog now favors behavior-changing skills: evidence discipline, focused
+  review lenses, falsification, scoped execution, static-analysis rigor, runtime
+  diagnosis, and workflow boundaries.
+- Contribution guidance now requires a skill to earn its context cost instead of
+  restating baseline model knowledge or live framework documentation.
+
 ## 2026-10-02 - Linux strace runtime profiling
 
 ### Added

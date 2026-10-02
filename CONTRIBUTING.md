@@ -33,6 +33,9 @@ Use these questions as a decision contract:
 4. **Does another skill or semantic owner already express the same principle?** Extend or reuse the existing owner instead of creating overlapping guidance under a new name.
 5. **Could code own this instead?** Prefer an owner API, type, invariant, regression test, static-analysis rule, formatter rule, or automation when it can enforce the behavior reliably.
 6. **What would make this guidance removable?** Retire or shrink prose when it becomes stale, duplicated, disproven, harmful, tool-owned, or already structurally enforced.
+7. **Does this skill change agent behavior, or merely restate available knowledge?** Do not add framework tutorials, version snapshots, generic best-practice lists, language feature tables, or cookbook material when a capable model already knows the concept or current owner documentation can answer it more reliably. Prefer live owner documentation for fast-moving frameworks and packages.
+
+A skill must earn its context cost. Durable decision rules, evidence contracts, review lenses, safety boundaries, and hard-won failure patterns are stronger candidates than encyclopedic reference material.
 
 Do not add lifecycle metadata merely to classify prose. First prove a real consumer needs machine-readable lifecycle data. A smaller skill catalog with sharper ownership is preferable to preserving every historical rule forever.
 
