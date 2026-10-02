@@ -6,14 +6,16 @@
 [![GitHub Stars](https://img.shields.io/github/stars/voku/agent-skills?style=flat-square)](https://github.com/voku/agent-skills/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/voku/agent-skills?style=flat-square)](https://github.com/voku/agent-skills/network/members)
 
-A repository of portable skills for coding agents. This fork keeps the broader
-upstream skill catalog and adds voku's evidence-driven engineering skills used by
-the `voku/agent-*` workflow.
+A deliberately curated repository of portable skills for coding agents. This
+fork keeps only guidance that still adds signal beyond capable baseline-model
+knowledge, current repository evidence, or live official documentation. voku's
+evidence-driven engineering skills used by the `voku/agent-*` workflow are the
+primary focus.
 
 Skills follow the [Agent Skills](https://agentskills.io/) specification and can
 be installed by clients supported by the `skills` CLI.
 
-See [CHANGELOG.md](CHANGELOG.md) for recently added skills, review lenses, Laravel 13 updates, and operational-prompting guidance.
+See [CHANGELOG.md](CHANGELOG.md) for recently added skills, catalog pruning, review lenses, and operational-prompting guidance.
 
 ## Installation
 
@@ -128,10 +130,15 @@ object design, legacy migration, and repository-native verification.
 
 ## Full catalog
 
-The repository contains the complete catalog under [`skills/`](skills/),
-including the Laravel, React/TypeScript, testing, security, database, API, Git,
-SEO, accessibility, technical-debt, and documentation skills inherited from and
-extended beyond the upstream project.
+The repository contains the intentionally small catalog under [`skills/`](skills/).
+It does **not** try to mirror framework documentation or preserve generic
+programming advice merely because it once existed upstream.
+
+Prefer no static skill when a capable current model already knows the material
+reliably. Prefer fresh official documentation when correctness depends on a
+fast-moving framework, standard, or library version. Keep a skill when it encodes
+durable engineering judgment, a distinctive evidence/verification workflow, or
+current niche knowledge that is otherwise unreliable.
 
 Use the repository itself as the source of truth:
 
@@ -170,9 +177,11 @@ See [CHANGELOG.md](CHANGELOG.md) for voku-specific catalog changes.
 ## Provenance
 
 This repository is derived from the public `AsyrafHussin/agent-skills` catalog
-and retains upstream skill material where useful. voku-specific changes focus on
-governed agentic coding, operational prompting, simplicity, review routing, and
-integration with the `voku/agent-*` packages.
+but intentionally does not preserve the upstream inventory. Material is retained
+only while it provides more value than baseline model knowledge or live source
+grounding. voku-specific changes focus on governed agentic coding, operational
+prompting, simplicity, review routing, and integration with the `voku/agent-*`
+packages.
 
 Individual adapted skills retain their own provenance where applicable.
 

@@ -6,6 +6,40 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-02 - Prune baseline and stale skills
+
+### Removed
+
+- Removed 18 static skills whose remaining content was primarily baseline model
+  knowledge, generic checklists, arbitrary conventions, or fast-moving framework
+  documentation: `api-design-patterns`, `clean-code-principles`,
+  `e2e-playwright-testing`, `laravel-best-practices`,
+  `laravel-database-optimization`, `laravel-inertia-react`,
+  `laravel-owasp-security`, `laravel-queues`, `laravel-testing`,
+  `prd-writing`, `project-docs`, `react-vite-best-practices`,
+  `seo-best-practices`, `state-management`, `tailwind-best-practices`,
+  `technical-debt`, `typescript-react-patterns`, and
+  `web-design-guidelines`.
+- The removed catalog surface accounted for roughly 530 KiB, about 59% of the
+  skill content before this pruning pass.
+- `laravel-owasp-security` was also concretely stale: it encoded the OWASP Top
+  10:2021 taxonomy rather than the current 2025 release. Security review remains
+  owned by the focused `code-review-security` lens plus current-source grounding.
+
+### Changed
+
+- The contribution contract now rejects skills whose only value is knowledge a
+  capable current model already has, and directs fast-moving framework/standard
+  facts to current official documentation instead of static prompt copies.
+- The README now describes this repository as an intentionally curated catalog
+  rather than a preserved upstream inventory.
+- Current niche Laravel skills such as `laravel-ai-sdk` and `laravel-mcp`
+  remain because they cover recent framework capabilities where static model
+  knowledge is materially less reliable.
+- `git-workflow` and `testing-best-practices` remain for now because they
+  contain repository-specific behavior and evidence disciplines beyond their
+  generic material; they are candidates for a later size-reduction pass.
+
 ## 2026-10-02 - Linux strace runtime profiling
 
 ### Added

@@ -33,6 +33,7 @@ Use these questions as a decision contract:
 4. **Does another skill or semantic owner already express the same principle?** Extend or reuse the existing owner instead of creating overlapping guidance under a new name.
 5. **Could code own this instead?** Prefer an owner API, type, invariant, regression test, static-analysis rule, formatter rule, or automation when it can enforce the behavior reliably.
 6. **What would make this guidance removable?** Retire or shrink prose when it becomes stale, duplicated, disproven, harmful, tool-owned, or already structurally enforced.
+7. **Does this add information beyond a capable current model or fresh official docs?** Do not add static skills whose only value is baseline programming/framework knowledge. If correctness depends on a fast-moving framework, library, standard, or release, prefer grounding in the target repository plus current official documentation instead of freezing that documentation into this catalog.
 
 Do not add lifecycle metadata merely to classify prose. First prove a real consumer needs machine-readable lifecycle data. A smaller skill catalog with sharper ownership is preferable to preserving every historical rule forever.
 
