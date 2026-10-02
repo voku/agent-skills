@@ -69,6 +69,8 @@ Tracing can expose:
 
 Treat trace output as sensitive. Prefer short captures, local reproduction, narrow syscall filters, and a dedicated output file with restrictive permissions.
 
+`strace` is intrusive: ptrace stops/resumes tracees around syscalls and can perturb syscall-heavy workloads. Treat call shapes, endpoints, repetition, and obvious blocking as diagnostic evidence; validate any performance improvement again without `strace`.
+
 Never use `--inject`, `--fault`, or syscall return-value manipulation during performance diagnosis unless fault injection is the explicit task.
 
 ## Part 3: choose the smallest useful flow
@@ -95,7 +97,13 @@ Or attach to one existing process:
 strace -f -c -p <PID>
 ```
 
-Use the summary to rank calls by time, call count, and errors. On versions supporting wall-clock summary columns, prefer wall time when diagnosing latency rather than assuming kernel CPU time equals request time.
+Use the summary to rank calls by time, call count, and errors. For latency investigations, prefer wall-clock syscall time when supported:
+
+```bash
+strace -f -c -w -p <PID>
+```
+
+Without `-w`, the summary defaults to system CPU time spent in syscalls, which is not the same thing as elapsed request latency.
 
 Useful follow-up signals:
 
@@ -211,7 +219,7 @@ If the process is CPU-bound and making few syscalls, `strace` is the wrong prima
 Prefer a reproducible request plus an external timeout:
 
 ```bash
-timeout 15s strace -f -ttt -T -yy -s 256 -o /tmp/trace.log -p <PID>
+timeout --signal=INT 15s strace -f -ttt -T -yy -s 256 -o /tmp/trace.log -p <PID>
 ```
 
 On newer `strace` versions, `--syscall-limit=<N>` is another useful guard.
