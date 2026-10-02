@@ -6,6 +6,22 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-02 - Linux strace runtime profiling
+
+### Added
+
+- Added `linux-strace`, a bounded runtime-diagnostics skill for Linux processes,
+  with explicit PHP CLI/PHP-FPM guidance for slow requests, hangs, repeated
+  database/socket I/O, filesystem chatter, network waits, subprocess waits, and
+  lock-contention symptoms.
+- The skill separates syscall evidence from application-level conclusions:
+  repeated database-socket traffic can establish chatty I/O, while exact SQL
+  duplication or N+1 claims require decoded payloads or database/application
+  instrumentation.
+- Added permission, sensitive-output, bounded-capture, and profiler-handoff
+  boundaries so `strace` does not become an excuse to trace an entire production
+  host indefinitely.
+
 ## 2026-09-20 - First-party compact Git message guidance
 
 ### Changed
