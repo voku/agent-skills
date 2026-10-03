@@ -46,6 +46,7 @@ When another concern becomes dominant, emit **at most one** focused handoff with
 - Rank by maintenance surface removed, not cleverness.
 - When constants, clamps, floors, caps, or range transformations changed, enumerate the relevant boundary cases and check for collapsed/dead ranges. Otherwise do **not** manufacture a bound-range exercise.
 - Prefer a local deletion/simplification over a new helper, interface, manager, strategy, or configuration point with no demonstrated second use.
+- Before accepting a replacement finding, verify in order: reuse an existing repository owner/pattern, use the language standard library, use a native platform capability, then use an already-installed dependency. Name the concrete path, function, feature, or package that proves the replacement exists.
 - If removal safety depends on unavailable callers or behavior, return `blocked` instead of guessing.
 
 ## Terminal Contract
