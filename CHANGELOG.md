@@ -6,6 +6,20 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-06 - Requirements interview
+
+### Added
+
+- Added `requirements-interview`, a tool-neutral clarification skill that grounds
+  itself in repository evidence before asking questions, asks only consequential
+  unresolved questions, makes assumptions visible, and produces an
+  implementation-ready contract with scope, acceptance criteria, constraints,
+  technical implications, and remaining human-authority decisions.
+- The skill explicitly stops before implementation and does not own branch,
+  issue, pull-request, approval, lifecycle, or mutation behavior, so governed
+  projects can hand the clarified contract back to their existing workflow.
+
+
 ## 2026-10-02 - High-signal catalog cleanup
 
 ### Removed
