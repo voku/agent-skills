@@ -6,6 +6,18 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-06 - Review feedback repair
+
+### Added
+
+- Added `review-feedback-repair`, a tool-neutral repair skill that reads current
+  unresolved review feedback and CI state, classifies comments before acting,
+  fixes only evidence-backed defects or candidate-caused failures, revalidates
+  the current candidate, and resolves feedback only after the repair is proven.
+- Provider mechanics stay external: the skill deliberately does not embed GitHub,
+  GitLab, or host-specific API/CLI contracts, and it does not own merge, approval,
+  release, or lifecycle authority.
+
 ## 2026-10-06 - Requirements interview
 
 ### Added
