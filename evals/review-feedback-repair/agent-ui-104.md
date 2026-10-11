@@ -26,7 +26,7 @@ CI job and a current commit must not be conflated.
 | --- | --- | --- |
 | [Review 4237303770](https://github.com/voku/agent-ui/pull/104#discussion_r4237303770) | The negative investigation example runs `grep -rn "->save(" src/` without marking the leading-hyphen pattern | The exact example in Loop's `agent-loop-investigate`; actual `grep` exit behavior |
 | [Review 4237303774](https://github.com/voku/agent-ui/pull/104#discussion_r4237303774) | Every `workflow learn` example supposedly requires explicit `--status` and `--reason` | `WorkflowLearningCommand`, `WorkflowLearningRecorder::resolveDecision()`, and `WorkflowLearningEvidenceTest` |
-| [Review 4237303775](https://github.com/voku/agent-ui/pull/104#discussion_r4237303775) | The `proposal-import` JSON example uses `"ADD|REPLACE|DELETE"` and `"UPDATE_SKILL|CREATE_SKILL"` as if each were an enum | Learning's `ConsolidationResultValidator`, `Action` and `LearningClassification` |
+| [Review 4237303775](https://github.com/voku/agent-ui/pull/104#discussion_r4237303775) | The `proposal-import` JSON example uses `"ADD\|REPLACE\|DELETE"` and `"UPDATE_SKILL\|CREATE_SKILL"` as if each were an enum | Learning's `ConsolidationResultValidator`, `Action` and `LearningClassification` |
 
 ## Expected decision key
 
