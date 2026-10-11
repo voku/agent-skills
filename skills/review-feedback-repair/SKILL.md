@@ -32,6 +32,8 @@ Classify each item as one of:
 
 For CI or validation failures, determine whether the candidate caused the failure before changing code. Do not repair unrelated infrastructure by accident.
 
+When feedback cites a generated, mirrored, or vendored file, locate its canonical semantic owner and regeneration/release boundary first. Repair the owner instead of hand-editing the projection; refresh the consumer only through its owner-supported installation path. If the installed owner release does not contain the fix yet, report that integration dependency rather than pretending the projected copy is authoritative.
+
 ## Repair Loop
 
 For each valid defect or candidate-caused failure:
