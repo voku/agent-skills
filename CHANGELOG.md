@@ -6,6 +6,16 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-11 - Language project-onboarding authoring
+
+### Added
+
+- Added `language-onboarding-authoring`, a tool-neutral skill for designing
+  language-specific project-onboarding skills around verified repository facts,
+  explicit unavailable/incomplete states, read-only discovery, and one bounded
+  next action. It keeps package-manager commands, host integration, and workflow
+  lifecycle details with their semantic owners.
+
 ## 2026-10-06 - Review feedback repair
 
 ### Added
