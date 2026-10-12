@@ -46,6 +46,10 @@ const OrderFactory = {
   }
 };
 
+// Multi-order scenarios provide distinct stable IDs through overrides.
+const first = OrderFactory.create({ id: 'ord-first' });
+const second = OrderFactory.create({ id: 'ord-second' });
+
 test('calculates total for single item', () => {
   const order = OrderFactory.create({ items: [{ id: 'i-1', name: 'Book', price: 15.00, qty: 2 }] });
   expect(orderService.calculateTotal(order)).toBe(30.00);
