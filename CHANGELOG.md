@@ -6,6 +6,16 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-12 - Portable skill example corrections
+
+### Fixed
+
+- Corrected PHP static-analysis examples so their type assertions, scoped-ignore
+  version boundary, generic factory proof, and array-shape guarantees match the
+  guidance they teach.
+- Made testing-skill example fixtures deterministic and restored the pending
+  order matcher's full status contract.
+
 ## 2026-10-11 - Language project-onboarding authoring
 
 ### Added
