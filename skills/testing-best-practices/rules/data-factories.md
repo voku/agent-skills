@@ -36,7 +36,7 @@ test('calculates total for single item', () => {
 const OrderFactory = {
   create(overrides: Partial<Order> = {}): Order {
     return {
-      id: `ord-${Math.random().toString(36).slice(2)}`,
+      id: 'ord-default',
       customer: { id: 'c-1', email: 'c@test.com', address: { city: 'Springfield', zip: '62701' } },
       items: [{ id: 'i-1', name: 'Widget', price: 29.99, qty: 1 }],
       status: 'pending',
