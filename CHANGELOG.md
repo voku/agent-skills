@@ -6,6 +6,13 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-13 - Onboarding: no silent truncation
+
+### Changed
+- `project-onboarding`: forbid bare `| head`; require the limit and true total to be stated.
+  Evidence: half of 12,121 observed agent shell calls ended in `| head`
+  ([agent-dotfiles evaluation](https://github.com/voku/agent-dotfiles/blob/main/docs/EVALUATION.md)).
+
 ## 2026-10-13 - PHP project onboarding
 
 ### Added

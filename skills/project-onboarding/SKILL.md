@@ -57,6 +57,10 @@ configuration, or run a project's test/static-analysis commands automatically.
   match; any other non-zero status is a tool error, not an empty result.
 - Read selected source ranges exactly. Preserve the original path, range,
   revision/digest, command exit status, and any truncation.
+- Never cut output with a bare `| head`: it drops results without a word. State
+  the limit and the true total (for example `rg ... | agent_head 50` when the
+  optional agent-dotfiles profile is active, or count first with `rg -c`), and
+  say so in the report when results were cut.
 
 ## Report an actionable starting point
 
