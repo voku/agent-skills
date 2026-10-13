@@ -6,6 +6,15 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-13 - PHP project onboarding
+
+### Added
+
+- Added `project-onboarding`, a read-only PHP onboarding skill that verifies the
+  Git root, worktree, Composer scripts and configuration files before any check
+  is run. Moved from `voku/agent-dotfiles`; it now uses only native Git and
+  ripgrep, with no dependency on that repository's CLI.
+
 ## 2026-10-12 - Portable skill example corrections
 
 ### Fixed
