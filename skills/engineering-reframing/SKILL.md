@@ -13,15 +13,15 @@ Question the problem only when doing so could change the next engineering decisi
 
 ## Activation gate
 
-Use this skill when task or repository evidence reveals **at least one** decision-relevant signal:
+Activate only when **concrete evidence** suggests a decision-relevant doubt:
 
-- An implementation is prescribed, but the needed outcome or responsibility is not established.
-- A proposed persistence, duplication, hash, integration, or abstraction may duplicate an existing owner's capability.
-- A local failure may be caused by a producer/consumer contract mismatch or a recurring cross-call-site mechanism.
-- Repeated investigation of one layer is not reducing uncertainty, while an independent observation point exists.
-- A proposed structural fix has not been distinguished from sufficient local containment.
+- A proposed mechanism lacks a verified outcome, consumer, or owner.
+- A new hash, persisted state, or abstraction may duplicate an existing capability.
+- A local failure may reflect a shared cause or producer/consumer mismatch.
+- A single trace has stalled while independent evidence exists.
+- A broad fix is proposed for a possibly isolated defect.
 
-Do **not** activate merely because work is complex. Skip it for an isolated, understood, low-risk fix, routine implementation or validation, or a review already owned by a specialist lens. Do not reopen a verified authorized product decision based only on aesthetic preference. Use \`requirements-interview\` for missing human product intent, \`coding-simplicity\` for choosing implementation surface, and \`code-review-*\` for targeted review findings.
+Skip clear bounded fixes, routine validation, and specialist reviews. Do not reopen authorized requirements based on taste. Use `requirements-interview` for unresolved product intent, `coding-simplicity` for implementation choices, and `code-review-*` for review findings.
 
 ## Select one perspective
 
@@ -39,24 +39,23 @@ Ask another "why" only if the previous answer exposes a new *decision-relevant* 
 
 ## Evidence before depth
 
-1. Separate **observed behavior**, **hypothesis**, **falsifying evidence**, and **unresolved authority**. Do not promote a plausible story to a fact.
-2. Inspect the smallest relevant owner contract, caller/consumer, state, test, log, or safe reproduction. Prefer two genuinely independent sources when a second direction would materially narrow the search.
-3. Compare the plausible outcomes: **no change**, **local containment/correction**, or **structural prevention**. Select depth by recurrence evidence, blast radius, risk, reversibility, and cost, not by a preference for redesign.
-4. Preserve verified requirements, temporal semantics, persistence needs, privacy/trust boundaries, authorization, and existing safety guarantees. Simpler is not equivalent unless those constraints still hold.
-5. If further investigation would not alter the next safe choice, **stop**. If evidence is unavailable, report the specific unknown; if only a human can set intended behavior or accept risk, route that decision to the authorized owner.
-
-A useful result can be: "This feature is unnecessary under verified conditions", "Apply the local fix", "Measure at this other boundary", or "Seek authority". Avoid generic recommendations to "investigate more".
+1. Label **observation**, **hypothesis**, **falsifier**, and **unknown/authority decision**; never invent a causal link.
+2. Check the smallest relevant contract, state, caller, consumer, test, log, or safe reproduction. A second direction must provide independent evidence.
+3. Compare **no change**, **local correction**, and **structural prevention** by recurrence, impact, reversibility, and cost.
+4. Preserve verified behavior, timing/history, persistence, security, privacy, and authorization boundaries.
+5. Stop when another probe cannot change the decision, evidence costs more than its value, or human authority is needed. Name the unknown.
 
 ## Decision examples
 
-- **Proposed hash of surname and birth date:** First ask who detects changes and who owns historical state. If the producer already has the *required current and prior values*, can compare them with equivalent normalization and timing, and no privacy/persistence boundary requires the hash, propose **no hash implementation**. Otherwise retain the required mechanism or identify the precise missing fact. Do not assume comparing current values alone detects historical changes.
-- **Dry basement with subtle damage signs:** Treat experience as a leak hypothesis, not proof. For one verified failed fitting with healthy surrounding pipe, repair locally. For measured deterioration across sections, investigate broader prevention. Do not prescribe full replacement from unease alone.
-- **Incorrect UI data:** If browser-to-API tracing stalls, compare the API's observed payload with persistence-to-domain evidence; converge on the first mismatched contract. Do not automatically inspect every layer.
-- **Unclosed file handle:** Close it safely for an isolated defect, using an existing scoped cleanup construct where appropriate. Consider structural prevention only if sibling paths or exception cases show a recurring mechanism.
-- **Counterexample:** A verified one-line bounds bug with a failing regression test needs a bounded fix, not a new requirements interview, a second investigation direction, or recursive "why" questions.
+- **Proposed hash:** Ask who detects changes and owns prior state. If the producer already has comparable old/new values and timing, normalization, persistence, and privacy permit it, choose **no hash**. Otherwise retain the mechanism or identify missing evidence; current-only comparison cannot detect history.
+- **Plumber / recurrence:** Subtle damage signs suggest a hypothesis, not proof. One failed fitting warrants local repair; verified deterioration across sections can justify prevention.
+- **Wrong UI data:** When one trace stalls, inspect independent API and persistence/domain evidence and converge on the first divergent contract, not every layer.
+- **Leaked file handle:** Fix an isolated exception path using existing scoped cleanup. Investigate prevention if sibling paths show a shared mechanism.
+- **Stop asking why:** Ask again only when an answer exposes a decision-relevant assumption; stop once the answer cannot change the action.
+- **Counterexample:** A known off-by-one bug with a failing regression needs a bounded fix, not a second investigation or redesign.
 
 ## Stop and hand off
 
-Once the next choice is supported, state concisely: **observed signal; selected perspective (if needed); decisive evidence or missing fact; next action and its boundary**. Valid actions include no change, local fix, targeted investigation, second-direction probe, justified structural prevention, human decision, or stop due to diminishing value.
+State: **observed signal; chosen perspective; decisive evidence or missing fact; smallest justified next action**. Options: no change, local fix, targeted/second-direction probe, structural prevention, human decision, or stop.
 
-This skill supplies reasoning, not branch, implementation, approval, merge, release, or agent-loop lifecycle authority. \`engineering-codelight\` remains the owner of general evidence/authority discipline and \`operational-prompting\` of portable task contracts. Do not create a separate orchestration process.
+This skill owns perspective choice, **not** implementation, approval, or lifecycle. `engineering-codelight` owns evidence/authority discipline; `operational-prompting` owns task contracts. Respect the project's workflow.
