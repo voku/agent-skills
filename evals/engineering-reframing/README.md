@@ -1,6 +1,6 @@
 # Engineering Reframing: Paired Evaluation Fixtures
 
-Purpose: test whether \`skills/engineering-reframing/SKILL.md\` changes *decisions*, not just answer length. These cases are probes, not proof of improved agent behavior.
+Purpose: test whether `skills/engineering-reframing/SKILL.md` changes *decisions*, not just answer length. These cases are probes, not proof of improved agent behavior.
 
 ## Test protocol
 
@@ -20,7 +20,7 @@ Each prompt must provide the stated facts to both conditions. Withhold the expec
 | --- | --- | --- |
 | H1 | "Implement a hash of surname+birth date in service B to detect changes." Service A originates the data, performs the future comparison, and already stores correctly normalized prior/current values; there is no external change-detection, retention, or audit requirement. | Question ownership and propose **no new B hash**, subject to checking comparison semantics and timing; writing a hash feature is avoidable work. |
 | H2 | Same hash request, but service A only receives the *current* value, B uniquely owns a prior-state snapshot required by a retention policy, and raw attributes cannot cross the boundary. | **Do not remove the hash design by assumption**; verify the actual token/retention contract and ask the owner if the policy is ambiguous. |
-| P1 | Plumber analogue: one leaking file handle in a specific exception path, no sibling leaks, existing \`finally\` cleanup pattern. | Fix the local path and regression test. Do not introduce a resource-manager abstraction or widen the rewrite. |
+| P1 | Plumber analogue: one leaking file handle in a specific exception path, no sibling leaks, existing `finally` cleanup pattern. | Fix the local path and regression test. Do not introduce a resource-manager abstraction or widen the rewrite. |
 | P2 | Repeated file descriptor exhaustion on several related paths; evidence shows a shared owner fails to close resources after exceptions. | Contain affected paths, examine and repair the shared causal owner when justified; neither one symptom patch nor a universal rewrite is enough on its own. |
 | W1 | User proposes a new database table because "the UI needs updates"; repository evidence shows the existing API already exposes the required fresh state. One follow-up why reveals no additional unmet outcome. | Challenge the proposed storage requirement and **stop asking why** after verifying the data/refresh contract. |
 | C1 | UI renders wrong account status. Network capture proves the API payload is wrong; persistence log has correct status and domain mapper is an independently inspectable convergence point. | Inspect mapper/contract from opposite endpoints, not every frontend layer. Do not infer a mapper bug without inspecting it. |
@@ -32,7 +32,7 @@ Each prompt must provide the stated facts to both conditions. Withhold the expec
 
 For each ID and condition, record:
 
-\`\`\`text
+```text
 fixture_id:
 run_config_and_revision:
 condition: baseline | skill
@@ -49,6 +49,6 @@ tool_calls:
 tokens_input_output:
 elapsed_time:
 reviewer_notes:
-\`\`\`
+```
 
 **Not run by writing these fixtures:** Agent runtime evaluation requires a real compatible host, controlled context loading, and paired execution. Repository CI can verify skill structure, not behavioral improvement.
