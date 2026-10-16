@@ -6,6 +6,19 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-15 - Evidence-triggered engineering reframing
+
+### Added
+
+- Added `engineering-reframing`, an opt-in decision lens for challenging suspect
+  requirements, ownership assumptions, and failure diagnoses; it selects one
+  investigation perspective and explicitly stops when deeper work adds no value.
+  Implementation minimization, evidence/authority, and review lenses retain their
+  existing owners.
+- Added paired positive/negative evaluation fixtures under
+  `evals/engineering-reframing/`. These are reproducible scenarios, not a claim
+  of improved runtime agent behavior.
+
 ## 2026-10-13 - Onboarding: no silent truncation
 
 ### Changed
