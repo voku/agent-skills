@@ -4,7 +4,7 @@ description: Portable testing guidance for regression evidence, test structure, 
 license: MIT
 metadata:
   author: agent-skills
-  version: "2.1.0"
+  version: "2.2.0"
 ---
 
 # Testing Best Practices
@@ -29,6 +29,7 @@ Prefer the nearest established test style unless it hides the behavior that need
 
 ### Assertions
 - [assert-specific.md](rules/assert-specific.md) - precise assertions with useful failure diagnostics.
+- [assert-oracle-independence.md](rules/assert-oracle-independence.md) - expectations derived independently of the implementation, with counterexamples that expose vacuous tests.
 
 ### Test Data
 - [data-factories.md](rules/data-factories.md) - factories/builders when they reduce setup noise while preserving intent.
@@ -40,6 +41,7 @@ Prefer the nearest established test style unless it hides the behavior that need
 ### Coverage and Regression Evidence
 - [cov-regression-first.md](rules/cov-regression-first.md) - reproduce bugs with the narrowest useful failing regression before changing production behavior when practical.
 - [cov-edge-cases.md](rules/cov-edge-cases.md) - prioritize branches, boundaries, failure modes, and defect-prone behavior over vanity line coverage.
+- [cov-test-resilience.md](rules/cov-test-resilience.md) - distinguish behavioral regressions from harmless implementation or presentation changes with bounded probes.
 
 ### Feedback Speed
 - [perf-fast-unit.md](rules/perf-fast-unit.md) - measure feedback cost, remove accidental overhead, parallelize safely, and separate slower tiers only where useful.
@@ -49,13 +51,15 @@ Prefer the nearest established test style unless it hides the behavior that need
 - For a bug fix, prefer a failing regression that demonstrates the defect before modifying production code when the behavior can be reproduced safely and economically.
 - For requests such as “more tests” or “more coverage”, identify a concrete branch, invariant, failure mode, or historically defect-prone path instead of optimizing a percentage in isolation.
 - Set up only collaborators and data that matter to the behavior being tested.
+- Before GREEN in TDD, challenge whether the RED test represents the approved requirement independently of the proposed implementation.
+- After GREEN, challenge whether the test rejects plausible wrong behavior and tolerates irrelevant changes; do not dilute assertions to make a suite green.
 - Prefer observable behavior over assertions about incidental implementation details.
 - Use test doubles only when they preserve the evidence claim and reduce nondeterminism, destructive effects, unavailability, or irrelevant cost.
 - Keep valuable integration/e2e evidence even when it is slower; optimize accidental cost before deleting meaningful coverage.
 
 ## Evidence Boundary
 
-- A green test proves only the behavior actually exercised by that test and its environment.
+- A green test proves only the behavior actually exercised by that test and its environment; neither the author nor a fresh reviewer should assume the test is a correct oracle.
 - Coverage percentages show execution reach, not correctness or specification completeness.
 - Flakiness is evidence of nondeterminism or environmental coupling that should be investigated, not automatically hidden with retries.
 - “Unit”, “integration”, and “e2e” are useful scopes, not moral rankings. Use the cheapest scope that can still observe the behavior that matters.
