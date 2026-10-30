@@ -38,6 +38,17 @@ A one-liner is good only when it is the clearest correct form left by this searc
 - Touch the fewest files that correctly own the behavior.
 - Do not broaden a requested fix into adjacent modernization.
 
+## Proportional defenses and complexity boundaries
+
+Apply extra scrutiny **only** when a proposed lock, retry, fallback, compatibility layer, security hardening, or other defensive mechanism is not already justified by a requirement or concrete evidence. Routine bounded fixes and approved safeguards do not need another approval ritual.
+
+- Describe the triggering failure chain and exposed boundary. Separate observed evidence from unknown or merely conceivable risks; consider realistic exposure, likelihood **and impact**. Do not invent numeric probability.
+- Compare the smallest sufficient safeguard, reuse of an existing capability, and a bounded discriminating probe. Account for implementation, review, testing, operational, and lifetime maintenance costs.
+- Implement necessary controls within current authority. If an additional mitigation materially expands approved scope, changes a public contract, or needs explicit risk acceptance, present the specific trade-off for the appropriate owner to decide. Do not silently turn a theoretical concern into a requirement or repeatedly ask permission for ordinary implementation choices.
+- Rare does not mean harmless: preserve credible high-impact security protections, data-integrity guarantees, and required concurrency invariants. Never reject necessary safety solely because its implementation is complex.
+
+When the problem **requires** complex internals, keep them at their rightful owner behind a narrow, cohesive, stable caller-facing API. Expose consequential options and failures honestly while hiding incidental mechanics. Prefer existing CLI, standard-library, and package APIs; do not create pass-through wrappers or factories merely to make the call graph look layered. Measure simplicity from the consumer's perspective, not by line count.
+
 ## Safety floor
 
 Never simplify away explicit requirements, trust-boundary validation, authorization/security controls, error handling that prevents data loss, required transaction/concurrency guarantees, accessibility, or necessary compatibility.
