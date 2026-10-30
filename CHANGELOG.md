@@ -6,6 +6,14 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-30 - Proportional defenses and encapsulated complexity
+
+### Changed
+
+- Refined `coding-simplicity` to challenge unsubstantiated defensive complexity only when triggered by task evidence, while preserving mandatory security, integrity, and concurrency guarantees.
+- Made consumer-facing API simplicity explicit: complex internals can be justified; gratuitous wrapper layers cannot.
+- Added paired positive/negative evaluation scenarios; writing fixtures is not evidence of improved runtime agent decisions. Refs `voku/agent-loop#892`.
+
 ## 2026-10-15 - Evidence-triggered engineering reframing
 
 ### Added
