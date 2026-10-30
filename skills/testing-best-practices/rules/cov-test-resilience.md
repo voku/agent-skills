@@ -3,7 +3,7 @@ id: cov-test-resilience
 title: Detect Real Regressions Without Harmless-Change Breakage
 category: cov
 priority: HIGH
-triggers: [brittle-ui-text, css-order-test, snapshot-abuse, implementation-coupled-test, missed-regression, test-hardening]
+triggers: [brittle-ui-text, css-order-test, snapshot-abuse, implementation-coupled-test, missed-regression, test-hardening, work-probe-review]
 tags: [testing, tdd, mutation, resilience, regression]
 ---
 
@@ -28,6 +28,16 @@ Bad assertion: the page includes the German string `Zurück zur Auswahl`. It can
 Better: find the intended control by accessible role/name where the role/name is stable, or by a dedicated semantic test selector such as `[data-testid="request-back"]` when necessary; activate it and assert the expected navigation or state.
 
 A test ID is an intentional selector contract, not proof of functionality. Do not add one for every element or treat CSS class names as test contracts by default.
+
+## After Implementation: Test or Probe?
+
+Review checks independently of the implementation. **Promote** a check to the regression suite when its oracle comes from an approved contract and it catches a plausible defect without rejecting harmless changes. **Keep as a work probe** when it only helps the agent explore, reproduce, or validate a draft. Preserve a bounded, sanitized diagnostic record of useful probes (purpose, command, observed result, limitation, candidate SHA); discard uninformative scratch files. Do not delete all implementation checks or automatically add every probe to CI.
+
+**Bad:** Keep a test asserting button text `Submit` as proof that submission works; delete every exploratory check after GREEN.
+
+**Better:** In CI, exercise submission and assert the authorized state change. Keep the temporary label check only when it explains a validation decision or uncovered blind spot. Exact text belongs in CI when the wording itself is contractual.
+
+This is a review responsibility, **not** a new agent, workflow phase, permanent probe archive, or mandatory CI gate.
 
 ## Important Exceptions
 
