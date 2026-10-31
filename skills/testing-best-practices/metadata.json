@@ -1,8 +1,8 @@
 {
-  "version": "2.1.0",
+  "version": "2.2.0",
   "skill": {
     "name": "testing-best-practices",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "description": "Portable testing guidance for regression evidence, test structure, isolation, assertions, test data, test doubles, coverage strategy, and feedback speed.",
     "author": "Agent Skills Contributors",
     "license": "MIT",
@@ -25,7 +25,7 @@
   ],
   "meta": {
     "created": "2026-03-14",
-    "last_updated": "2026-09-15",
+    "last_updated": "2026-10-31",
     "rule_count": 11,
     "structure_version": "2.0",
     "canonical_sources": [

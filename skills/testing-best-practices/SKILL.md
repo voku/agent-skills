@@ -4,7 +4,7 @@ description: Portable testing guidance for regression evidence, test structure, 
 license: MIT
 metadata:
   author: agent-skills
-  version: "2.1.0"
+  version: "2.2.0"
 ---
 
 # Testing Best Practices
@@ -16,6 +16,16 @@ Portable guidance for building useful, maintainable test evidence without turnin
 Before changing tests, inspect the target repository's existing test framework, suite layout, fixtures/factories, CI tiers, database/environment setup, coverage tooling, and documented validation commands.
 
 Prefer the nearest established test style unless it hides the behavior that needs evidence. Do not introduce a new framework, mocking library, fixture system, coverage threshold, or suite taxonomy merely because this skill contains an example of one.
+
+## Implementation Probes and Regression Tests
+
+Classify an executable check by its purpose and lifetime, not by its framework.
+
+- **Implementation probes** are temporary experiments used to answer a concrete question, reproduce a failure, or compare possible behavior. They may fail. Keep them within the approved task scope and outside the maintained test suite and default CI, using an existing ignored workspace when the repository provides one.
+- **Regression tests** protect behavior the project intends to preserve. Promote a probe only when its expected behavior follows an approved requirement, contract, or established invariant; it detects a meaningful regression; and its maintenance cost is justified.
+- **Execution evidence** records what a command actually did. Retain only consequential observations, using the repository's existing Run, Session, CI, or artifact mechanisms. Include the question, exact candidate and probe identity, command and inputs, observed exit/result, and important untested cases.
+
+A passing probe is not proof of correctness, and a useful probe does not automatically belong in CI. Never claim that a command ran unless execution was observed. If the source snapshot or probe cannot be recovered, state that limitation instead of presenting the observation as reproducible.
 
 ## Canonical Rule Boundaries
 
