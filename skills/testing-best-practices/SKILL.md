@@ -51,7 +51,7 @@ Prefer the nearest established test style unless it hides the behavior that need
 - For a bug fix, prefer a failing regression that demonstrates the defect before modifying production code when the behavior can be reproduced safely and economically.
 - For requests such as “more tests” or “more coverage”, identify a concrete branch, invariant, failure mode, or historically defect-prone path instead of optimizing a percentage in isolation.
 - Set up only collaborators and data that matter to the behavior being tested.
-- Before GREEN in TDD, challenge whether the RED test represents the approved requirement independently of the proposed implementation.
+- Before relying on RED as behavioral evidence, derive expected results from the approved requirement; challenge the oracle when it may mirror the implementation, without requiring a counterexample exercise for every test.
 - When a test has an evidenced risk of brittleness or missing a defect, challenge whether it rejects plausible wrong behavior and tolerates irrelevant changes; do not dilute assertions to make a suite green or require a mutation experiment for every task.
 - Distinguish exploratory work probes from durable regression tests when this affects a decision: promote contract-protecting checks, and retain sanitized probe evidence only when it materially helps investigation or review. See [test resilience](rules/cov-test-resilience.md).
 - Prefer observable behavior over assertions about incidental implementation details.
