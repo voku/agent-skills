@@ -52,8 +52,8 @@ Prefer the nearest established test style unless it hides the behavior that need
 - For requests such as “more tests” or “more coverage”, identify a concrete branch, invariant, failure mode, or historically defect-prone path instead of optimizing a percentage in isolation.
 - Set up only collaborators and data that matter to the behavior being tested.
 - Before GREEN in TDD, challenge whether the RED test represents the approved requirement independently of the proposed implementation.
-- After GREEN, challenge whether the test rejects plausible wrong behavior and tolerates irrelevant changes; do not dilute assertions to make a suite green.
-- After implementation, classify exploratory work probes separately from durable regression tests; promote valuable checks and retain only useful sanitized diagnostic evidence. See [test resilience](rules/cov-test-resilience.md).
+- When a test has an evidenced risk of brittleness or missing a defect, challenge whether it rejects plausible wrong behavior and tolerates irrelevant changes; do not dilute assertions to make a suite green or require a mutation experiment for every task.
+- Distinguish exploratory work probes from durable regression tests when this affects a decision: promote contract-protecting checks, and retain sanitized probe evidence only when it materially helps investigation or review. See [test resilience](rules/cov-test-resilience.md).
 - Prefer observable behavior over assertions about incidental implementation details.
 - Use test doubles only when they preserve the evidence claim and reduce nondeterminism, destructive effects, unavailability, or irrelevant cost.
 - Keep valuable integration/e2e evidence even when it is slower; optimize accidental cost before deleting meaningful coverage.
