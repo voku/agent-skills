@@ -9,11 +9,11 @@ tags: [testing, tdd, assertions, oracles, falsification]
 
 # Independent Test Oracles and Counterexamples
 
-**Trigger Anchor:** Before accepting RED or GREEN, derive expected behavior from an approved requirement, public contract, independently checked example, or invariant, not from the same implementation being tested.
+**Trigger Anchor:** When a test risks mirroring the implementation or asserting incidental behavior, ground its expected outcome in an approved requirement, public contract, independently checked example, or invariant before treating RED or GREEN as behavioral evidence. This is a targeted check, not a mandatory per-test ritual.
 
 ## Test Design Challenge Before GREEN
 
-For each material behavior test, identify the exact requirement it protects, the observable input and outcome, and the source of the expected result. Ask two questions:
+For a materially uncertain or implementation-coupled oracle, identify the requirement, observable input and outcome, and source of the expected result. Use these counterexamples when they can resolve the uncertainty:
 
 1. Could a *different correct implementation* satisfy the requirement but fail this test?
 2. Could a *plausibly incorrect implementation* pass this test?
@@ -53,5 +53,5 @@ The expected denial comes from the security contract, not from consulting `mayGr
 - Prefer independently specified examples, public invariants, boundary partitions, and negative scenarios.
 - Avoid snapshot-only proofs, tautologies, and reimplementing the production algorithm inside the test.
 - Independent review context reduces correlated assumptions, but does not itself validate the oracle.
-- Record concrete evidence for both probes, or state UNKNOWN; do not claim behavior was tested from prompt wording alone.
+- Record results for counterexample probes only when actually executed; otherwise do not imply they ran or claim their outcome.
 - Precise labels, error codes, or strings may be legitimate contractual outcomes. Keep those assertions when the requirement explicitly makes them stable.
