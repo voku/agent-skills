@@ -9,9 +9,11 @@ tags: [testing, tdd, mutation, resilience, regression]
 
 # Regression Sensitivity and Refactoring Resilience
 
-**Trigger Anchor:** Challenge tests in two directions: behavior-preserving changes should normally survive, while realistic violations of the intended contract should fail.
+**Trigger Anchor:** When concrete evidence suggests a brittle or ineffective test, check both directions: harmless changes should survive; realistic contract violations should fail. This is not a default per-test mutation ritual.
 
 ## Two-Sided Probe
+
+Use this procedure only when it can answer a material test-quality question more economically than reviewing the existing contract and assertions.
 
 1. Identify the test's declared behavioral contract and distinguish it from presentation/implementation details.
 2. Choose one bounded, contract-preserving perturbation: translation, whitespace, wrapper markup, internal refactor, or irrelevant class ordering, *only if the changed detail is not itself part of the requirement*.
@@ -31,13 +33,13 @@ A test ID is an intentional selector contract, not proof of functionality. Do no
 
 ## After Implementation: Test or Probe?
 
-Review checks independently of the implementation. **Promote** a check to the regression suite when its oracle comes from an approved contract and it catches a plausible defect without rejecting harmless changes. **Keep as a work probe** when it only helps the agent explore, reproduce, or validate a draft. Preserve a bounded, sanitized diagnostic record of useful probes (purpose, command, observed result, limitation, candidate SHA); discard uninformative scratch files. Do not delete all implementation checks or automatically add every probe to CI.
+Review checks independently of the implementation when their disposition affects the task. **Promote** a check to the regression suite when its oracle comes from an approved contract and it catches a plausible defect without rejecting harmless changes. **Keep as a work probe** when it only helps the agent explore, reproduce, or validate a draft. Retain a bounded, sanitized diagnostic record (purpose, command, observed result, limitation, candidate SHA) **only if an unexpected result, material uncertainty, or later review need makes it decision-useful**; otherwise discard uninformative scratch files. Do not automatically save every green probe, delete all implementation checks, or add every probe to CI.
 
 **Bad:** Keep a test asserting button text `Submit` as proof that submission works; delete every exploratory check after GREEN.
 
 **Better:** In CI, exercise submission and assert the authorized state change. Keep the temporary label check only when it explains a validation decision or uncovered blind spot. Exact text belongs in CI when the wording itself is contractual.
 
-This is a review responsibility, **not** a new agent, workflow phase, permanent probe archive, or mandatory CI gate.
+This is a conditional review responsibility, **not** a new agent, workflow phase, permanent probe archive, per-task ritual, or mandatory CI gate.
 
 ## Important Exceptions
 
