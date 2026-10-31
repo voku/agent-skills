@@ -6,6 +6,12 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-10-31 - Temporary probes and durable regression tests
+
+### Changed
+
+- Extended `testing-best-practices` with a concise distinction between temporary implementation probes, durable regression tests, and selectively retained execution evidence. The guidance stays framework-neutral and routes execution records to existing repository mechanisms. Context: `voku/agent-loop#893`.
+
 ## 2026-10-30 - Proportional defenses and encapsulated complexity
 
 ### Changed
