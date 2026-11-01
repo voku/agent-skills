@@ -54,6 +54,27 @@ git clone https://github.com/voku/agent-skills.git
 cp -r agent-skills/skills/* .claude/skills/
 ```
 
+### Composer (optional PHP distribution)
+
+After publishing this repository on Packagist and tagging a release, PHP projects
+can install the same portable catalog without a separate Git checkout:
+
+```bash
+composer require --dev voku/agent-skills
+```
+
+For `voku/agent-loop`, configure the existing `.agent-loop/init.json` skill root:
+
+```json
+{
+  "extra_skills_roots": ["vendor/voku/agent-skills/skills"]
+}
+```
+
+Then run `vendor/bin/agent-loop init install-assets --agent=all --dry-run`
+and apply the projection only after reviewing the proposed changes. Composer
+only distributes the catalog; it does not execute or activate skills.
+
 ## voku engineering skills
 
 ### `operational-prompting`
