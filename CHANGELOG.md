@@ -2,9 +2,18 @@
 
 Notable changes to the `voku/agent-skills` catalog are documented here.
 
-This repository is a skill catalog rather than a Composer package, so entries are
-dated and tied to Git commits instead of inventing a package version that no
-runtime consumes.
+The catalog is distributed via Git and the skills CLI, with optional Composer
+packaging for PHP consumers. Catalog entries remain dated and tied to Git commits;
+Composer releases use Git tags.
+
+## 2026-11-01 - Optional Composer distribution
+
+### Added
+
+- Added a minimal root `composer.json` for optional Packagist distribution of
+  the unchanged portable skill catalog. The package adds no PHP dependency,
+  autoloading, scripts, plugins, or host activation behavior.
+- Added CI validation of Composer metadata and the Git distribution archive.
 
 ## 2026-11-01 - Evidence check boundaries
 
