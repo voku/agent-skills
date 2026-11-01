@@ -36,6 +36,41 @@ jobs:
           test "${expected}" -gt 0
           test "${actual}" -eq "${expected}"
 
+      - name: Install catalog in an isolated Composer consumer
+        shell: bash
+        run: |
+          set -euo pipefail
+          distribution="${RUNNER_TEMP}/agent-skills-distribution"
+          consumer="${RUNNER_TEMP}/agent-skills-consumer"
+          mkdir -p "${distribution}" "${consumer}"
+          git archive HEAD | tar -xf - -C "${distribution}"
+
+          cat > "${consumer}/composer.json" <<'JSON'
+          {
+            "name": "fixture/agent-skills-consumer",
+            "require": {"voku/agent-skills": "dev-main"},
+            "minimum-stability": "dev",
+            "repositories": [
+              {
+                "type": "path",
+                "url": "../agent-skills-distribution",
+                "options": {
+                  "symlink": false,
+                  "versions": {"voku/agent-skills": "dev-main"}
+                }
+              },
+              {"packagist.org": false}
+            ],
+            "config": {"allow-plugins": false}
+          }
+          JSON
+
+          composer update --working-dir="${consumer}" --no-interaction --no-progress --no-plugins --no-scripts
+          installed="${consumer}/vendor/voku/agent-skills"
+          test -f "${installed}/composer.json"
+          test ! -L "${installed}"
+          diff -qr "${distribution}/skills" "${installed}/skills"
+
       - name: Validate Skill Metadata and Structure
         run: |
           python3 - << 'PYEOF'
