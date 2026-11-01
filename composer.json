@@ -1,0 +1,17 @@
+{
+    "name": "voku/agent-skills",
+    "description": "Portable, tool-neutral engineering skills for coding agents.",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/voku/agent-skills",
+    "keywords": [
+        "agent-skills",
+        "coding-agents",
+        "engineering",
+        "developer-tools"
+    ],
+    "support": {
+        "issues": "https://github.com/voku/agent-skills/issues",
+        "source": "https://github.com/voku/agent-skills"
+    }
+}

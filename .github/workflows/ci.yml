@@ -19,6 +19,23 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Set up Composer for optional package validation
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate Composer package metadata
+        run: composer validate --strict
+
+      - name: Verify skill manifests are present in Git archive
+        run: |
+          expected="$(find skills -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l)"
+          actual="$(git archive HEAD | tar -tf - | grep -Ec '^skills/[^/]+/SKILL\.md$' || true)"
+          test "${expected}" -gt 0
+          test "${actual}" -eq "${expected}"
+
       - name: Validate Skill Metadata and Structure
         run: |
           python3 - << 'PYEOF'
