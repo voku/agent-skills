@@ -19,6 +19,183 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Set up Composer for optional package validation
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate Composer package metadata
+        run: composer validate --strict
+
+      - name: Verify skill manifests are present in Git archive
+        run: |
+          expected="$(find skills -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l)"
+          actual="$(git archive HEAD | tar -tf - | grep -Ec '^skills/[^/]+/SKILL\.md        run: |
+          python3 - << 'PYEOF'
+          import json
+          import os
+          import sys
+
+          skills_dir = "skills"
+          errors = []
+          skill_contents = {}
+          skill_names = set()
+
+          if not os.path.isdir(skills_dir):
+              print(f"Error: {skills_dir} directory not found")
+              sys.exit(1)
+
+          for entry in sorted(os.listdir(skills_dir)):
+              full_path = os.path.join(skills_dir, entry)
+              if not os.path.isdir(full_path):
+                  continue
+              skill_file = os.path.join(full_path, "SKILL.md")
+              if not os.path.isfile(skill_file):
+                  errors.append(f"Missing SKILL.md in {entry}")
+                  continue
+              with open(skill_file, "r", encoding="utf-8") as f:
+                  content = f.read()
+              skill_contents[entry] = content
+              if not content.startswith("---"):
+                  errors.append(f"{entry}/SKILL.md does not start with YAML frontmatter (---)")
+                  continue
+              parts = content.split("---", 2)
+              if len(parts) < 3:
+                  errors.append(f"{entry}/SKILL.md does not have closed YAML frontmatter (---)")
+                  continue
+              frontmatter = parts[1]
+              name_found = False
+              desc_found = False
+              for line in frontmatter.splitlines():
+                  line = line.strip()
+                  if line.startswith("name:"):
+                      name = line.split(":", 1)[1].strip().strip('"').strip("'")
+                      name_found = True
+                      if name != entry:
+                          errors.append(f"{entry}/SKILL.md name '{name}' does not match directory '{entry}'")
+                      elif name in skill_names:
+                          errors.append(f"Duplicate skill name '{name}'")
+                      else:
+                          skill_names.add(name)
+                  if line.startswith("description:"):
+                      desc_found = True
+              if not name_found:
+                  errors.append(f"{entry}/SKILL.md is missing name in frontmatter")
+              if not desc_found:
+                  errors.append(f"{entry}/SKILL.md is missing description in frontmatter")
+
+          codelight = skill_contents.get("engineering-codelight")
+          if codelight is None:
+              errors.append("Missing engineering-codelight/SKILL.md")
+          else:
+              codelight_size = len(codelight.encode("utf-8"))
+              print(f"engineering-codelight size: {codelight_size} bytes")
+              if codelight_size > 8192:
+                  errors.append("engineering-codelight/SKILL.md exceeds the 8 KiB review budget")
+              elif codelight_size > 5120:
+                  print("Review note: engineering-codelight/SKILL.md exceeds the preferred 5 KiB budget")
+
+              required_headings = [
+                  "### 1. Evidence and authority answer different questions",
+                  "### 2. Uncertainty is information",
+                  "### 3. Instructions have provenance",
+                  "### 4. Boundaries control knowledge",
+                  "### 5. Change the smallest coherent hypothesis test",
+                  "### 6. Prefer falsifiable evidence",
+                  "### 7. Re-ground moving reality",
+                  "### 8. Make failure observable and recovery possible",
+                  "### 9. Turn learning into structure, then forget",
+                  "## Workflow boundary",
+              ]
+              for heading in required_headings:
+                  if heading not in codelight:
+                      errors.append(f"engineering-codelight/SKILL.md is missing required section: {heading}")
+
+              required_semantics = [
+                  "prefer a fresh reviewer given only the contract, artifact, and relevant evidence",
+                  "a missing fact is not automatically an authority decision",
+                  "make investigation and review roles read-only; isolation is a capability boundary, not a workflow state",
+              ]
+              normalized_codelight = codelight.lower()
+              for semantic in required_semantics:
+                  if semantic not in normalized_codelight:
+                      errors.append(f"engineering-codelight/SKILL.md lost required semantic boundary: {semantic}")
+
+              forbidden_phrases = [
+                  "agent-loop enter",
+                  "agent-loop finish",
+                  "define -> ground",
+                  "define → ground",
+                  "no code change;",
+                  "reuse the existing repository owner/pattern;",
+                  "language standard library;",
+                  "php",
+                  "laravel",
+              ]
+              for phrase in forbidden_phrases:
+                  if phrase in normalized_codelight:
+                      errors.append(f"engineering-codelight/SKILL.md contains forbidden text: {phrase}")
+
+          operational_dir = os.path.join(skills_dir, "operational-prompting")
+          operational_skill = skill_contents.get("operational-prompting")
+          if operational_skill is None:
+              errors.append("Missing operational-prompting/SKILL.md")
+          else:
+              projection_paths = [
+                  os.path.join(operational_dir, "SKILL.md"),
+                  os.path.join(operational_dir, "README.md"),
+                  os.path.join(operational_dir, "AGENTS.md"),
+                  os.path.join(operational_dir, "metadata.json"),
+              ]
+              obsolete_contracts = [
+                  ".ai/skills/manifest.yaml",
+                  ".ai/skills/<skill>.yaml",
+              ]
+              for projection_path in projection_paths:
+                  with open(projection_path, "r", encoding="utf-8") as f:
+                      projection = f.read()
+                  for obsolete in obsolete_contracts:
+                      if obsolete in projection:
+                          errors.append(f"{projection_path} still contains obsolete custom manifest contract: {obsolete}")
+
+              metadata_path = os.path.join(operational_dir, "metadata.json")
+              with open(metadata_path, "r", encoding="utf-8") as f:
+                  operational_metadata = json.load(f)
+              if operational_metadata.get("meta", {}).get("canonical_sources") != ["SKILL.md", "rules/"]:
+                  errors.append("operational-prompting metadata must identify SKILL.md + rules/ as canonical sources")
+              if "portable_skills" in operational_metadata.get("configurations", {}):
+                  errors.append("operational-prompting/metadata.json must not own a private portable_skills manifest schema")
+
+          with open("AGENTS.md", "r", encoding="utf-8") as f:
+              root_agents = f.read()
+          if "| Skill | Rules |" in root_agents:
+              errors.append("Root AGENTS.md must not own mutable per-skill rule counts")
+          required_root_projection_boundaries = [
+              "supporting projections only",
+              "do not infer current rule inventory from this root file",
+          ]
+          normalized_root_agents = root_agents.lower()
+          for boundary in required_root_projection_boundaries:
+              if boundary not in normalized_root_agents:
+                  errors.append(f"Root AGENTS.md lost projection ownership boundary: {boundary}")
+
+          # Review-lens projection retirement is owned by
+          # tools/validate-review-projections.py and its focused workflow.
+
+          if errors:
+              print("Validation failed:")
+              for err in errors:
+                  print(" - " + err)
+              sys.exit(1)
+
+          print(f"Successfully validated {len([d for d in os.listdir(skills_dir) if os.path.isdir(os.path.join(skills_dir, d))])} skills.")
+          PYEOF
+ || true)"
+          test "${expected}" -gt 0
+          test "${actual}" -eq "${expected}"
+
       - name: Validate Skill Metadata and Structure
         run: |
           python3 - << 'PYEOF'
