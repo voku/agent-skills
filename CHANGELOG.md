@@ -14,6 +14,8 @@ Composer releases use Git tags.
   the unchanged portable skill catalog. The package adds no PHP dependency,
   autoloading, scripts, plugins, or host activation behavior.
 - Added CI validation of Composer metadata and the Git distribution archive.
+- Added an isolated, network-independent Composer consumer smoke test that
+  compares the installed skill subtree with the Git archive byte-for-byte.
 
 ## 2026-11-01 - Evidence check boundaries
 
