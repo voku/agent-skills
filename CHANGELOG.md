@@ -6,6 +6,12 @@ This repository is a skill catalog rather than a Composer package, so entries ar
 dated and tied to Git commits instead of inventing a package version that no
 runtime consumes.
 
+## 2026-11-01 - Evidence check boundaries
+
+### Fixed
+
+- Clarified that explicitly permitted scratch checks can be separate from implementation scope, while source edits and host restrictions remain authoritative. Require checking actual test discovery and default CI exclusion. Context: `voku/agent-loop#906`.
+
 ## 2026-10-31 - Temporary probes and durable regression tests
 
 ### Changed
