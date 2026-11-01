@@ -4,7 +4,7 @@ description: Portable testing guidance for regression evidence, test structure, 
 license: MIT
 metadata:
   author: agent-skills
-  version: "2.2.0"
+  version: "2.2.1"
 ---
 
 # Testing Best Practices
@@ -21,7 +21,7 @@ Prefer the nearest established test style unless it hides the behavior that need
 
 Classify an executable check by its purpose and lifetime, not by its framework.
 
-- **Implementation probes** are temporary experiments used to answer a concrete question, reproduce a failure, or compare possible behavior. They may fail. Keep them within the approved task scope and outside the maintained test suite and default CI, using an existing ignored workspace when the repository provides one.
+- **Implementation probes** are temporary experiments used to answer a concrete question, reproduce a failure, or compare possible behavior. They may fail. Prefer the project's existing test framework. When a probe needs a file, use a scratch location explicitly permitted by task or repository instructions; obey host and sandbox restrictions and keep source edits within approved implementation scope. Confirm the probe is excluded from the maintained test suite and default CI, since a group or name alone may not exclude it.
 - **Regression tests** protect behavior the project intends to preserve. Promote a probe only when its expected behavior follows an approved requirement, contract, or established invariant; it detects a meaningful regression; and its maintenance cost is justified.
 - **Execution evidence** records what a command actually did. Retain only consequential observations, using the repository's existing Run, Session, CI, or artifact mechanisms. Include the question, exact candidate and probe identity, command and inputs, observed exit/result, and important untested cases.
 
