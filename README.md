@@ -16,6 +16,25 @@ be installed by clients supported by the `skills` CLI.
 
 See [CHANGELOG.md](CHANGELOG.md) for recent additions, removals, and ownership decisions.
 
+## Where to work in this repository
+
+The skill entry point is the **individual** `SKILL.md`, not the catalog README.
+Find the source that owns the change before editing projections:
+
+| Concern | Start here |
+| --- | --- |
+| Skill discovery and activation contract | [`skills/`](skills/) (open the selected skill's `SKILL.md`) and [`AGENTS.md`](AGENTS.md) |
+| Detailed guidance for a selected skill | That skill's `rules/` directory, when present |
+| Evaluate a skill change | [`evals/`](evals/) and the relevant skill's own tests/evidence |
+| Repository tooling | [`tools/`](tools/) |
+| Contribution and provenance expectations | [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`CHANGELOG.md`](CHANGELOG.md) |
+
+Do not turn this table into a second skill catalog or an inventory of rules.
+Portable engineering guidance stays here. Tool-specific CLI and runtime
+contracts belong to their actual tool owners (for example, the external
+`skills` CLI is not owned by this repository). Within the voku stack,
+`agent-loop` owns governed workflow authority.
+
 ## Installation
 
 Install the catalog:
