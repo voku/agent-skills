@@ -16,6 +16,21 @@ be installed by clients supported by the `skills` CLI.
 
 See [CHANGELOG.md](CHANGELOG.md) for recent additions, removals, and ownership decisions.
 
+## Where to work in this repository
+
+Keep changes close to the skill or distribution concern that owns them. The README is an entry point, not a second skill manifest.
+
+| Change | Start here |
+| --- | --- |
+| Improve a skill's actual instructions or examples | [`skills/<skill-name>/SKILL.md`](skills/) and supporting files in that skill directory |
+| Add, rename, or remove a skill | [`skills/`](skills/), then check [`CONTRIBUTING.md`](CONTRIBUTING.md) and the catalog listing |
+| Change repository-wide contribution rules | [`AGENTS.md`](AGENTS.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md) |
+| Change packaging or installation guidance | [`composer.json`](composer.json) and the [installation section](#installation) |
+| Change automated validation or release behavior | [`.github/workflows/`](.github/workflows/) and the relevant checks |
+| Document a user-visible catalog change | [`CHANGELOG.md`](CHANGELOG.md) |
+
+For changes to governed approvals, lifecycle commands, or prompt recipes, work in the owning [`agent-loop`](https://github.com/voku/agent-loop) or [`agent-recall-compiler`](https://github.com/voku/agent-recall-compiler) repository instead. Skills teach reusable engineering behavior; installing one does not authorize execution.
+
 ## Installation
 
 Install the catalog:
