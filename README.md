@@ -30,8 +30,10 @@ Find the source that owns the change before editing projections:
 | Contribution and provenance expectations | [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`CHANGELOG.md`](CHANGELOG.md) |
 
 Do not turn this table into a second skill catalog or an inventory of rules.
-Portable guidance stays here; tool-specific workflow, CLI, and authority remain
-with the owning `agent-*` package.
+Portable engineering guidance stays here. Tool-specific CLI and runtime
+contracts belong to their actual tool owners (for example, the external
+`skills` CLI is not owned by this repository). Within the voku stack,
+`agent-loop` owns governed workflow authority.
 
 
 ## Installation
