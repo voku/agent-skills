@@ -23,7 +23,7 @@ Find the source that owns the change before editing projections:
 
 | Concern | Start here |
 | --- | --- |
-| Skill discovery and activation contract | [`skills/<skill-name>/SKILL.md`](skills/) and [`AGENTS.md`](AGENTS.md) |
+| Skill discovery and activation contract | [`skills/`](skills/) (open the selected skill's `SKILL.md`) and [`AGENTS.md`](AGENTS.md) |
 | Detailed guidance for a selected skill | That skill's `rules/` directory, when present |
 | Evaluate a skill change | [`evals/`](evals/) and the relevant skill's own tests/evidence |
 | Repository tooling | [`tools/`](tools/) |
@@ -34,7 +34,6 @@ Portable engineering guidance stays here. Tool-specific CLI and runtime
 contracts belong to their actual tool owners (for example, the external
 `skills` CLI is not owned by this repository). Within the voku stack,
 `agent-loop` owns governed workflow authority.
-
 
 ## Installation
 
