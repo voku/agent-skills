@@ -18,18 +18,24 @@ See [CHANGELOG.md](CHANGELOG.md) for recent additions, removals, and ownership d
 
 ## Where to work in this repository
 
-Keep changes close to the skill or distribution concern that owns them. The README is an entry point, not a second skill manifest.
+The skill entry point is the **individual** `SKILL.md`, not the catalog README.
+Find the source that owns the change before editing projections:
 
-| Change | Start here |
+| Concern | Start here |
 | --- | --- |
-| Improve a skill's actual instructions or examples | [`skills/<skill-name>/SKILL.md`](skills/) and supporting files in that skill directory |
-| Add, rename, or remove a skill | [`skills/`](skills/), then check [`CONTRIBUTING.md`](CONTRIBUTING.md) and the catalog listing |
-| Change repository-wide contribution rules | [`AGENTS.md`](AGENTS.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md) |
-| Change packaging or installation guidance | [`composer.json`](composer.json) and the [installation section](#installation) |
-| Change automated validation or release behavior | [`.github/workflows/`](.github/workflows/) and the relevant checks |
-| Document a user-visible catalog change | [`CHANGELOG.md`](CHANGELOG.md) |
+| Skill discovery and activation contract | [`skills/`](skills/) (open the selected skill's `SKILL.md`) and [`AGENTS.md`](AGENTS.md) |
+| Detailed guidance for a selected skill | That skill's `rules/` directory, when present |
+| Evaluate a skill change | [`evals/`](evals/) and the relevant skill's own tests/evidence |
+| Repository tooling | [`tools/`](tools/) |
+| Package distribution and installation | [`composer.json`](composer.json) and the [installation guide](#installation) |
+| CI and release automation | [`.github/workflows/`](.github/workflows/) |
+| Contribution and provenance expectations | [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`CHANGELOG.md`](CHANGELOG.md) |
 
-For changes to governed approvals, lifecycle commands, or prompt recipes, work in the owning [`agent-loop`](https://github.com/voku/agent-loop) or [`agent-recall-compiler`](https://github.com/voku/agent-recall-compiler) repository instead. Skills teach reusable engineering behavior; installing one does not authorize execution.
+Do not turn this table into a second skill catalog or an inventory of rules.
+Portable engineering guidance stays here. Tool-specific CLI and runtime
+contracts belong to their actual tool owners (for example, the external
+`skills` CLI is not owned by this repository). Within the voku stack,
+`agent-loop` owns governed workflow authority.
 
 ## Installation
 
