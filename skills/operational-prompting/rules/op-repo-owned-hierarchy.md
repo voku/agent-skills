@@ -15,15 +15,15 @@ tags: [operational-prompting, agents-md, instruction-hierarchy, provenance, repo
 
 ### Bad
 ```markdown
-<!-- ❌ Relying on long, volatile system prompts pasted into chat each session -->
+> **Bad:** Relying on long, volatile system prompts pasted into each chat.
 User: "Remember: always use strict types, never touch vendor files, use Docker make test,
 and remember that table X has a weird column naming scheme..."
-<!-- Lost on session clear or across different developers/agents! -->
+> This information is lost when a session is cleared or a different agent starts.
 ```
 
 ### Good
 ```markdown
-<!-- ✅ Root AGENTS.md establishes durable, version-controlled repository instructions -->
+> **Good:** The root AGENTS.md establishes version-controlled instructions.
 # AGENTS.md
 
 ## Repository Workflow

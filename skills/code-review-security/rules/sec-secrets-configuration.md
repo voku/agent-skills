@@ -18,7 +18,7 @@ tags: [security, secrets, cryptography, cookies, headers, configuration]
 // ❌ Hardcoding API tokens or secrets in version-controlled source code
 class StripeService
 {
-    private string $apiKey = 'sk_live_51Abc123...'; // Leaks in git history!
+    private string $apiKey = '<hardcoded-api-key>'; // Storing secrets in source leaks them to Git history!
 }
 
 // ❌ Using obsolete/broken cryptographic hashes for sensitive data

@@ -52,14 +52,14 @@ const dummyUser = { name: 'test', card: '1234', zip: '123' };
 
 ### Good
 ```typescript
-// ✅ Realistic values (unicode, actual test-card formats, central fixtures)
+// ✅ Realistic values (Unicode, gateway-provided test tokens, central fixtures)
 export const billingFixtures = {
-  visaSuccess: { card: '4242424242424242', exp: '12/28', cvv: '123' },
-  cardDeclined: { card: '4000000000000002', exp: '12/28', cvv: '123' }
+  visaSuccess: { paymentMethod: 'pm_card_visa' },
+  cardDeclined: { paymentMethod: 'pm_card_chargeDeclined' }
 };
 
 test('handles international user names and standard gateway formats', async () => {
-  const user = { name: 'José García-López', email: 'jose@empresa.es' };
+  const user = { name: 'José García-López', email: 'jose@example.com' };
   const payment = await processPayment(user, billingFixtures.visaSuccess, 99.50);
 
   expect(payment.status).toBe('succeeded');
