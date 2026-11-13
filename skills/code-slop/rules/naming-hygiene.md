@@ -14,18 +14,48 @@ tags: [naming, domain-modeling, readability, slop-reduction]
 ---
 
 ### Bad
+```typescript
+// ❌ Vague placeholders, type suffixes, and run-on sentence naming
+class UserDataHelperManager {
+  processUserDataArray(userObjectDataList: User[]): ProcessedUserResultData[] {
+    const tempResultArray: ProcessedUserResultData[] = [];
 
-Examples of redundant, placeholder-heavy names:
+    for (const theUserEntityBeingProcessed of userObjectDataList) {
+      const dataInfo = this.formatData(theUserEntityBeingProcessed);
+      tempResultArray.push(dataInfo);
+    }
 
-| Language | Bad name | Why it obscures the domain |
-|---|---|---|
-| TypeScript | `UserDataHelperManager` | Generic helper/manager nesting without a clear role |
-| TypeScript | `processUserDataArray` | Repeats types instead of describing the operation |
-| TypeScript | `theUserEntityBeingProcessed` | Narrates control flow rather than naming a user |
-| PHP | `OrderUtils` | Unbounded catch-all name |
-| PHP | `$orderArrayData`, `$itemObj` | Type suffixes that hide domain meaning |
+    return tempResultArray;
+  }
 
-The problem is comprehension and ownership, not the author who produced the names.
+  private formatData(theUserItem: User): ProcessedUserResultData {
+    return {
+      userIdString: theUserItem.id,
+      userFullNameString: `${theUserItem.firstName} ${theUserItem.lastName}`,
+    };
+  }
+}
+```
+
+```php
+<?php
+
+declare(strict_types=1);
+
+// ❌ Vague manager with redundant type parameters and placeholder variables
+class OrderUtils
+{
+    public function handleOrderData(array $orderArrayData): array
+    {
+        $res = [];
+        foreach ($orderArrayData as $itemObj) {
+            $temp = $itemObj->price * $itemObj->qty;
+            $res[] = ['val' => $temp];
+        }
+        return $res;
+    }
+}
+```
 
 ### Good
 ```typescript
