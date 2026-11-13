@@ -3,7 +3,7 @@ name: project-onboarding
 description: Establish verified PHP project context before investigating a failing test, unfamiliar repository, or requested project check. Use when the repository's scripts, Git state, source locations, or available PHP tooling are not yet known.
 license: MIT
 metadata:
-  author: Agent Skills Team
+  author: Agent Skills Team <lars@moelleken.org>
   version: "1.0.0"
 ---
 

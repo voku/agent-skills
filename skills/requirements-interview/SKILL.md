@@ -3,7 +3,7 @@ name: requirements-interview
 description: Clarify an under-specified feature or engineering task before implementation. Use when the request leaves product behavior, scope, constraints, edge cases, acceptance criteria, or compatibility decisions unresolved.
 license: MIT
 metadata:
-  author: Agent Skills Team
+  author: Agent Skills Team <lars@moelleken.org>
   version: "1.0.0"
 ---
 
