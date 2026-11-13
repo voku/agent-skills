@@ -3,7 +3,7 @@ name: php-static-analysis
 description: Implementation guidance for making PHP code provably typed under a strict static analyzer - native types first, precise array shapes and generics, honest contracts, scoped ignores, and analyzer extensions instead of inline casts. Triggers on "phpstan error", "psalm error", "type precision", "array shape", "class-string", "baseline", and related static-analysis work.
 license: MIT
 metadata:
-  author: Agent Skills Team
+  author: Agent Skills Team <lars@moelleken.org>
   version: "2.0.0"
 ---
 

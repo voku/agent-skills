@@ -3,7 +3,7 @@ name: dogfood-closeout-classification
 description: Enforce classification of LLM inference points and running private leak checks before closing sessions and upstreaming fixes. Triggers on "dogfood closeout", "closeout classification", "inference classification", "leak check public diffs", or "session closeout".
 license: MIT
 metadata:
-  author: Agent Skills Team
+  author: Agent Skills Team <lars@moelleken.org>
   version: "1.0.0"
 ---
 

@@ -3,7 +3,7 @@ name: linux-strace
 description: Diagnose Linux runtime bottlenecks with strace, especially PHP CLI, PHP-FPM, and Apache/PHP workloads. Use for slow requests, hanging processes, repeated database/socket I/O, blocking waits, filesystem chatter, DNS/network stalls, lock contention symptoms, and "where is this process spending time?" investigations. Prefer bounded evidence collection before code changes.
 license: MIT
 metadata:
-  author: voku
+  author: voku <lars@moelleken.org>
   version: "1.0.0"
 ---
 

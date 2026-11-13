@@ -3,7 +3,7 @@ name: language-onboarding-authoring
 description: Design or adapt a concise language-specific project-onboarding skill for unfamiliar repositories. Use when a team needs reliable first-step discovery for a language or ecosystem without auto-running checks, installing dependencies, or duplicating tool-owned workflows.
 license: MIT
 metadata:
-  author: Agent Skills Team
+  author: Agent Skills Team <lars@moelleken.org>
   version: "1.0.0"
 ---
 
