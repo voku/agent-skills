@@ -35,8 +35,8 @@ git rebase origin/main
 git rebase -i HEAD~3
 # (squash/fixup intermediate commits into cohesive logical changes)
 
-# ✅ Safe force-push only on private feature branches
-git push --force-with-lease origin feat/my-branch
+# ✅ Ordinary feature branch publication must not rewrite remote history
+git push origin feat/my-branch
 
 # ✅ Worktrees for parallel branch work without stashing
 git worktree add ../repo-hotfix hotfix/critical-security-patch
@@ -46,3 +46,5 @@ git worktree remove ../repo-hotfix
 git tag -a v2.4.0 -m "Release v2.4.0: Stripe payment upgrade"
 git push origin v2.4.0
 ```
+
+When a private feature branch was rebased after publication and a history rewrite is unavoidable, obtain explicit agreement from its sole owner, verify the remote head and use a lease tied to the exact observed commit. Never rewrite a shared or protected branch. A plain push is the safe default.
