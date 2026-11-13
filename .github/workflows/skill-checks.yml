@@ -1,0 +1,24 @@
+# NVIDIA SkillEvaluator 0.8.0 release bundle (reviewed, immutable pins).
+# Scan all canonical skills, including on the initial workflow-only PR.
+# Existing deterministic skill contract checks remain independent.
+name: Skill checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  skills:
+    uses: NVIDIA/SkillEvaluator/.github/workflows/evaluate-skills.yml@55d2d046595e61cce6ba9f5fd9cc84b972cd3915
+    with:
+      image: ghcr.io/nvidia/skillevaluator-tier1@sha256:9d5483243918937be4f2178f74cf7c622a531dee41e3176906994d52fa14950a
+      paths: skills
+      min-score: 70
+      scan-mode: all
+      llm: false
