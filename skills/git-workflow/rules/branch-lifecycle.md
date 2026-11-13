@@ -18,7 +18,7 @@ tags: [git, branching, trunk-based, branch-naming, branch-protection]
 # ❌ Chaotic naming, long-lived branches, and pushing directly to main
 git checkout -b johns-work
 git checkout -b test2
-git push origin main --force # ❌ Direct push to shared production branch
+# Never force-push a shared production branch; no runnable command is given.
 ```
 
 ### Good

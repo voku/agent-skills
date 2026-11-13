@@ -15,8 +15,8 @@ tags: [git, rebase, worktree, git-tags, semver, linear-history]
 
 ### Bad
 ```bash
-# ❌ Force-pushing to shared branches clobbering teammate commits
-git push origin main --force
+# ❌ Force-pushing shared branches can overwrite teammates' commits.
+# There is deliberately no runnable command for this destructive anti-pattern.
 
 # ❌ Messy merge bubbles polluting history
 git merge main # within feature branch creates pointless merge commits
