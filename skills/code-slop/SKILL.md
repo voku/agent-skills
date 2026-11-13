@@ -1,6 +1,12 @@
 ---
 name: code-slop
-description: Review PHP/Laravel and TypeScript/React code for qualitative maintainability patterns associated with low-signal generated or boilerplate-heavy changes: narration comments, weak naming, premature abstraction, defensive overdose, mock-everything tests, and style escape hatches. Use when reviewing AI-assisted PRs, auditing code-quality taste, or hardening a review checklist. These heuristics identify code problems, not author provenance.
+description: >-
+  Review PHP/Laravel and TypeScript/React code for qualitative maintainability
+  patterns associated with low-signal generated or boilerplate-heavy changes:
+  narration comments, weak naming, premature abstraction, defensive overdose,
+  mock-everything tests, and style escape hatches. Use when reviewing AI-assisted
+  PRs, auditing code-quality taste, or hardening a review checklist. These
+  heuristics identify code problems, not author provenance.
 license: MIT
 metadata:
   author: agent-skills
