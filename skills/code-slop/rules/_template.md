@@ -9,12 +9,12 @@ tags: tag1, tag2, tag3
 
 **Impact: LEVEL (impactDescription)**
 
-1-2 sentences explaining why this pattern is an AI fingerprint and why it hurts.
+1-2 sentences explaining which observable maintainability problem this pattern creates. Do not infer whether a human or model authored the code.
 
 ## Incorrect
 
 ```language
-// ❌ AI-slop example
+// Incorrect code example
 ```
 
 **Why it's slop:**
@@ -24,10 +24,10 @@ tags: tag1, tag2, tag3
 ## Correct
 
 ```language
-// ✅ Human-equivalent
+// Corrected code example
 ```
 
-**Why it reads human:**
+**Why it is easier to maintain:**
 - Reason 1
 - Reason 2
 
@@ -37,4 +37,4 @@ tags: tag1, tag2, tag3
 # grep / eslint / phpstan invocation
 ```
 
-Reference: [Link](url) · Internal: [`related-rule`](related-rule.md)
+Reference: add a verified, relevant URL when needed. Related rules: link only to existing files in this catalog.
