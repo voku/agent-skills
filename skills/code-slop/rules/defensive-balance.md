@@ -14,49 +14,14 @@ tags: [defensive-programming, error-handling, resilience, observability]
 ---
 
 ### Bad
-```php
-<?php
 
-declare(strict_types=1);
+Avoid these observable failure patterns:
 
-// ❌ Swallows all exceptions, masks failures with false, and misses external timeouts
-class UserSyncService
-{
-    public function sync(User $user): bool
-    {
-        // ❌ Impossible null check on non-nullable typed parameter
-        if ($user === null || $user->id === null) {
-            return false;
-        }
+- **PHP:** checking a non-nullable typed `User` argument against `null` as a substitute for input-boundary validation; catching every exception from external I/O and returning `false` without communicating that a sync failed
+- **PHP:** making outbound requests without an explicit timeout or bounded retry policy
+- **TypeScript:** fetching orders without an abort timeout, then catching every network or JSON error and returning an empty order list that falsely looks like successful business data
 
-        try {
-            // ❌ No timeout or retry policy configured
-            $response = Http::get('https://api.external.com/sync/' . $user->id);
-            $user->update(['synced_at' => now()]);
-            return true;
-        } catch (\Exception $e) { // ❌ Catches TypeError, OutOfMemory, DatabaseException indiscriminately
-            Log::error('Sync error: ' . $e->getMessage());
-            return false; // Caller falsely assumes silent no-op
-        }
-    }
-}
-```
-
-```typescript
-// ❌ Defensive overdose: triple null checks and generic catch returning empty array
-async function fetchOrders(userId: string): Promise<Order[]> {
-  try {
-    if (!userId || typeof userId !== 'string' || userId === null) {
-      return [];
-    }
-    const res = await fetch(`/api/users/${userId}/orders`); // No AbortController timeout
-    return await res.json();
-  } catch (err) {
-    console.error('Error fetching orders:', err);
-    return []; // UI shows empty state instead of error boundary
-  }
-}
-```
+These failures should be testable at the actual I/O boundary. The following examples show focused positive alternatives.
 
 ### Good
 ```php

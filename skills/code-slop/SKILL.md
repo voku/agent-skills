@@ -23,8 +23,8 @@ These rules are **not an authorship detector**. A flagged pattern is evidence ab
 
 Before applying language-specific examples or tools, ground the target repository:
 
-- inspect `composer.json` and the PHP/Laravel toolchain for PHP projects;
-- inspect `package.json`, TypeScript config, and lint/test tooling for Node/React projects;
+- inspect composer.json and the PHP/Laravel toolchain for PHP projects;
+- inspect package.json, TypeScript config, and lint/test tooling for Node/React projects;
 - prefer the changed diff and surrounding project conventions over generic style expectations;
 - use configured analyzers and tests where they can mechanically verify a concern.
 
