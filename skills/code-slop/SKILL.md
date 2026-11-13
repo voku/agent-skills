@@ -9,7 +9,7 @@ description: >-
   heuristics identify code problems, not author provenance.
 license: MIT
 metadata:
-  author: agent-skills
+  author: agent-skills <lars@moelleken.org>
   version: "2.0.0"
 ---
 

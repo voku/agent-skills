@@ -3,7 +3,7 @@ name: code-review-simplicity
 description: Simplicity-focused review lens for identifying unnecessary complexity, dead logic, unclear naming, duplicated behavior, and maintainability drag during code review.
 license: MIT
 metadata:
-  author: Agent Skills Team
+  author: Agent Skills Team <lars@moelleken.org>
   version: "2.0.0"
 ---
 
