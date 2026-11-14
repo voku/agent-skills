@@ -3,7 +3,7 @@ name: engineering-codelight
 description: Evidence-first, workflow-neutral reasoning for non-trivial engineering work. Use to investigate, plan, implement, verify, or review when current reality, authority, ownership, failure behavior, or stale assumptions could change the decision. Do not use as a replacement for a project's workflow, lifecycle, or specialist implementation guidance.
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "1.0.0"
 ---
 

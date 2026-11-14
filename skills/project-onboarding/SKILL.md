@@ -3,7 +3,7 @@ name: project-onboarding
 description: Establish verified PHP project context before investigating a failing test, unfamiliar repository, or requested project check. Use when the repository's scripts, Git state, source locations, or available PHP tooling are not yet known.
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "1.0.0"
 ---
 
@@ -28,10 +28,10 @@ configuration, or run a project's test/static-analysis commands automatically.
 
 ## Discover PHP verification facts without guessing
 
-1. Read the exact composer.json at the confirmed root. Record its SHA-256
+1. Read the exact `composer.json` at the confirmed root. Record its SHA-256
    when an evidence-preserving reader is available; otherwise record the path
    and that a digest was unavailable.
-2. Treat the `scripts` object in the exact, already-read composer.json as the
+2. Treat the `scripts` object in the exact, already-read `composer.json` as the
    canonical declared capability, not proof that a command will pass. Record
    whether the `composer` executable is available, but do not invoke Composer
    merely to rediscover those scripts: supported listing options vary by
@@ -39,9 +39,9 @@ configuration, or run a project's test/static-analysis commands automatically.
    `composer test`, `composer ci`, `phpstan`, PHPUnit, or install/update
    commands until the task asks for a verification command and its scope is
    understood.
-3. Look for the actual configuration files before naming a check: phpunit.xml
-   or phpunit.xml.dist, phpstan.neon or phpstan.neon.dist, psalm.xml,
-   infection*.json, rector.php, Makefile, and CI workflow files. Report
+3. Look for the actual configuration files before naming a check: `phpunit.xml`
+   or `phpunit.xml.dist`, `phpstan.neon` or `phpstan.neon.dist`, `psalm.xml`,
+   `infection*.json`, `rector.php`, `Makefile`, and CI workflow files. Report
    missing tools or configuration as unavailable, not as a failed check.
 4. Preserve any supplied failing command and its original stderr. Do not turn a
    copied error message into a claim about the current checkout without a fresh,

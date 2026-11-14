@@ -25,7 +25,7 @@ $output = shell_exec("gzip /tmp/uploads/" . $filename);
 
 // ❌ Path Traversal allows reading arbitrary system files
 $file = $_GET['file'];
-$content = file_get_contents('/var/www/uploads/' . $file); // e.g. file=../../private-report.txt
+$content = file_get_contents('/var/www/uploads/' . $file); // e.g. file=../../etc/passwd
 ```
 
 ### Good

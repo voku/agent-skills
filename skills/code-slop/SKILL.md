@@ -1,15 +1,9 @@
 ---
 name: code-slop
-description: >-
-  Review PHP/Laravel and TypeScript/React code for qualitative maintainability
-  patterns associated with low-signal generated or boilerplate-heavy changes:
-  narration comments, weak naming, premature abstraction, defensive overdose,
-  mock-everything tests, and style escape hatches. Use when reviewing AI-assisted
-  PRs, auditing code-quality taste, or hardening a review checklist. These
-  heuristics identify code problems, not author provenance.
+description: Review PHP/Laravel and TypeScript/React code for qualitative maintainability patterns associated with low-signal generated or boilerplate-heavy changes: narration comments, weak naming, premature abstraction, defensive overdose, mock-everything tests, and style escape hatches. Use when reviewing AI-assisted PRs, auditing code-quality taste, or hardening a review checklist. These heuristics identify code problems, not author provenance.
 license: MIT
 metadata:
-  author: agent-skills <lars@moelleken.org>
+  author: agent-skills
   version: "2.0.0"
 ---
 
@@ -23,8 +17,8 @@ These rules are **not an authorship detector**. A flagged pattern is evidence ab
 
 Before applying language-specific examples or tools, ground the target repository:
 
-- inspect composer.json and the PHP/Laravel toolchain for PHP projects;
-- inspect package.json, TypeScript config, and lint/test tooling for Node/React projects;
+- inspect `composer.json` and the PHP/Laravel toolchain for PHP projects;
+- inspect `package.json`, TypeScript config, and lint/test tooling for Node/React projects;
 - prefer the changed diff and surrounding project conventions over generic style expectations;
 - use configured analyzers and tests where they can mechanically verify a concern.
 

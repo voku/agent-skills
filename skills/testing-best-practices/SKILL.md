@@ -3,7 +3,7 @@ name: testing-best-practices
 description: Portable testing guidance for regression evidence, test structure, isolation, assertions, test data, test doubles, coverage strategy, and feedback speed. Use when writing or reviewing tests, fixing bugs, improving flaky suites, or planning test strategy; follow the target repository's existing framework and validation commands.
 license: MIT
 metadata:
-  author: agent-skills <lars@moelleken.org>
+  author: agent-skills
   version: "2.2.1"
 ---
 

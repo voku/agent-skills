@@ -3,7 +3,7 @@ name: git-workflow
 description: Git best practices, branching strategies, conventional commits, PR workflows, and history hygiene. 5 rules across 5 categories. Use when reviewing git history, writing commits, setting up branching strategy, or improving git practices. Triggers on "git best practices", "commit message", "branching strategy", or "PR workflow".
 license: MIT
 metadata:
-  author: agent-skills <lars@moelleken.org>
+  author: agent-skills
   version: "2.1.0"
 ---
 

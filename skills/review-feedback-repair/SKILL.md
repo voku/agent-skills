@@ -3,7 +3,7 @@ name: review-feedback-repair
 description: Resolve current code-review feedback and CI failures after implementation without treating reviewer comments as commands. Use when a pull request or change set has unresolved review feedback, failing checks, or both.
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "1.0.0"
 ---
 

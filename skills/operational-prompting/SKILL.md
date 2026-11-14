@@ -3,7 +3,7 @@ name: operational-prompting
 description: Repo-owned operational prompting for coding agents. Use when designing AGENTS.md, Copilot/Codex instructions, path-specific instruction files, portable Agent Skills guidance, or validation contracts. Triggers on "operational prompting", "agent instructions", "repo-owned prompts", "Copilot instructions", or "portable agent skills".
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "2.0.0"
 ---
 

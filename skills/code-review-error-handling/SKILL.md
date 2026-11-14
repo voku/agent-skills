@@ -3,7 +3,7 @@ name: code-review-error-handling
 description: Error-handling and resilience review lens for catching swallowed failures, unbounded I/O, missing timeouts, retry hazards, and partial-failure bugs during code review.
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "2.0.0"
 ---
 

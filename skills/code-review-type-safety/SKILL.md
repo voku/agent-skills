@@ -3,7 +3,7 @@ name: code-review-type-safety
 description: Type-safety review lens for catching schema mismatches, unsafe coercions, missing annotations, and weak contracts during code review.
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "2.0.0"
 ---
 

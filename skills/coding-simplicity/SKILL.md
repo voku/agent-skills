@@ -3,7 +3,7 @@ name: coding-simplicity
 description: Implementation-time simplicity for coding, fixing, and refactoring. Use when changing code and the goal is the smallest correct solution without sacrificing safety or verification. Do not use for non-coding requests or as an always-on writing/persona mode.
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "1.0.0"
 ---
 

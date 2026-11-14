@@ -3,7 +3,7 @@ name: engineering-reframing
 description: Reframe an engineering problem when evidence suggests the proposed solution, requirement, ownership, or failure explanation might be wrong. Use before implementing a suspect plan or when diagnosis stalls, to select one useful investigation perspective and decide when to stop. Do not use for clear bounded fixes, routine reviews, or speculative redesign.
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "1.0.0"
 ---
 

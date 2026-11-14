@@ -3,7 +3,7 @@ name: code-review-performance
 description: Performance-focused review lens for identifying inefficiencies, high-cost query shapes, resource waste, and worst-case scalability issues during code review.
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "2.0.0"
 ---
 

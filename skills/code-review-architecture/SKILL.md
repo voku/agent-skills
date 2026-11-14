@@ -3,7 +3,7 @@ name: code-review-architecture
 description: Architecture-focused review lens for assessing coupling, module boundaries, abstraction quality, and rollback-safe design during code review. Use when reviewing design quality, separation of concerns, transaction boundaries, or structural maintainability.
 license: MIT
 metadata:
-  author: Agent Skills Team <lars@moelleken.org>
+  author: Agent Skills Team
   version: "2.0.0"
 ---
 
