@@ -47,4 +47,4 @@ git tag -a v2.4.0 -m "Release v2.4.0: Stripe payment upgrade"
 git push origin v2.4.0
 ```
 
-When a private feature branch was rebased after publication and a history rewrite is unavoidable, obtain explicit agreement from its sole owner, verify the remote head and use a lease tied to the exact observed commit. Never rewrite a shared or protected branch. A plain push is the safe default.
+When a private feature branch was rebased after publication and a history rewrite is unavoidable, obtain explicit agreement from its sole owner, fetch the remote head and incorporate any remote commits missing from the local branch before rewriting. Then use a lease tied to that exact observed commit. Never rewrite a shared or protected branch. A plain push is the safe default.
