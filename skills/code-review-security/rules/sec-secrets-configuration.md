@@ -15,11 +15,9 @@ tags: [security, secrets, cryptography, cookies, headers, configuration]
 
 ### Bad
 ```php
-// ❌ Hardcoding API tokens or secrets in version-controlled source code
-class StripeService
-{
-    private string $apiKey = 'sk_live_51Abc123...'; // Leaks in git history!
-}
+// ❌ A literal credential embedded in PHP source can leak into Git history.
+// Do not include even realistic-looking hardcoded credentials in sample code.
+// The secure alternative below injects the secret from a controlled source.
 
 // ❌ Using obsolete/broken cryptographic hashes for sensitive data
 $passwordHash = md5($rawPassword);

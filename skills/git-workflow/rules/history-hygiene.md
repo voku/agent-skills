@@ -15,8 +15,8 @@ tags: [git, rebase, worktree, git-tags, semver, linear-history]
 
 ### Bad
 ```bash
-# ❌ Force-pushing to shared branches clobbering teammate commits
-git push origin main --force
+# ❌ Force-pushing shared branches can overwrite teammates' commits.
+# There is deliberately no runnable command for this destructive anti-pattern.
 
 # ❌ Messy merge bubbles polluting history
 git merge main # within feature branch creates pointless merge commits
@@ -35,8 +35,8 @@ git rebase origin/main
 git rebase -i HEAD~3
 # (squash/fixup intermediate commits into cohesive logical changes)
 
-# ✅ Safe force-push only on private feature branches
-git push --force-with-lease origin feat/my-branch
+# ✅ Ordinary feature branch publication must not rewrite remote history
+git push origin feat/my-branch
 
 # ✅ Worktrees for parallel branch work without stashing
 git worktree add ../repo-hotfix hotfix/critical-security-patch
@@ -46,3 +46,5 @@ git worktree remove ../repo-hotfix
 git tag -a v2.4.0 -m "Release v2.4.0: Stripe payment upgrade"
 git push origin v2.4.0
 ```
+
+When a private feature branch was rebased after publication and a history rewrite is unavoidable, obtain explicit agreement from its sole owner, fetch the remote head and incorporate any remote commits missing from the local branch before rewriting. Then use a lease tied to that exact observed commit. Never rewrite a shared or protected branch. A plain push is the safe default.

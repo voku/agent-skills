@@ -15,10 +15,8 @@ tags: [collaboration, merge-conflicts, gitignore, code-review]
 
 ### Bad
 ```bash
-# ❌ Committing IDE, OS, or local environment files
-git add .idea/
-git add .DS_Store
-git add .env
+# ❌ Staging local IDE metadata, OS-generated artifacts, or local environment credentials.
+# Do not include runnable staging commands for these unsafe examples.
 
 # ❌ Resolving conflict blindly by accepting ours/theirs without understanding context
 git checkout --ours package-lock.json # Breaks dependency resolution

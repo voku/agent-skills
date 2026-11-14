@@ -92,10 +92,10 @@ Never use `--inject`, `--fault`, or syscall return-value manipulation during per
 
 ### Flow A: syscall summary first
 
-Run the workload under `strace` when possible:
+Run the workload under `strace` when possible. Set APP_SCRIPT to an existing project PHP entry script before using either command-mode example:
 
 ```bash
-strace -f -c -- php path/to/script.php
+strace -f -c -- php "${APP_SCRIPT:?Set APP_SCRIPT to an existing PHP entry script}"
 ```
 
 Or attach to one existing process:
@@ -138,7 +138,7 @@ For a command:
 ```bash
 umask 077
 trace_file="$(mktemp "${TMPDIR:-/tmp}/strace.XXXXXX")"
-strace -f -ttt -T -yy -s 256 -o "$trace_file" -- php path/to/script.php
+strace -f -ttt -T -yy -s 256 -o "$trace_file" -- php "${APP_SCRIPT:?Set APP_SCRIPT to an existing PHP entry script}"
 ```
 
 Interpret:
