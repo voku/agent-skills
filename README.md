@@ -27,6 +27,8 @@ Find the source that owns the change before editing projections:
 | Detailed guidance for a selected skill | That skill's `rules/` directory, when present |
 | Evaluate a skill change | [`evals/`](evals/) and the relevant skill's own tests/evidence |
 | Repository tooling | [`tools/`](tools/) |
+| Package distribution and installation | [`composer.json`](composer.json) and the [installation guide](#installation) |
+| CI and release automation | [`.github/workflows/`](.github/workflows/) |
 | Contribution and provenance expectations | [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`CHANGELOG.md`](CHANGELOG.md) |
 
 Do not turn this table into a second skill catalog or an inventory of rules.
